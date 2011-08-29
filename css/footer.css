@@ -1,0 +1,43 @@
+#footer{
+	bottom:0px;
+	height:80px;
+	width:100%;
+	position:fixed;
+	color:#2E2C2D;
+	background:url("../images/buttons.jpg");
+}
+
+#footer_left, #footer_right{
+	height:80px;
+	width:25%;
+	background:url("../images/buttons-texture.jpg");
+}
+
+#footer_img{
+	height:80px;
+	width:50%;
+	background:url("../images/buttons.jpg");;
+}
+
+#footer_left .social_button{
+	padding-top:14px;
+	padding-left:20%;
+	height:24px;
+}
+
+.fb_iframe_widget{
+	width:100%;
+}
+
+.twitter-follow-button{
+	width:100%;
+}
+
+#footer_right p{
+	margin-top:35px;
+	margin-left:15%;
+}
+
+#footer_right img{
+	float:left;
+}

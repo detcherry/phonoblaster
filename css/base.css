@@ -1,0 +1,38 @@
+@import url("main.css");
+@import url("search.css");
+@import url("footer.css");
+@font-face{ font-family: Airstream; src: url("airstream.ttf"); }
+
+body, div, p, h1, h2, h3, h4, h5, h6, form {
+	float:left;
+	margin:0px;
+	padding:0px;
+	font-size:14px;
+	font-weight:normal;
+}
+
+body{
+	width:100%;
+	margin-bottom:110px;
+	font-family: Helvetica, sans-serif;
+	color:white;
+	background:url("../images/amplificator-texture.jpg");
+}
+
+h1{
+	width:80%;
+	margin-left:10%;
+	margin-top:16px;
+	margin-bottom:10px;
+	font-size:26px;
+	color:white;
+	font-family:Airstream;
+}
+
+h2{
+	font-size:20px;
+}
+
+a, a:visited, a:hover, a:active{
+	text-decoration:underline;
+}

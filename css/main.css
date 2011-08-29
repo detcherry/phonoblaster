@@ -1,0 +1,169 @@
+/* -------- LIVE -------- */
+
+#live{
+	width:50%;
+	padding-left:10%;
+}
+
+#live h2{
+	width:90%;
+	margin-top:10px;
+	margin-bottom:4px;
+	padding-left:4px;
+	padding-bottom:10px;
+	text-align:left;
+	border-bottom: 1px solid white;
+}
+
+#youtube_player{
+	width:100%;
+	padding-left:6px;
+}
+
+#youtube_player p{
+	padding-top:20px;
+	padding-left:20px;
+	font-size:16px;
+}
+
+#live object{
+	display:block;
+	float:left;
+	width:81%;
+	height:400px;
+}
+
+#live object embed{
+	width:100%;
+	height:400px;
+}
+
+/* --------- SIDEBAR ---------- */
+
+#sidebar{
+	float:right;
+	width:30%;
+	margin-right:10%;
+	text-align:left;
+}
+
+#sidebar ul{
+	float:left;
+	width:100%;
+	height:44px;
+	margin:0px;
+	padding:0px;
+	list-style-type:none;
+	border-bottom:1px solid white;
+}
+
+#sidebar li{
+	display:block;
+	float:left;
+	width:56%;
+}
+
+#sidebar li:first-child{
+	width:38%;
+}
+
+#sidebar li a{
+	display:block;
+	float:left;
+	padding:12px;
+	padding-bottom:8px;
+	font-size:1.4em;
+	color:white;
+	text-decoration:none;
+	border-left:1px solid white;
+	border-top:1px solid white;
+	border-right:1px solid white;
+	border-radius:10px 10px 0px 0px;
+}
+
+#sidebar li a.current{
+	height:24px;
+	color:#2E2C2D;
+	background:white;
+}
+
+#tab_content_wrap{
+	width:100%;
+}
+
+.tab_content{
+	display:none;
+	padding-top:20px;
+	padding-bottom:20px;
+	width:100%;
+}
+
+/* -------- TRACKLIST --------*/
+
+#tracklist{
+	width:30%;
+	padding-right:10%;
+}
+
+#tracklist h2{
+	width:100%;
+	margin-top:30px;
+	margin-bottom:4px;
+	padding-bottom:10px;
+	text-align:left;
+	border-bottom: 1px solid #FF706A;	
+}
+
+#tracklist h4{
+	width:100%;
+	margin-bottom:20px;	
+	border-bottom: 1px solid white;
+}
+
+#tracks{
+	width:100%;
+}
+
+#tracks .track{
+	width:100%;
+	padding-top:5px;
+	padding-bottom:5px;
+}
+
+#tracks .track img{
+	display:block;
+	float:left;
+	width:30%;
+	padding:1px;
+	border: 1px solid white;	
+}
+
+#tracks p{
+	margin-left:6%;
+	width:63%;
+	text-align:left;
+}
+
+#tracks .info{
+	display:none;
+}
+
+#tracks p.title{
+	margin-top:20px;
+}
+
+#tracks p.duration{
+	font-size:14px;
+	color:#FF706A;
+}
+
+#tracks a{
+	display:block;
+	width:100%;
+	padding-top:10px;
+}
+
+#last_request_time{
+	display:none;
+}
+
