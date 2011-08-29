@@ -1,7 +1,6 @@
 @import url("main.css");
 @import url("search.css");
 @import url("footer.css");
-@font-face{ font-family: Airstream; src: url("airstream.ttf"); }
 
 body, div, p, h1, h2, h3, h4, h5, h6, form {
 	float:left;
@@ -24,9 +23,6 @@ h1{
 	margin-left:10%;
 	margin-top:16px;
 	margin-bottom:10px;
-	font-size:26px;
-	color:white;
-	font-family:Airstream;
 }
 
 h2{

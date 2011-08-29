@@ -10,8 +10,7 @@ from models.queue import Queue
 
 class AddController(webapp.RequestHandler):
 	def get(self):
-		path = os.path.join(os.path.dirname(__file__), '../templates/add.html')
-		self.response.out.write(template.render(path,None))
+		self.redirect("/")
 	
 	def post(self):
 		title = self.request.get("title")
