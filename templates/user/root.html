@@ -1,0 +1,25 @@
+{% extends "../base.html" %}
+
+{% block header %}
+	{% include "../header.html" %}
+{% endblock %}
+
+
+{% block style %}
+	<link type="text/css" rel="stylesheet" href="/static/css/user/user.css" />
+{% endblock %}
+
+{% block main %}
+	<div id="left-column">
+		{% include "left-column.html" %}
+	</div>
+	<div id="middle-column">
+		{% block middle-column %}
+		{% endblock %}
+	</div>
+{% endblock %}
+
+
+{% block footer %}
+	{% include "../footer.html" %}
+{% endblock %}

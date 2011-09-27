@@ -1,0 +1,25 @@
+<a href="/{{ current_station.identifier }}">
+	<img src="/picture/view/{{ current_station.picture.key }}" id="profile"/>
+</a>
+{% if current_station.description %}
+<div id="description">
+	{{ current_station.description }}
+</div>
+{% endif %}
+{% if current_station.website %}
+<div id="website">
+	<a href="{{ current_station.website }}" target="_blank">Website</a>
+</div>
+{% endif %}
+<div class="info">
+	<a href="/{{ current_station.identifier}}/tracks">
+		<p class="top">Tracks</p>
+		<p class="bottom" id="number_of_tracks">{{ number_of_tracks }}</p>
+	</a>
+</div>
+<div class="info">
+	<a href="/{{ current_station.identifier}}/contributors">
+		<p class="top">Contributors</p>
+		<p class="bottom" id="number_of_contributors">{{ number_of_contributions }}</p>
+	</a>
+</div>

@@ -1,0 +1,96 @@
+/*-------- CANVAS FACEBOOK FOR REQUESTS ------*/
+
+header h2{
+	margin-top:15px;
+	float:right;
+}
+
+.facebook-request{
+	width:100%;
+	border-bottom:1px solid #B3B3B3;
+}
+
+.top-request{
+	width:100%;
+	padding-top:10px;
+	padding-bottom:10px;
+}
+
+.top-request img.picture{
+	display:block;
+	float:left;
+	width:50px;
+}
+
+.top-request img.bubble{
+	display:block;
+	float:left;
+	margin-left:2%;
+	width:3%;
+	height:55px;
+	border:none;
+}
+
+.top-request p{
+	width:81%;
+	padding-top:10px;
+	padding-bottom:10px;
+	padding-left:2%;
+	padding-right:2%;
+	height:35px;
+	background:white;
+}
+
+.top-request p a{
+	text-decoration:underline;
+}
+
+.bottom-request{
+	margin-bottom:10px;
+	margin-left:12%;
+	width:83%;
+	padding-top:12px;
+	padding-left:2%;
+	padding-right:2%;
+	padding-bottom:12px;
+	background:white;
+}
+
+.bottom-request img{
+	display:block;
+	float:left;
+	height:70px;
+}
+
+.bottom-request p{
+	padding-top:5px;
+	padding-bottom:5px;
+	padding-left:2%;
+	padding-right:2%;
+	width:75%;
+}
+
+.bottom-request p.identifier{
+	font-style:italic;
+	font-weight:bold;
+}
+
+.bottom-request a{
+	display:block;
+	float:left;
+	clear:left;
+	margin-top:10px;
+	margin-left:16%;
+	padding:10px;
+	font-size:14px;
+	text-align:center;
+	color:white;
+	background:#373535;
+	border-radius:8px;
+}
+
+.bottom-request a:hover{
+	color:#373535;
+	background:#B3B3B3;
+}
+

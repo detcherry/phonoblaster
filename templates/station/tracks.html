@@ -1,0 +1,54 @@
+{% extends "root.html" %}
+
+{% block meta %}
+	<title>{{ current_station.identifier }}/tracks</title>
+	{% if current_station.description %}
+	<meta name="description" content="{{ current_station.description }}">
+	{% else %}
+	<meta name="description" content="The past {{ current_station.identifier }} music stream on Phonoblaster.">
+	{% endif %}
+{% endblock %}
+
+
+{% block middle-column %}
+	<h2><a href="/{{ current_station.identifier }}">{{ current_station.identifier }}</a>/tracks</h2>
+	<h3></h3>
+	<div id="station_track">
+		No tracks
+	</div>
+{% endblock %}
+
+{% block right-column %}
+	<ul id="tabs">
+		<li><a href="#tracks_tab" class="current">History</a></li>
+	</ul>
+	<div id="tab_content_wrap">
+		<div id="tracks_tab">
+			<div id="tracks_history">
+			{% for track in tracks %}
+				<div class="track">
+					<div class="info">
+						<p class="id">{{ track.youtube_id }}</p>
+						<p class="title">{{ track.youtube_title }}</p>
+					</div>
+					<img src="{{ track.youtube_thumbnail_url }}"/>
+					<div class="title"><span>{{ track.youtube_title }}</span></div>
+					<a class="play_old_track" href="">Play track</a>
+				</div>
+			{% endfor %}
+			{% if older_tracks %}
+			<a id="fetch_old_tracks" href="">Fetch older tracks</a>
+			{% endif %}	
+			</div>
+		</div>
+	</div>
+{% endblock %}
+
+{% block script %}
+	<script type="text/javascript" src="/static/js/station/swfobject.js"></script>
+	<script type="text/javascript" src="/static/js/station/tracks.js"></script>
+	<script>
+		var current_station_name = "{{ current_station.identifier }}"
+		var offset = "{{ offset }}"
+	</script>
+{% endblock %}

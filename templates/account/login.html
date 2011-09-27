@@ -1,0 +1,14 @@
+{% extends "../base.html" %}
+
+
+{% block header %}
+	{% include "../header.html" %}
+{% endblock %}
+
+{% block main %}
+	<div id="loginbox">
+		<p>Login to get access to the app!</p>
+		<fb:login-button autologoutlink="true" perms="email,user_likes,offline_access"></fb:login-button>
+	</div>
+{% endblock %}
+

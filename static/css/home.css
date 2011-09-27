@@ -1,0 +1,124 @@
+/* ---------- STATION LISTING ---------- */
+
+.station_listing{
+	margin-bottom:40px;
+	width:100%;
+}
+
+.station_listing h2{
+	padding-left:4px;
+	font-size:22px;
+	border-bottom: 1px solid black;
+}
+
+/* ------- YOUR STATION ---------- */
+
+#your_station{
+	clear:left;
+	width:100%;
+	padding-top:10px;
+}
+
+#your_station img{
+	display:block;
+	float:left;
+	width:12%;
+	margin-right:2%;
+	border:1px solid #E6E6E6;
+}
+
+#your_station h3{
+	margin-top:30px;
+	width:85%;
+	font-size:18px;
+	color:#373535;
+}
+
+#your_station a{
+	display:block;
+	float:left;
+	margin-top:10px;
+	padding:10px;
+	text-align:center;
+	color:white;
+	border-radius:4px;
+	background:#373535;
+}
+
+#your_station a:hover{
+	color:#373535;
+	background:#E3E3E3;
+}
+
+/* ------- OTHER STATIONS -------*/
+
+#station_items{
+	clear:left;
+	padding-top:14px;
+	width:100%;
+}
+
+.station_item{
+	margin-top:10px;
+	margin-left:0.75%;
+	margin-right:0.75%;
+	padding-left:0.5%;
+	padding-right:0.5%;
+	padding-top:2px;
+	padding-bottom:6px;
+	width:9.5%;
+	height:152px;
+	border:1px solid #E6E6E6;
+}
+
+.station_item h3{
+	overflow:hidden;
+	padding-top:4px;
+	padding-bottom:4px;
+	width:100%;
+	color:#373535;
+}
+
+.station_item img{
+	float:left;
+	width:99%;
+	border:1px solid #E6E6E6;
+}
+
+.station_item a.button{
+	display:block;
+	float:left;
+	margin-top:4px;
+	padding-top:4px;
+	padding-bottom:4px;
+	width:100%;
+	text-align:center;
+	color:white;
+	border-radius:4px;
+	background:#373535;
+}
+
+.station_item a.button:hover{
+	color:#373535;
+	background:#E3E3E3;
+}
+
+a#fetch_more_stations{
+	display:block;
+	float:left;
+	margin-left:42%;
+	padding-top:5px;
+	padding-bottom:5px;
+	padding-left:3%;
+	padding-right:3%;
+	width:16%;
+	text-align:center;
+	background:#E3E3E3;
+	border-radius:0px 8px 0px 8px;
+}
+
+img.loader{
+	height:20px;
+	margin-left:45%;
+	border:none;
+}

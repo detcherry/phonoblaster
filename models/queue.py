@@ -1,125 +1,103 @@
-import logging, re
+import logging
 
 from datetime import datetime
 from datetime import timedelta
+from random import randrange
 
-from database.track import Track
+from db.track import Track
+from db.station import Station
+from db.session import Session
+
+from notifiers.track import TrackNotifier
+
 from google.appengine.ext import db
 
 class Queue():
 	
-	@staticmethod
-	def putSomeDefaultData():
+	def __init__(self, station_key):
+		self.station = Station.get(station_key)
+	
+	def getTracks(self):
 		query = Track.all()
-		query.order("-expiration_time")
-		query.filter("expiration_time >", datetime.now())
-		aTrack = query.get()
+		query.filter("station", self.station.key())
+		query.filter("expired >", datetime.now())
+		query.order("expired")
 		
-		if not(aTrack):
-			logging.info("We have to put some data to do the tests")
-			videos = [{
-				"title" : "Breakbot - Baby I'm Yours (feat. Irfane) - HD",
-				"id" : "6okxuiiHx2w",
-				"thumbnail" : "http://i.ytimg.com/vi/6okxuiiHx2w/default.jpg",
-				"duration" : 151,
-			},{
-				"title" : "Breakbot - Fantasy feat. Ruckazoid",
-				"id" : "ShiKVmNnp9w",
-				"thumbnail" : "http://i.ytimg.com/vi/ShiKVmNnp9w/default.jpg",
-				"duration" : 194,
-			}]
+		tracks = query.fetch(10)
+		
+		return tracks
+	
+	@property
+	def numberOfTracks(self):
+		query = Track.all()
+		query.filter("station", self.station.key())
+		query.filter("expired >", datetime.now())
+		query.order("expired")
+		number = query.count()		
+		return number
+	
+	def addTrack(self, title, id, thumbnail, duration, user_key):
+		tracks = self.getTracks()
+		if(len(tracks) == 10):
+			return None
+		else:
+			expiration_interval = timedelta(0,int(duration))
 			
-			i = 1
-			durationSongsBeforeInSeconds = 0
-			for video in videos:
-				track = Track(
-					youtube_title = video["title"],
-					youtube_id = video["id"],
-					youtube_thumbnail_url = video["thumbnail"],
-					youtube_duration = video["duration"],
-				)
+			if(len(tracks) == 0):
+				expiration_time = datetime.now() + expiration_interval
+			else:
+				last_track = tracks[-1]
+				expiration_time = last_track.expired + expiration_interval
+
+			newTrack = Track(
+				youtube_title = title,
+				youtube_id = id,
+				youtube_thumbnail_url = db.Link(thumbnail),
+				youtube_duration = int(duration),
+				station = self.station.key(),
+				submitter = user_key,
+				expired = expiration_time,
+			)
+			newTrack.put()
+	
+			logging.info("New track %s in the %s tracklist" %(title, self.station.identifier))
+			
+			return newTrack
+
+	def shuffle(self, user_key):
+		latest_tracks = Track.all().filter("submitter", user_key).order("-added").fetch(50)
+		number_of_latest_tracks = len(latest_tracks)
+		non_expired_tracks = self.getTracks()		
+		number_of_remaining_tracks = 10 - len(non_expired_tracks)
+		random_tracks = []
 				
-				durationSongsBeforeInSeconds += video["duration"]
-					
-				durationSongsBefore = timedelta(0, durationSongsBeforeInSeconds)
-				track.expiration_time = datetime.now() + durationSongsBefore
-				
+		for i in range(0, number_of_remaining_tracks):
+			random_integer = randrange(number_of_latest_tracks)
+			random_track = latest_tracks[random_integer]
+			track_added = self.addTrack(random_track.youtube_title, random_track.youtube_id, random_track.youtube_thumbnail_url, random_track.youtube_duration, user_key)
+			random_tracks.append(track_added)
+		
+		return random_tracks
+	
+	def deleteTrack(self, track_key):
+		track_to_delete = Track.get(track_key)
+		if(track_to_delete):
+			tracks_to_edit = Track.all().filter("expired >", track_to_delete.expired)
+	
+			offset = timedelta(0, track_to_delete.duration)
+			for track in tracks_to_edit:
+				track.expired -= offset
 				track.put()
-				
-				i = i+1	
+	
+			soon_deleted_track_name = track_to_delete.youtube_title
+	
+			track_to_delete.delete()
+			logging.info("Track %s removed from database" %(soon_deleted_track_name))
+	
+			return True
 		else:
-			logging.info("We don't need to add some data")
-	
-	# This method is called when a client initially requests the songs that are not expired (live or in the queue)
-	@staticmethod
-	def getNonExpiredTracks():
-		datetimeNow = datetime.now()
-		
-		query = Track.all()
-		query.filter("expiration_time >", datetimeNow)
-		query.order("expiration_time")
-		
-		nonExpiredTracks = query.fetch(10)
-		
-		return nonExpiredTracks
-	
-	#This method is called via AJAX requests every 30 seconds
-	@staticmethod
-	def getNewNonExpiredTracks(additionTime):
-		
-		addition_time = Queue.parseDateTime(additionTime)
-		
-		query = Track.all()
-		query.filter("addition_time >", addition_time)
-		query.order("addition_time")
-		
-		newNonExpiredTracks = query.fetch(10)
-		
-		return newNonExpiredTracks		
-	
-	#This method is used to transform a string to a datetime object
-	@staticmethod
-	def parseDateTime(string):	
-		m = re.match(r"(?P<year>\d{4})-(?P<month>\d{2})-(?P<day>\d{2}) (?P<hours>\d{2}):(?P<minutes>\d{2}):(?P<seconds>\d{2}).(?P<microseconds>\d{6})", string)
-		year = m.group("year")
-		month = m.group("month")
-		day = m.group("day")
-		hours = m.group("hours")
-		minutes = m.group("minutes")
-		seconds = m.group("seconds")
-		microseconds = m.group("microseconds")
-		
-		dateTimeToBeReturned = datetime(int(year), int(month), int(day), int(hours), int(minutes), int(seconds), int(microseconds))
-		
-		return dateTimeToBeReturned
-		
-	
-	# This method adds a new track to the list
-	@staticmethod
-	def addToQueue(title, id, thumbnail, duration):
-		datetimeNow = datetime.now()
-		
-		query = Track.all()
-		query.filter("expiration_time >", datetimeNow)
-		query.order("-expiration_time")
-		
-		lastTrackInTheQueue = query.get()
-		
-		newTrackExpirationTime = timedelta(0,int(duration))
-		if(lastTrackInTheQueue):
-			newTrackExpirationTime += lastTrackInTheQueue.expiration_time
-		else:
-			newTrackExpirationTime += datetimeNow
-		
-		newTrack = Track(
-			youtube_title = title,
-			youtube_id = id,
-			youtube_thumbnail_url = db.Link(thumbnail),
-			youtube_duration = int(duration),
-			expiration_time = newTrackExpirationTime,
-		)
-		
-		newTrack.put()
-		logging.info("New track in the list: %s" % title)
-		
+			return False
+			
+			
+			
 		

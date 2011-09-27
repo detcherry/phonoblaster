@@ -1,0 +1,49 @@
+{% extends "root.html" %}
+
+{% block middle-column %}
+	<h2>Station</h2>
+	{% if user_station %}
+		<div class="station">
+			<img src="/picture/view/{{ user_station.thumbnail.key }}"/>
+			<div class="information">
+				<p class="identifier"><a href="/{{ user_station.identifier }}">{{ user_station.identifier }}</a></p>
+				<p class="description">
+				{% if user_station.description %}
+					{{ user_station.description }}
+				{% else %}
+					...
+				{% endif %}
+				</p>
+			</div>
+			<a href="/{{ user_station.identifier }}" class="turn_on">Turn it on!</a>
+		</div>
+	{% else %}
+		<div class="station">
+			No station owned
+		</div>
+	{% endif %}
+	<h2>Contributions</h2>
+	{% if user_contributions %}
+		{% for contribution in user_contributions %}
+			<div class="station">
+				<img src="/picture/view/{{ contribution.station.thumbnail.key }}"/>
+				<div class="information">
+					<p class="identifier"><a href="/{{ contribution.station.identifier }}">{{ contribution.station.identifier }}</a></p>
+					<p class="description">
+						{% if contribution.station.description %}
+							{{ contribution.station.description }}
+						{% else %}
+							...
+						{% endif %}
+					</p>
+				</div>
+				<a href="/{{ contribution.station.identifier }}" class="turn_on">Turn it on!</a>
+			</div>
+		{% endfor %}
+	{% else%}
+		<div class="station">
+			No contribution to any station
+		</div>
+	{% endif%}
+	
+{% endblock %}

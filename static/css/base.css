@@ -1,0 +1,110 @@
+@import url("home.css");
+@import url("login.css");
+
+body, div, p, h1, h2, h3, h4, h5, h6, form {
+	float:left;
+	margin:0px;
+	padding:0px;
+	font-size:13px;
+	font-weight:normal;
+}
+
+body{
+	width:100%;
+	font-family: Lucida Grande, Helvetica, sans-serif;
+	color:black;
+}
+
+a, a:visited, a:hover, a:active, a:focus{
+	color:black;
+	text-decoration:none;
+}
+
+img{
+	border:1px solid #E3E3E3;
+}
+
+/* ---------- HEADER ------------ */
+
+header{
+	position:fixed;
+	float:left;
+	padding-top:6px;
+	padding-left:10%;
+	padding-right:10%;
+	padding-bottom:8px;
+	width:80%;
+	height:40px;
+	color:white;
+	background:black;
+}
+
+header img{
+	border:none;
+}
+
+header p#login{
+	float:right;
+	margin-top:12px;
+}
+
+header a.menu{
+	display:block;
+	float:left;
+	margin-top:-7px;
+	margin-right:6px;
+	padding:10px;
+	color:white;
+	border-radius:4px;
+}
+
+header a.menu img{
+	height:25px;
+	width:25px;
+	margin-top:-6px;
+	margin-right:6px;
+}
+
+header p#login span{
+	padding-right:10px;
+}
+
+header h1{
+	display:none;
+}
+
+header img{
+	float:left;
+	height:38px;
+}
+
+header p#tagline{
+	clear:left;
+	padding-top:4px;
+	padding-left:6px;
+}
+
+/* ------------ MAIN --------------- */
+
+#main{
+	padding-top:90px;
+	padding-bottom:20px;
+	padding-left:10%;
+	padding-right:10%;
+	width:80%;
+	min-height:500px;
+	background:#F6F6F6;
+}
+
+/* ---------- FOOTER ------------ */
+
+footer{
+	float:left;
+	padding-top:10px;
+	padding-bottom:30px;
+	padding-left:10%;
+	padding-right:10%;
+	width:80%;
+	color:white;
+	background:black;
+}

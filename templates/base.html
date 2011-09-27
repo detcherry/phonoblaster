@@ -1,22 +1,58 @@
 <!DOCTYPE HTML>
-<html>
+<html xmlns:fb="http://www.facebook.com/2008/fbml">
     <head>
+		{% block meta %}
         <title>Phonoblaster</title>
-        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-		<meta name="description" content="Phonoblaster is the world's first collaborative radio. It allows you to add and stream to the world any track you want. Share and discover the most awesome music.">
-		<link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon" />
-		<link type="text/css" rel="stylesheet" href="/css/base.css" />
-        <script type="text/javascript" src="/js/jquery-1.6.2.min.js"></script>
-		{% block script %}
+		<meta name="description" content="Phonoblaster is a place to share, post, blog and listen to music LIVE with the world. Where people converge to discover great music together. It's a social music revolution.">
+		{% endblock %}
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		{% block facebook %}
+		{% endblock %}
+		<link rel="shortcut icon" href="/static/images/favicon.ico" type="image/x-icon" />
+		<link type="text/css" rel="stylesheet" href="/static/css/base.css" />
+		{% block style %}
 		{% endblock %}
 	</head>
 	<body>
-		<h1>
-			<img src="../images/phonoblaster.png">
-			<span style="visibility:hidden;">Phonoblaster</span>
-		</h1>
-		{% block body %}
+		{% block header %}
+			{% include "header.html" %}
 		{% endblock %}
+		<div id="main">
+			{% block main %}
+			{% endblock %}
+		</div>
+		{% block footer %}
+			{% include "footer.html" %}
+		{% endblock %}
+
+	    <div id="fb-root"></div>
+		<script type="text/javascript" src="/static/js/jquery-1.6.2.min.js"></script>
+		<script type="text/javascript" src="http://platform.twitter.com/widgets.js"></script>
+		{% block script %}
+		{% endblock %}
+	    <script>
+	      	window.fbAsyncInit = function() {
+		        FB.init({
+					appId: '{{ facebook_app_id }}',
+		 			status: true,
+		 			cookie: true,
+					xfbml: true,
+					oauth: true,
+				});
+		        FB.Event.subscribe('{% if current_user %}auth.logout{% else %}auth.login{% endif %}', function(response) {
+					//Little trick added on top of Facebook Tutorial to handle the way cookies are set on Firefox and Safari...
+		        	setTimeout(function(){
+						window.location.reload();
+					},0);
+		        });
+	      	};
+	      	(function() {
+				var e = document.createElement('script');
+				e.type = 'text/javascript';
+				e.src = document.location.protocol + '//connect.facebook.net/en_US/all.js';
+				e.async = true;
+				document.getElementById('fb-root').appendChild(e);
+			}());
+	    </script>
 	</body>
 </html>
-		

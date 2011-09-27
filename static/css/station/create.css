@@ -1,0 +1,122 @@
+/* ---------- STATION CREATE --------------*/
+
+h2{
+	margin-top:15px;
+	font-size:22px;
+	border-bottom: 1px solid black;
+}
+
+form{
+	float:left;
+	width:100%;
+}
+
+.fields{
+	padding-top:30px;
+	clear:left;
+	width:100%;
+}
+
+.field_row{
+	padding-top:10px;
+	padding-bottom:10px;
+	width:100%;
+}
+
+.left{
+	padding-top:4px;
+	padding-right:2%;
+	width:9%;
+	text-align:right;
+	font-size:15px;
+	color:#373535;
+}
+
+.center{
+	width:65%;
+}
+
+.error{
+	margin-bottom:10px;
+	padding-top:4px;
+	padding-left:4px;
+	width:100%;
+	color:#F36359;
+}
+
+.center img{
+	display:block;
+	float:left;
+	margin-right:2%;
+	border:1px solid #E6E6E6;
+}
+
+.center #image{
+	margin-bottom:10px;
+	margin-right:10px;
+	max-width:200px;
+}
+
+.center #image span{
+	padding-left:4px;
+}
+
+
+.center input{
+	display:block;
+	float:left;
+	height:22px;
+	padding:2px;
+	padding-left:4px;
+	border:1px solid #E6E6E6;
+}
+
+.center span{
+	display:block;
+	float:left;
+	width:100%;
+	padding-top:2px;
+	padding-left:2px;
+}
+
+#availability{
+	padding-top:6px;
+	padding-left:10px;
+	width:50%;
+}
+
+#availability img{
+	height:18px;
+	width:18px;
+	border:none;
+}
+
+#station_url{
+	display:block;
+	float:left;
+	width:100%;
+	font-weight:bold;
+}
+
+textarea{
+	display:block;
+	float:left;
+	border:1px solid #E6E6E6;
+}
+
+#characters_left{
+	padding-top:20px;
+	padding-left:8px;
+	font-weight:bold;
+}
+
+input#submit{
+	margin-top:15px;
+	padding:10px;
+	height:40px;
+	font-size:15px;
+	border-radius:6px;
+}
+
+
+

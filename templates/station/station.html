@@ -1,0 +1,133 @@
+{% extends "root.html" %}
+
+{% block meta %}
+	<title>{{ current_station.identifier }}</title>
+	{% if current_station.description %}
+	<meta name="description" content="{{ current_station.description }}">
+	{% else %}
+	<meta name="description" content="Listen LIVE to {{ current_station.identifier }} music stream on Phonoblaster.">
+	{% endif %}
+{% endblock %}
+
+{% block facebook %}
+	<meta property="og:title" content="{{ current_station.identifier }}" />
+	<meta property="og:type" content="article" />
+	<meta property="og:url" content="{{ site_url }}/{{ current_station.identifier }}" />
+	<meta property="og:image" content="{{ current_picture_url }}" />
+	<meta property="og:description" content="{{ current_station.description }}"/>
+	<meta property="og:site_name" content="Phonoblaster"/>
+	<meta property="fb:app_id" content="{{ facebook_app_id }}" />
+{% endblock %}
+
+{% block left-column %}
+	<div class="info">
+		<p class="top">Listeners</p>
+		<p class="bottom" id="number_of_listeners"></p>
+	</div>
+	{% if status_creator %}
+	<div id="edit_station">
+		<a href="/{{ current_station.identifier }}/edit">Edit my station</a>
+	</div>
+	{% endif %}
+{% endblock %}
+
+
+{% block middle-column %}
+	<h2 class="station-title">{{ current_station.identifier }}</h2>
+	<div id="sharing">
+		<div class="fb-like" data-href="{{ site_url }}/{{ current_station.identifier }}" data-send="false" data-show-faces="false" layout="button_count"></div>
+		<a href="http://twitter.com/share" class="twitter-share-button" data-url="{{ site_url }}/{{ current_station.identifier }}" 
+		data-text="Come and listen to great music in the #{{ current_station.identifier }} station" data-count="none" data-via="phonoblaster">
+		Tweet</a>
+	</div>
+	<div id="live-video">
+		<div id="youtube-player">
+			No live song yet
+		</div>
+	</div>
+	<div id="volume">
+		<a href="">
+			<img src="/static/images/speakericonon.png" id="on">
+			<img src="/static/images/speakericonoff.png" id="off" style="display:none;">
+		</a>
+	</div>
+	<div id="live-chat">
+		<div id="conversation">
+		</div>
+		<div id="typebox">
+			{% if current_user %}
+				<div id="current-user-chat">{{ current_user.public_name }}</div>
+				<form method="post" action="" id="chat">
+					<input type="text" name="message" id="chat_content" autocomplete="off"/>
+					<input type="submit" value="send" id="chat_button"/>
+				</form>
+			{% else %}
+				<div id="no-current-user-chat">
+					<fb:login-button autologoutlink="true" scope="email,user_likes,offline_access"></fb:login-button>
+					to chat now!
+				</div>
+			{% endif %}
+		</div>
+	</div>
+
+{% endblock %}
+
+{% block right-column %}
+	<ul id="tabs">
+		<li><a href="#tracks_tab" class="current">Next</a></li>
+		{% if allowed_to_post %}
+		<li><a href="#search_tab">Search tracks</a></li>
+		<li><a href="#shuffle_tab">Shuffle</a></li>
+		{% endif %}
+	</ul>
+	<div id="tab_content_wrap">
+		<div id="tracks_tab" class="tab_content">
+			<div id="tracks">
+			</div>
+		</div>
+		{% if allowed_to_post %}
+		<div id="search_tab" class="tab_content">
+			<div id="search">
+				<form method="post" action="" id="search">
+					<input type="text" name="search_content" id="search_content" autocomplete="off"/>
+					<input type="submit" value="Search" id="search_button"/>
+				</form>
+			</div>
+			<div id="search_results">
+				No search yet.
+			</div>
+		</div>
+		<div id="shuffle_tab" class="tab_content">
+			<div id="shuffle">
+				Add directly 10 tracks from your recent history!
+				<a href="" id="shuffle">Shuffle now!</a>
+			</div>
+		</div>
+		{% endif %}
+	</div>
+{% endblock %}
+
+{% block footer %}
+{% endblock %}
+
+{% block script %}
+	<script  type="text/javascript" src="/static/js/json_parse.js"></script>
+	<script type="text/javascript" src="/static/js/station/tab.js"></script>
+	<script type="text/javascript" src="/static/js/station/search.js"></script>
+	<script type="text/javascript" src="/static/js/station/swfobject.js"></script>
+	<script type="text/javascript" src="/static/js/station/station.js"></script>
+	<script type="text/javascript" src="/static/js/station/chat.js"></script>
+	<script type="text/javascript" src="/static/js/station/shuffle.js"></script>
+	<script type="text/javascript" src="/_ah/channel/jsapi"></script>
+	<script>
+		//Global variables
+		station_key = "{{ current_station.key }}";
+		station_id = "{{ current_station.identifier }}"
+		user_id = "{{ current_user.key.id }}"
+		user_public_name = "{{ current_user.public_name }}"
+		user_fcbk_id = "{{ current_user.fcbk_id }}"
+		channel_id = "{{ channel_id }}";
+		dispatcher = new Dispatcher();
+		channel = new goog.appengine.Channel('{{ token }}');
+  </script>
+{% endblock %}

@@ -1,0 +1,15 @@
+/* --------- LOGINBOX -------- */
+
+#loginbox{
+	margin-top:90px;
+	margin-left:40%;
+	padding:10px;
+	width:20%;
+	height:50px;
+	text-align:center;
+	border:1px solid #373535;
+}
+
+#loginbox p{
+	margin-bottom:10px;
+}
