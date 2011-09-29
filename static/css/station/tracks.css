@@ -38,9 +38,6 @@
 	padding:4px;
 	font-size:11px;
 	margin-top:19px;
-	background:#E3E3E3;
-	border-radius:0px 8px 0px 0px;
-	border:1px solid #B3B3B3;
 }
 
 a#fetch_old_tracks{
@@ -52,8 +49,6 @@ a#fetch_old_tracks{
 	padding-right:3%;
 	width:94%;
 	text-align:center;
-	background:#E3E3E3;
-	border-radius:0px 8px 0px 8px;
 }
 
 #tracks_history img.loader{

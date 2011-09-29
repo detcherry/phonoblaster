@@ -4,7 +4,6 @@ from models.db.request import FcbkRequest
 
 class CanvasHandler(BaseHandler):
 	def post(self):
-		logging.info(self.request.headers)
 		request_ids = self.request.get("request_ids").split(",")
 		self.requests = FcbkRequest.all().order("-created").filter("fcbk_id IN", request_ids)
 		

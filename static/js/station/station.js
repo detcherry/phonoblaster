@@ -100,7 +100,7 @@ Dispatcher.prototype = {
 		}	
 		if(data.type == "tracklist_delete"){
 			console.log("tracklist_delete");
-			//etc
+			this.tracklistManager.remove(data.content);
 		}
 		if(data.type == "chat_init"){
 			console.log("chat_init")
@@ -123,13 +123,13 @@ Dispatcher.prototype = {
 		if(data.type == "listener_new"){
 			console.log("listener_new");
 			//Add +1 to the number of listeners counter
-			number_of_listeners = parseInt($("#number_of_listeners").html()) + 1;
+			number_of_listeners = parseInt($("#number_of_listeners").html(),10) + 1;
 			$("#number_of_listeners").html(number_of_listeners);			
 		}
 		if(data.type == "listener_delete"){
 			console.log("listener_delete");
 			//Add -1 to the number of listeners counter
-			number_of_listeners = parseInt($("#number_of_listeners").html()) - 1;
+			number_of_listeners = parseInt($("#number_of_listeners").html(),10) - 1;
 			$("#number_of_listeners").html(number_of_listeners);		
 		}
 			
@@ -152,6 +152,7 @@ TracklistManager.prototype = {
 		console.log("Init Track Manager")
 		this.tracklist = tracklist;
 		this.uiTracklistController.display(this.tracklist);
+		this.uiTracklistController.listen();
 		this.playNext();
 	},
 	
@@ -160,24 +161,43 @@ TracklistManager.prototype = {
 			track = tracklist[i];
 			this.tracklist.push(track);
 			this.uiTracklistController.add(track);
+			this.uiTracklistController.listen();
 
 			//Add +1 to the number of tracks counter
-			number_of_tracks = parseInt($("#number_of_tracks").html()) + 1;
+			number_of_tracks = parseInt($("#number_of_tracks").html(),10) + 1;
 			$("#number_of_tracks").html(number_of_tracks);
 		}
 	},
 	
-	remove: function(){
-		
+	remove: function(phonoblaster_id){
+		var that = this		
+		for(i=0, c = that.tracklist.length; i<c; i++){
+			track = that.tracklist[i];
+			if(track.phonoblaster_id == phonoblaster_id){
+				//Expiration of tracks after the track deleted should occur earlier
+				offset = parseInt(track.duration,10);
+				//track_id = track.id;
+				
+				for(j = i, c = that.tracklist.length; j < c; j++){
+					that.tracklist[j].expired -= offset;
+				}				
+				//Remove the track from the tracklist
+				that.tracklist.splice(i,1);
+				
+				//Remove the track from the UI
+				that.uiTracklistController.remove(phonoblaster_id)
+				break;
+			}
+		}		
 	},
 	
 	playNext: function(){
 		console.log("Trying to play a new track");
 		this.new_track = this.tracklist.shift();
 		if(this.new_track){			
-			expired_at = parseInt(this.new_track.expired);
+			expired_at = parseInt(this.new_track.expired,10);
 			datetime_now = Date.parse(new Date());
-			duration = parseInt(this.new_track.duration);
+			duration = parseInt(this.new_track.duration,10);
 			
 			time_out = expired_at - datetime_now/1000;
 			video_start = duration - time_out;
@@ -205,8 +225,9 @@ TracklistManager.prototype = {
 	
 	nextVideo: function(){		
 		if(this.new_track){
-			this.uiTracklistController.remove(this.new_track.id);	
+			this.uiTracklistController.remove(this.new_track.phonoblaster_id);
 		}
+		this.uiTracklistController.removeFirstCross();
 		
 		var that = this;
 		second_timer = setTimeout(function(){
@@ -215,8 +236,8 @@ TracklistManager.prototype = {
 	},
 	
 	displayInformation: function(video_start){
-		seconds = parseInt(video_start) % 60;
-		minutes = (parseInt(video_start) - seconds)/60
+		seconds = parseInt(video_start,10) % 60;
+		minutes = (parseInt(video_start,10) - seconds)/60
 		if(seconds < 10){
 			seconds = "0"+ seconds.toString();
 		}
@@ -247,11 +268,12 @@ UITracklistController.prototype = {
 			track = tracklist[i];
 			this.add(track);
 		}
+		this.removeFirstCross();
 	},
 	
 	add: function(track){
-		seconds = parseInt(track.duration) % 60;
-		minutes = (parseInt(track.duration) - seconds)/60
+		seconds = parseInt(track.duration,10) % 60;
+		minutes = (parseInt(track.duration,10) - seconds)/60
 		if(seconds < 10){
 			seconds = "0"+ seconds.toString();
 		}
@@ -260,10 +282,11 @@ UITracklistController.prototype = {
 		$("#tracks").append(
 			$("<div/>")
 				.addClass("track")
-				.attr("id",track.id)
+				.attr("id", track.phonoblaster_id)
 				.append(
 					$("<img/>")
 						.attr("src",track.thumbnail)
+						.addClass("img")
 				)
 				.append(
 					$("<div/>")
@@ -275,30 +298,103 @@ UITracklistController.prototype = {
 				)
 				.append(
 					$("<div/>")
-						.addClass("duration")
-						.html(to_display)
-				)
-				.append(
-					$("<div/>")
-						.addClass("submitter")
-						.html("Added by")
-				)
-				.append(
-					$("<a/>")
-						.attr("href", "/user/"+ track.submitter_id)
-						.attr("target","_blank")
-						.addClass("submitter")
+						.addClass("subtitle")
 						.append(
-							$("<img/>")
-								.attr("src", "http://graph.facebook.com/" + track.submitter_fcbk_id + "/picture?type=square")
+							$("<div/>")
+								.addClass("duration")
+								.html(to_display)
+						)
+						.append(
+							$("<div/>")
+								.addClass("submitter")
+								.html("Added by")
+						)
+						.append(
+							$("<a/>")
+								.attr("href", "/user/"+ track.submitter_id)
+								.attr("target","_blank")
+								.addClass("submitter")
+								.append(
+									$("<img/>")
+										.attr("src", "http://graph.facebook.com/" + track.submitter_fcbk_id + "/picture?type=square")
+								)
 						)
 				)
 		)
+		
+		this.addCross(track);
 	},
 	
-	remove: function(track_id){
-		$("#" + track_id).remove();
+	addCross: function(track){
+		if(track.submitter_fcbk_id == user_fcbk_id){
+			$("#tracks #" + track.phonoblaster_id + " .title")
+				.prepend(
+					$("<img/>")
+						.attr("src", "/static/images/small-ajax-loader.gif")
+						.css({
+							"float": "right",
+							"margin":"0px",
+							"height":"12px",
+							"width":"12px",
+							"display":"none",
+						})
+				)
+				.prepend(
+					$("<a/>")
+						.addClass("close")
+						.attr("href","")
+						.html("×")
+				)
+		}
 	},
+	
+	removeFirstCross: function(){
+		cross = $("#tracks a.close").first();
+		img = cross.parent().find("img");
+		cross.remove();
+		img.remove();
+	},
+	
+	remove: function(phonoblaster_id){
+		$("#" + phonoblaster_id).remove();
+	},
+	
+	listen: function(){
+		//In case there were previous links bound to an event handler
+		$("a.close").unbind("click");
+		
+		$("a.close").click(function(){
+			cross = $(this);
+			img = $(this).parent().find("img");
+			phonoblaster_id = $(this).parent().parent().attr("id");
+			
+			cross.hide();
+			img.show();
+			
+			$.ajax({
+				url: "/track/delete",
+				type: "POST",
+				dataType: "json",
+				timeout: 60000,
+				data: {
+					id: phonoblaster_id,
+				},
+				error: function(xhr, status, error) {
+					console.log('An error occurred: ' + error + '\nPlease retry.');
+				},
+				success: function(json){
+					if(json.status == "deleted"){						
+						console.log("Your song has been removed from the tracklist");
+					}
+					else{
+						console.log("Your song hasn't been remove from the tracklist");
+					}
+				},
+			});
+			
+			return false;
+		})
+	}
 	
 }
 

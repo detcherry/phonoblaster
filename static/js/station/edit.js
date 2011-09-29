@@ -58,7 +58,7 @@ PictureUploader.prototype = {
 	showResponse: function(responseText, statusText, xhr, $form){ 
 		//Stop Loading animation
 		$("#picture_upload img")
-			.remove();
+			.hide();
 		
 		$("#picture_upload .error")
 			.remove();
@@ -199,7 +199,7 @@ PictureUploader.prototype = {
 	
 }
 
-/*---------------- STATION ID MANGER --------------------*/
+/*---------------- STATION ID MANAGER --------------------*/
 
 function StationIDManager(){
 	this.stationID = ""

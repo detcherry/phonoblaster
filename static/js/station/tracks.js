@@ -133,6 +133,7 @@ TracksBrowser.prototype = {
 					.append(
 						$("<img/>")
 							.attr("src", thumbnail_url)
+							.addClass("img")
 					)
 					.append(
 						$("<div/>")
@@ -146,6 +147,7 @@ TracksBrowser.prototype = {
 						$("<a/>")
 							.attr("href","")
 							.addClass("play_old_track")
+							.addClass("button")
 							.html("Play track")
 					)
 			)

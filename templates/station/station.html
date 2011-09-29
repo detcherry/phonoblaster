@@ -24,6 +24,12 @@
 		<p class="top">Listeners</p>
 		<p class="bottom" id="number_of_listeners"></p>
 	</div>
+	<div id="volume">
+		<a href="">
+			<img src="/static/images/unmuted.png" id="on">
+			<img src="/static/images/muted.png" id="off" style="display:none;">
+		</a>
+	</div>
 	{% if status_creator %}
 	<div id="edit_station">
 		<a href="/{{ current_station.identifier }}/edit">Edit my station</a>
@@ -45,21 +51,17 @@
 			No live song yet
 		</div>
 	</div>
-	<div id="volume">
-		<a href="">
-			<img src="/static/images/speakericonon.png" id="on">
-			<img src="/static/images/speakericonoff.png" id="off" style="display:none;">
-		</a>
-	</div>
 	<div id="live-chat">
 		<div id="conversation">
 		</div>
 		<div id="typebox">
 			{% if current_user %}
-				<div id="current-user-chat">{{ current_user.public_name }}</div>
+				<div id="current-user-chat">
+					<img src="http://graph.facebook.com/{{ current_user.facebook_id }}/picture?type=square">
+				</div>
 				<form method="post" action="" id="chat">
 					<input type="text" name="message" id="chat_content" autocomplete="off"/>
-					<input type="submit" value="send" id="chat_button"/>
+					<input type="submit" value="send" class="submit"/>
 				</form>
 			{% else %}
 				<div id="no-current-user-chat">
@@ -90,7 +92,7 @@
 			<div id="search">
 				<form method="post" action="" id="search">
 					<input type="text" name="search_content" id="search_content" autocomplete="off"/>
-					<input type="submit" value="Search" id="search_button"/>
+					<input type="submit" value="Search" id="search_button" class="submit"/>
 				</form>
 			</div>
 			<div id="search_results">
@@ -99,8 +101,8 @@
 		</div>
 		<div id="shuffle_tab" class="tab_content">
 			<div id="shuffle">
-				Add directly 10 tracks from your recent history!
-				<a href="" id="shuffle">Shuffle now!</a>
+				Add tracks directly from your recent history!
+				<a href="" id="shuffle" class="button">Shuffle now!</a>
 			</div>
 		</div>
 		{% endif %}
@@ -125,7 +127,7 @@
 		station_id = "{{ current_station.identifier }}"
 		user_id = "{{ current_user.key.id }}"
 		user_public_name = "{{ current_user.public_name }}"
-		user_fcbk_id = "{{ current_user.fcbk_id }}"
+		user_fcbk_id = "{{ current_user.facebook_id }}"
 		channel_id = "{{ channel_id }}";
 		dispatcher = new Dispatcher();
 		channel = new goog.appengine.Channel('{{ token }}');

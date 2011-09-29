@@ -11,7 +11,7 @@
 
 {% block main %}	
 
-	<h2>Create your station!</h2>
+	<h3>Create your station!</h3>
 	<div class="fields">
 		<form action="{{ blobstore_url }}" method="post" enctype="multipart/form-data" id="picture_upload">
 			<div class="field_row">
@@ -20,9 +20,9 @@
 				</div>
 				<div class="center">
 					<div id="image_wrapper"></div>
-					<img src="/static/images/small-ajax-loader.gif" style="width:32px; border:none; display:none"/>
-					<input type="file" name="picture" id="picture" style="border:none; width:70%;"/>
-					<span style="width:70%;">Maximum Size of 700k. JPEG, PNG, GIF</span>
+					<img src="/static/images/small-ajax-loader.gif" style="clear:left; display:none"/>
+					<input type="file" name="picture" id="picture"/>
+					<span>Maximum Size of 700k. JPEG, PNG, GIF</span>
 				</div>
 			</div>
 		</form>
@@ -63,7 +63,7 @@
 				<div class="left">
 				</div>
 				<div class="center">
-					<input type="submit" id="submit" value="Create"/>
+					<input type="submit" class="submit" value="Create"/>
 				</div>
 			</div>
 		</form>

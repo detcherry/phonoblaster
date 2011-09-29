@@ -67,24 +67,34 @@ class Queue():
 	def shuffle(self, user_key):
 		latest_tracks = Track.all().filter("submitter", user_key).order("-added").fetch(50)
 		number_of_latest_tracks = len(latest_tracks)
-		non_expired_tracks = self.getTracks()		
+		non_expired_tracks = self.getTracks()
 		number_of_remaining_tracks = 10 - len(non_expired_tracks)
+		
+		existing_track_ids = []
+		for track in non_expired_tracks:
+			existing_track_ids.append(track.youtube_id)
+					
 		random_tracks = []
-				
-		for i in range(0, number_of_remaining_tracks):
-			random_integer = randrange(number_of_latest_tracks)
-			random_track = latest_tracks[random_integer]
-			track_added = self.addTrack(random_track.youtube_title, random_track.youtube_id, random_track.youtube_thumbnail_url, random_track.youtube_duration, user_key)
-			random_tracks.append(track_added)
+		
+		if(number_of_latest_tracks > 0):
+			for i in range(0, number_of_remaining_tracks):
+				random_integer = randrange(number_of_latest_tracks)
+				random_track = latest_tracks[random_integer]
+				if(random_track.youtube_id in existing_track_ids):
+					logging.info("Track already shuffled or in the tracklist")
+				else:
+					track_added = self.addTrack(random_track.youtube_title, random_track.youtube_id, random_track.youtube_thumbnail_url, random_track.youtube_duration, user_key)
+					random_tracks.append(track_added)
+					existing_track_ids.append(track_added.youtube_id)
 		
 		return random_tracks
 	
 	def deleteTrack(self, track_key):
 		track_to_delete = Track.get(track_key)
 		if(track_to_delete):
-			tracks_to_edit = Track.all().filter("expired >", track_to_delete.expired)
+			tracks_to_edit = Track.all().filter("station", self.station.key()).filter("expired >", track_to_delete.expired)
 	
-			offset = timedelta(0, track_to_delete.duration)
+			offset = timedelta(0, track_to_delete.youtube_duration)
 			for track in tracks_to_edit:
 				track.expired -= offset
 				track.put()

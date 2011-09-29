@@ -1,3 +1,9 @@
+.container{
+	float:none;
+	width:600px;
+	margin:auto;
+}
+
 /*-------- CANVAS FACEBOOK FOR REQUESTS ------*/
 
 header h2{
@@ -6,8 +12,9 @@ header h2{
 }
 
 .facebook-request{
+	padding-bottom:10px;
 	width:100%;
-	border-bottom:1px solid #B3B3B3;
+	border-bottom:1px solid #ddd;
 }
 
 .top-request{
@@ -16,7 +23,7 @@ header h2{
 	padding-bottom:10px;
 }
 
-.top-request img.picture{
+.top-request img.img{
 	display:block;
 	float:left;
 	width:50px;
@@ -25,7 +32,7 @@ header h2{
 .top-request img.bubble{
 	display:block;
 	float:left;
-	margin-left:2%;
+	margin-left:1%;
 	width:3%;
 	height:55px;
 	border:none;
@@ -53,7 +60,16 @@ header h2{
 	padding-left:2%;
 	padding-right:2%;
 	padding-bottom:12px;
+	font-size:13px;
+	color:#373535;
 	background:white;
+	border: 1px solid #ddd;
+	-webkit-border-radius: 4px;
+	-moz-border-radius: 4px;
+	border-radius: 4px;
+	-webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075);
+	-moz-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075);
+	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075);
 }
 
 .bottom-request img{
@@ -76,21 +92,10 @@ header h2{
 }
 
 .bottom-request a{
-	display:block;
-	float:left;
 	clear:left;
 	margin-top:10px;
-	margin-left:16%;
+	margin-left:10px;
 	padding:10px;
-	font-size:14px;
-	text-align:center;
 	color:white;
-	background:#373535;
-	border-radius:8px;
-}
-
-.bottom-request a:hover{
-	color:#373535;
-	background:#B3B3B3;
 }
 

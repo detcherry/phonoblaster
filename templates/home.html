@@ -1,74 +1,49 @@
 {% extends "base.html" %}
 
 {% block main %}
-
     {% if current_user %}
-	<div class="station_listing">
+	<div class="station-listing">
 		<h2>Your station</h2>
-		<div id="your_station">
+		<div id="your-station">
 		{% if current_user_station %}
-			<img src="/picture/view/{{ current_user_station.thumbnail.key }}"/>
-			<h3>{{ current_user_station.identifier }}</h3>
-			<a href="/{{ current_user_station.identifier }}">Turn it on</a>
+			<a href="/{{ current_user_station.identifier }}" class="img">
+				<img src="/picture/view/{{ current_user_station.thumbnail.key }}"/>
+			</a>
+			<a href="/{{ current_user_station.identifier }}"><h3>{{ current_user_station.identifier }}</h3></a>
+			<a href="/{{ current_user_station.identifier }}" class="button">Tune in!</a>
 		{% else %}
 			<h3>You don't have any station yet</h3>
-			<a href="/station/create">Create your radio station now!</a>
+			<a href="/station/create" class="button">Create your radio station now!</a>
 		{% endif %}
 		</div>
 	</div>		
     {% endif %}
 	{% if active_stations %}
-	<div class="station_listing">
+	<div class="station-listing">
 		<h2>Latest stations on the air</h2>
-		<div id="station_items">
+		<div id="station-items">
 			{% for station in active_stations %}
-			<div class="station_item">
+			<div class="station-item">
 				<h3><a href="/{{ station.identifier }}">{{ station.identifier }}</a></h3>
-				<a href="/{{ station.identifier }}"><img src="/picture/view/{{ station.thumbnail.key }}"></a>
-				<a href="/{{ station.identifier }}" class="button">Turn it on!</a>
+				<a href="/{{ station.identifier }}" class="img"><img src="/picture/view/{{ station.thumbnail.key }}"></a>
+				<a href="/{{ station.identifier }}" class="button">Tune in!</a>
 			</div>
 			{% endfor %}
 		</div>
 	</div>
 	{% else %}
-		<div class="station_listing">
+		<div class="station-listing">
 			<h2>Stations not yet on the air</h2>
-			<div id="station_items">
+			<div id="station-items">
 				{% for station in non_active_stations %}
-				<div class="station_item">
+				<div class="station-item">
 					<h3><a href="/{{ station.identifier }}">{{ station.identifier }}</a></h3>
-					<a href="/{{ station.identifier }}"><img src="/picture/view/{{ station.thumbnail.key }}"></a>
-					<a href="/{{ station.identifier }}" class="button">Turn it on!</a>
+					<a href="/{{ station.identifier }}" class="img"><img src="/picture/view/{{ station.thumbnail.key }}"></a>
+					<a href="/{{ station.identifier }}" class="button">Tune in!</a>
 				</div>
-				{% endfor %}
+				{% endfor %}				
 			</div>
 		</div>	
-	{% endif %}
-{% endblock %}
-
-{% block script %}
-	{% if current_user %}
-	<script>
-		$(function(){
-			current_user_facebook_id = "{{ current_user.facebook_id }}";
-			url = "http://graph.facebook.com/" + current_user_facebook_id + "?callback=?";
-			current_user_first_name = null;
-			current_user_last_name = null;
-			current_user_name = null;
-
-			$.getJSON(
-				url,
-				function(json){
-					if(json){
-						current_user_first_name = json.first_name;
-						current_user_last_name = json.last_name;
-						current_user_name = json.name;
-					}
-
-				})
-				.error(function() { console.log("error when retrieving current_user info"); });
-		});
-	</script>
 	{% endif %}
 {% endblock %}
 

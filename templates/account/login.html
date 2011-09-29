@@ -6,9 +6,9 @@
 {% endblock %}
 
 {% block main %}
-	<div id="loginbox">
+	<div id="login-box">
 		<p>Login to get access to the app!</p>
-		<fb:login-button autologoutlink="true" perms="email,user_likes,offline_access"></fb:login-button>
+		<fb:login-button autologoutlink="true" scope="email,user_likes,offline_access"></fb:login-button>
 	</div>
 {% endblock %}
 

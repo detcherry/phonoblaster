@@ -9,8 +9,6 @@ from models.db.track import Track
 from models.queue import Queue
 from models.notifiers.track import TrackNotifier
 
-from google.appengine.api import quota
-
 class AddTrackHandler(BaseHandler):
 	@login_required
 	def post(self):

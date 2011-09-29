@@ -1,66 +1,84 @@
 /* ---------- STATION CREATE --------------*/
 
-h2{
+h3{
 	margin-top:15px;
-	font-size:22px;
-	border-bottom: 1px solid black;
-}
-
-form{
-	float:left;
-	width:100%;
 }
 
 .fields{
 	padding-top:30px;
 	clear:left;
-	width:100%;
+	width:1000px;
+}
+
+form{
+	float:left;
+	width:1000px;
 }
 
 .field_row{
 	padding-top:10px;
 	padding-bottom:10px;
-	width:100%;
+	width:1000px;
 }
 
 .left{
 	padding-top:4px;
-	padding-right:2%;
-	width:9%;
+	padding-right:30px;
+	width:90px;
 	text-align:right;
 	font-size:15px;
 	color:#373535;
 }
 
 .center{
-	width:65%;
+	width:880px;
 }
 
 .error{
 	margin-bottom:10px;
 	padding-top:4px;
 	padding-left:4px;
-	width:100%;
+	width:880px;
 	color:#F36359;
 }
 
-.center img{
-	display:block;
-	float:left;
-	margin-right:2%;
-	border:1px solid #E6E6E6;
+/* ------ WHEN THE IMAGES ARE LOADED ------ */
+
+.center input[type="file"]{
+	 width:800px;
+}
+
+.center #image_wrapper img{
+	margin-bottom:8px;
+	padding: 4px;
+	border: 1px solid #DDD;
+	-webkit-border-radius: 4px;
+	-moz-border-radius: 4px;
+	border-radius: 4px;
+	-webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075);
+	-moz-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075);
+	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075);
 }
 
 .center #image{
 	margin-bottom:10px;
 	margin-right:10px;
-	max-width:200px;
+	max-width:230px;
 }
 
-.center #image span{
+.center #image_wrapper span{
+	clear:left;
+	width:80px;
 	padding-left:4px;
 }
 
+/*---------*/
+
+.center img{
+	display:block;
+	float:left;
+	margin-right:5px;
+}
 
 .center input{
 	display:block;
@@ -68,13 +86,12 @@ form{
 	height:22px;
 	padding:2px;
 	padding-left:4px;
-	border:1px solid #E6E6E6;
 }
 
 .center span{
 	display:block;
 	float:left;
-	width:100%;
+	width:880px;
 	padding-top:2px;
 	padding-left:2px;
 }
@@ -82,20 +99,13 @@ form{
 #availability{
 	padding-top:6px;
 	padding-left:10px;
-	width:50%;
+	width:440px;
 }
 
 #availability img{
 	height:18px;
 	width:18px;
 	border:none;
-}
-
-#station_url{
-	display:block;
-	float:left;
-	width:100%;
-	font-weight:bold;
 }
 
 textarea{
@@ -110,13 +120,9 @@ textarea{
 	font-weight:bold;
 }
 
-input#submit{
-	margin-top:15px;
-	padding:10px;
+.center input.submit{
+	padding: 5px 14px 6px;
 	height:40px;
-	font-size:15px;
-	border-radius:6px;
 }
-
 
 

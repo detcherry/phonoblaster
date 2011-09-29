@@ -1,3 +1,4 @@
+@import url("left-column.css");
 @import url("contributors.css");
 @import url("tracks.css");
 
@@ -5,100 +6,22 @@
 
 #main{
 	padding-top:50px;
-}
-
-/*-------- LEFT-COLUMN ---------- */
-
-#left-column{
-	position:fixed;
-	padding-top:10px;
-	width:10%;
-	height:100%;
-	border-right:1px solid black;
-}
-
-#left-column img#profile{
-	display:block;
-	float:right;
-	max-width:99.5%;
-	max-height:150px;
-	border-right:none;
-}
-
-.info{
-	padding-top:9px;
-	padding-bottom:9px;
-	width:100%;
-}
-
-.info a{
-	display:block;
-	float:left;
-	width:100%;
-	color:#373535;
-}
-
-.info a:hover p.top{
-	text-decoration:underline;
-}
-
-.info p.top{
-	padding-right:2%;
-	width:98%;
-	text-align:center;
-}
-
-.info p.bottom{
-	margin-top:5px;
-	margin-left:15%;
-	height:16px;
-	width:50%;
-	padding:8px;
-	text-align:center;
-	background:#E3E3E3;
-	border-radius:8px;
-}
-
-#left-column #description{
-	padding-top:5px;
-	padding-bottom:5px;
-	padding-left:5%;
-	padding-right:3%;
-	width:92%;
-	font-size:11px;
-	font-style:italic;
-	color:#373535;
-}
-
-#left-column #website{
-	margin-bottom:10px;
-	padding-left:5%;
-	padding-right:3%;
-	width:92%;
-	overflow:hidden;
-	text-decoration:underline;
-}
-
-#left-column #edit_station{
-	margin-top:10px;
-	padding-left:10%;
-	width:90%;
-	text-decoration:underline;
+	min-height:800px;
 }
 
 /*-------- MIDDLE-COLUMN -------- */
 
 #middle-column{
 	position:fixed;
-	margin-left:10%;
-	padding-left:1%;
+	margin-left:130px;
+	padding-left:25px;
 	padding-top:10px;
-	width:43%;
+	width:550px;
 	height:490px;
 }
 
 #middle-column h2{
-	width:350px;
+	width:355px;
 	padding-top:2px;
 	margin-bottom:10px;
 	font-size:16px;
@@ -133,6 +56,10 @@
 	float:left;
 	width:500px;
 	height:370px;
+	border: 1px solid #ddd;
+	-webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075);
+	-moz-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075);
+	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075);
 }
 
 #live-video object embed{
@@ -143,9 +70,10 @@
 /* ----------- VOLUME ------------*/
 
 #volume{
-	margin-left:2%;
-	padding-top:330px;
-	width:6%;
+	margin-left:4px;
+	padding-top:10px;
+	padding-left:35px;
+	width:30px;
 }
 
 #volume a{
@@ -154,16 +82,19 @@
 }
 
 #volume img{
-	height:30px;
+	height:40px;
 	border:none;
 }
 
 /*--------- LIVE CHAT ------------- */
 
 #live-chat{
-	width:498px;
+	width:500px;
 	height:144px;
-	border:1px solid #E3E3E3;
+	border: 1px solid #ddd;
+	-webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075);
+	-moz-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075);
+	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075);
 }
 
 #conversation{
@@ -171,7 +102,7 @@
 	height:113px;
 	overflow:auto;
 	background:white;
-	border-bottom:1px solid #E3E3E3;
+	border-bottom: 1px solid #ddd;
 }
 
 #conversation .message{
@@ -188,9 +119,18 @@
 	padding-left:1%;
 	padding-right:1%;
 	width:98%;
-	color:white;
 	font-size:11px;
-	background:#373535;	
+	background-color: #222;
+	background-repeat: repeat-x;
+	background-image: -khtml-gradient(linear, left top, left bottom, from(#333333), to(#222222));
+	background-image: -moz-linear-gradient(top, #333333, #222222);
+	background-image: -ms-linear-gradient(top, #333333, #222222);
+	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #333333), color-stop(100%, #222222));
+	background-image: -webkit-linear-gradient(top, #333333, #222222);
+	background-image: -o-linear-gradient(top, #333333, #222222);
+	background-image: linear-gradient(top, #333333, #222222);
+	color: white;
+	line-height: normal;
 }
 
 #conversation .message:nth-child(odd){
@@ -227,15 +167,18 @@
 }
 
 #current-user-chat{
-	padding-top:2px;
-	width:15%;
-	font-size:11px;
+	height:25px;
+	width:6%;
+}
+
+#current-user-chat img{
+	height:20px;
 }
 
 #typebox form{
 	display:block;
 	float:left;
-	width:85%;
+	width:94%;
 }
 
 #typebox input{
@@ -247,19 +190,15 @@
 	padding-left:1%;
 	height:16px;
 	width:84%;
-	border-radius:0px 0px 0px 8px;
-	border:1px solid #B3B3B3;
 }
 
-#typebox input#chat_button{
+#typebox input.submit{
 	float:right;
 	margin:0px;
 	padding-top:1px;
 	width:13%;
 	height:20px;
-	background:#E3E3E3;
-	border-radius:0px 8px 0px 0px;
-	border:1px solid #B3B3B3;
+	font-size:11px;
 }
 
 #no-current-user-chat{
@@ -273,8 +212,7 @@
 	float:right;
 	text-align:left;
 	padding-top:12px;
-	width:32%;
-	min-height:800px;
+	width:310px;
 }
 
 #right-column ul{
@@ -309,7 +247,7 @@
 	border-left:1px solid #B3B3B3;
 	border-top:1px solid #B3B3B3;
 	border-right:1px solid #B3B3B3;
-	border-radius:10px 0px 0px 0px;
+	border-radius:6px 6px 0px 0px;
 }
 
 #right-column li a.current{
@@ -323,10 +261,6 @@
 
 #tab_content_wrap{
 	width:100%;
-	min-height:800px;
-	border-left:1px solid #373535;
-	border-bottom:1px solid #373535;
-	border-radius:0px 0px 0px 10px;
 }
 
 .tab_content{
@@ -351,33 +285,35 @@
 }
 
 #tracks_tab .track img{
-	display:block;
-	float:left;
 	margin-right:10px;
-	width:120px;
+	width:110px;
 }
 
 #tracks_tab .track .title{
-	padding-top:5px;
+	padding-top:2px;
 	width:55%;
-	height:40px;
+	height:60px;
 }
 
 #tracks_tab .track .title span{
 	display:table-cell;
-	height:40px;
+	height:60px;
 	vertical-align:middle;
 }
 
-#tracks_tab .track .duration{
-	margin-bottom:5px;
+#tracks_tab .track .subtitle{
 	width:55%;
+}
+
+#tracks_tab .track .duration{
+	padding-top:5px;
+	font-size:11px;
 	color:#373535;
 }
 
 #tracks_tab .track div.submitter{
+	margin-left:45px;
 	padding-top:5px;
-	width:40%;
 	height:20px;
 	font-size:11px;
 	text-align:right;
@@ -394,7 +330,7 @@
 #tracks_tab .track a.submitter img{
 	display:block;
 	float:right;
-	width:25px;
+	width:22px;
 }
 
 /* -------- SEARCH TRACKS -------- */
@@ -412,23 +348,15 @@ input#search_content{
 	float:left;
 	padding-left:2%;
 	height:20px;
-	width:74%;
-	border-radius:0px 0px 0px 8px;
-	border:1px solid #B3B3B3;	
+	width:65%;
 }
 
 input#search_button{
-	display:block;
-	float:left;
 	margin-left:8px;
-	padding-top:2px;
-	width:20%;
-	height:23px;
-	font-size: 11px;
-	color:white;
-	background:#373535;
-	border-radius:0px 8px 0px 0px;
-	border:1px solid black;	
+	padding-top:4px;
+	width:25%;
+	height:25px;
+	font-size: 11px;	
 }
 
 #search_tab #search_results{
@@ -450,7 +378,7 @@ input#search_button{
 #search_tab img{
 	display:block;
 	float:left;
-	height:60px;
+	height:50px;
 }
 
 #search_tab .title{
@@ -474,9 +402,7 @@ input#search_button{
 	padding:4px;
 	font-size:11px;
 	margin-top:19px;
-	background:#E3E3E3;
-	border-radius:0px 8px 0px 0px;
-	border:1px solid #B3B3B3;
+	text-align:center;
 }
 
 #search_tab img.loader{
@@ -486,32 +412,6 @@ input#search_button{
 	margin-top:19px;
 	height:10px;
 	border:none;
-}
-
-#search_tab a.track_added{
-	display:block;
-	float:left;
-	width:19%;
-	padding:4px;
-	font-size:11px;
-	margin-top:19px;
-	text-align:center;
-	background:#879AC0;
-	border-radius:0px 8px 0px 0px;
-	border:1px solid #637BAD;	
-}
-
-#search_tab a.list_full{
-	display:block;
-	float:left;
-	width:19%;
-	padding:4px;
-	font-size:11px;
-	margin-top:19px;
-	text-align:center;
-	background:#FFB2B1;
-	border-radius:0px 8px 0px 0px;
-	border:1px solid #FE3E3E;	
 }
 
 /* ------- SHUFFLE -----------*/
@@ -527,8 +427,6 @@ a#shuffle{
 	padding-right:3%;
 	width:40%;
 	text-align:center;
-	background:#E3E3E3;
-	border-radius:0px 8px 0px 8px;
 }
 
 a#just_shuffled{
@@ -542,8 +440,6 @@ a#just_shuffled{
 	padding-right:3%;
 	width:40%;
 	text-align:center;
-	background:#CCFFCC;
-	border-radius:0px 8px 0px 8px;
 }
 
 a#not_shuffled{
@@ -557,8 +453,6 @@ a#not_shuffled{
 	padding-right:3%;
 	width:40%;
 	text-align:center;
-	background:#FFB2B1;
-	border-radius:0px 8px 0px 8px;
 }
 
 #shuffle img.loader{

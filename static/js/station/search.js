@@ -89,6 +89,7 @@ YoutubeSearch.prototype = {
 					.append(
 						$("<img/>")
 							.attr("src",item.thumbnail.sqDefault)
+							.addClass("img")
 					)
 					.append(
 						$("<p/>")
@@ -103,6 +104,7 @@ YoutubeSearch.prototype = {
 							.html("Add to list")
 							.attr("href","#")
 							.addClass("add_track")
+							.addClass("button")
 					)			
 			);
 	},
@@ -175,7 +177,8 @@ YoutubeSearch.prototype = {
 		$("#search_results #"+ track_id + " img.loader")
 			.replaceWith(
 				$("<a/>")
-					.addClass("track_added")
+					.addClass("add_track")
+					.addClass("success")
 					.html("Added")
 			)
 	},
@@ -185,12 +188,13 @@ YoutubeSearch.prototype = {
 		$("#search_results #"+ track_id + " a.add_track")
 			.replaceWith(
 				$("<a/>")
-					.addClass("list_full")
+					.addClass("add_track")
+					.addClass("danger")
 					.html("List full")
 			)
 
 		setTimeout(function(){
-			$("#search_results #"+ track_id + " a.list_full")
+			$("#search_results #"+ track_id + " a.add_track")
 				.remove();
 				
 			$("#search_results #"+ track_id)
@@ -198,6 +202,7 @@ YoutubeSearch.prototype = {
 					$("<a/>")
 						.attr("href","#")
 						.addClass("add_track")
+						.addClass("button")
 						.html("Add to list")
 				)
 			

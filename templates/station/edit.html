@@ -24,9 +24,9 @@
 							<span>Thumbnail</span>
 						</div>
 					</div>
-					<img src="/static/images/small-ajax-loader.gif" style="width:32px; border:none; display:none"/>
-					<input type="file" name="picture" id="picture" style="border:none; width:70%;"/>
-					<span style="width:70%;">Maximum Size of 700k. JPEG, PNG, GIF</span>
+					<img src="/static/images/small-ajax-loader.gif" style="clear:left;  display:none"/>
+					<input type="file" name="picture" id="picture"/>
+					<span>Maximum Size of 700k. JPEG, PNG, GIF</span>
 				</div>
 			</div>
 		</form>
@@ -36,7 +36,7 @@
 					<label for="identifier">Identifier*</label>
 				</div>
 				<div class="center">
-					<p style="color:#F36359; padding-top:4px; padding-bottom:8px;">
+					<p style="color:#F36359; padding-top:4px; padding-bottom:8px; width:850px">
 						If you change the identifier of your station, make sure nobody is listening.
 					</p>
 					<input type="text" name="identifier" maxlength="20" autocomplete="off"
@@ -71,8 +71,8 @@
 				<div class="left">
 				</div>
 				<div class="center">
-					<input type="submit" id="submit" value="Save"/>
-					<a href="/{{ current_station.identifier }}" id="back_station">Or go back to station</a>
+					<input type="submit" class="submit" value="Save"/>
+					<a href="/{{ current_station.identifier }}" class="button">Or go back to station</a>
 				</div>
 			</div>
 		</form>

@@ -6,9 +6,13 @@
 
 {% block header %}
 	<header>
-		<h1>Phonoblaster</h1>
-		<a href="/"><img src="/static/images/phonoblaster.png" alt="phonoblaster logo"/></a>
-		<h2>Play music together!</h2>
+		<div class="container">
+			<div id="logo">
+				<h1>Phonoblaster</h1>
+				<a href="/"><img src="/static/images/phonoblaster.png" alt="phonoblaster logo"/></a>
+			</div>
+			<h2>Share and listen to music LIVE!</h2>
+		</div>
 	</header>
 {% endblock %} 
 
@@ -17,20 +21,20 @@
 {% for request in requests %}
 	<div class="facebook-request">
 		<div class="top-request">
-			<img src="http://graph.facebook.com/{{ request.requester.facebook_id }}/picture?type=square" class="picture">
+			<img src="http://graph.facebook.com/{{ request.requester.facebook_id }}/picture?type=square" class="img">
 			<img src="/static/images/bubble.png" class="bubble">
 			<p>
-				You should come and post tracks to the radio station I just created:
+				You should come and post tracks to the station I just created:
 				<a href="/{{ request.station.identifier }}" target="_blank">
 					{{ site_url }}/{{ request.station.identifier }}
 				</a>
 			</p>
 		</div>
 		<div class="bottom-request">
-			<img src="/picture/view/{{ request.station.picture.key }}"/>
+			<img src="/picture/view/{{ request.station.picture.key }}" class="img"/>
 			<p class="identifier">@{{ request.station.identifier }}</p>
 			<p class="description">{{ request.station.description }}</p>
-			<a href="/{{ request.station.identifier }}" target="_blank">Share music now!</a>
+			<a href="/{{ request.station.identifier }}" target="_blank" class="submit">Share music now!</a>
 		</div>
 	</div>
 {% endfor %}

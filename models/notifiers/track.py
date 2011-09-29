@@ -20,6 +20,7 @@ class TrackNotifier():
 		self.output = []
 		for track in self.tracklist:
 			self.output.append({
+				"phonoblaster_id": str(track.key().id()),
 				"title":track.youtube_title,
 				"id": track.youtube_id,
 				"thumbnail": track.youtube_thumbnail_url,

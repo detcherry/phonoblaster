@@ -1,76 +1,70 @@
 /*-------- CONTRIBUTORS ----------- */
 
-#middle-column #contributors{
-	width:100%;
+#contributors{
+	width:530px;
 	padding-top:16px;
-	padding-left:2%;
+	padding-left:10px;
 }
 
-#middle-column #contributors p a#invite{
+#contributors p a#invite{
 	display:block;
 	float:left;
 	margin-top:10px;
 	padding:10px;
-	text-align:center;
 	color:white;
-	background:#373535;
-	border-radius:8px;
 }
 
-#middle-column #contributors #skipthis{
+#contributors #skipthis{
 	width:100%;
 	padding-top:26px;
 	padding-bottom:4px;
 }
 
-#middle-column #contributors #skipthis p{
+#contributors #skipthis p{
 	padding-top:10px;
 	padding-right:10px;
 }
 
-#middle-column #contributors #skipthis a{
-	display:block;
-	float:left;
+#contributors #skipthis a{
 	padding:10px;
-	background:#E3E3E3;
-	border-radius:8px;
 }
 
-#middle-column .contributor-info{
-	padding-right:1.5%;
+.contributor-info{
+	padding-right:10px;
 	width:30%;
 	height:52px;
 }
 
-#middle-column .contributor-info img{
+.contributor-info img{
 	display:block;
 	float:left;
-	width:50px;
+	width:40px;
 	margin-right:4%;
 }
 
-#middle-column p.contributor-name{
-	width:58%;
+p.contributor-name{
+	width:90px;
 }
 
-#middle-column p.contributor-name a{
+p.contributor-name a{
 	display:table-cell;
 	padding:0px;
 	padding-left:8%;
 	height:50px;
 	vertical-align:middle;
+	width:90px;
 }
 
-#middle-column p.contributor-delete{
+p.contributor-delete{
 	padding-top:5px;
 	width:6%;
 }
 
-#middle-column p.contributor-delete span{
+p.contributor-delete span{
 	display:none,;
 }
 
-#middle-column p.contributor-delete img{
+p.contributor-delete img{
 	display:block;
 	float:right;
 	height:10px;

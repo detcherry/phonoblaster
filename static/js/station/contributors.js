@@ -22,8 +22,8 @@ FcbkRequestsManager.prototype = {
 					exclude_ids: exclude_ids,
 				},
 				function(response){
-					if(response && response.request_ids){
-						that.store(response.request_ids);
+					if(response && response.to){
+						that.store(response.request, response.to);
 					}
 					else{
 						that.removeLoadingIndicator();
@@ -34,8 +34,8 @@ FcbkRequestsManager.prototype = {
 			});
 	},
 	
-	store: function(request_ids){
-		requests = request_ids.join(',');
+	store: function(request, recipient_ids){
+		recipients = recipient_ids.join(',');
 		
 		$.ajax({
 			url: "/contribution/add",
@@ -44,7 +44,8 @@ FcbkRequestsManager.prototype = {
 			timeout: 60000,
 			data: {
 				station_id: current_station_name,
-				request_ids: requests,
+				recipient_ids: recipients,
+				request_id: request,
 			},
 			success: function(json){
 	        	window.location.reload();

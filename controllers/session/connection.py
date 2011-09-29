@@ -29,6 +29,7 @@ class ChannelConnectionHandler(webapp.RequestHandler):
 		if(tracklist):
 			for track in tracklist:
 				tracklist_init_output.append({
+					"phonoblaster_id": str(track.key().id()),
 					"title":track.youtube_title,
 					"id": track.youtube_id,
 					"thumbnail": track.youtube_thumbnail_url,

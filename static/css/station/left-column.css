@@ -1,0 +1,101 @@
+/*-------- LEFT-COLUMN ---------- */
+
+#left-column{
+	position:fixed;
+	padding-top:10px;
+	width:120px;
+	height:100%;
+}
+
+#left-column img#profile{
+	max-width:112px;
+	max-height:150px;
+}
+
+.info{
+	padding-top:9px;
+	padding-bottom:9px;
+	width:100%;
+}
+
+.info a{
+	display:block;
+	float:left;
+	width:100%;
+	color:#373535;
+}
+
+.info a:hover p.top{
+	text-decoration:underline;
+}
+
+.info p.top{
+	padding-right:2%;
+	width:98%;
+	text-align:center;
+}
+
+.info p.bottom{
+	margin-top:5px;
+	margin-left:15%;
+	height:16px;
+	width:45%;
+	padding:8px;
+	text-align:center;
+	cursor: pointer;
+	display: inline-block;
+	background-color: #e6e6e6;
+	background-repeat: no-repeat;
+	background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#ffffff), color-stop(25%, #ffffff), to(#e6e6e6));
+	background-image: -webkit-linear-gradient(#ffffff, #ffffff 25%, #e6e6e6);
+	background-image: -moz-linear-gradient(top, #ffffff, #ffffff 25%, #e6e6e6);
+	background-image: -ms-linear-gradient(#ffffff, #ffffff 25%, #e6e6e6);
+	background-image: -o-linear-gradient(#ffffff, #ffffff 25%, #e6e6e6);
+	background-image: linear-gradient(#ffffff, #ffffff 25%, #e6e6e6);
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#e6e6e6', GradientType=0);
+	padding: 5px 14px 6px;
+	text-shadow: 0 1px 1px rgba(255, 255, 255, 0.75);
+	color: #333;
+	font-size: 13px;
+	line-height: normal;
+	border: 1px solid #ccc;
+	border-bottom-color: #bbb;
+	-webkit-border-radius: 4px;
+	-moz-border-radius: 4px;
+	border-radius: 4px;
+	-webkit-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05);
+	-moz-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05);
+	box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05);
+	-webkit-transition: 0.1s linear all;
+	-moz-transition: 0.1s linear all;
+	-ms-transition: 0.1s linear all;
+	-o-transition: 0.1s linear all;
+	transition: 0.1s linear all;
+}
+
+#left-column #description{
+	padding-top:5px;
+	padding-bottom:5px;
+	padding-left:5%;
+	padding-right:3%;
+	width:92%;
+	font-size:11px;
+	font-style:italic;
+	color:#373535;
+}
+
+#left-column #website{
+	margin-bottom:10px;
+	padding-left:5%;
+	padding-right:3%;
+	width:92%;
+	overflow:hidden;
+	text-decoration:underline;
+}
+
+#left-column #edit_station{
+	margin-top:10px;
+	padding-left:15%;
+	width:85%;
+	text-decoration:underline;
+}

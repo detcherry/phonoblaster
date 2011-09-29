@@ -4,7 +4,9 @@
 	<h2>Station</h2>
 	{% if user_station %}
 		<div class="station">
-			<img src="/picture/view/{{ user_station.thumbnail.key }}"/>
+			<a href="/{{ user_station.identifier }}" class="img">
+				<img src="/picture/view/{{ user_station.thumbnail.key }}"/>
+			</a>
 			<div class="information">
 				<p class="identifier"><a href="/{{ user_station.identifier }}">{{ user_station.identifier }}</a></p>
 				<p class="description">
@@ -15,7 +17,7 @@
 				{% endif %}
 				</p>
 			</div>
-			<a href="/{{ user_station.identifier }}" class="turn_on">Turn it on!</a>
+			<a href="/{{ user_station.identifier }}" class="button">Tune in!</a>
 		</div>
 	{% else %}
 		<div class="station">
@@ -26,7 +28,7 @@
 	{% if user_contributions %}
 		{% for contribution in user_contributions %}
 			<div class="station">
-				<img src="/picture/view/{{ contribution.station.thumbnail.key }}"/>
+				<img src="/picture/view/{{ contribution.station.thumbnail.key }}" class="img"/>
 				<div class="information">
 					<p class="identifier"><a href="/{{ contribution.station.identifier }}">{{ contribution.station.identifier }}</a></p>
 					<p class="description">
@@ -37,7 +39,7 @@
 						{% endif %}
 					</p>
 				</div>
-				<a href="/{{ contribution.station.identifier }}" class="turn_on">Turn it on!</a>
+				<a href="/{{ contribution.station.identifier }}" class="button">Turn it on!</a>
 			</div>
 		{% endfor %}
 	{% else%}

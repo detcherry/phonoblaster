@@ -60,13 +60,15 @@ ShuffleController.prototype = {
 	shuffleCompleted: function(){
 		$("#shuffle img.loader").remove()
 		$("a#shuffle")
-			.attr("id","just_shuffled")
+			.attr("id","shuffle")
+			.addClass("success")
 			.html("Just shuffled!")
 			.show()
 			
 		setTimeout(function(){
-			$("a#just_shuffled")
-				.attr("id","shuffle")
+			$("a#shuffle")
+				.removeClass("success")
+				.addClass("button")
 				.html("Shuffle now!")
 		},1000)
 	},
@@ -74,25 +76,29 @@ ShuffleController.prototype = {
 	shuffleUncompleted: function(){
 		$("#shuffle img.loader").remove()
 		$("a#shuffle")
-			.attr("id","not_shuffled")
+			.attr("id","shuffle")
+			.addClass("danger")
 			.html("Tracklist full!")
 			.show()
 			
 		setTimeout(function(){
-			$("a#not_shuffled")
-				.attr("id","shuffle")
+			$("a#shuffle")
+				.removeClass("danger")
+				.addClass("button")
 				.html("Shuffle now!")
 		},1000)
 	},	
 	
 	shuffleNotPossible: function(){
 		$("a#shuffle")
-			.attr("id","not_shuffled")
+			.removeClass("button")
+			.addClass("danger")
 			.html("Tracklist full!")
 			
 		setTimeout(function(){
-			$("a#not_shuffled")
-				.attr("id","shuffle")
+			$("a#shuffle")
+				.removeClass("danger")
+				.addClass("button")
 				.html("Shuffle now!")
 		},1000)
 	},

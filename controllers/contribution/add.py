@@ -9,13 +9,13 @@ class AddContributionHandler(BaseHandler):
 	@login_required
 	def post(self):
 		station_id = self.request.get("station_id")
-		self.station = Station.all().filter("identifier", station_id).get()	
-		self.request_ids = self.request.get("request_ids").split(",")
+		self.station = Station.all().filter("identifier", station_id).get()
+		self.request_id = self.request.get("request_id")
+		self.invitees = self.request.get("recipient_ids").split(",")
 		
 		if(self.isStationCreator()):
-			self.storeRequests()
+			self.storeRequest()
 			self.getExistingContributors()			
-			self.getInvitees()
 			self.getNewContributors()
 			self.limitContributorsTo10()
 			self.storeNewContributors()
@@ -28,14 +28,13 @@ class AddContributionHandler(BaseHandler):
 		else:
 			return False
 	
-	def storeRequests(self):		
-		for request_id in self.request_ids:
-			fcbkRequest = FcbkRequest(
-				fcbk_id = request_id,
-				requester = self.current_user.key(),
-				station = self.station.key(),
-			)
-			fcbkRequest.put()
+	def storeRequest(self):		
+		fcbkRequest = FcbkRequest(
+			fcbk_id = self.request_id,
+			requester = self.current_user.key(),
+			station = self.station.key(),
+		)
+		fcbkRequest.put()
 
 	def getExistingContributors(self):
 		self.existing_contributors = []
@@ -45,21 +44,6 @@ class AddContributionHandler(BaseHandler):
 			self.existing_contributors.append(contribution.contributor.facebook_id)
 		
 		logging.info("Existing contributors: %s" % (self.existing_contributors))
-	
-	def getInvitees(self):
-		self.invitees = []
-		cookie = controllers.facebook.get_user_from_cookie(
-			self.request.cookies,
-			controllers.config.FACEBOOK_APP_ID,
-			controllers.config.FACEBOOK_APP_SECRET
-		)
-		self.graph = controllers.facebook.GraphAPI(cookie["access_token"])
-		requests = self.graph.get_objects(self.request_ids)		
-		
-		for request_id in self.request_ids:
-			self.invitees.append(str(requests[request_id]["to"]["id"]))
-		
-		logging.info("Invitees via Facebook: %s" % (self.invitees))
 	
 	def getNewContributors(self):
 		self.new_contributors = []
@@ -96,6 +80,12 @@ class AddContributionHandler(BaseHandler):
 		
 		if(self.new_contributors):
 			#Second, we handle the users that are only on facebook
+			cookie = controllers.facebook.get_user_from_cookie(
+				self.request.cookies,
+				controllers.config.FACEBOOK_APP_ID,
+				controllers.config.FACEBOOK_APP_SECRET
+			)
+			self.graph = controllers.facebook.GraphAPI(cookie["access_token"])
 			facebook_users = self.graph.get_objects(self.new_contributors)
 			for user_id in facebook_users:
 				#We store the new user

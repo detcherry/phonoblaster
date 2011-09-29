@@ -11,11 +11,13 @@ from models.db.station import Station
 class StationCreateHandler(BaseHandler):
 	@login_required
 	def get(self):
-		self.additional_template_values = {
-			"blobstore_url": blobstore.create_upload_url('/picture/upload')
-		}
-		self.render("../templates/station/create.html")
-		
+		if(self.checkIfAlreadyStationCreator()):
+			self.additional_template_values = {
+				"blobstore_url": blobstore.create_upload_url('/picture/upload')
+			}
+			self.render("../templates/station/create.html")
+		else:
+			self.redirect("/")
 	
 	@login_required
 	def post(self):	
