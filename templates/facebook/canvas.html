@@ -25,7 +25,7 @@
 			<img src="/static/images/bubble.png" class="bubble">
 			<p>
 				You should come and post tracks to the station I just created:
-				<a href="/{{ request.station.identifier }}" target="_blank">
+				<a href="{{ site_url }}/{{ request.station.identifier }}" target="_blank">
 					{{ site_url }}/{{ request.station.identifier }}
 				</a>
 			</p>
@@ -34,7 +34,7 @@
 			<img src="/picture/view/{{ request.station.picture.key }}" class="img"/>
 			<p class="identifier">@{{ request.station.identifier }}</p>
 			<p class="description">{{ request.station.description }}</p>
-			<a href="/{{ request.station.identifier }}" target="_blank" class="submit">Share music now!</a>
+			<a href="{{ site_url }}/{{ request.station.identifier }}" target="_blank" class="submit">Share music now!</a>
 		</div>
 	</div>
 {% endfor %}
