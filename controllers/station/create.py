@@ -34,6 +34,19 @@ class StationCreateHandler(BaseHandler):
 		websiteOk = self.checkSize(website, 40)
 		descriptionOk = self.checkSize(description, 140)
 		
+		if(notStationCreator):
+			logging.info("Not station creator ")
+		if(pictureOk):
+			logging.info("Picture OK")
+		if(thumbnailOk):
+			logging.info("Thumbnail OK")
+		if(identifierOk):
+			logging.info("Identifier Ok")
+		if(websiteOk):
+			logging.info("Website Ok")
+		if(descriptionOk):
+			logging.info("Description Ok")
+		
 		if(notStationCreator and pictureOk and thumbnailOk and identifierOk and websiteOk and descriptionOk):
 			self.saveStation(picture_key, thumbnail_key, identifier, website, description)
 			self.redirect("/"+identifier+"/contributors")
