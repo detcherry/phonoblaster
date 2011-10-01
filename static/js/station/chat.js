@@ -90,8 +90,17 @@ ChatController.prototype = {
 		date_to_display = hours +":"+minutes;
 		
 		//Links handling
-		re = /(http:)\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/
-		text_to_display = message.text.replace(re, "<a href=" + message.text + " target='_blank'>" + message.text + "</a>");
+		re = /(http:)\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/;
+		occurrences = re.exec(message.text);
+		try{
+			link = occurrences.shift();
+			newRe = new RegExp(link,"g");
+			text_to_display = message.text.replace(newRe, "<a href=" + link + " target='_blank'>" + link + "</a>");
+		}
+		catch(e){
+			//do nothing
+			text_to_display = message.text;
+		}
 		
 		//Display messages in the chat zone
 		$("#conversation")
