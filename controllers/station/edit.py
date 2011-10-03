@@ -38,7 +38,7 @@ class StationEditHandler(RootStationHandler):
 				self.checkThumbnail()
 				idOk = self.checkIdentifier()
 				websiteOk = self.checkSize(self.new_website, 40)
-				descriptionOk = self.checkSize(self.new_description, 140)
+				descriptionOk = self.checkSize(self.new_description, 141)
 				
 				if(idOk and websiteOk and descriptionOk):
 					self.current_station.website = self.new_website

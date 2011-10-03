@@ -300,7 +300,7 @@ DescriptionLimitSetter.prototype = {
 			this.displayCharactersLeft();
 		}
 		else{
-			newContent = textContent.substr(0, this.textLength - 1);
+			newContent = textContent.substr(0, 140);
 			$("textarea[id='description']").val(newContent);
 		}
 	},

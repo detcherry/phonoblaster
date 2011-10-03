@@ -27,12 +27,17 @@ class StationCreateHandler(BaseHandler):
 		website = self.request.get("website")
 		description = self.request.get("description")
 
+		#Small processing for the website url
+		match = re.search("(http://|https://)", website)
+		if not match:
+			website = "http://" + website
+
 		notStationCreator = self.checkIfAlreadyStationCreator()
 		pictureOk = self.checkBlobKey(picture_key)
 		thumbnailOk = self.checkBlobKey(thumbnail_key)
 		identifierOk = self.checkStationID(identifier)
 		websiteOk = self.checkSize(website, 40)
-		descriptionOk = self.checkSize(description, 140)
+		descriptionOk = self.checkSize(description, 141)
 		
 		if(notStationCreator):
 			logging.info("Not station creator ")
