@@ -64,7 +64,8 @@ class BaseHandler(webapp.RequestHandler):
 		if not hasattr(self,"_template_values"):
 			self._template_values = {
 				"current_user": self.current_user,
-				"facebook_app_id": controllers.config.FACEBOOK_APP_ID
+				"facebook_app_id": controllers.config.FACEBOOK_APP_ID,
+				"google_analytics_id": controllers.config.GOOGLE_ANALYTICS_ID,
 			}
 			for key, value in self.additional_template_values.iteritems():
 				self._template_values[key] = value
