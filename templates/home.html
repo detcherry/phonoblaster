@@ -1,36 +1,41 @@
 {% extends "base.html" %}
 
 {% block main %}
-    {% if current_user %}
 	<div class="station-listing">
 		<h2>Your station</h2>
 		<div id="your-station">
-		{% if current_user_station %}
-			<a href="/{{ current_user_station.identifier }}" class="img">
-				<img src="/picture/view/{{ current_user_station.thumbnail.key }}"/>
-			</a>
-			<a href="/{{ current_user_station.identifier }}"><h3>{{ current_user_station.identifier }}</h3></a>
-			<a href="/{{ current_user_station.identifier }}" class="button">Tune in!</a>
+	    {% if current_user %}
+			{% if current_user_station %}
+				<a href="/{{ current_user_station.identifier }}" class="img">
+					<img src="/picture/view/{{ current_user_station.thumbnail.key }}"/>
+				</a>
+				<a href="/{{ current_user_station.identifier }}"><h3>{{ current_user_station.identifier }}</h3></a>
+				<a href="/{{ current_user_station.identifier }}" class="button">Tune in!</a>
+			{% else %}
+				<h3>You don't have any station yet</h3>
+				<a href="/station/create" class="button">Create your radio station now!</a>
+			{% endif %}
 		{% else %}
-			<h3>You don't have any station yet</h3>
-			<a href="/station/create" class="button">Create your radio station now!</a>
-		{% endif %}
-		</div>
-	</div>		
-    {% endif %}
-	{% if active_stations %}
-	<div class="station-listing">
-		<h2>Latest stations on the air</h2>
-		<div id="station-items">
-			{% for station in active_stations %}
-			<div class="station-item">
-				<h3><a href="/{{ station.identifier }}">{{ station.identifier }}</a></h3>
-				<a href="/{{ station.identifier }}" class="img"><img src="/picture/view/{{ station.thumbnail.key }}"></a>
-				<a href="/{{ station.identifier }}" class="button">Tune in!</a>
+			<h3>Login to create your station now!</h3>
+			<div id="facebook">
+				<fb:login-button autologoutlink="true" scope="email"></fb:login-button>
 			</div>
-			{% endfor %}
+	    {% endif %}
 		</div>
 	</div>
+	{% if active_stations %}
+		<div class="station-listing">
+			<h2>Latest stations on the air</h2>
+			<div id="station-items">
+				{% for station in active_stations %}
+				<div class="station-item">
+					<h3><a href="/{{ station.identifier }}">{{ station.identifier }}</a></h3>
+					<a href="/{{ station.identifier }}" class="img"><img src="/picture/view/{{ station.thumbnail.key }}"></a>
+					<a href="/{{ station.identifier }}" class="button">Tune in!</a>
+				</div>
+				{% endfor %}
+			</div>
+		</div>
 	{% else %}
 		<div class="station-listing">
 			<h2>Stations not yet on the air</h2>

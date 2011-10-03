@@ -38,6 +38,12 @@
 	margin-top:15px;
 }
 
+#your-station #facebook{
+	padding-top:15px;
+	padding-left:10px;
+	clear:left;
+}
+
 /* ------- OTHER STATIONS -------*/
 
 #station-items{
