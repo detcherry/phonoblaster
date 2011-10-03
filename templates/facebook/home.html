@@ -1,0 +1,49 @@
+{% extends "../base.html" %}
+
+{% block style %}
+	<link type="text/css" rel="stylesheet" href="/static/css/facebook/canvas.css" />
+{% endblock %}
+
+{% block header %}
+	<header>
+		<div class="container">
+			<div id="logo">
+				<h1>Phonoblaster</h1>
+				<a href="/"><img src="/static/images/phonoblaster.png" alt="phonoblaster logo"/></a>
+			</div>
+			<h2>Share and listen to music LIVE!</h2>
+		</div>
+	</header>
+{% endblock %}
+
+{% block main %}
+
+{% if active_stations %}
+	<div class="station-listing">
+		<h2>Latest stations on the air</h2>
+		<div id="station-items">
+			{% for station in active_stations %}
+			<div class="station-item">
+				<h3><a href="/{{ station.identifier }}">{{ station.identifier }}</a></h3>
+				<a href="/{{ station.identifier }}" class="img"><img src="/picture/view/{{ station.thumbnail.key }}"></a>
+				<a href="/{{ station.identifier }}" class="button">Tune in!</a>
+			</div>
+			{% endfor %}
+		</div>
+	</div>
+{% else %}
+	<div class="station-listing">
+		<h2>Stations not yet on the air</h2>
+		<div id="station-items">
+			{% for station in non_active_stations %}
+			<div class="station-item">
+				<h3><a href="/{{ station.identifier }}">{{ station.identifier }}</a></h3>
+				<a href="/{{ station.identifier }}" class="img"><img src="/picture/view/{{ station.thumbnail.key }}"></a>
+				<a href="/{{ station.identifier }}" class="button">Tune in!</a>
+			</div>
+			{% endfor %}				
+		</div>
+	</div>	
+{% endif %}
+
+{% endblock %} 
