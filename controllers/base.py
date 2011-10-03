@@ -45,12 +45,17 @@ class BaseHandler(webapp.RequestHandler):
 						public_name = profile["first_name"] + " " + profile["last_name"][0] +".",
 						email = profile["email"])
 					user.put()
-				elif user.facebook_access_token != cookie["access_token"]:
-					graph = controllers.facebook.GraphAPI(cookie["access_token"])
-					profile = graph.get_object("me")
-					user.email = profile["email"]
-					user.facebook_access_token = cookie["access_token"]
+				else:
+					if not user.email:
+						graph = controllers.facebook.GraphAPI(cookie["access_token"])
+						profile = graph.get_object("me")
+						user.email = profile["email"]
+					
+					if user.facebook_access_token != cookie["access_token"]:
+						user.facebook_access_token = cookie["access_token"]
+	
 					user.put()
+					
 				self._current_user = user
 		return self._current_user
 	
