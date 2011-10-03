@@ -330,7 +330,7 @@ SubmitHandler.prototype = {
 	
 	init: function(){
 		var that = this;
-		$("input[id='submit']")
+		$("input[type='submit']")
 			.bind("click", function(){
 				console.log("toto")
 				if(that.everythingOk()){
