@@ -70,22 +70,50 @@ class Queue():
 		non_expired_tracks = self.getTracks()
 		number_of_remaining_tracks = 10 - len(non_expired_tracks)
 		
+		#Existing Youtube videos that are in the station tracklist (non expired)
 		existing_track_ids = []
 		for track in non_expired_tracks:
 			existing_track_ids.append(track.youtube_id)
 					
 		random_tracks = []
 		
+		#If the user has already shared tracks on phonoblaster
 		if(number_of_latest_tracks > 0):
+			
+			#Initialization of the latest track expiration time
+			if(number_of_remaining_tracks == 10):
+				latest_track_expiration_time = datetime.now()
+			else:
+				latest_track_expiration_time = non_expired_tracks[-1].expired
+			
+			#We try to put in the buffer as many songs as possible
 			for i in range(0, number_of_remaining_tracks):
+				
+				#We picked a random track among the latest tracks shared by the user
 				random_integer = randrange(number_of_latest_tracks)
 				random_track = latest_tracks[random_integer]
 				if(random_track.youtube_id in existing_track_ids):
 					logging.info("Track already shuffled or in the tracklist")
+				
+				#If the song is not already in the tracklist
 				else:
-					track_added = self.addTrack(random_track.youtube_title, random_track.youtube_id, random_track.youtube_thumbnail_url, random_track.youtube_duration, user_key)
+					track_added = Track(
+						youtube_title = random_track.youtube_title,
+						youtube_id = random_track.youtube_id,
+						youtube_thumbnail_url = random_track.youtube_thumbnail_url,
+						youtube_duration = random_track.youtube_duration,
+						station = self.station.key(),
+						submitter = user_key,
+						expired = latest_track_expiration_time + timedelta(0, random_track.youtube_duration),
+					)
+					logging.info("Track shuffled: %s" % (track_added.youtube_title))
+					latest_track_expiration_time = track_added.expired
 					random_tracks.append(track_added)
 					existing_track_ids.append(track_added.youtube_id)
+		
+		if(random_tracks):
+			db.put(random_tracks)
+			logging.info("Tracks shuffled saved as well")
 		
 		return random_tracks
 	
