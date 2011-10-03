@@ -1,12 +1,34 @@
 /* -------- INITIALIZATION ------ */
 
 $(function(){
-	//Initialization
-	socket = channel.open();
-	socket.onopen = onOpened;
-	socket.onmessage = onMessage;
-	socket.onerror = onError;
-	socket.onclose = onClose;
+	//Request a channel id and token
+	$.ajax({
+		url: "/channel/request",
+		type: "POST",
+		dataType: "json",
+		timeout: 60000,
+		data: {
+			station_key: station_key,
+		},
+		error: function(xhr, status, error) {
+			console.log('An error occurred: ' + error + '\nPlease retry.');
+		},
+		success: function(json){
+			console.log(json);
+			channel_id = json.channel_id;
+			token = json.token
+			
+			//Create a channel
+			channel = new goog.appengine.Channel(token);
+			
+			//Initialization
+			socket = channel.open();
+			socket.onopen = onOpened;
+			socket.onmessage = onMessage;
+			socket.onerror = onError;
+			socket.onclose = onClose;
+		},
+	});
 	
 	function onOpened(){
 		//do nothing
@@ -24,7 +46,7 @@ $(function(){
 		window.location.reload();
 	}
 	
-	//Transforms all the links in target = _blank except the edit station link
+	//Transforms all the links in target = _blank except the following links
 	$("a").attr("target","_blank");
 	$("#edit_station a").removeAttr("target");
 	$("#volume a").removeAttr("target");
@@ -90,8 +112,9 @@ Dispatcher.prototype = {
 	
 	dispatch: function(data){
 		console.log(data);
-		
 		if(data.type == "tracklist_init"){
+			$("#youtube-player img").hide();
+			$("#youtube-player p").show();
 			this.tracklistManager.init(data.content);
 		}
 		if(data.type == "tracklist_new"){

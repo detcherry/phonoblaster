@@ -51,6 +51,20 @@
 	height:370px;
 }
 
+#youtube-player .info{
+	float:none;
+	margin:auto;
+	margin-top:140px;
+	width:100px;
+}
+
+#youtube-player .info img{
+	display:block;
+	float:none;
+	margin:auto;
+	width:30px;
+}
+
 #live-video object{
 	display:block;
 	float:left;

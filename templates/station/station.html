@@ -48,7 +48,10 @@
 	</div>
 	<div id="live-video">
 		<div id="youtube-player">
-			No live song yet
+			<div class="info">
+				<img src="/static/images/small-ajax-loader.gif"/>
+				<p style="display:none;">No live song yet</p>
+			</div>
 		</div>
 	</div>
 	<div id="live-chat">
@@ -128,8 +131,6 @@
 		user_id = "{{ current_user.key.id }}"
 		user_public_name = "{{ current_user.public_name }}"
 		user_fcbk_id = "{{ current_user.facebook_id }}"
-		channel_id = "{{ channel_id }}";
 		dispatcher = new Dispatcher();
-		channel = new goog.appengine.Channel('{{ token }}');
   </script>
 {% endblock %}
