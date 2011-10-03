@@ -176,10 +176,9 @@ TracklistManager.prototype = {
 			if(track.phonoblaster_id == phonoblaster_id){
 				//Expiration of tracks after the track deleted should occur earlier
 				offset = parseInt(track.duration,10);
-				//track_id = track.id;
 				
 				for(j = i, c = that.tracklist.length; j < c; j++){
-					that.tracklist[j].expired -= offset;
+					that.tracklist[j].expired = parseInt(that.tracklist[j].expired, 10) - offset;
 				}				
 				//Remove the track from the tracklist
 				that.tracklist.splice(i,1);
