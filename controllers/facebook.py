@@ -21,6 +21,7 @@ import cgi
 import hashlib
 import time
 import urllib
+import logging
 
 # Find a JSON parser
 try:
@@ -250,15 +251,15 @@ def get_user_from_cookie(cookies, app_id, app_secret):
 
     file = urllib.urlopen("https://graph.facebook.com/oauth/access_token?" + urllib.urlencode(args))
     try:
-        token_response = file.read()
+        token_response = cgi.parse_qs(file.read())
     finally:
         file.close()
 
-	try:
-		access_token = cgi.parse_qs(token_response)["access_token"][-1]
+	if "access_token" in token_response:
+		access_token = token_response["access_token"][-1]
 		return dict(
 			uid = response["user_id"],
 			access_token = access_token,
 		)
-	except:
+	else:
 		return None
