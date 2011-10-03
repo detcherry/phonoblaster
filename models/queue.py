@@ -92,20 +92,26 @@ class Queue():
 	def deleteTrack(self, track_key):
 		track_to_delete = Track.get(track_key)
 		if(track_to_delete):
-			#Check if the track is not currently played!!!
-			tracks_to_edit = Track.all().filter("station", self.station.key()).filter("expired >", track_to_delete.expired)
-	
-			offset = timedelta(0, track_to_delete.youtube_duration)
-			for track in tracks_to_edit:
-				track.expired -= offset
-				track.put()
-	
-			soon_deleted_track_name = track_to_delete.youtube_title
-	
-			track_to_delete.delete()
-			logging.info("Track %s removed from database" %(soon_deleted_track_name))
-	
-			return True
+			track_beginning = track_to_delete.expired - timedelta(0,track_to_delete.youtube_duration)
+			#The track is not currenlty being played
+			if(track_beginning > datetime.now()):
+				tracks_to_edit = Track.all().filter("station", self.station.key()).filter("expired >", track_to_delete.expired)
+
+				offset = timedelta(0, track_to_delete.youtube_duration)
+				for track in tracks_to_edit:
+					track.expired -= offset
+					track.put()
+
+				soon_deleted_track_name = track_to_delete.youtube_title
+
+				track_to_delete.delete()
+				logging.info("Track %s removed from database" %(soon_deleted_track_name))
+
+				return True
+			
+			#It's not possible to remove a track currently being played
+			else:
+				return False
 		else:
 			return False
 			
