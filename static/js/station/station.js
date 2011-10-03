@@ -193,7 +193,9 @@ TracklistManager.prototype = {
 	playNext: function(){
 		console.log("Trying to play a new track");
 		this.new_track = this.tracklist.shift();
-		if(this.new_track){			
+		if(this.new_track){	
+			this.uiTracklistController.removeCross(this.new_track.phonoblaster_id);
+					
 			expired_at = parseInt(this.new_track.expired,10);
 			datetime_now = Date.parse(new Date());
 			duration = parseInt(this.new_track.duration,10);
@@ -225,9 +227,7 @@ TracklistManager.prototype = {
 	nextVideo: function(){		
 		if(this.new_track){
 			this.uiTracklistController.remove(this.new_track.phonoblaster_id);
-		}
-		this.uiTracklistController.removeFirstCross();
-		
+		}		
 		var that = this;
 		second_timer = setTimeout(function(){
 			that.playNext();
@@ -267,7 +267,6 @@ UITracklistController.prototype = {
 			track = tracklist[i];
 			this.add(track);
 		}
-		this.removeFirstCross();
 	},
 	
 	add: function(track){
@@ -347,11 +346,9 @@ UITracklistController.prototype = {
 		}
 	},
 	
-	removeFirstCross: function(){
-		cross = $("#tracks a.close").first();
-		img = cross.parent().find("img");
-		cross.remove();
-		img.remove();
+	removeCross: function(phonoblaster_id){
+		$("#tracks #" + track.phonoblaster_id + " a.close").remove()
+		$("#tracks #" + track.phonoblaster_id + " .title img").remove()
 	},
 	
 	remove: function(phonoblaster_id){
