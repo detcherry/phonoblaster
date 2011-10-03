@@ -92,6 +92,7 @@ class Queue():
 	def deleteTrack(self, track_key):
 		track_to_delete = Track.get(track_key)
 		if(track_to_delete):
+			#Check if the track is not currently played!!!
 			tracks_to_edit = Track.all().filter("station", self.station.key()).filter("expired >", track_to_delete.expired)
 	
 			offset = timedelta(0, track_to_delete.youtube_duration)
