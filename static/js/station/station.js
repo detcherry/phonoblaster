@@ -347,8 +347,8 @@ UITracklistController.prototype = {
 	},
 	
 	removeCross: function(phonoblaster_id){
-		$("#tracks #" + track.phonoblaster_id + " a.close").remove()
-		$("#tracks #" + track.phonoblaster_id + " .title img").remove()
+		$("#tracks #" + phonoblaster_id + " a.close").remove()
+		$("#tracks #" + phonoblaster_id + " .title img").remove()
 	},
 	
 	remove: function(phonoblaster_id){
