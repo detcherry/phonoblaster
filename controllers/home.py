@@ -9,7 +9,7 @@ class HomeHandler(BaseHandler):
 		current_user_station = None
 		if(self.current_user):
 			current_user_station = Station.all().filter("creator", self.current_user.key()).get()
-		
+			
 		active_stations = Station.all().filter("active >", datetime.now()).order("-active").fetch(48)
 		non_active_stations = None
 		if(len(active_stations) == 0):
