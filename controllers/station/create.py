@@ -28,9 +28,10 @@ class StationCreateHandler(BaseHandler):
 		description = self.request.get("description")
 
 		#Small processing for the website url
-		match = re.search("(http://|https://)", website)
-		if not match:
-			website = "http://" + website
+		if website != "":
+			match = re.search("(http://|https://)", website)
+			if not match:
+				website = "http://" + website
 
 		notStationCreator = self.checkIfAlreadyStationCreator()
 		pictureOk = self.checkBlobKey(picture_key)

@@ -34,6 +34,12 @@ class StationEditHandler(RootStationHandler):
 				self.new_website = self.request.get("website")
 				self.new_description = self.request.get("description")
 				
+				#Small processing for the website url
+				if self.new_website != "":
+					match = re.search("(http://|https://)", self.new_website)
+					if not match:
+						self.new_website = "http://" + self.new_website
+				
 				self.checkPicture()
 				self.checkThumbnail()
 				idOk = self.checkIdentifier()
