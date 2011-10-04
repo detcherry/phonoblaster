@@ -11,6 +11,8 @@ from google.appengine.ext.webapp import template
 
 from models.db.user import User
 
+from google.appengine.ext.db import BadArgumentError
+
 class BaseHandler(webapp.RequestHandler):
     """Provides access to the active Facebook user in self.current_user
 
@@ -72,10 +74,12 @@ class BaseHandler(webapp.RequestHandler):
 		return self._template_values
 
     def render(self, template_path):
-		path = os.path.join(os.path.dirname(__file__), template_path)
-		self.response.out.write(template.render(path, self.template_values))
-		
-		
-		
+	    path = os.path.join(os.path.dirname(__file__), template_path)
+	    self.response.out.write(template.render(path, self.template_values))
+
+    def handle_exception(self, exception, debug_mode):
+	    logging.info(exception)
+	    path = os.path.join(os.path.dirname(__file__), "../templates/error.html")
+	    self.response.out.write(template.render(path, None))
 		
 		

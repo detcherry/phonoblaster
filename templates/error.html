@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block style %}
+	<link type="text/css" rel="stylesheet" href="/static/css/error.css" />
+{% endblock %}
+
+{% block header %}
+	<header>
+		<div class="container">
+			<div id="logo">
+				<h1>Phonoblaster</h1>
+				<a href="/"><img src="/static/images/phonoblaster.png" alt="phonoblaster logo"/></a>
+			</div>
+		</div>
+	</header>
+{% endblock %}
+
+{% block main %}
+	<div id="error">
+		<h2>Hmm... Phonoblaster encountered a glitch.</h2>
+		<p>Please retry in a few secs.</p>
+	</div>
+	<img src="/static/images/origami.jpg">
+
+{% endblock %}
