@@ -53,7 +53,7 @@
 			</div>
 		{% else %}
 		<div class="contributor-info">
-			<img src="http://graph.facebook.com/{{ current_station.creator.facebook_id }}/picture?type=square">
+			<img src="http://graph.facebook.com/{{ current_station.creator.facebook_id }}/picture?type=square" class="img">
 			<p class="contributor-name">
 				<a href="/user/{{ current_station.creator.key.id }}">{{ current_station.creator.public_name }}</a>
 			</p>
