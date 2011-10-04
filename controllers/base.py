@@ -46,17 +46,21 @@ class BaseHandler(webapp.RequestHandler):
 						last_name = profile["last_name"],
 						public_name = profile["first_name"] + " " + profile["last_name"][0] +".",
 						email = profile["email"])
+					logging.info("New user %s" %(user.name))
 					user.put()
 				else:
-					if not user.email:
-						graph = controllers.facebook.GraphAPI(cookie["access_token"])
-						profile = graph.get_object("me")
-						user.email = profile["email"]
-					
-					if user.facebook_access_token != cookie["access_token"]:
-						user.facebook_access_token = cookie["access_token"]
-	
-					user.put()
+					if not user.email or user.facebook_access_token != cookie["access_token"]:
+						if not user.email:
+							graph = controllers.facebook.GraphAPI(cookie["access_token"])
+							profile = graph.get_object("me")
+							user.email = profile["email"]
+							logging.info("New mail %s" %(user.email))
+						
+						if user.facebook_access_token != cookie["access_token"]:
+							user.facebook_access_token = cookie["access_token"]
+							logging.info("New access token %s" %(user.facebook_access_token))
+						
+						user.put()				
 					
 				self._current_user = user
 		return self._current_user
