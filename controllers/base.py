@@ -10,6 +10,7 @@ from google.appengine.ext.webapp.util import run_wsgi_app
 from google.appengine.ext.webapp import template
 
 from models.db.user import User
+from models.interface.user import InterfaceUser
 
 from google.appengine.ext.db import BadArgumentError
 
@@ -34,33 +35,33 @@ class BaseHandler(webapp.RequestHandler):
 			if cookie:
 				# Store a local instance of the user data so we don't need
 				# a round-trip to Facebook on every request
-				user = User.all().filter("facebook_id", cookie["uid"]).get()
+				user = InterfaceUser.get_by_facebook_id(cookie["uid"])
 				if not user:
 					graph = controllers.facebook.GraphAPI(cookie["access_token"])
 					profile = graph.get_object("me")
-					user = User(
-						facebook_id = str(profile["id"]),
+					user = InterfaceUser.put(
+						facebook_id = str(profile["id"]), 
 						facebook_access_token = cookie["access_token"],
 						name = profile["name"],
 						first_name = profile["first_name"],
 						last_name = profile["last_name"],
-						public_name = profile["first_name"] + " " + profile["last_name"][0] +".",
-						email = profile["email"])
+						email = profile["email"]
+					)
 					logging.info("New user %s" %(user.name))
-					user.put()
 				else:
 					if not user.email or user.facebook_access_token != cookie["access_token"]:
+						email = None
+						facebook_access_token = None
+						
 						if not user.email:
 							graph = controllers.facebook.GraphAPI(cookie["access_token"])
 							profile = graph.get_object("me")
-							user.email = profile["email"]
-							logging.info("New mail %s" %(user.email))
+							email = profile["email"]
 						
 						if user.facebook_access_token != cookie["access_token"]:
-							user.facebook_access_token = cookie["access_token"]
-							logging.info("New access token %s" %(user.facebook_access_token))
+							facebook_access_token = cookie["access_token"]
 						
-						user.put()				
+						user = InterfaceUser.put_email_and_access_token(user, email, facebook_access_token)
 					
 				self._current_user = user
 		return self._current_user
