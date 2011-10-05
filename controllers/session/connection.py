@@ -21,6 +21,7 @@ class ChannelConnectionHandler(webapp.RequestHandler):
 		#We extract the session
 		session = Session.all().filter("channel_id", channel_id).get()
 		station = session.station
+		logging.info("Listening to the station %s" %(station.identifier))
 		
 		#We get the current playlist
 		queue = Queue(station.key())
@@ -45,6 +46,7 @@ class ChannelConnectionHandler(webapp.RequestHandler):
 			"content": tracklist_init_output,
 		}		
 		channel.send_message(channel_id, simplejson.dumps(tracklist_init_data))
+		logging.info("Tracklist sent")
 		
 		#We get the 10 last messages (from the last 3 minutes)
 		query = Message.all()
@@ -67,6 +69,7 @@ class ChannelConnectionHandler(webapp.RequestHandler):
 			"content": chat_init_output,
 		}
 		channel.send_message(channel_id, simplejson.dumps(chat_init_data))
+		logging.info("Latest messages sent")
 		
 		#Lastly we are going to inform everyone that a new listener has arrived
 		q = Session.all()
@@ -83,12 +86,14 @@ class ChannelConnectionHandler(webapp.RequestHandler):
 					"content": [],
 				}
 				channel.send_message(session.channel_id, simplejson.dumps(listener_new_data))
+		logging.info("Listeners warned that a new listener has arrived")
 
 		listener_init_data = {
 			"type":"listener_init",
 			"content": number_of_listeners,
 		}
 		channel.send_message(channel_id, simplejson.dumps(listener_init_data))
+		logging.info("New listener got the number of listeners")
 
 application = webapp.WSGIApplication([
 	(r"/_ah/channel/connected/", ChannelConnectionHandler),
