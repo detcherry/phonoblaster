@@ -8,13 +8,11 @@ class ProfileHandler(BaseHandler):
 	@login_required
 	def get(self):
 		self.user_station = Station.all().filter("creator", self.current_user.key()).get()
-		self.user_contributions = Contribution.all().filter("contributor", self.current_user.key()).fetch(10)
-		self.offset = 10
+		self.user_contributions = Contribution.all().filter("contributor", self.current_user.key()).fetch(12)
 		
 		self.additional_template_values = {
 			"user_station": self.user_station,
 			"user_contributions": self.user_contributions,
-			"offset": self.offset,
 		}
 		self.render("../templates/user/user.html")
 

@@ -13,7 +13,7 @@ class UserHandler(BaseHandler):
 		else:
 			
 			self.user_station = Station.all().filter("creator", self.user_visited.key()).get()
-			self.user_contributions = Contribution.all().filter("contributor", self.user_visited.key())
+			self.user_contributions = Contribution.all().filter("contributor", self.user_visited.key()).fetch(12)
 			
 			self.additional_template_values = {
 				"user_visited": self.user_visited,

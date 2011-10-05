@@ -3,6 +3,7 @@ from datetime import datetime
 from controllers.base import *
 
 from models.db.station import Station
+from models.db.contribution import Contribution
 
 class HomeHandler(BaseHandler):
     def get(self):
@@ -15,10 +16,15 @@ class HomeHandler(BaseHandler):
 		if(len(active_stations) == 0):
 			non_active_stations = Station.all().order("-active").fetch(48)
 		
+		current_user_contributions = None
+		if(self.current_user):
+			current_user_contributions = Contribution.all().filter("contributor", self.current_user.key()).fetch(12)
+		
 		self.additional_template_values = {
 			"current_user_station": current_user_station,
 			"active_stations": active_stations,
 			"non_active_stations": non_active_stations,
+			"current_user_contributions": current_user_contributions,
 		}
 		self.render("../templates/home.html")
 		
