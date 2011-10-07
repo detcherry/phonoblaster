@@ -8,11 +8,11 @@ from controllers.decorators import *
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp.util import run_wsgi_app
 from google.appengine.ext.webapp import template
+from google.appengine.ext import db
 
 from models.db.user import User
 from models.interface.user import InterfaceUser
 
-from google.appengine.ext.db import BadArgumentError
 
 class BaseHandler(webapp.RequestHandler):
     """Provides access to the active Facebook user in self.current_user
@@ -83,8 +83,8 @@ class BaseHandler(webapp.RequestHandler):
 	    self.response.out.write(template.render(path, self.template_values))
 
     def handle_exception(self, exception, debug_mode):
-	    logging.info(exception)
-	    path = os.path.join(os.path.dirname(__file__), "../templates/error.html")
-	    self.response.out.write(template.render(path, None))
+	   logging.info(exception)
+	   path = os.path.join(os.path.dirname(__file__), "../templates/error.html")
+	   self.response.out.write(template.render(path, None))
 		
 		
