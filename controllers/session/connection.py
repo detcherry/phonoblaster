@@ -7,7 +7,9 @@ from django.utils import simplejson
 from google.appengine.api import channel
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp.util import run_wsgi_app
+from google.appengine.ext import db
 
+from models.db.track import Track
 from models.db.session import Session
 from models.db.station import Station
 from models.db.message import Message
@@ -26,20 +28,28 @@ class ChannelConnectionHandler(webapp.RequestHandler):
 		#We get the current playlist
 		queue = Queue(station.key())
 		tracklist = queue.getTracks()
+
 		tracklist_init_output = []
 		if(tracklist):
-			for track in tracklist:
+			
+			# Get the submitters in one trip to the datastore
+			user_keys = [Track.submitter.get_value_for_datastore(t) for t in tracklist]
+			submitters = db.get(user_keys)
+			tracks = zip(tracklist, submitters)
+						
+			for track in tracks:
 				tracklist_init_output.append({
-					"phonoblaster_id": str(track.key().id()),
-					"title":track.youtube_title,
-					"id": track.youtube_id,
-					"thumbnail": track.youtube_thumbnail_url,
-					"duration":track.youtube_duration,
-					"submitter_id":track.submitter.key().id(),
-					"submitter_fcbk_id":track.submitter.facebook_id,
-					"added": timegm(track.added.utctimetuple()),
-					"expired": timegm(track.expired.utctimetuple()),
+					"phonoblaster_id": str(track[0].key().id()),
+					"title":track[0].youtube_title,
+					"id": track[0].youtube_id,
+					"thumbnail": track[0].youtube_thumbnail_url,
+					"duration":track[0].youtube_duration,
+					"submitter_id":track[1].key().id(),
+					"submitter_fcbk_id":track[1].facebook_id,
+					"added": timegm(track[0].added.utctimetuple()),
+					"expired": timegm(track[0].expired.utctimetuple()),
 				})
+
 		#We format a message and send it to the client
 		tracklist_init_data = {
 			"type": "tracklist_init",
@@ -53,16 +63,24 @@ class ChannelConnectionHandler(webapp.RequestHandler):
 		query.filter("station", station.key())
 		query.filter("added >", datetime.now() - timedelta(0,180))
 		messages = query.fetch(10)
+		
 		chat_init_output = []
 		if(messages):
-			for message in messages:
+			
+			# Get the authors in one trip to the datastore
+			user_keys = [Message.author.get_value_for_datastore(m) for m in messages]
+			authors = db.get(user_keys)
+			ims = zip(messages, authors)
+			
+			for im in ims:
 				chat_init_output.append({
-					"text": message.text,
-					"author_id": message.author.key().id(),
-					"author_public_name": message.author.public_name,
-					"author_fcbk_id": message.author.facebook_id,
-					"added": timegm(message.added.utctimetuple()),
+						"text": im[0].text,
+						"author_id": im[1].key().id(),
+						"author_public_name": im[1].public_name,
+						"author_fcbk_id": im[1].facebook_id,
+						"added": timegm(im[0].added.utctimetuple()),
 				})
+
 		#We format a message and send it to the client
 		chat_init_data = {
 			"type":"chat_init",
