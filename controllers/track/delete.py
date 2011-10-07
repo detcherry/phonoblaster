@@ -1,3 +1,6 @@
+from datetime import datetime
+from datetime import timedelta
+
 from controllers.base import *
 
 from django.utils import simplejson
@@ -25,7 +28,10 @@ class DeleteTrackHandler(BaseHandler):
 					"type":"tracklist_delete",
 					"content": phonoblaster_id,
 				}
-				active_sessions = Session.all().filter("station", station_key).filter("ended", None)
+				q = Session.all()
+				q.filter("station", station_key)
+				q.filter("ended", None)
+				active_sessions = q.filter("created >", datetime.now() - timedelta(0,7200))
 				for session in active_sessions:
 					channel.send_message(session.channel_id, simplejson.dumps(self.data))
 				
