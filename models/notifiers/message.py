@@ -1,3 +1,5 @@
+from datetime import datetime
+from datetime import timedelta
 from calendar import timegm
 from django.utils import simplejson
 
@@ -28,7 +30,11 @@ class MessageNotifier():
 			}
 
 	def send(self):
-		active_sessions = Session.all().filter("station", self.station.key()).filter("ended", None)
+		q = Session.all()
+		q.filter("station", self.station.key())
+		q.filter("ended", None)
+		active_sessions = q.filter("created >", datetime.now() - timedelta(0,7200))
+		#active_sessions = Session.all().filter("station", self.station.key()).filter("ended", None)
 
 		for session in active_sessions:
 			if(session.channel_id != self.excluded_channel_id):
