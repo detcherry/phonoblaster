@@ -10,5 +10,3 @@ class User(db.Model):
     email = db.EmailProperty()
     created = db.DateTimeProperty(auto_now_add = True)
     updated = db.DateTimeProperty(auto_now = True)
-
-
