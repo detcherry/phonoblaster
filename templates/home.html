@@ -23,17 +23,17 @@
 	    {% endif %}
 		</div>
 	</div>
-	{% if current_user_contributions %}
+	{% if current_user_contributing_stations %}
 	<div class="station-listing">
 		<h2>Stations you contribute to</h2>
 		<div id="station-items">
-			{% for contribution in current_user_contributions %}
+			{% for station in current_user_contributing_stations %}
 			<div class="station-item">
-				<h3><a href="/{{ contribution.station.identifier }}">{{ contribution.station.identifier }}</a></h3>
-				<a href="/{{ contribution.station.identifier }}" class="img">
-					<img src="/picture/view/{{ contribution.station.thumbnail.key }}">
+				<h3><a href="/{{ station.identifier }}">{{ station.identifier }}</a></h3>
+				<a href="/{{ station.identifier }}" class="img">
+					<img src="/picture/view/{{ station.thumbnail.key }}">
 				</a>
-				<a href="/{{ contribution.station.identifier }}" class="button">Tune in!</a>
+				<a href="/{{ station.identifier }}" class="button">Tune in!</a>
 			</div>
 			{% endfor %}
 		</div>
