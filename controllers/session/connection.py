@@ -31,7 +31,6 @@ class ChannelConnectionHandler(webapp.RequestHandler):
 
 		tracklist_init_output = []
 		if(tracklist):
-			
 			# Get the submitters in one trip to the datastore
 			user_keys = [Track.submitter.get_value_for_datastore(t) for t in tracklist]
 			submitters = db.get(user_keys)
@@ -66,7 +65,6 @@ class ChannelConnectionHandler(webapp.RequestHandler):
 		
 		chat_init_output = []
 		if(messages):
-			
 			# Get the authors in one trip to the datastore
 			user_keys = [Message.author.get_value_for_datastore(m) for m in messages]
 			authors = db.get(user_keys)
