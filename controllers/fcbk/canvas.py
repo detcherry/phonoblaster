@@ -2,7 +2,6 @@ from datetime import datetime
 
 from controllers.base import *
 
-from google.appengine.ext import db
 from models.db.request import FcbkRequest
 from models.db.station import Station
 
