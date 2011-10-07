@@ -22,13 +22,13 @@
 		</div>
 		{% for contribution in current_contributions %}
 		<div class="contributor-info">
-			<img src="http://graph.facebook.com/{{ contribution.contributor.facebook_id }}/picture?type=square" class="img"/>
+			<img src="http://graph.facebook.com/{{ contribution.1.facebook_id }}/picture?type=square" class="img"/>
 			<p class="contributor-name">
-				<a href="/user/{{ contribution.contributor.key.id }}">{{ contribution.contributor.public_name }}</a>
+				<a href="/user/{{ contribution.1.key.id }}">{{ contribution.1.public_name }}</a>
 			</p>
 			{% if status_creator %}
 			<p class="contributor-delete">
-				<a href="" id="contributor-delete" name="{{ contribution.key }}" class="close">
+				<a href="" id="contributor-delete" name="{{ contribution.0.key }}" class="close">
 					<span id="cross">×</span>
 					<img src="/static/images/small-ajax-loader.gif" id="loader" style="display:none;">
 				</a>

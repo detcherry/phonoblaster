@@ -20,7 +20,10 @@ class RootStationHandler(BaseHandler):
 	@property
 	def current_contributions(self):
 		if not hasattr(self, "_current_contributions"):
-			self._current_contributions = Contribution.all().filter("station", self.current_station.key()).fetch(10)
+			current_station_contributions = Contribution.all().filter("station", self.current_station.key()).fetch(10)
+			user_keys = [Contribution.contributor.get_value_for_datastore(c) for c in current_station_contributions]
+			current_station_contributors = db.get(user_keys)
+			self._current_contributions = zip(current_station_contributions, current_station_contributors)
 		return self._current_contributions
 	
 	@property
