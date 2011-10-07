@@ -128,8 +128,9 @@ class Queue():
 				offset = timedelta(0, track_to_delete.youtube_duration)
 				for track in tracks_to_edit:
 					track.expired -= offset
-					track.put()
 
+				db.put(tracks_to_edit)
+				logging.info("Next tracks edited")
 				soon_deleted_track_name = track_to_delete.youtube_title
 
 				track_to_delete.delete()
