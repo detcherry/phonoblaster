@@ -125,14 +125,16 @@ class Queue():
 			if(track_beginning > datetime.now()):
 				tracks_to_edit = Track.all().filter("station", self.station.key()).filter("expired >", track_to_delete.expired)
 
+				tracks_edited = []
 				offset = timedelta(0, track_to_delete.youtube_duration)
 				for track in tracks_to_edit:
 					track.expired -= offset
-
-				db.put(tracks_to_edit)
+					tracks_edited.append(track)
+				
+				db.put(tracks_edited)
 				logging.info("Next tracks edited")
+				
 				soon_deleted_track_name = track_to_delete.youtube_title
-
 				track_to_delete.delete()
 				logging.info("Track %s removed from database" %(soon_deleted_track_name))
 
