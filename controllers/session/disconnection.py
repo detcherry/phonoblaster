@@ -1,5 +1,6 @@
 import logging
 from datetime import datetime
+from datetime import timedelta
 from django.utils import simplejson
 
 from google.appengine.api import channel
@@ -22,7 +23,10 @@ class ChannelDisconnectionHandler(webapp.RequestHandler):
 		logging.info("Station %s doesn't feed this channel anymore" %(session.station.identifier))
 		
 		#Send everyone a message that a listener has left the room
-		listening_sessions = Session.all().filter("station", station_left.key()).filter("ended", None)
+		q = Session.all()
+		q.filter("station", station_left.key())
+		q.filter("ended", None)
+		listening_sessions = q.filter("created >", datetime.now() - timedelta(0,7200))
 		for session in listening_sessions:
 			listener_delete_data = {
 				"type":"listener_delete",
