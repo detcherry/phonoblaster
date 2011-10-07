@@ -13,12 +13,14 @@ class UserHandler(BaseHandler):
 		else:
 			
 			self.user_station = Station.all().filter("creator", self.user_visited.key()).get()
-			self.user_contributions = Contribution.all().filter("contributor", self.user_visited.key()).fetch(12)
+			user_contributions = Contribution.all().filter("contributor", self.user_visited.key()).fetch(12)
+			station_keys = [Contribution.station.get_value_for_datastore(c) for c in user_contributions]
+			self.user_contributing_stations = db.get(station_keys)
 			
 			self.additional_template_values = {
 				"user_visited": self.user_visited,
 				"user_station": self.user_station,
-				"user_contributions": self.user_contributions,
+				"user_contributing_stations": self.user_contributing_stations,
 			}
 			self.render("../templates/user/user.html")
 		

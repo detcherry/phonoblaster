@@ -25,21 +25,21 @@
 		</div>
 	{% endif %}
 	<h2>Contributions</h2>
-	{% if user_contributions %}
-		{% for contribution in user_contributions %}
+	{% if user_contributing_stations %}
+		{% for station in user_contributing_stations %}
 			<div class="station">
-				<img src="/picture/view/{{ contribution.station.thumbnail.key }}" class="img"/>
+				<img src="/picture/view/{{ station.thumbnail.key }}" class="img"/>
 				<div class="information">
-					<p class="identifier"><a href="/{{ contribution.station.identifier }}">{{ contribution.station.identifier }}</a></p>
+					<p class="identifier"><a href="/{{ station.identifier }}">{{ station.identifier }}</a></p>
 					<p class="description">
-						{% if contribution.station.description %}
-							{{ contribution.station.description }}
+						{% if station.description %}
+							{{ station.description }}
 						{% else %}
 							...
 						{% endif %}
 					</p>
 				</div>
-				<a href="/{{ contribution.station.identifier }}" class="button">Tune in!</a>
+				<a href="/{{ station.identifier }}" class="button">Tune in!</a>
 			</div>
 		{% endfor %}
 	{% else%}
@@ -47,5 +47,5 @@
 			No contribution to any station
 		</div>
 	{% endif%}
-	
+		
 {% endblock %}
