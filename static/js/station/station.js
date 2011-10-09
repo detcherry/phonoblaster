@@ -208,6 +208,11 @@ TracklistManager.prototype = {
 				
 				//Remove the track from the UI
 				that.uiTracklistController.remove(phonoblaster_id)
+				
+				//Substract 1 to the number of tracks counter
+				number_of_tracks = parseInt($("#number_of_tracks").html(),10) - 1;
+				$("#number_of_tracks").html(number_of_tracks);
+				
 				break;
 			}
 		}		
