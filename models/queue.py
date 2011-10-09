@@ -147,5 +147,13 @@ class Queue():
 			return False
 			
 			
-			
+	def getRecentHistory(self,num):
+		query = Track.all()
+		query.filter("station",self.station.key())
+		query.filter("expired <", datetime.now())
+		query.order("-expired")
+
+		tracks = query.fetch(num)
+
+		return tracks	
 		

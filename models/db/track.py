@@ -12,3 +12,6 @@ class Track(db.Model):
 	submitter = db.ReferenceProperty(User, required = True, collection_name = "trackSubmitter")
 	added = db.DateTimeProperty(auto_now_add = True)
 	expired = db.DateTimeProperty(required = True)
+	
+	def to_dict(self):
+		return dict([(p, unicode(getattr(self, p))) for p in self.properties()])
