@@ -65,7 +65,7 @@ class Queue():
 			return newTrack
 
 	def shuffle(self, user_key):
-		latest_tracks = Track.all().filter("submitter", user_key).order("-added").fetch(50)
+		latest_tracks = Track.all().filter("submitter", user_key).order("-added").fetch(100)
 		number_of_latest_tracks = len(latest_tracks)
 		non_expired_tracks = self.getTracks()
 		number_of_remaining_tracks = 10 - len(non_expired_tracks)
