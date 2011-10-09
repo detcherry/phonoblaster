@@ -19,19 +19,31 @@ class DeleteTrackHandler(BaseHandler):
 		track_to_delete = Track.get_by_id(int(phonoblaster_id))
 		
 		if(self.current_user.key() == track_to_delete.submitter.key()):
+			duration = timedelta(0,track_to_delete.youtube_duration)
+			
 			station_key = track_to_delete.station.key()
 			queue = Queue(station_key)
 			response = queue.deleteTrack(track_to_delete.key())
 			
 			if(response):
+				# If the tracks has been removed, the station expiration time should be earlier (duration of the track removed)
+				# PS: refactoring possible we have already fetch the track entity in the queue model
+				station = Station.get(station_key)
+				station.active -= duration
+				station.put() 
+				
 				self.data = {
 					"type":"tracklist_delete",
 					"content": phonoblaster_id,
 				}
+				
+				# Get everybody listening 
 				q = Session.all()
 				q.filter("station", station_key)
 				q.filter("ended", None)
 				active_sessions = q.filter("created >", datetime.now() - timedelta(0,7200))
+				
+				# Send them a message
 				for session in active_sessions:
 					channel.send_message(session.channel_id, simplejson.dumps(self.data))
 				
