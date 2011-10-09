@@ -118,6 +118,7 @@ class Queue():
 		return random_tracks
 	
 	def deleteTrack(self, track_key):
+		# Need a refactoring: this track has already been get from the DB...
 		track_to_delete = Track.get(track_key)
 		if(track_to_delete):
 			track_beginning = track_to_delete.expired - timedelta(0,track_to_delete.youtube_duration)
