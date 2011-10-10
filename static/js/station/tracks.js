@@ -100,6 +100,7 @@ TracksBrowser.prototype = {
 									"id":"fetch_old_tracks",
 									"href":"",
 								})
+								.addClass("button")
 								.html("Fetch older tracks")
 						)
 				}
