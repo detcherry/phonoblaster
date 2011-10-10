@@ -1,18 +1,23 @@
-function WidgetDisplayer(tracks,track_history){
+function WidgetDisplayer(tracks,track_history,num_listeners){
 	this.tracks = tracks;
 	this.track_history = track_history;
+	this.num_listeners = num_listeners;
 	this.display();
 }
 
 WidgetDisplayer.prototype = {
 	
 	display: function(){
+				
+		//First, we update/set the number of listeners
 		
-		var that = this;
+		$('div.listeners').text(this.num_listeners+' listener(s)');
 		
+		
+		//Then, we update/set the content
 		$('div.songs').empty();
 		
-		if (that.tracks.length == 0){
+		if (this.tracks.length == 0){
 			$('div.button').children('a').attr('class','button');
 			$('div.button').children('a').text('Off Air');
 			
@@ -31,9 +36,9 @@ WidgetDisplayer.prototype = {
 						.addClass('right_column')
 				);
 			
-			for (var i = 0; i < that.track_history.length; i++) {
+			for (var i = 0; i < this.track_history.length; i++) {
 				
-				var track_name = that.track_history[i].youtube_title.replace(/['"]/g,'');
+				var track_name = this.track_history[i].youtube_title.replace(/['"]/g,'');
 				
 				var div = i <= 2 ? 'left_column' : 'right_column';
 				
@@ -45,7 +50,7 @@ WidgetDisplayer.prototype = {
 								.addClass('next_history_content')
 								.append(
 									$("<img/>")
-										.attr("src",that.track_history[i].youtube_thumbnail_url)
+										.attr("src",this.track_history[i].youtube_thumbnail_url)
 										.attr("id","next_history_thumbnail")
 								)
 								.append(
@@ -65,14 +70,14 @@ WidgetDisplayer.prototype = {
 			$('div.button').children('a').attr('class','button danger');
 			$('div.button').children('a').text('On Air');
 			
-			var current_track_name = that.tracks[0].youtube_title.replace(/['"]/g,'');
+			var current_track_name = this.tracks[0].youtube_title.replace(/['"]/g,'');
 			
 			$('div.songs').append(
 					$("<div/>")
 						.addClass('current_song')
 						.append(
 							$("<img/>")
-								.attr("src",that.tracks[0].youtube_thumbnail_url)
+								.attr("src",this.tracks[0].youtube_thumbnail_url)
 								.attr("id","current_song")
 							)
 							.append(
@@ -94,7 +99,7 @@ WidgetDisplayer.prototype = {
 						)
 			);
 					
-			if (that.tracks.length > 1){
+			if (this.tracks.length > 1){
 				$('div.songs').append(
 					$('<div/>')
 						.addClass('next_songs')
@@ -102,15 +107,15 @@ WidgetDisplayer.prototype = {
 			}
 		
 			
-			for (var i = 1; i < Math.min(3,that.tracks.length); i++) {
+			for (var i = 1; i < Math.min(3,this.tracks.length); i++) {
 				
-				var track_name = that.tracks[i].youtube_title.replace(/['"]/g,'');
+				var track_name = this.tracks[i].youtube_title.replace(/['"]/g,'');
 				$('div.next_songs').append(
 						$("<div/>")
 							.addClass('next_song')							
 							.append(
 								$("<img/>")
-									.attr("src",that.tracks[i].youtube_thumbnail_url)
+									.attr("src",this.tracks[i].youtube_thumbnail_url)
 									.attr("id","next_song_thumbnail")
 							)			
 							.append(
@@ -128,22 +133,8 @@ WidgetDisplayer.prototype = {
 		
 		}
 					
-		if (that.tracks.length > 0) {
-
-			var now = new Date();
-			var gmt_current = Date.parse(now) + now.getTimezoneOffset()*60*1000;
-
-			var elapsed = tracks[0].youtube_duration*1000 - (Date.parse(tracks[0].expired) - gmt_current);
-
-			var x = parseInt(elapsed*130/(tracks[0].youtube_duration*1000));
-
-			$('div.filler').css('width',x+'px');
-
-			$('div.filler').animate({
-				width:'130px'
-			},parseInt(tracks[0].youtube_duration)*1000-elapsed,'linear');
+		this.setUpProgressBar();
 				
-		}
 	},
 	
 	
@@ -165,7 +156,7 @@ WidgetDisplayer.prototype = {
 
 			$('div.filler').animate({
 				width:'130px'
-			},parseInt(tracks[0].youtube_duration)*1000-elapsed,'linear');
+			},parseInt(this.tracks[0].youtube_duration)*1000-elapsed,'linear');
 		}
 	}
 	

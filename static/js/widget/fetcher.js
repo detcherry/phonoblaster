@@ -4,66 +4,32 @@ function WidgetFetcher(identifier){
 
 WidgetFetcher.prototype = {
 	
-	getTracks: function() {
+	fetchContent: function(caller) {
 		var that = this;
 		
 		tracks = [];
+		
 		$.ajax({
 			url: "/plugin/widget/configure",
 			type: "GET",
 			dataType: "json",
 			timeout: 60000,
 			data: {
-				identifier: that.identifier,
+				identifier: that.identifier
 			},
-			async:false,
 			error: function(xhr, status, error) {
 				console.log('An error occurred: ' + error + '\nPlease retry.');
 			},
 			success: function(json){
 				if (json.status == "Yes") {
-					console.log("Retrieving tracks");
-					console.log(json);
 					tracks = json.tracks;
-				}else{
-					console.log("No track");
 				}
+				caller.contentArrived(tracks,parseInt(json.listeners));
 			},
 		});	
-		return tracks;
 	},
 	
-	
-	fetchNewTracks: function(caller,date_last_refresh){
-		var that = this
-		
-		$.ajax({
-			url: "/plugin/widget/update",
-			type: "GET",
-			dataType: "json",
-			timeout: 60000,
-			data: {
-				identifier: that.identifier,
-				date_last_refresh: date_last_refresh
-			},
-			error: function(xhr, status, error) {
-				console.log('An error occurred: ' + error + '\nPlease retry.');
-			},
-			success: function(json){
-				new_tracks = [];
-				if (json.status == "Yes") {
-					console.log("Some new songs");
-					new_tracks = json.tracks;
-				}else{
-					console.log("No new song");
-				}			
-				caller.relaunchUpdater(new_tracks);
-			},
-		});
-	},
-	
-	
-	fetchHistory: function(){
+	fetchHistory: function(caller){
 		var that = this;
 		var history = [];
 		
@@ -75,22 +41,16 @@ WidgetFetcher.prototype = {
 			data: {
 				identifier: that.identifier,
 			},
-			async:false,
 			error: function(xhr, status, error) {
 				console.log('An error occurred: ' + error + '\nPlease retry.');
 			},
 			success: function(json){
 				if (json.status == "Yes") {
-					console.log("Retrieving tracks history");
-					console.log(json.tracks);
 					history = json.tracks;
-				}else{
-					console.log("No track history");
 				}
+				caller.historyArrived(history);
 			},
 		});
-		
-		return history;
 	}
 	
 }
