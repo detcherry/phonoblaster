@@ -11,7 +11,7 @@ class StationHandler(RootStationHandler):
 		self.current_station = Station.all().filter("identifier", station_id).get()
 		
 		if not self.current_station:
-			self.error(404)
+			self.redirect("/error/404")
 		else:
 			# Retrieve the number of listeners
 			q = Session.all()

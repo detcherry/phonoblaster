@@ -7,17 +7,17 @@ class StationTracksHandler(RootStationHandler):
 	def get(self, station_id):
 		self.current_station = Station.all().filter("identifier", station_id).get()
 		
-		query = Track.all().filter("station", self.current_station.key()).filter("expired <", datetime.now()).order("-expired")
-		self.tracks = query.fetch(10)
-		self.offset = 10
-		
-		self.older_tracks = False
-		if(self.tracks and (len(self.tracks) == 10)):
-			self.older_tracks = True
-		
 		if not self.current_station:
-			self.error(404)
+			self.redirect("/error/404")
 		else:
+			query = Track.all().filter("station", self.current_station.key()).filter("expired <", datetime.now()).order("-expired")
+			self.tracks = query.fetch(10)
+			self.offset = 10
+
+			self.older_tracks = False
+			if(self.tracks and (len(self.tracks) == 10)):
+				self.older_tracks = True
+			
 			self.additional_template_values = {
 				"tracks": self.tracks,
 				"offset": self.offset,

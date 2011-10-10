@@ -10,7 +10,7 @@ class StationEditHandler(RootStationHandler):
 		self.current_station = Station.all().filter("identifier", station_id).get()
 		
 		if not self.current_station:
-			self.error(404)
+			self.redirect("/error/404")
 		else:
 			if(self.current_station.creator.key() == self.current_user.key()):
 				self.additional_template_values = {

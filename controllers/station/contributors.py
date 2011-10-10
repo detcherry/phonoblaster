@@ -5,7 +5,7 @@ class StationContributorsHandler(RootStationHandler):
 		self.current_station = Station.all().filter("identifier", station_id).get()
 		
 		if not self.current_station:
-			self.error(404)
+			self.redirect("/error/404")
 		else:
 			if(len(self.current_contributions) < 10):
 				some_contributions_left = True
