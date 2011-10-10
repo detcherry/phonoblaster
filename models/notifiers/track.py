@@ -5,9 +5,9 @@ from django.utils import simplejson
 
 from google.appengine.api import channel
 
-from models.db.session import Session
 from models.db.track import Track
 from models.db.user import User
+from models.notifiers.notifier import Notifier
 
 class TrackNotifier():
 	
@@ -38,11 +38,5 @@ class TrackNotifier():
 		}
 	
 	def send(self):
-		q = Session.all()
-		q.filter("station", self.station.key())
-		q.filter("ended", None)
-		active_sessions = q.filter("created >", datetime.now() - timedelta(0,7200))
-		#active_sessions = Session.all().filter("station", self.station.key()).filter("ended", None)
-		
-		for session in active_sessions:
-			channel.send_message(session.channel_id, simplejson.dumps(self.data))
+		notifier = Notifier(self.station.key(), self.data, None)
+		notifier.send()

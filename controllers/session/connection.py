@@ -14,6 +14,7 @@ from models.db.session import Session
 from models.db.station import Station
 from models.db.message import Message
 from models.queue import Queue
+from models.notifiers.notifier import Notifier
 
 class ChannelConnectionHandler(webapp.RequestHandler):
 	def post(self):
@@ -69,7 +70,6 @@ class ChannelConnectionHandler(webapp.RequestHandler):
 			user_keys = [Message.author.get_value_for_datastore(m) for m in messages]
 			authors = db.get(user_keys)
 			ims = zip(messages, authors)
-			
 			for im in ims:
 				chat_init_output.append({
 						"text": im[0].text,
@@ -87,26 +87,19 @@ class ChannelConnectionHandler(webapp.RequestHandler):
 		channel.send_message(channel_id, simplejson.dumps(chat_init_data))
 		logging.info("Latest messages sent")
 		
-		#Lastly we are going to inform everyone that a new listener has arrived
-		q = Session.all()
-		q.filter("station", station.key())
-		q.filter("ended", None)
-		listening_sessions = q.filter("created >", datetime.now() - timedelta(0,7200))
+		# Inform everyone a new listener has arrived
+		listener_new_data = {
+			"type":"listener_new",
+			"content": [],
+		}
+		excluded_channel_id = channel_id
+		notifier = Notifier(station.key(), listener_new_data, excluded_channel_id)
+		warned_sessions = notifier.send()
+		nb_of_listeners = len(warned_sessions)
 		
-		number_of_listeners = 0
-		for session in listening_sessions:
-			number_of_listeners += 1
-			if(session.channel_id != channel_id):
-				listener_new_data = {
-					"type":"listener_new",
-					"content": [],
-				}
-				channel.send_message(session.channel_id, simplejson.dumps(listener_new_data))
-		logging.info("Listeners warned that a new listener has arrived")
-
 		listener_init_data = {
 			"type":"listener_init",
-			"content": number_of_listeners,
+			"content": nb_of_listeners,
 		}
 		channel.send_message(channel_id, simplejson.dumps(listener_init_data))
 		logging.info("New listener got the number of listeners")

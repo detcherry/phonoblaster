@@ -5,7 +5,7 @@ from django.utils import simplejson
 
 from google.appengine.api import channel
 
-from models.db.session import Session
+from models.notifiers.notifier import Notifier
 
 class MessageNotifier():
 	
@@ -18,7 +18,7 @@ class MessageNotifier():
 	
 	def build(self):
 		if(self.message):
-			self.output = {
+			self.data = {
 				"type": "chat_new",
 				"content" : {
 					"text": self.message.text,
@@ -30,13 +30,6 @@ class MessageNotifier():
 			}
 
 	def send(self):
-		q = Session.all()
-		q.filter("station", self.station.key())
-		q.filter("ended", None)
-		active_sessions = q.filter("created >", datetime.now() - timedelta(0,7200))
-		#active_sessions = Session.all().filter("station", self.station.key()).filter("ended", None)
-
-		for session in active_sessions:
-			if(session.channel_id != self.excluded_channel_id):
-				channel.send_message(session.channel_id, simplejson.dumps(self.output))
+		notifier = Notifier(self.station.key(), self.data, self.excluded_channel_id)
+		notifier.send()
 	

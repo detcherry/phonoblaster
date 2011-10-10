@@ -8,6 +8,7 @@ from google.appengine.ext import webapp
 from google.appengine.ext.webapp.util import run_wsgi_app
 
 from models.db.session import Session
+from models.notifiers.notifier import Notifier
 
 class ChannelDisconnectionHandler(webapp.RequestHandler):
 	def post(self):
@@ -23,16 +24,13 @@ class ChannelDisconnectionHandler(webapp.RequestHandler):
 		logging.info("Station %s doesn't feed this channel anymore" %(session.station.identifier))
 		
 		#Send everyone a message that a listener has left the room
-		q = Session.all()
-		q.filter("station", station_left.key())
-		q.filter("ended", None)
-		listening_sessions = q.filter("created >", datetime.now() - timedelta(0,7200))
-		for session in listening_sessions:
-			listener_delete_data = {
-				"type":"listener_delete",
-				"content": [],
-			}
-			channel.send_message(session.channel_id, simplejson.dumps(listener_delete_data))
+		listener_delete_data = {
+			"type":"listener_delete",
+			"content": [],
+		}
+		notifier = Notifier(station_left.key(), listener_delete_data, None)
+		notifier.send()
+		
 		
 		
 application = webapp.WSGIApplication([

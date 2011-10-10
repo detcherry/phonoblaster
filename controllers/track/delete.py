@@ -10,7 +10,7 @@ from models.db.track import Track
 from models.db.session import Session
 from models.queue import Queue
 
-from google.appengine.api import channel
+from models.notifiers.notifier import Notifier
 
 class DeleteTrackHandler(BaseHandler):
 	@login_required
@@ -32,20 +32,14 @@ class DeleteTrackHandler(BaseHandler):
 				station.active -= duration
 				station.put() 
 				
+				# Build the data
 				self.data = {
 					"type":"tracklist_delete",
 					"content": phonoblaster_id,
 				}
-				
-				# Get everybody listening 
-				q = Session.all()
-				q.filter("station", station_key)
-				q.filter("ended", None)
-				active_sessions = q.filter("created >", datetime.now() - timedelta(0,7200))
-				
-				# Send them a message
-				for session in active_sessions:
-					channel.send_message(session.channel_id, simplejson.dumps(self.data))
+				# Send a message to everybody
+				notifier = Notifier(station_key, self.data, None)
+				notifier.send()
 				
 				self.response.out.write(simplejson.dumps({
 					"status":"Added"

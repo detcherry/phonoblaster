@@ -33,8 +33,6 @@ class AddMessageHandler(BaseHandler):
 		else:
 			self.error(404)
 
-
-
 application = webapp.WSGIApplication([
 	(r"/message/add", AddMessageHandler),
 ], debug=True)
