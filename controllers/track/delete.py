@@ -41,13 +41,9 @@ class DeleteTrackHandler(BaseHandler):
 				notifier = Notifier(station_key, self.data, None)
 				notifier.send()
 				
-				self.response.out.write(simplejson.dumps({
-					"status":"Added"
-				}))
+				self.response.out.write(simplejson.dumps({"status":"Added"}))
 			else:
-				self.response.out.write(simplejson.dumps({
-					"status":"notAdded"
-				}))
+				self.response.out.write(simplejson.dumps({"status":"notAdded"}))
 		else:
 			self.error(403)
 
