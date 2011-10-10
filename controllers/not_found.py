@@ -2,7 +2,8 @@ from controllers.base import *
 
 class NotFoundHandler(BaseHandler):
 	def get(self):
-		print "not found"
+		self.additional_template_values = {}
+		self.render("../templates/notfound.html")
 
 application = webapp.WSGIApplication([
 	(r"/.*", NotFoundHandler),
