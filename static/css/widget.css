@@ -275,7 +275,7 @@ img#next_song_thumbnail, img#next_history_thumbnail{
 }
 
 .no_song .left_column, .no_song .right_column{
-	width:122px;
+	width:121px;
 	float:left;
 	margin-top:4px;
 	padding:0px 0px 0px 0px;
