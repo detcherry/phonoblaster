@@ -6,22 +6,31 @@ from random import randrange
 
 from controllers.station.root import *
 
-from google.appengine.api import channel
-
-
 class StationHandler(RootStationHandler):
 	def get(self, station_id):
 		self.current_station = Station.all().filter("identifier", station_id).get()
 		
 		if not self.current_station:
 			self.error(404)
-		else:			
-			self.additional_template_values = {
-				"site_url": controllers.config.SITE_URL,
-				"allowed_to_post": self.allowed_to_post,
-				"status_creator": self.status_creator,
-			}		
-			self.render("../../templates/station/station.html")
+		else:
+			# Retrieve the number of listeners
+			q = Session.all()
+			q.filter("station", self.current_station.key())
+			q.filter("ended", None)
+			q.filter("created >", datetime.now() - timedelta(0,7200))
+			number_of_listeners = q.count()
+			logging.info(number_of_listeners)
+			
+			if(number_of_listeners <= 100):
+				self.additional_template_values = {
+					"site_url": controllers.config.SITE_URL,
+					"allowed_to_post": self.allowed_to_post,
+					"status_creator": self.status_creator,
+				}		
+				self.render("../../templates/station/station.html")
+			else:
+				self.additional_template_values = {}
+				self.render("../../templates/station/toocrowded.html")
 				
 
 application = webapp.WSGIApplication([
