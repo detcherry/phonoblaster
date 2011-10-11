@@ -7,8 +7,7 @@ from random import randrange
 from db.track import Track
 from db.station import Station
 from db.session import Session
-
-from notifiers.track import TrackNotifier
+from db.counter import *
 
 from google.appengine.ext import db
 
@@ -59,8 +58,11 @@ class Queue():
 				expired = expiration_time,
 			)
 			newTrack.put()
-	
 			logging.info("New track %s in the %s tracklist" %(title, self.station.identifier))
+			
+			# Increment the tracks counter
+			counter_name = "tracks_counter_station_" + str(self.station.key().id())
+			GeneralCounterShardConfig.increment(counter_name)
 			
 			return newTrack
 
@@ -115,6 +117,11 @@ class Queue():
 			db.put(random_tracks)
 			logging.info("Tracks shuffled saved as well")
 		
+		#Increment the tracks counter
+		counter_name = "tracks_counter_station_" + str(self.station.key().id())
+		for i in range(len(random_tracks)):
+			GeneralCounterShardConfig.increment(counter_name)
+		
 		return random_tracks
 	
 	def deleteTrack(self, track_key):
@@ -138,6 +145,10 @@ class Queue():
 				soon_deleted_track_name = track_to_delete.youtube_title
 				track_to_delete.delete()
 				logging.info("Track %s removed from database" %(soon_deleted_track_name))
+				
+				# Decrement the tracks counter
+				counter_name = "tracks_counter_station_" + str(self.station.key().id())
+				GeneralCounterShardConfig.decrement(counter_name)
 
 				return True
 			
