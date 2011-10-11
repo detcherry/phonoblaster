@@ -19,7 +19,6 @@ class StationHandler(RootStationHandler):
 			q.filter("ended", None)
 			q.filter("created >", datetime.now() - timedelta(0,7200))
 			number_of_listeners = q.count()
-			logging.info(number_of_listeners)
 			
 			if(number_of_listeners <= 100):
 				self.additional_template_values = {
