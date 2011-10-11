@@ -1,10 +1,10 @@
 $(function(){
-	var tracksBrowser = new TracksBrowser(current_station_name, offset)
+	var tracksBrowser = new TracksBrowser(current_station_name, next)
 });
 
-function TracksBrowser(station_id, offset){
+function TracksBrowser(station_id, next){
 	this.station = station_id;
-	this.offset = parseInt(offset);
+	this.next = parseInt(next);
 	this.init();
 }
 
@@ -76,7 +76,7 @@ TracksBrowser.prototype = {
 			timeout: 60000,
 			data: {
 				station : that.station,
-				offset: that.offset,
+				next: that.next,
 			},
 			error: function(xhr, status, error) {
 				console.log('An error occurred: ' + error + '\nPlease retry.');
@@ -91,8 +91,9 @@ TracksBrowser.prototype = {
 					
 					that.display(id, title, thumbnail)
 				})
+				console.log(json.next)
 				
-				if(json.tracks.length == 10){
+				if(json.next){
 					$("#tracks_history")
 						.append(
 							$("<a/>")
@@ -105,7 +106,7 @@ TracksBrowser.prototype = {
 						)
 				}
 				
-				that.offset = parseInt(json.offset);
+				that.next = parseInt(json.next);
 				that.listen();
 			},
 		});

@@ -36,7 +36,7 @@
 					<a class="play_old_track button" href="">Play track</a>
 				</div>
 			{% endfor %}
-			{% if older_tracks %}
+			{% if next %}
 			<a id="fetch_old_tracks" href="" class="button">Fetch older tracks</a>
 			{% endif %}	
 			</div>
@@ -49,6 +49,6 @@
 	<script type="text/javascript" src="/static/js/station/tracks.js"></script>
 	<script>
 		var current_station_name = "{{ current_station.identifier }}"
-		var offset = "{{ offset }}"
+		var next = "{{ next }}"
 	</script>
 {% endblock %}

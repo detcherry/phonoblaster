@@ -1,4 +1,5 @@
 from datetime import datetime
+from calendar import timegm
 from django.utils import simplejson
 
 from controllers.station.root import *
@@ -10,31 +11,38 @@ class StationTracksHandler(RootStationHandler):
 		if not self.current_station:
 			self.redirect("/error/404")
 		else:
+			tracks_per_page = 10
+			
 			query = Track.all().filter("station", self.current_station.key()).filter("expired <", datetime.now()).order("-expired")
-			self.tracks = query.fetch(10)
-			self.offset = 10
-
-			self.older_tracks = False
-			if(self.tracks and (len(self.tracks) == 10)):
-				self.older_tracks = True
+			
+			self.next =  None
+			self.tracks = query.fetch(tracks_per_page + 1)
+			if(len(self.tracks) == tracks_per_page +1):
+				self.next = timegm(self.tracks[-2].expired.utctimetuple())
+			self.tracks = self.tracks[:tracks_per_page]
 			
 			self.additional_template_values = {
 				"tracks": self.tracks,
-				"offset": self.offset,
-				"older_tracks": self.older_tracks,
+				"next": self.next,
 			}
 			self.render("../../templates/station/tracks.html")
 		
 	def post(self, station_id):
+		tracks_per_page = 10
+		
 		self.current_station = Station.all().filter("identifier", station_id).get()
-		query_offset = int(self.request.get("offset"))
-				
-		query = Track.all().filter("station", self.current_station.key()).filter("expired <", datetime.now()).order("-expired")
-		tracks = query.fetch(10, offset = query_offset)
-		new_offset = query_offset + 10
+		self.next = datetime.utcfromtimestamp(int(self.request.get("next")))
+		query = Track.all().filter("station", self.current_station.key()).filter("expired <", self.next).order("-expired")
+		
+		self.tracks = query.fetch(tracks_per_page + 1)
+		if(len(self.tracks) == tracks_per_page + 1):
+			self.next = timegm(self.tracks[-2].expired.utctimetuple())
+		else:
+			self.next = None
+		self.tracks = self.tracks[:tracks_per_page]
 				
 		output = []
-		for track in tracks:
+		for track in self.tracks:
 			output.append({
 				"id": track.youtube_id,
 				"title": track.youtube_title,
@@ -43,7 +51,7 @@ class StationTracksHandler(RootStationHandler):
 			})
 		
 		data = {
-			"offset": new_offset,
+			"next": self.next,
 			"tracks": output,
 		}
 		
