@@ -44,19 +44,7 @@ class RootStationHandler(BaseHandler):
 	def number_of_tracks(self):
 		if not hasattr(self, "_number_of_tracks"):
 			counter_name = "tracks_counter_station_" + str(self.current_station.key().id())
-			
-			#Transition_code
-			number_of_tracks_in_the_counter = GeneralCounterShardConfig.get_count(counter_name)
-			logging.info(number_of_tracks_in_the_counter)
-			real_number = Track.all().filter("station", self.current_station.key()).count()
-			logging.info(real_number)
-			if(number_of_tracks_in_the_counter != real_number):
-				GeneralCounterShardConfig.init(counter_name, real_number)
-
 			self._number_of_tracks = GeneralCounterShardConfig.get_count(counter_name)
-			
-			#Old Code
-			#self._number_of_tracks = Track.all().filter("station", self.current_station.key()).count()
 		return self._number_of_tracks
 	
 	
