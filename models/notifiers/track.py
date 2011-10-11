@@ -4,19 +4,21 @@ from calendar import timegm
 from django.utils import simplejson
 
 from google.appengine.api import channel
+from google.appengine.api.labs.taskqueue import Task
 
 from models.db.track import Track
 from models.db.user import User
-from models.notifiers.notifier import Notifier
+#from models.notifiers.notifier import Notifier
 
 class TrackNotifier():
 	
-	def __init__(self, station, tracklist, method):
+	def __init__(self, station, tracklist, excluded_channel_id):
 		self.station = station
 		self.tracklist = tracklist
-		self.method = method
+		self.excluded_channel_id = excluded_channel_id
 		self.build()
-		self.send()
+		self.sendToMe()
+		self.sendToEveryone()
 	
 	def build(self):
 		self.output = []
@@ -33,10 +35,25 @@ class TrackNotifier():
 				"expired": timegm(track.expired.utctimetuple()),
 			})
 		self.data = {
-			"type": self.method,
+			"type": "tracklist_new",
 			"content": self.output,
 		}
 	
-	def send(self):
-		notifier = Notifier(self.station.key(), self.data, None)
-		notifier.send()
+	def sendToMe(self):
+		channel.send_message(self.excluded_channel_id, simplejson.dumps(self.data))
+	
+	def sendToEveryone(self):
+		#notifier = Notifier(self.station.key(), self.data, self.excluded_channel_id)
+		#notifier.send()
+		task = Task(
+			url = "/taskqueue/track",
+			params = { 
+				"station_key": str(self.station.key()),
+				"data": simplejson.dumps(self.data),
+				"excluded_channel_id": self.excluded_channel_id,
+			},
+		)
+		task.add(
+			queue_name = "tracklist-queue"
+		)
+	

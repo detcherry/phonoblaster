@@ -38,6 +38,7 @@ ShuffleController.prototype = {
 			timeout: 60000,
 			data: {
 				station_key: station_key,
+				channel_id: channel_id,
 			},
 			error: function(xhr, status, error) {
 				console.log('An error occurred: ' + error + '\nPlease retry.');

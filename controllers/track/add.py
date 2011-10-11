@@ -1,6 +1,5 @@
 from controllers.base import *
 
-from calendar import timegm
 from django.utils import simplejson
 
 from models.db.station import Station
@@ -8,6 +7,8 @@ from models.db.contribution import Contribution
 from models.db.track import Track
 from models.queue import Queue
 from models.notifiers.track import TrackNotifier
+
+from google.appengine.api import channel
 
 class AddTrackHandler(BaseHandler):
 	@login_required
@@ -17,6 +18,7 @@ class AddTrackHandler(BaseHandler):
 		self.youtube_thumbnail = self.request.get("thumbnail")
 		self.youtube_duration = self.request.get("duration")
 		self.station_key = self.request.get("station_key")
+		self.channel_id = self.request.get("channel_id")
 				
 		self.station = Station.get(self.station_key)
 		
@@ -26,12 +28,12 @@ class AddTrackHandler(BaseHandler):
 			
 			if(track_added):
 				#Send message to everyone 
-				notifier = TrackNotifier(self.station, track_added, "tracklist_new")
+				notifier = TrackNotifier(self.station, track_added, self.channel_id)
 				
 				#Say expiration time for the station is expiration of this latest track
 				self.station.active = track_added[0].expired
 				self.station.put()
-				
+
 				self.response.out.write(simplejson.dumps({
 					"status":"Added"
 				}))
