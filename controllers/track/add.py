@@ -19,47 +19,22 @@ class AddTrackHandler(BaseHandler):
 		self.youtube_duration = self.request.get("duration")
 		self.station_key = self.request.get("station_key")
 		self.channel_id = self.request.get("channel_id")
-				
-		self.station = Station.get(self.station_key)
 		
-		if(self.isAllowedToAdd()):
-			track_added = []
-			track_added.append(self.addTrack())
-			
-			if(track_added):
-				#Send message to everyone 
-				notifier = TrackNotifier(self.station, track_added, self.channel_id)
-				
-				#Say expiration time for the station is expiration of this latest track
-				self.station.active = track_added[0].expired
-				self.station.put()
-
-				self.response.out.write(simplejson.dumps({
-					"status":"Added"
-				}))
-				
-			else:
-				self.response.out.write(simplejson.dumps({
-					"status":"notAdded"
-				}))
-		else:
-			self.error(403)
-	
-	def isAllowedToAdd(self):
-		#If current user is the creator of the station
-		if(self.current_user.key() == self.station.creator.key()):
-			return True
-		else:
-			contribution = Contribution.all().filter("station", self.station.key()).filter("contributor", self.current_user.key()).get()
-			if(contribution):
-				return True
-			
-			return False
-	
-	def addTrack(self):
+		track_added = []
 		queue = Queue(self.station_key)
-		track = queue.addTrack(self.youtube_title, self.youtube_id, self.youtube_thumbnail, self.youtube_duration, self.current_user.key())
-		return track
+		track_added.append(
+			queue.add_track(self.youtube_title, self.youtube_id, self.youtube_thumbnail, self.youtube_duration, str(self.current_user.key()))
+		)
+		if(track_added):
+			# Send message to everyone 
+			notifier = TrackNotifier(self.station_key, track_added, self.channel_id)
+			
+			# Send response
+			self.response.out.write(simplejson.dumps({"status":"Added"}))
+		else:
+			# Send response
+			self.response.out.write(simplejson.dumps({"status":"notAdded"}))
+
 
 application = webapp.WSGIApplication([
 	(r"/track/add", AddTrackHandler),

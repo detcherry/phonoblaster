@@ -20,7 +20,7 @@ class StationShuffleHandler(RootStationHandler):
 			tracks_added = self.queue.shuffle(self.current_user.key())
 			if(tracks_added):				
 				# Send message to everyone
-				notifier = TrackNotifier(self.current_station, tracks_added, self.channel_id)
+				notifier = TrackNotifier(self.station_key, tracks_added, self.channel_id)
 				
 				last_track_added = tracks_added[-1]
 				#Say expiration time for the station is expiration of this latest track

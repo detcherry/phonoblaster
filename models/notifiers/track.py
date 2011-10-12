@@ -11,8 +11,8 @@ from models.db.user import User
 
 class TrackNotifier():
 	
-	def __init__(self, station, tracklist, excluded_channel_id):
-		self.station = station
+	def __init__(self, station_key, tracklist, excluded_channel_id):
+		self.station_key = station_key
 		self.tracklist = tracklist
 		self.excluded_channel_id = excluded_channel_id
 		self.build()
@@ -45,7 +45,7 @@ class TrackNotifier():
 		task = Task(
 			url = "/taskqueue/notify",
 			params = { 
-				"station_key": str(self.station.key()),
+				"station_key": self.station_key,
 				"data": simplejson.dumps(self.data),
 				"excluded_channel_id": self.excluded_channel_id,
 			},

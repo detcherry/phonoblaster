@@ -402,16 +402,18 @@ UITracklistController.prototype = {
 				timeout: 60000,
 				data: {
 					id: phonoblaster_id,
+					station_key: station_key,
 				},
 				error: function(xhr, status, error) {
 					console.log('An error occurred: ' + error + '\nPlease retry.');
 				},
 				success: function(json){
-					if(json.status == "deleted"){						
+					if(json.status == "Deleted"){						
 						console.log("Your song has been removed from the tracklist");
 					}
 					else{
 						console.log("Your song hasn't been remove from the tracklist");
+						img.hide();
 					}
 				},
 			});

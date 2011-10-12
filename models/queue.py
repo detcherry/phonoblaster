@@ -6,7 +6,8 @@ from random import randrange
 
 from db.track import Track
 from db.station import Station
-from db.session import Session
+from db.user import User
+from db.contribution import Contribution
 from db.counter import *
 
 from google.appengine.ext import db
@@ -15,6 +16,176 @@ class Queue():
 	
 	def __init__(self, station_key):
 		self.station = Station.get(station_key)
+	
+	# Get the tracks currently in the station tracklist
+	def get_tracks(self):
+		q = Track.all()
+		q.filter("station", self.station.key())
+		q.filter("expired >", datetime.now())
+		q.order("expired")
+		tracks = q.fetch(10)
+		return tracks
+	
+	# Add a new track to the station tracklist
+	def add_track(self, title, id, thumbnail, duration, user_key):
+		self.user_key = db.Key(user_key)
+		
+		# If user is allowed to add
+		if(self.is_allowed_to_add()):
+			logging.info("User allowed to add")
+			self.station_tracklist = self.get_tracks()
+			
+			# If the station queue has already 10 tracks it's full!
+			if(len(self.station_tracklist) == 10):
+				logging.info("Tracklist full")
+				return None
+				
+			# Otherwise, there is room for new tracks
+			else:
+				logging.info("Some room left in the tracklist")
+				self.calculate_track_expiration_time(duration)
+				
+				# Save new track to the datastore
+				new_track = Track(
+					youtube_title = title,
+					youtube_id = id,
+					youtube_thumbnail_url = db.Link(thumbnail),
+					youtube_duration = int(duration),
+					station = self.station.key(),
+					submitter = self.user_key,
+					expired = self.new_track_expiration_time,
+				)
+				new_track.put()
+				logging.info("New track %s in the %s tracklist" %(title, self.station.identifier))
+				
+				self.update_station_expiration_time(self.new_track_expiration_time)
+				self.increment_station_track_counter()
+				
+				return new_track
+		else:
+			return None		
+	
+	# Check if user is allowed to add track to the station
+	def is_allowed_to_add(self):
+		# If user is the creator of the station
+		station_creator_key = Station.creator.get_value_for_datastore(self.station)
+		if(self.user_key == station_creator_key):
+			return True
+		else:
+			# If user is one of the contributor
+			contribution = Contribution.all().filter("station", self.station.key()).filter("contributor", self.user_key).get()
+			if(contribution):
+				return True
+			
+			logging.info("User not allowed to add")
+			return False
+	
+	# Calculate the expiration time of the track being added
+	def calculate_track_expiration_time(self, duration):
+		expiration_interval = timedelta(0,int(duration))
+		if(len(self.station_tracklist) == 0):
+			self.new_track_expiration_time = datetime.now() + expiration_interval
+		else:
+			last_track = self.station_tracklist[-1]
+			self.new_track_expiration_time = last_track.expired + expiration_interval
+	
+	# Increment the station tracks counter
+	def increment_station_track_counter(self):
+		counter_name = "tracks_counter_station_" + str(self.station.key().id())
+		GeneralCounterShardConfig.increment(counter_name)
+	
+	# Update the station expiration time	
+	def update_station_expiration_time(self, new_station_expiration_time):
+		self.station.active = new_station_expiration_time
+		self.station.put()
+	
+	# Delete a track from the station tracklist
+	def delete_track(self, user_key, track_id):
+		self.track_to_delete = Track.get_by_id(int(track_id))
+		self.user_key = db.Key(user_key)
+		
+		if(self.track_to_delete):
+			if(self.is_allowed_to_delete()):
+				if(self.is_currently_being_played()):
+					return False
+				else:
+					q = Track.all()
+					q.filter("station", self.station.key())
+					q.filter("expired >", self.track_to_delete.expired)
+					q.order("expired")
+					# At the maximum there are 8 tracks to edit but we fetch 10 anyway...
+					tracks_to_edit = q.fetch(10)
+
+					tracks_edited = []
+					self.expiration_offset = timedelta(0, self.track_to_delete.youtube_duration)
+					for track in tracks_to_edit:
+						track.expired -= self.expiration_offset
+						tracks_edited.append(track)
+					
+					if(tracks_edited):
+						# We save the edited tracks to the datastore
+						db.put(tracks_edited)
+						logging.info("Next tracks edited")
+						# We update the station expiration time with the last edited track
+						new_station_expiration_time = tracks_edited[-1].expired
+					else:
+						# We update the station expiration time with the beginning of the track that is going to be deleted
+						new_station_expiration_time = self.track_to_delete.expired - timedelta(0,self.track_to_delete.youtube_duration)
+
+					# We remove the track from the datastore
+					soon_deleted_track_name = self.track_to_delete.youtube_title
+					self.track_to_delete.delete()
+					logging.info("Track %s removed from %s tracklist" %(soon_deleted_track_name, self.station.identifier))
+					
+					self.decrement_station_tracks_counter()
+					self.update_station_expiration_time(new_station_expiration_time)
+					
+					return True
+			else:
+				return False
+		else:
+			return False
+	
+	# Check if the user is allowed to delete the track
+	def is_allowed_to_delete(self):
+		# If the user has submitted the track, he's allowed to delete it
+		track_submitter_key = Track.submitter.get_value_for_datastore(self.track_to_delete)
+		if(self.user_key == track_submitter_key):
+			logging.info("Allowed to delete the track")
+			return True
+		else:
+			logging.info("Not allowed to delete the track")
+			return False
+			
+	# Check if the track to be deleted is being currently played
+	def is_currently_being_played(self):
+		track_beginning = self.track_to_delete.expired - timedelta(0,self.track_to_delete.youtube_duration)
+		# If the track is not currently being played
+		if(track_beginning > datetime.now()):
+			logging.info("Track not currently being played")
+			return False
+		else:
+			logging.info("Track currently being played")
+			return True
+	
+	# Decrement the station tracks counter
+	def decrement_station_tracks_counter(self):
+		counter_name = "tracks_counter_station_" + str(self.station.key().id())
+		GeneralCounterShardConfig.decrement(counter_name)
+		logging.info("Station tracks counter decremented")
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	"""
+		Deprecated functions
+		TO BE REMOVE SOON 
+	"""
 	
 	def getTracks(self):
 		query = Track.all()
@@ -25,46 +196,6 @@ class Queue():
 		tracks = query.fetch(10)
 		
 		return tracks
-	
-	@property
-	def numberOfTracks(self):
-		query = Track.all()
-		query.filter("station", self.station.key())
-		query.filter("expired >", datetime.now())
-		query.order("expired")
-		number = query.count()		
-		return number
-	
-	def addTrack(self, title, id, thumbnail, duration, user_key):
-		tracks = self.getTracks()
-		if(len(tracks) == 10):
-			return None
-		else:
-			expiration_interval = timedelta(0,int(duration))
-			
-			if(len(tracks) == 0):
-				expiration_time = datetime.now() + expiration_interval
-			else:
-				last_track = tracks[-1]
-				expiration_time = last_track.expired + expiration_interval
-
-			newTrack = Track(
-				youtube_title = title,
-				youtube_id = id,
-				youtube_thumbnail_url = db.Link(thumbnail),
-				youtube_duration = int(duration),
-				station = self.station.key(),
-				submitter = user_key,
-				expired = expiration_time,
-			)
-			newTrack.put()
-			logging.info("New track %s in the %s tracklist" %(title, self.station.identifier))
-			
-			# Increment the tracks counter
-			counter_name = "tracks_counter_station_" + str(self.station.key().id())
-			GeneralCounterShardConfig.increment(counter_name)
-			
-			return newTrack
 
 	def shuffle(self, user_key):
 		latest_tracks = Track.all().filter("submitter", user_key).order("-added").fetch(100)
@@ -123,41 +254,6 @@ class Queue():
 			GeneralCounterShardConfig.increment(counter_name)
 		
 		return random_tracks
-	
-	def deleteTrack(self, track_key):
-		# Need a refactoring: this track has already been got from the DB...
-		track_to_delete = Track.get(track_key)
-		if(track_to_delete):
-			track_beginning = track_to_delete.expired - timedelta(0,track_to_delete.youtube_duration)
-			#The track is not currenlty being played
-			if(track_beginning > datetime.now()):
-				tracks_to_edit = Track.all().filter("station", self.station.key()).filter("expired >", track_to_delete.expired)
-
-				tracks_edited = []
-				offset = timedelta(0, track_to_delete.youtube_duration)
-				for track in tracks_to_edit:
-					track.expired -= offset
-					tracks_edited.append(track)
-				
-				db.put(tracks_edited)
-				logging.info("Next tracks edited")
-				
-				soon_deleted_track_name = track_to_delete.youtube_title
-				track_to_delete.delete()
-				logging.info("Track %s removed from database" %(soon_deleted_track_name))
-				
-				# Decrement the tracks counter
-				counter_name = "tracks_counter_station_" + str(self.station.key().id())
-				GeneralCounterShardConfig.decrement(counter_name)
-
-				return True
-			
-			#It's not possible to remove a track currently being played
-			else:
-				return False
-		else:
-			return False
-			
 			
 	def getRecentHistory(self,num):
 		query = Track.all()
