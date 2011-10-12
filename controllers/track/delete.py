@@ -48,7 +48,7 @@ class DeleteTrackHandler(BaseHandler):
 					},
 				)
 				task.add(
-					queue_name = "tracklist-queue"
+					queue_name = "tracklist-queue-1"
 				)
 				
 				self.response.out.write(simplejson.dumps({"status":"Added"}))

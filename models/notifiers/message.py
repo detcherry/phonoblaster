@@ -3,7 +3,6 @@ from datetime import timedelta
 from calendar import timegm
 from django.utils import simplejson
 
-from google.appengine.api import channel
 from google.appengine.api.labs.taskqueue import Task
 
 class MessageNotifier():
@@ -38,6 +37,6 @@ class MessageNotifier():
 			},
 		)
 		task.add(
-			queue_name = "message-queue"
+			queue_name = "message-queue-1"
 		)
 	

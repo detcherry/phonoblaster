@@ -51,6 +51,6 @@ class TrackNotifier():
 			},
 		)
 		task.add(
-			queue_name = "tracklist-queue"
+			queue_name = "tracklist-queue-1"
 		)
 	

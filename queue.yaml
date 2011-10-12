@@ -1,7 +1,10 @@
 queue:
-- name: tracklist-queue
-  rate: 50/s
+- name: tracklist-queue-1
+  rate: 500/s
   bucket_size: 100
-- name: message-queue
-  rate: 50/s
+- name: message-queue-1
+  rate: 500/s
+  bucket_size: 100
+- name: listener-queue-1
+  rate: 500/s
   bucket_size: 100
