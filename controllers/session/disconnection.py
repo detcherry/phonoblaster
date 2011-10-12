@@ -8,7 +8,7 @@ from google.appengine.ext import webapp
 from google.appengine.ext.webapp.util import run_wsgi_app
 
 from models.db.session import Session
-from models.notifiers.notifier import Notifier
+from google.appengine.api.labs.taskqueue import Task
 
 class ChannelDisconnectionHandler(webapp.RequestHandler):
 	def post(self):
@@ -28,9 +28,18 @@ class ChannelDisconnectionHandler(webapp.RequestHandler):
 			"type":"listener_delete",
 			"content": [],
 		}
-		notifier = Notifier(station_left.key(), listener_delete_data, None)
-		notifier.send()
-		
+		excluded_channel_id = None
+		task = Task(
+			url = "/taskqueue/notify",
+			params = { 
+				"station_key": str(station_left.key()),
+				"data": simplejson.dumps(listener_delete_data),
+				"excluded_channel_id": excluded_channel_id,
+			},
+		)
+		task.add(
+			queue_name = "listener-queue-1"
+		)
 		
 		
 application = webapp.WSGIApplication([

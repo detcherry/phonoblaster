@@ -14,7 +14,8 @@ from models.db.session import Session
 from models.db.station import Station
 from models.db.message import Message
 from models.queue import Queue
-from models.notifiers.notifier import Notifier
+
+from google.appengine.api.labs.taskqueue import Task
 
 class ChannelConnectionHandler(webapp.RequestHandler):
 	def post(self):
@@ -93,9 +94,24 @@ class ChannelConnectionHandler(webapp.RequestHandler):
 			"content": [],
 		}
 		excluded_channel_id = channel_id
-		notifier = Notifier(station.key(), listener_new_data, excluded_channel_id)
-		warned_sessions = notifier.send()
-		nb_of_listeners = len(warned_sessions)
+		task = Task(
+			url = "/taskqueue/notify",
+			params = { 
+				"station_key": str(station.key()),
+				"data": simplejson.dumps(listener_new_data),
+				"excluded_channel_id": excluded_channel_id,
+			},
+		)
+		task.add(
+			queue_name = "listener-queue-1"
+		)
+		
+		# Retrieve the number of active sessions
+		q = Session.all()
+		q.filter("station", station.key())
+		q.filter("ended", None)
+		q.filter("created >", datetime.now() - timedelta(0,7200))
+		nb_of_listeners = q.count()
 		
 		listener_init_data = {
 			"type":"listener_init",
