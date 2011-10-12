@@ -7,7 +7,7 @@ from models.db.message import Message
 from models.db.station import Station
 from models.notifiers.message import MessageNotifier
 
-from google.appengine.api import quota
+
 
 class AddMessageHandler(BaseHandler):
 	@login_required

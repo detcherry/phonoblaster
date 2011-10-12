@@ -40,7 +40,7 @@ class DeleteTrackHandler(BaseHandler):
 				
 				# Send a message to everybody
 				task = Task(
-					url = "/taskqueue/track",
+					url = "/taskqueue/notify",
 					params = { 
 						"station_key": str(self.station.key()),
 						"data": simplejson.dumps(self.data),

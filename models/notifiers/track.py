@@ -8,7 +8,6 @@ from google.appengine.api.labs.taskqueue import Task
 
 from models.db.track import Track
 from models.db.user import User
-#from models.notifiers.notifier import Notifier
 
 class TrackNotifier():
 	
@@ -43,10 +42,8 @@ class TrackNotifier():
 		channel.send_message(self.excluded_channel_id, simplejson.dumps(self.data))
 	
 	def sendToEveryone(self):
-		#notifier = Notifier(self.station.key(), self.data, self.excluded_channel_id)
-		#notifier.send()
 		task = Task(
-			url = "/taskqueue/track",
+			url = "/taskqueue/notify",
 			params = { 
 				"station_key": str(self.station.key()),
 				"data": simplejson.dumps(self.data),

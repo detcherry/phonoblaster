@@ -11,7 +11,7 @@ from google.appengine.ext import db
 
 from models.db.session import Session
 
-class TaskQueueHandler(webapp.RequestHandler):
+class NotificationHandler(webapp.RequestHandler):
 	def post(self):
 		self.station_key = db.Key(self.request.get("station_key"))
 		self.json = self.request.get("data")
@@ -39,7 +39,7 @@ class TaskQueueHandler(webapp.RequestHandler):
 		
 
 application = webapp.WSGIApplication([
-	(r"/taskqueue/track", TaskQueueHandler),
+	(r"/taskqueue/notify", NotificationHandler),
 ], debug=True)
 
 def main():
