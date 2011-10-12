@@ -28,7 +28,7 @@ class AddTrackHandler(BaseHandler):
 		if(track_added):
 			# Send message to everyone 
 			notifier = TrackNotifier(self.station_key, track_added, self.channel_id)
-			
+			logging.info("Everybody notified")
 			# Send response
 			self.response.out.write(simplejson.dumps({"status":"Added"}))
 		else:
