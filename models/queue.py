@@ -135,15 +135,7 @@ class Queue():
 			if(self.is_allowed_to_delete()):
 				if(self.is_currently_being_played()):
 					return False
-				else:
-					# Old code
-					#q = Track.all()
-					#q.filter("station", self.station.key())
-					#q.filter("expired >", self.track_to_delete.expired)
-					#q.order("expired")
-					# At the maximum there are 8 tracks to edit but we fetch 10 anyway...
-					#tracks_to_edit = q.fetch(10)
-					
+				else:					
 					# New code
 					tracklist = self.get_tracks()
 					
