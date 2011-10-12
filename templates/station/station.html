@@ -82,7 +82,9 @@
 		<li><a href="#tracks_tab" class="current">Next</a></li>
 		{% if allowed_to_post %}
 		<li><a href="#search_tab">Search tracks</a></li>
+		<!--
 		<li><a href="#shuffle_tab">Shuffle</a></li>
+		-->
 		{% endif %}
 	</ul>
 	<div id="tab_content_wrap">
@@ -102,12 +104,13 @@
 				No search yet.
 			</div>
 		</div>
+		<!--
 		<div id="shuffle_tab" class="tab_content">
 			<div id="shuffle">
 				Add tracks directly from your recent history!
 				<a href="" id="shuffle" class="button">Shuffle now!</a>
 			</div>
-		</div>
+		</div>-->
 		{% endif %}
 	</div>
 {% endblock %}
