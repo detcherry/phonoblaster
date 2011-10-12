@@ -29,7 +29,8 @@ class ChannelConnectionHandler(webapp.RequestHandler):
 		
 		#We get the current playlist
 		queue = Queue(station.key())
-		tracklist = queue.getTracks()
+		#tracklist = queue.getTracks()
+		tracklist = queue.get_tracks()
 
 		tracklist_init_output = []
 		if(tracklist):

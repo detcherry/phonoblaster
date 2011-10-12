@@ -1,4 +1,5 @@
 import logging
+import os
 
 from datetime import datetime
 from datetime import timedelta
@@ -11,6 +12,7 @@ from db.contribution import Contribution
 from db.counter import *
 
 from google.appengine.ext import db
+from google.appengine.api import memcache
 
 class Queue():
 	
@@ -19,11 +21,25 @@ class Queue():
 	
 	# Get the tracks currently in the station tracklist
 	def get_tracks(self):
-		q = Track.all()
-		q.filter("station", self.station.key())
-		q.filter("expired >", datetime.now())
-		q.order("expired")
-		tracks = q.fetch(10)
+		memcache_id = os.environ["CURRENT_VERSION_ID"] + "_tracklist_station_" + str(self.station.key().id())
+		tracks = memcache.get(memcache_id)
+		
+		if tracks is None:
+			q = Track.all()
+			q.filter("station", self.station.key())
+			q.filter("expired >", datetime.now())
+			q.order("expired")
+			tracks = q.fetch(10)
+			memcache.add(memcache_id, tracks)
+			logging.info("Tracklist loaded in memcache")
+		else:
+			# We probably have to clean the memcache from old tracks
+			for track in tracks:
+				if(track.expired <= datetime.now()):
+					tracks.remove(track)
+			memcache.set(memcache_id, tracks)
+			logging.info("Tracklist already in memcache and thus cleaned up")
+		
 		return tracks
 	
 	# Add a new track to the station tracklist
@@ -56,9 +72,18 @@ class Queue():
 					expired = self.new_track_expiration_time,
 				)
 				new_track.put()
-				logging.info("New track %s in the %s tracklist" %(title, self.station.identifier))
+				logging.info("New track %s in the %s tracklist saved in the datastore" %(title, self.station.identifier))
 				
+				# Add track to the memcache 
+				self.station_tracklist.append(new_track)
+				memcache_id = os.environ["CURRENT_VERSION_ID"] + "_tracklist_station_" + str(self.station.key().id())
+				memcache.set(memcache_id, self.station_tracklist)
+				logging.info("Updated in memcache")				
+				
+				# Update Station Expiration Time
 				self.update_station_expiration_time(self.new_track_expiration_time)
+				
+				# Increment Station Track Counter
 				self.increment_station_track_counter()
 				
 				return new_track
@@ -93,11 +118,13 @@ class Queue():
 	def increment_station_track_counter(self):
 		counter_name = "tracks_counter_station_" + str(self.station.key().id())
 		GeneralCounterShardConfig.increment(counter_name)
+		logging.info("Station track counter incremented")
 	
 	# Update the station expiration time	
 	def update_station_expiration_time(self, new_station_expiration_time):
 		self.station.active = new_station_expiration_time
 		self.station.put()
+		logging.info("Station expiration time updated")
 	
 	# Delete a track from the station tracklist
 	def delete_track(self, user_key, track_id):
@@ -109,12 +136,29 @@ class Queue():
 				if(self.is_currently_being_played()):
 					return False
 				else:
-					q = Track.all()
-					q.filter("station", self.station.key())
-					q.filter("expired >", self.track_to_delete.expired)
-					q.order("expired")
+					# Old code
+					#q = Track.all()
+					#q.filter("station", self.station.key())
+					#q.filter("expired >", self.track_to_delete.expired)
+					#q.order("expired")
 					# At the maximum there are 8 tracks to edit but we fetch 10 anyway...
-					tracks_to_edit = q.fetch(10)
+					#tracks_to_edit = q.fetch(10)
+					
+					# New code
+					tracklist = self.get_tracks()
+					
+					limit = self.track_to_delete.expired
+					unchanged_tracks = []
+					tracks_to_edit = []
+					# Browse the tracklist and see which tracks need to be updated 
+					for track in tracklist:
+						# If the expiration time is more, the tracks needs to be updated
+						if(track.expired > limit):
+							tracks_to_edit.append(track)
+						# If the expiration time is less, it's ok
+						elif(track.expired < limit):
+							unchanged_tracks.append(track)
+						#if track.expired == limit it's the track_to_delete
 
 					tracks_edited = []
 					self.expiration_offset = timedelta(0, self.track_to_delete.youtube_duration)
@@ -135,10 +179,19 @@ class Queue():
 					# We remove the track from the datastore
 					soon_deleted_track_name = self.track_to_delete.youtube_title
 					self.track_to_delete.delete()
-					logging.info("Track %s removed from %s tracklist" %(soon_deleted_track_name, self.station.identifier))
+					logging.info("Track %s removed from %s tracklist in the datastore" %(soon_deleted_track_name, self.station.identifier))
 					
-					self.decrement_station_tracks_counter()
+					# We update the tracklist in the memcache (NB: the track_to_delete is not in this list)
+					edited_tracklist = unchanged_tracks + tracks_edited
+					memcache_id = os.environ["CURRENT_VERSION_ID"] + "_tracklist_station_" + str(self.station.key().id())
+					memcache.set(memcache_id, edited_tracklist)
+					logging.info("Track removed from memcache")
+					
+					# Update station expiration time
 					self.update_station_expiration_time(new_station_expiration_time)
+					
+					# Decrement station track counter
+					self.decrement_station_tracks_counter()
 					
 					return True
 			else:
