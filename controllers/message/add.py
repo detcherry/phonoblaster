@@ -7,8 +7,6 @@ from models.db.message import Message
 from models.db.station import Station
 from models.notifiers.message import MessageNotifier
 
-
-
 class AddMessageHandler(BaseHandler):
 	@login_required
 	def post(self):
