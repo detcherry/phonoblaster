@@ -70,17 +70,17 @@ class ChannelConnectionHandler(webapp.RequestHandler):
 			# Get the authors in one trip to the datastore
 			user_keys = [Message.author.get_value_for_datastore(m) for m in messages]
 			authors = db.get(user_keys)
-			ims = zip(messages, authors)
-			for im in ims:
+			
+			for message, author in zip(messages, authors):
 				chat_init_output.append({
-						"text": im[0].text,
-						"author_id": im[1].key().id(),
-						"author_public_name": im[1].public_name,
-						"author_fcbk_id": im[1].facebook_id,
-						"added": timegm(im[0].added.utctimetuple()),
+							"text": message.text,
+							"author_id": author.key().id(),
+							"author_public_name": author.public_name,
+							"author_fcbk_id": author.facebook_id,
+							"added": timegm(message.added.utctimetuple()),
 				})
 
-		#We format a message and send it to the client
+		# We format a message and send it to the client
 		chat_init_data = {
 			"type":"chat_init",
 			"content": chat_init_output,
