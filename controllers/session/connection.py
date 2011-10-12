@@ -37,19 +37,18 @@ class ChannelConnectionHandler(webapp.RequestHandler):
 			# Get the submitters in one trip to the datastore
 			user_keys = [Track.submitter.get_value_for_datastore(t) for t in tracklist]
 			submitters = db.get(user_keys)
-			tracks = zip(tracklist, submitters)
 						
-			for track in tracks:
+			for track, submitter in zip(tracklist, submitters):
 				tracklist_init_output.append({
-					"phonoblaster_id": str(track[0].key().id()),
-					"title":track[0].youtube_title,
-					"id": track[0].youtube_id,
-					"thumbnail": track[0].youtube_thumbnail_url,
-					"duration":track[0].youtube_duration,
-					"submitter_id":track[1].key().id(),
-					"submitter_fcbk_id":track[1].facebook_id,
-					"added": timegm(track[0].added.utctimetuple()),
-					"expired": timegm(track[0].expired.utctimetuple()),
+					"phonoblaster_id": str(track.key().id()),
+					"title":track.youtube_title,
+					"id": track.youtube_id,
+					"thumbnail": track.youtube_thumbnail_url,
+					"duration": track.youtube_duration,
+					"submitter_id": submitter.key().id(),
+					"submitter_fcbk_id": submitter.facebook_id,
+					"added": timegm(track.added.utctimetuple()),
+					"expired": timegm(track.expired.utctimetuple()),
 				})
 
 		#We format a message and send it to the client
