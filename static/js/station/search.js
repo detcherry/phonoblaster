@@ -18,7 +18,6 @@ YoutubeSearch.prototype = {
 				return false;
 			});
 		
-		
 		//Listen to keyboard events (except when user presses 'enter' because otherwise it makes 2 queries)
 		$("form#search")
 			.bind("keyup",function(event){
@@ -164,6 +163,7 @@ YoutubeSearch.prototype = {
 				if(json.status == "Added"){						
 					console.log("Your song has been added to the tracklist");
 					that.trackAdded(id);
+					that.tracklistManager.latestTracksManager.displayAtTheTop(title, id, thumbnail, duration)
 				}
 				else{
 					console.log("Already 10 songs in the list. Wait for a few minutes before submitting a new song");
