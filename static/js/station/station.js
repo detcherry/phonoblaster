@@ -234,7 +234,7 @@ TracklistManager.prototype = {
 			console.log("▶ New track launched: "+ this.new_track.title + " at " + video_start.toString() +" sec")	
 			this.youtubeController.init(this.new_track.id, video_start);
 			this.displayInformation(video_start);
-			
+			this.displayProgress(video_start);
 		}
 		else{
 			console.log("No track found")
@@ -278,6 +278,17 @@ TracklistManager.prototype = {
 					.html("▶ "+ this.new_track.title + " at " + to_display)
 			)
 		
+	},
+	
+	displayProgress: function(video_start){
+		console.log(video_start);
+		console.log(this.new_track.duration);
+		x = parseInt(video_start*500/(this.new_track.duration));
+		console.log(x);	
+		$('#filler').css('width', x.toString() + 'px');
+		$('#filler').animate({
+			width:'500px',
+		},parseInt(this.new_track.duration - video_start)*1000,'linear');
 	},
 	
 }
@@ -443,9 +454,17 @@ YoutubeController.prototype = {
 	
 	empty: function(){
 		$("#live-video").empty();
-		$("#live-video").append(
-			$("<div/>").attr("id","youtube_player")
-		);
+		$("#live-video")
+			.append(
+				$("<div/>").attr("id","youtube_player")
+			)
+			.append(
+				$("<div/>")
+					.attr("id","progression_bar")
+					.append(
+						$("<div/>").attr("id", "filler")
+					)
+			);
 	},
 	
 }
