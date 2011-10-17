@@ -62,5 +62,10 @@ indexes:
 - kind: Track
   properties:
   - name: submitter
-  - name: added
+  - name: expired
+
+- kind: Track
+  properties:
+  - name: submitter
+  - name: expired
     direction: desc

@@ -166,7 +166,9 @@ function TracklistManager(){
 	this.uiTracklistController = new UITracklistController();
 	this.youtubeController = new YoutubeController();
 	this.searchController = new YoutubeSearch(this);
-	this.shuffleController = new ShuffleController(this);
+	if(user_fcbk_id){
+		this.latestTracksManager = new LatestTracksManager(this);
+	}
 }
 
 TracklistManager.prototype = {
@@ -281,10 +283,7 @@ TracklistManager.prototype = {
 	},
 	
 	displayProgress: function(video_start){
-		console.log(video_start);
-		console.log(this.new_track.duration);
 		x = parseInt(video_start*500/(this.new_track.duration));
-		console.log(x);	
 		$('#filler').css('width', x.toString() + 'px');
 		$('#filler').animate({
 			width:'500px',

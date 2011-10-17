@@ -86,9 +86,7 @@
 		<li><a href="#tracks_tab" class="current">Next</a></li>
 		{% if allowed_to_post %}
 		<li><a href="#search_tab">Search tracks</a></li>
-		<!--
-		<li><a href="#shuffle_tab">Shuffle</a></li>
-		-->
+		<li><a href="#latest_tab">Latest</a></li>
 		{% endif %}
 	</ul>
 	<div id="tab_content_wrap">
@@ -108,13 +106,14 @@
 				No search yet.
 			</div>
 		</div>
-		<!--
-		<div id="shuffle_tab" class="tab_content">
-			<div id="shuffle">
-				Add tracks directly from your recent history!
-				<a href="" id="shuffle" class="button">Shuffle now!</a>
+		<div id="latest_tab" class="tab_content">
+			<div id="latest">
+				<p>Tracks you recently posted:</p>
+				<div class="loader" style="margin-top:20px;">
+					<img src="/static/images/small-ajax-loader.gif" class="loader"/>
+				</div>
 			</div>
-		</div>-->
+		</div>
 		{% endif %}
 	</div>
 {% endblock %}
@@ -129,7 +128,7 @@
 	<script type="text/javascript" src="/static/js/station/swfobject.js"></script>
 	<script type="text/javascript" src="/static/js/station/station.js"></script>
 	<script type="text/javascript" src="/static/js/station/chat.js"></script>
-	<script type="text/javascript" src="/static/js/station/shuffle.js"></script>
+	<script type="text/javascript" src="/static/js/station/latest.js"></script>
 	<script type="text/javascript" src="/_ah/channel/jsapi"></script>
 	<script>
 		//Global variables
