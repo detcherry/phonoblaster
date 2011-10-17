@@ -6,7 +6,8 @@ from controllers.station.root import *
 
 class StationTracksHandler(RootStationHandler):
 	def get(self, station_id):
-		self.current_station = Station.all().filter("identifier", station_id).get()
+		self.station_proxy = InterfaceStation(station_identifier =  station_id)
+		self.current_station = self.station_proxy.station
 		
 		if not self.current_station:
 			self.redirect("/error/404")
@@ -30,7 +31,8 @@ class StationTracksHandler(RootStationHandler):
 	def post(self, station_id):
 		tracks_per_page = 10
 		
-		self.current_station = Station.all().filter("identifier", station_id).get()
+		self.station_proxy = InterfaceStation(station_identifier =  station_id)
+		self.current_station = self.station_proxy.station
 		self.next = datetime.utcfromtimestamp(int(self.request.get("next")))
 		query = Track.all().filter("station", self.current_station.key()).filter("expired <", self.next).order("-expired")
 		

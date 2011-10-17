@@ -1,12 +1,15 @@
-{% extends "root.html" %}
+{% extends "../base.html" %}
 
 {% block style %}
-	<link type="text/css" rel="stylesheet" href="/static/css/station/station.css" />
 	<link type="text/css" rel="stylesheet" href="/static/css/station/edit.css" />
 {% endblock %}
 
-{% block middle-column %}
-	<h2>{{ current_station.identifier}}/edit</h2>
+{% block header %}
+	{% include "../header.html" %}
+{% endblock %}
+
+{% block main %}
+	<h3>{{ current_station.identifier}}/edit</h3>
 	<div class="fields">
 		<form action="{{ blobstore_url }}" method="post" enctype="multipart/form-data" id="picture_upload">
 			<div class="field_row">
@@ -77,6 +80,10 @@
 			</div>
 		</form>
 	</div>
+{% endblock %}
+
+{% block footer %}
+	{% include "../footer.html" %}
 {% endblock %}
 
 {% block script %}

@@ -2,20 +2,23 @@ from controllers.base import *
 
 from django.utils import simplejson
 
-from models.db.station import Station
+from models.interface.station import InterfaceStation
 
 class StationCheckHandler(BaseHandler):
 	@login_required
 	def post(self):
-		stationID = self.request.get("station_id").lower()
-		jsonResponse = {}
+		station_id = self.request.get("station_id").lower()
+		json_response = {}
 		
-		existingStation = Station.all().filter("identifier",stationID).get()
-		if(existingStation):
-			jsonResponse["available"] = "False"
+		station_proxy = InterfaceStation(station_identifier = station_id)
+		existing_station = station_proxy.station
+		
+		if(existing_station):
+			json_response["available"] = "False"
 		else:
-			jsonResponse["available"] = "True"
-		self.response.out.write(simplejson.dumps(jsonResponse))
+			json_response["available"] = "True"
+		self.response.out.write(simplejson.dumps(json_response))
+
 
 application = webapp.WSGIApplication([
 	(r"/station/check", StationCheckHandler),

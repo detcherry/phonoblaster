@@ -5,7 +5,7 @@ from django.utils import simplejson
 from models.db.station import Station
 from models.db.contribution import Contribution
 from models.db.track import Track
-from models.queue import Queue
+from models.interface.station import InterfaceStation
 from models.notifiers.track import TrackNotifier
 
 from google.appengine.api import channel
@@ -21,9 +21,9 @@ class AddTrackHandler(BaseHandler):
 		self.channel_id = self.request.get("channel_id")
 		
 		track_added = []
-		queue = Queue(self.station_key)
+		station_proxy = InterfaceStation(station_key = self.station_key)
 		track_added.append(
-			queue.add_track(self.youtube_title, self.youtube_id, self.youtube_thumbnail, self.youtube_duration, str(self.current_user.key()))
+			station_proxy.add_track(self.youtube_title, self.youtube_id, self.youtube_thumbnail, self.youtube_duration, str(self.current_user.key()))
 		)
 		if(track_added):
 			# Send message to everyone 

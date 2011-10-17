@@ -43,7 +43,7 @@ FcbkRequestsManager.prototype = {
 			dataType: "json",
 			timeout: 60000,
 			data: {
-				station_id: current_station_name,
+				station_key: station_key,
 				recipient_ids: recipients,
 				request_id: request,
 			},
@@ -107,8 +107,7 @@ DeleteManager.prototype = {
 					dataType: "json",
 					timeout: 60000,
 					data: {
-						station_id: current_station_name,
-						key: contribution_key,
+						contribution_key: contribution_key,
 					},
 					success: function(json){
 			        	window.location.reload();

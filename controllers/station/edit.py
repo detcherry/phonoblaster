@@ -1,104 +1,115 @@
 import re
 
-from controllers.station.root import *
+from controllers.base import *
 
 from google.appengine.ext import blobstore
 from google.appengine.ext.blobstore import BlobInfo
 
-class StationEditHandler(RootStationHandler):
+from models.interface import config
+from models.interface.station import InterfaceStation
+
+from google.appengine.api import memcache
+
+class StationEditHandler(BaseHandler):
+	@login_required
 	def get(self, station_id):
-		self.current_station = Station.all().filter("identifier", station_id).get()
+		self.station_proxy = InterfaceStation(station_identifier = station_id)
+		self.current_station = self.station_proxy.station
 		
 		if not self.current_station:
 			self.redirect("/error/404")
 		else:
-			if(self.current_station.creator.key() == self.current_user.key()):
+			if(self.station_proxy.is_creator(self.current_user.key())):
 				self.additional_template_values = {
-					"blobstore_url": blobstore.create_upload_url('/picture/upload')
+					"blobstore_url": blobstore.create_upload_url('/picture/upload'),
+					"current_station": self.current_station,
 				}
-				self.render("../../templates/station/edit.html")
+				self.render("../templates/station/edit.html")
 			else:
 				self.error(403)
 	
 	def post(self, station_id):
-		logging.info("trying to edit the station")
-		self.current_station = Station.all().filter("identifier", station_id).get()
+		self.station_proxy = InterfaceStation(station_identifier = station_id)
+		self.current_station = self.station_proxy.station
 		
 		if not self.current_station:
 			self.error(404)
 		else:
-			if(self.current_station.creator.key() == self.current_user.key()):
-				self.new_picture = self.request.get("blob_key")
-				self.new_thumbnail = self.request.get("thumbnail_blob_key")
-				self.new_identifier = self.request.get("identifier").lower()
-				self.new_website = self.request.get("website")
-				self.new_description = self.request.get("description")
+			if(self.station_proxy.is_creator(self.current_user.key())):
+				
+				self.submitted_picture = self.request.get("blob_key")
+				self.submitted_thumbnail = self.request.get("thumbnail_blob_key")
+				self.submitted_identifier = self.request.get("identifier").lower()
+				self.submitted_website = self.request.get("website")
+				self.submitted_description = self.request.get("description")
 				
 				#Small processing for the website url
-				if self.new_website != "":
-					match = re.search("(http://|https://)", self.new_website)
+				if self.submitted_website != "":
+					match = re.search("(http://|https://)", self.submitted_website)
 					if not match:
-						self.new_website = "http://" + self.new_website
+						self.submitted_website = "http://" + self.submitted_website
 				
-				self.checkPicture()
-				self.checkThumbnail()
-				idOk = self.checkIdentifier()
-				websiteOk = self.checkSize(self.new_website, 40)
-				descriptionOk = self.checkSize(self.new_description, 141)
+				picture_ok = self.check_image(self.submitted_picture)
+				thumbnail_ok = self.check_image(self.submitted_thumbnail)				
+				id_ok = self.check_identifier(self.submitted_identifier)
+				website_ok = self.check_size(self.submitted_website, 40)
+				description_ok = self.check_size(self.submitted_description, 141)
 				
-				if(idOk and websiteOk and descriptionOk):
-					self.current_station.website = self.new_website
-					self.current_station.description = self.new_description
-					self.current_station.put()
-					self.redirect("/"+self.new_identifier)
+				
+				if(picture_ok and thumbnail_ok and id_ok and website_ok and description_ok):
 					
+					self.station_proxy.update_station(
+						picture = self.submitted_picture,
+						thumbnail = self.submitted_thumbnail,
+						identifier = self.submitted_identifier,
+						website = self.submitted_website,
+						description = self.submitted_description,
+					)
+					
+					self.redirect("/" + self.submitted_identifier)
+				
 				else:
 					self.error(403)
+			
 			else:
 				self.error(403)
 	
-				
-	def checkPicture(self):
-		if(self.new_picture):
-			blob_info = BlobInfo.get(self.new_picture)
+	def check_image(self, image_blob_key):
+		if(image_blob_key):
+			blob_info = BlobInfo.get(image_blob_key)
 			if blob_info:
-				self.current_station.picture = self.new_picture
-			
-	def checkThumbnail(self):
-		if(self.new_thumbnail):
-			blob_info = BlobInfo.get(self.new_thumbnail)
-			if blob_info:
-				self.current_station.thumbnail = self.new_thumbnail
-	
-	def checkIdentifier(self):
-		if(self.new_identifier != self.current_station.identifier):
-			idOk = False
-			match = re.search("[^a-zA-Z0-9_]", self.new_identifier)
-			if not match:
-				idOk = True
-
-			stationAvailability = False		
-			existingID = Station.all().filter("identifier", self.new_identifier).get()
-			if not existingID:
-				stationAvailability = True
-
-			idSizeOk = self.checkSize(self.new_identifier, 20)
-
-			if(idOk and stationAvailability and idSizeOk):
-				self.current_station.identifier = self.new_identifier
 				return True
 			else:
 				return False
 		else:
 			return True
-
-	def checkSize(self, string, size):
-		sizeOk = False
+			
+	def check_size(self, string, size):
+		size_ok = False
 		if(len(string) < size):
-			sizeOk = True
-		return sizeOk
-		
+			size_ok = True
+		return size_ok		
 	
+	def check_identifier(self, submitted_identifier):
+		if(submitted_identifier != self.current_station.identifier):
+			id_ok = False
+			match = re.search("[^a-zA-Z0-9_]", submitted_identifier)
+			if not match:
+				id_ok = True
+
+			station_availability = False		
+			existing_station = InterfaceStation(station_identifier = submitted_identifier).station
+			if not existing_station:
+				station_availability = True
+
+			id_size_ok = self.check_size(submitted_identifier, 20)
+
+			if(id_ok and station_availability and id_size_ok):
+				return True
+			else:
+				return False
+		else:
+			return True
 
 application = webapp.WSGIApplication([
 	(r"/(\w+)/edit", StationEditHandler),

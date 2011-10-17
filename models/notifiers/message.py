@@ -3,7 +3,7 @@ from datetime import timedelta
 from calendar import timegm
 from django.utils import simplejson
 
-from google.appengine.api.labs.taskqueue import Task
+from google.appengine.api.taskqueue import Task
 
 class MessageNotifier():
 	

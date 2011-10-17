@@ -10,17 +10,19 @@ from google.appengine.ext.webapp.util import run_wsgi_app
 from google.appengine.ext.webapp import template
 
 from controllers import config
-from models.queue import Queue
+from models.interface.station import InterfaceStation
 from models.db.station import Station
 from models.db.session import Session
+from models.db.track import Track
 
 class WidgetCreationHandler(webapp.RequestHandler):
 	def get(self):
 		identifier = self.request.get('identifier')
-		station = Station.all().filter("identifier", identifier).get()	
+		station_proxy = InterfaceStation(station_identifier = identifier)
+		station = station_proxy.station
 		
 		template_values = {
-			'station':station,
+			'station': station,
 			'site_url': config.SITE_URL,
 		}
 							
@@ -30,16 +32,10 @@ class WidgetCreationHandler(webapp.RequestHandler):
 class WidgetConfigureHandler(webapp.RequestHandler):
 	def get(self):
 		identifier = self.request.get('identifier')
-		station = Station.all().filter("identifier", identifier).get()
-		queue = Queue(station.key())
-		tracks = queue.getTracks()
-		
-		# Get the number of listeners
-		q = Session.all()
-		q.filter("station", station.key())
-		q.filter("ended", None)
-		q.filter("created >", datetime.now() - timedelta(0,7200))
-		number_listeners = q.count()
+		station_proxy = InterfaceStation(station_identifier = identifier)
+		station = station_proxy.station
+		tracks = station_proxy.station_tracklist
+		number_listeners = len(station_proxy.station_sessions)
 		
 		if len(tracks) > 0:
 			self.response.out.write(simplejson.dumps({"status":"Yes","tracks":[track.to_dict() for track in tracks],"listeners":number_listeners}))
@@ -48,13 +44,18 @@ class WidgetConfigureHandler(webapp.RequestHandler):
 
 class WidgetHistoryHandler(webapp.RequestHandler):
 	def get(self):
-		identifier = self.request.get('identifier')
-		station = Station.all().filter("identifier", identifier).get()
-		queue = Queue(station.key())
-		tracks = queue.getRecentHistory(6)
+		identifier = self.request.get('identifier')		
+		station_proxy = InterfaceStation(station_identifier = identifier)
+		station = station_proxy.station
 		
-		if len(tracks) > 0:
-			self.response.out.write(simplejson.dumps({"status":"Yes","tracks":[track.to_dict() for track in tracks]}))
+		q = Track.all()
+		q.filter("station",station.key())
+		q.filter("expired <", datetime.now())
+		q.order("-expired")
+		last_tracks = q.fetch(6)
+		
+		if len(last_tracks) > 0:
+			self.response.out.write(simplejson.dumps({"status":"Yes","tracks":[track.to_dict() for track in last_tracks]}))
 		else:
 			self.response.out.write(simplejson.dumps({"status":"No"}))
 

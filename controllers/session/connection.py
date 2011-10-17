@@ -13,9 +13,9 @@ from models.db.track import Track
 from models.db.session import Session
 from models.db.station import Station
 from models.db.message import Message
-from models.queue import Queue
+from models.interface.station import InterfaceStation
 
-from google.appengine.api.labs.taskqueue import Task
+from google.appengine.api.taskqueue import Task
 
 class ChannelConnectionHandler(webapp.RequestHandler):
 	def post(self):
@@ -24,13 +24,11 @@ class ChannelConnectionHandler(webapp.RequestHandler):
 		
 		#We extract the session
 		session = Session.all().filter("channel_id", channel_id).get()
-		station = session.station
-		logging.info("Listening to the station %s" %(station.identifier))
+		station_key = Session.station.get_value_for_datastore(session)
 		
 		#We get the current playlist
-		queue = Queue(station.key())
-		#tracklist = queue.getTracks()
-		tracklist = queue.get_tracks()
+		station_proxy = InterfaceStation(station_key = station_key)
+		tracklist = station_proxy.station_tracklist
 
 		tracklist_init_output = []
 		if(tracklist):
@@ -61,7 +59,7 @@ class ChannelConnectionHandler(webapp.RequestHandler):
 		
 		#We get the 10 last messages (from the last 3 minutes)
 		query = Message.all()
-		query.filter("station", station.key())
+		query.filter("station", station_key)
 		query.filter("added >", datetime.now() - timedelta(0,180))
 		messages = query.fetch(10)
 		
@@ -97,7 +95,7 @@ class ChannelConnectionHandler(webapp.RequestHandler):
 		task = Task(
 			url = "/taskqueue/notify",
 			params = { 
-				"station_key": str(station.key()),
+				"station_key": str(station_key),
 				"data": simplejson.dumps(listener_new_data),
 				"excluded_channel_id": excluded_channel_id,
 			},
@@ -106,12 +104,7 @@ class ChannelConnectionHandler(webapp.RequestHandler):
 			queue_name = "listener-queue-1"
 		)
 		
-		# Retrieve the number of active sessions
-		q = Session.all()
-		q.filter("station", station.key())
-		q.filter("ended", None)
-		q.filter("created >", datetime.now() - timedelta(0,7200))
-		nb_of_listeners = q.count()
+		nb_of_listeners = len(station_proxy.station_sessions)
 		
 		listener_init_data = {
 			"type":"listener_init",

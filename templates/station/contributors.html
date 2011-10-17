@@ -66,10 +66,11 @@
 {% block script %}
 	<script type="text/javascript" src="/static/js/station/contributors.js"></script>
 	<script>
+		var station_key = "{{ current_station.key }}"
 		var current_station_name = "{{ current_station.identifier }}";
 		var exclude_ids = ["{{ current_station.creator.facebook_id }}"];
 		{% for contribution in current_contributions %}
-			exclude_ids.push("{{ contribution.contributor.facebook_id }}");
+			exclude_ids.push("{{ contribution.1.facebook_id }}");
 		{% endfor %}
 	</script>
 {% endblock %}

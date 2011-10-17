@@ -3,8 +3,9 @@ from datetime import timedelta
 from calendar import timegm
 from django.utils import simplejson
 
+from google.appengine.ext import db
 from google.appengine.api import channel
-from google.appengine.api.labs.taskqueue import Task
+from google.appengine.api.taskqueue import Task
 
 from models.db.track import Track
 from models.db.user import User
@@ -21,18 +22,25 @@ class TrackNotifier():
 	
 	def build(self):
 		self.output = []
-		for track in self.tracklist:
-			self.output.append({
-				"phonoblaster_id": str(track.key().id()),
-				"title":track.youtube_title,
-				"id": track.youtube_id,
-				"thumbnail": track.youtube_thumbnail_url,
-				"duration": track.youtube_duration,
-				"submitter_id": track.submitter.key().id(),
-				"submitter_fcbk_id": track.submitter.facebook_id,
-				"added": timegm(track.added.utctimetuple()),
-				"expired": timegm(track.expired.utctimetuple()),
-			})
+		
+		if(self.tracklist):
+			# Get the submitters in one trip to the datastore
+			user_keys = [Track.submitter.get_value_for_datastore(t) for t in self.tracklist]
+			submitters = db.get(user_keys)
+					
+			for track, submitter in zip(self.tracklist, submitters):
+				self.output.append({
+					"phonoblaster_id": str(track.key().id()),
+					"title":track.youtube_title,
+					"id": track.youtube_id,
+					"thumbnail": track.youtube_thumbnail_url,
+					"duration": track.youtube_duration,
+					"submitter_id": submitter.key().id(),
+					"submitter_fcbk_id": submitter.facebook_id,
+					"added": timegm(track.added.utctimetuple()),
+					"expired": timegm(track.expired.utctimetuple()),
+				})
+		
 		self.data = {
 			"type": "tracklist_new",
 			"content": self.output,

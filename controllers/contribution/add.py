@@ -4,31 +4,29 @@ from models.db.user import User
 from models.db.station import Station
 from models.db.contribution import Contribution
 from models.db.request import FcbkRequest
+from models.interface.station import InterfaceStation
 
 class AddContributionHandler(BaseHandler):
 	@login_required
 	def post(self):
-		station_id = self.request.get("station_id")
-		self.station = Station.all().filter("identifier", station_id).get()
+		station_key = self.request.get("station_key")
 		self.request_id = self.request.get("request_id")
 		self.invitees = self.request.get("recipient_ids").split(",")
 		
-		if(self.isStationCreator()):
-			self.storeRequest()
-			self.getExistingContributors()			
-			self.getNewContributors()
-			self.limitContributorsTo10()
-			self.storeNewContributors()
+		# The proxy will allow us to retrieve and add contributors consistently with the memcache
+		self.station_proxy = InterfaceStation(station_key = station_key)
+		self.station = self.station_proxy.station
+		
+		if(self.is_station_creator()):
+			self.store_facebook_request()
+			self.insert_or_get_contributors()
 		else:
 			self.error(403)
 	
-	def isStationCreator(self):
-		if(self.station.creator.key() == self.current_user.key()):
-			return True
-		else:
-			return False
+	def is_station_creator(self):
+		return self.station_proxy.is_creator(self.current_user.key())
 	
-	def storeRequest(self):		
+	def store_facebook_request(self):		
 		fcbkRequest = FcbkRequest(
 			fcbk_id = self.request_id,
 			requester = self.current_user.key(),
@@ -36,50 +34,20 @@ class AddContributionHandler(BaseHandler):
 		)
 		fcbkRequest.put()
 
-	def getExistingContributors(self):
-		self.existing_contributors = []
-		existing_contributions = Contribution.all().filter("station", self.station.key())
-		
-		for contribution in existing_contributions:
-			self.existing_contributors.append(contribution.contributor.facebook_id)
-		
-		logging.info("Existing contributors: %s" % (self.existing_contributors))
-	
-	def getNewContributors(self):
-		self.new_contributors = []
-		for contributor in self.existing_contributors:
-			for invitee in self.invitees:
-				if(invitee == contributor):
-					self.invitees.remove(invitee)
-					break
-		self.new_contributors = self.invitees
-		
-		logging.info("New contributors: %s" %(self.new_contributors))
-		
-	def limitContributorsTo10(self):
-		number_of_contributors_left = 10 - len(self.existing_contributors)
-		number_of_new_contributors_to_eject = len(self.new_contributors) - number_of_contributors_left
-		if(number_of_new_contributors_to_eject > 0):
-			for i in range(0, number_of_new_contributors_to_eject):
-				self.new_contributors.pop()
+	def insert_or_get_contributors(self):
+		self.new_contributors = self.invitees[0:9]
+		phonoblaster_contributors = []
+		facebook_contributors = []
 
-	def storeNewContributors(self):
 		if(self.new_contributors):
 			#First we handle the users that are already on phonoblaster
-			phonoblaster_users = User.all().filter("facebook_id IN", self.new_contributors)			
-			for phonoblaster_user in phonoblaster_users:
-				#We store the new contribution
-				contribution = Contribution(
-					contributor = phonoblaster_user.key(),
-					station = self.station.key(),
-				)
-				contribution.put()
-				logging.info("Contribution saved for an existing phonoblaster user: %s" %(phonoblaster_user.name))
-				#We widthdraw the the facebook id from the list of new contributors
-				self.new_contributors.remove(phonoblaster_user.facebook_id)
+			phonoblaster_contributors = User.all().filter("facebook_id IN", self.new_contributors).fetch(10)		
+			#We widthdraw the the facebook id from the list of new contributors
+			for user in phonoblaster_contributors:
+				self.new_contributors.remove(user.facebook_id)
 		
+		# If there are some people left, that means they're only on Facebook (for the moment)
 		if(self.new_contributors):
-			#Second, we handle the users that are only on facebook
 			cookie = controllers.facebook.get_user_from_cookie(
 				self.request.cookies,
 				controllers.config.FACEBOOK_APP_ID,
@@ -89,23 +57,22 @@ class AddContributionHandler(BaseHandler):
 			facebook_users = self.graph.get_objects(self.new_contributors)
 			for user_id in facebook_users:
 				#We store the new user
-				user = User(
+				new_user = User(
 					facebook_id = user_id,
 					name = facebook_users[user_id]["name"],
 					first_name = facebook_users[user_id]["first_name"],
 					last_name = facebook_users[user_id]["last_name"],
 					public_name = facebook_users[user_id]["first_name"] + " " + facebook_users[user_id]["last_name"][0] +".",
 				)
-				user.put()
-				logging.info("New phonoblaster user saved: %s" %(user.name))
-				#We store the new contribution
-				contribution = Contribution(
-					contributor = user.key(),
-					station = self.station.key()
-				)
-				contribution.put()
-				logging.info("New contribution saved for the user that has just been saved")
-		
+				facebook_contributors.append(new_user)
+
+			# We save them in bulk in the datastore
+			db.put(facebook_contributors)
+			logging.info("Facebook users invited to contribute are now pseudo phonoblaster users: they're partially in the datastore")
+
+		# Now that we only have Phonoblaster users, we pass them to the station proxy (will handle memcache and datastore)
+		all_contributors = phonoblaster_contributors + facebook_contributors
+		self.station_proxy.add_contributors(all_contributors)
 
 
 application = webapp.WSGIApplication([

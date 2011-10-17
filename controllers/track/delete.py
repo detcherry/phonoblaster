@@ -8,9 +8,9 @@ from django.utils import simplejson
 from models.db.station import Station
 from models.db.track import Track
 from models.db.session import Session
-from models.queue import Queue
+from models.interface.station import InterfaceStation
 
-from google.appengine.api.labs.taskqueue import Task
+from google.appengine.api.taskqueue import Task
 
 class DeleteTrackHandler(BaseHandler):
 	@login_required
@@ -18,8 +18,8 @@ class DeleteTrackHandler(BaseHandler):
 		phonoblaster_id = self.request.get("id")
 		station_key = self.request.get("station_key")
 		
-		queue = Queue(station_key)
-		response = queue.delete_track(str(self.current_user.key()), phonoblaster_id)
+		station_proxy = InterfaceStation(station_key = station_key)
+		response = station_proxy.delete_track(str(self.current_user.key()), phonoblaster_id)
 		if(response):
 			# Build the data
 			self.data = {

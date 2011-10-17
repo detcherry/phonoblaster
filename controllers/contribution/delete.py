@@ -1,19 +1,27 @@
 from controllers.base import *
 
+from django.utils import simplejson
+
 from models.db.station import Station
 from models.db.contribution import Contribution
+from models.interface.station import InterfaceStation
 
 class DeleteContributionHandler(BaseHandler):
 	@login_required
 	def post(self):
-		station_id = self.request.get("station_id")
-		contribution_key = self.request.get("key")
-		contribution = Contribution.get(contribution_key)
+		contribution_key = self.request.get("contribution_key")
+		contribution_to_delete = Contribution.get(contribution_key)
+		station_key = Contribution.station.get_value_for_datastore(contribution_to_delete)
+		contributor_to_delete_key = Contribution.contributor.get_value_for_datastore(contribution_to_delete)
 		
-		if(contribution.station.creator.key() == self.current_user.key()):
-			contribution.delete()
+		station_proxy = InterfaceStation(station_key = station_key)		
+		response = station_proxy.delete_contributor(str(self.current_user.key()), contribution_key, contributor_to_delete_key)
+		
+		if response:
+			self.response.out.write(simplejson.dumps({"status":"Deleted"}))
 		else:
-			self.error(403)
+			self.response.out.write(simplejson.dumps({"status":"notDeleted"}))
+
 
 application = webapp.WSGIApplication([
 	(r"/contribution/delete", DeleteContributionHandler),

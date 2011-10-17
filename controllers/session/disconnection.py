@@ -8,7 +8,8 @@ from google.appengine.ext import webapp
 from google.appengine.ext.webapp.util import run_wsgi_app
 
 from models.db.session import Session
-from google.appengine.api.labs.taskqueue import Task
+from models.interface.station import InterfaceStation
+from google.appengine.api.taskqueue import Task
 
 class ChannelDisconnectionHandler(webapp.RequestHandler):
 	def post(self):
@@ -16,12 +17,10 @@ class ChannelDisconnectionHandler(webapp.RequestHandler):
 		logging.info("%s cannot receive messages anymore" %(client_id))
 		
 		session = Session.all().filter("channel_id", client_id).get()
+		station_key = Session.station.get_value_for_datastore(session)
 		
-		station_left = session.station
-		
-		session.ended = datetime.now()
-		session.put()
-		logging.info("Station %s doesn't feed this channel anymore" %(session.station.identifier))
+		station_proxy = InterfaceStation(station_key = station_key)
+		station_proxy.end_session(session)
 		
 		#Send everyone a message that a listener has left the room
 		listener_delete_data = {
@@ -32,7 +31,7 @@ class ChannelDisconnectionHandler(webapp.RequestHandler):
 		task = Task(
 			url = "/taskqueue/notify",
 			params = { 
-				"station_key": str(station_left.key()),
+				"station_key": str(station_key),
 				"data": simplejson.dumps(listener_delete_data),
 				"excluded_channel_id": excluded_channel_id,
 			},

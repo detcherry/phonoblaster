@@ -9,22 +9,17 @@ from google.appengine.ext.webapp.util import run_wsgi_app
 from google.appengine.api import channel
 from google.appengine.ext import db
 
-from models.db.session import Session
+from models.interface.station import InterfaceStation
 
 class NotificationHandler(webapp.RequestHandler):
 	def post(self):
 		self.station_key = db.Key(self.request.get("station_key"))
 		self.json = self.request.get("data")
 		self.excluded_channel_id = self.request.get("excluded_channel_id")
-
-		# Get active sessions
-		q = Session.all()
-		q.filter("station", self.station_key)
-		q.filter("ended", None)
-		q.filter("created >", datetime.now() - timedelta(0,7200))
 		
-		# For the moment we will only fetch the 100 listening sessions
-		active_sessions = q.fetch(100)
+		# Get active sessions
+		station_proxy = InterfaceStation(station_key = self.station_key)
+		active_sessions = station_proxy.station_sessions
 		
 		if(self.excluded_channel_id):
 			# Send message to everybody except the excluded channel
