@@ -235,9 +235,8 @@ LatestTracksManager.prototype = {
 		}
 		to_display = minutes.toString() + ":" + seconds;
 		
-		$("#latest .track")
-			.first()
-			.before(
+		$("#latest_tracks_paragraph")
+			.after(
 				$("<div/>")
 					.addClass("track")
 					.attr("id", id)
@@ -294,9 +293,9 @@ LatestTracksManager.prototype = {
 									.html("Add to list")
 							)
 					)
-
 			)
 		
+		// Listen to the add_to_buffer link that is on the track just added
 		this.listen();
 	},
 	
