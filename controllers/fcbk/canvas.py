@@ -38,6 +38,7 @@ class CanvasHandler(BaseHandler):
 				"current_user_station": current_user_station,
 				"active_stations": active_stations,
 				"non_active_stations": non_active_stations,
+				"site_url": controllers.config.SITE_URL,
 			}
 			self.render("../templates/facebook/home.html")
 	

@@ -9,7 +9,7 @@
 		<div class="container">
 			<div id="logo">
 				<h1>Phonoblaster</h1>
-				<a href="/" target="_blank"><img src="/static/images/phonoblaster.png" alt="phonoblaster logo"/></a>
+				<a href="{{ site_url }}" target="_blank"><img src="/static/images/phonoblaster.png" alt="phonoblaster logo"/></a>
 			</div>
 			<h2>Share and listen to music LIVE!</h2>
 		</div>
@@ -24,9 +24,11 @@
 		<div id="station-items">
 			{% for station in active_stations %}
 			<div class="station-item">
-				<h3><a href="/{{ station.identifier }}" target="_blank">{{ station.identifier }}</a></h3>
-				<a href="/{{ station.identifier }}" class="img" target="_blank"><img src="/picture/view/{{ station.thumbnail.key }}"></a>
-				<a href="/{{ station.identifier }}" class="button" target="_blank">Tune in!</a>
+				<h3><a href="{{ site_url }}/{{ station.identifier }}" target="_blank">{{ station.identifier }}</a></h3>
+				<a href="{{ site_url }}/{{ station.identifier }}" class="img" target="_blank">
+					<img src="/picture/view/{{ station.thumbnail.key }}">
+				</a>
+				<a href="{{ site_url }}/{{ station.identifier }}" class="button" target="_blank">Tune in!</a>
 			</div>
 			{% endfor %}
 		</div>
@@ -37,9 +39,11 @@
 		<div id="station-items">
 			{% for station in non_active_stations %}
 			<div class="station-item">
-				<h3><a href="/{{ station.identifier }}" target="_blank">{{ station.identifier }}</a></h3>
-				<a href="/{{ station.identifier }}" class="img" target="_blank"><img src="/picture/view/{{ station.thumbnail.key }}"></a>
-				<a href="/{{ station.identifier }}" class="button" target="_blank">Tune in!</a>
+				<h3><a href="{{ site_url }}/{{ station.identifier }}" target="_blank">{{ station.identifier }}</a></h3>
+				<a href="{{ site_url }}/{{ station.identifier }}" class="img" target="_blank">
+					<img src="/picture/view/{{ station.thumbnail.key }}">
+				</a>
+				<a href="{{ site_url }}/{{ station.identifier }}" class="button" target="_blank">Tune in!</a>
 			</div>
 			{% endfor %}				
 		</div>
