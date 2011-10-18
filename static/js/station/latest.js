@@ -28,7 +28,6 @@ LatestTracksManager.prototype = {
 			},
 			success: function(json){
 				$("#latest .loader").remove();
-				console.log(json);
 				
 				//Display tracks
 				$.each(json.tracks, function(i){
@@ -55,8 +54,11 @@ LatestTracksManager.prototype = {
 						)
 					
 					that.date_limit = parseInt(json.date_limit);
-					that.listen();
 				}
+				
+				// Listen to events on this tab
+				that.listen();
+				
 			},
 		});
 		
