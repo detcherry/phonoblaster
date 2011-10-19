@@ -95,6 +95,24 @@
 	text-decoration:underline;
 }
 
+#left-column #contributor_items{
+	margin-top:4px;
+	width:100%;
+	text-align:center;
+}
+
+#left-column #contributor_items a{
+	display:inline;
+	float:none;
+	width:20px;
+	height:20px;
+}
+
+#left-column #contributor_items img{
+	width:20px;
+	height:20px;
+}
+
 #left-column #edit_station{
 	margin-top:10px;
 	padding-left:15%;

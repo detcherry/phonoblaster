@@ -36,13 +36,20 @@ class RootStationHandler(BaseHandler):
 			self._number_of_tracks = GeneralCounterShardConfig.get_count(counter_name)
 		return self._number_of_tracks
 	
+	@property
+	def current_contributors(self):
+		if not hasattr(self, "_current_contributors"):
+			self._current_contributors = self.station_proxy.station_contributors
+		return self._current_contributors
+	
 	def render(self, template_path):
 		path = os.path.join(os.path.dirname(__file__), template_path)		
 		
 		# Standard values that are added to the station.py, tracks.py, contributors.py handlers
 		self.additional_template_values["current_station"] = self.current_station
 		self.additional_template_values["number_of_tracks"] = self.number_of_tracks	
-		self.additional_template_values["number_of_contributions"] = len(self.station_proxy.station_contributors) + 1
+		self.additional_template_values["current_contributors"] = self.current_contributors
+		self.additional_template_values["number_of_contributions"] = len(self.current_contributors) + 1
 		
 		self.response.out.write(template.render(path, self.template_values))
 		
