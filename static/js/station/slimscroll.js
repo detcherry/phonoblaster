@@ -13,6 +13,7 @@
 			var isOverPanel, isOverBar, isDragg, queueHide,
 				divS = '<div></div>',
 				minBarHeight = 30,
+				maxBarHeight = 100,
 				wheelStep = 30,
 				o = o || {},
 				cwidth = o.width || 'auto',
@@ -71,7 +72,7 @@
 			bar.css(posCss);
 
 			//calculate scrollbar height and make sure it is not too small
-			var height = Math.max(0.8 * (me.outerHeight() / me[0].scrollHeight) * me.outerHeight(), minBarHeight);
+			var height = Math.max(Math.min(0.8 * (me.outerHeight() / me[0].scrollHeight) * me.outerHeight(), maxBarHeight), minBarHeight);
 			bar.css({ height: height + 'px' });
 
 			//wrap it
@@ -112,7 +113,7 @@
 			me.hover(function(){
 				isOverPanel = true;
 				showBar();
-				hideBar();
+				//hideBar();
 			}, function(){
 				isOverPanel = false;
 				hideBar();
@@ -126,8 +127,8 @@
 				var e = e || window.event;
 				
 				var delta = 0;
-				if (e.wheelDelta) { delta = -e.wheelDelta/120; }
-				if (e.detail) { delta = e.detail / 3; }
+				if (e.wheelDelta) { delta = -e.wheelDelta/120;}
+				if (e.detail) { delta = e.detail / 3;}
 
 				//scroll content
 				scrollContent(0, delta, true);
@@ -145,7 +146,7 @@
 				{
 					//move bar with mouse wheel
 					delta = bar.position().top + y * wheelStep;
-
+					
 					//move bar, make sure it doesn't go out
 					delta = Math.max(delta, 0);
 					var maxTop = me.outerHeight() - bar.outerHeight();
@@ -154,11 +155,11 @@
 					//scroll the scrollbar
 					bar.css({ top: delta + 'px' });
 				}
-			
+				
 				//calculate actual scroll amount
 				percentScroll = parseInt(bar.position().top) / (me.outerHeight() - bar.outerHeight());
 				delta = percentScroll * (me[0].scrollHeight - me.outerHeight());
-
+								
 				//scroll content
 				me.scrollTop(delta);
 				
