@@ -1,8 +1,7 @@
 /*-------- LEFT-COLUMN ---------- */
 
 #left-column{
-	position:fixed;
-	padding-top:10px;
+	padding-top:7px;
 	width:120px;
 	height:100%;
 }

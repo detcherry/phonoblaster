@@ -7,12 +7,6 @@ function ChatController(){
 	
 	// Slim scroll for the chat
 	this.scrollbar = new Scrollbar("#conversation", "500px", "114px")
-	/*
-	$("#conversation").slimScroll({
-        width: "500px",
-		height: "114px",
-	});
-	*/
 }
 
 ChatController.prototype = {
@@ -84,19 +78,6 @@ ChatController.prototype = {
 	},
 	
 	display: function(message){
-		//Update slimscroll
-		this.scrollbar.updateSize();
-		/*
-		var minBarHeight = 30;
-		var me = $("#conversation")
-		outerHeight = me.outerHeight()
-		scrollHeight = me[0].scrollHeight
-		newHeight = Math.max(0.8 * (outerHeight/ scrollHeight) * outerHeight, minBarHeight);
-		$("#conversation").parent().find(".slimScrollBar").css("height", newHeight+"px");
-		*/
-		
-		
-		
 		//Date handling
 		date = new Date(parseInt(message.added)*1000);
 		hours = parseInt(date.getHours());
@@ -173,6 +154,8 @@ ChatController.prototype = {
 			document.title = new_title;
 		}
 		
+		//Update slimscroll
+		this.scrollbar.updateSize();
 	}
 	
 }

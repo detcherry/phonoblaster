@@ -21,7 +21,12 @@
 
 /* ------ RIGHT COLUMN ------ */
 
+#tracks_tab{
+	padding-bottom:20px;
+}
+
 #tracks_history{
+	margin-top:10px;
 	padding-left:3%;
 	padding-bottom:10px;
 }
@@ -42,11 +47,13 @@
 a#fetch_old_tracks{
 	display:block;
 	float:left;
+	margin-bottom:20px;
+	margin-right:3%;
 	padding-top:5px;
 	padding-bottom:5px;
 	padding-left:3%;
 	padding-right:3%;
-	width:94%;
+	width:90%;
 	text-align:center;
 }
 

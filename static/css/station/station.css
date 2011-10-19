@@ -2,20 +2,13 @@
 @import url("contributors.css");
 @import url("tracks.css");
 
-/* -------- STATION --------- */
-
-#main{
-	padding-top:50px;
-	min-height:800px;
-}
+/* --------------------- STATION ------------------------ */
 
 /*-------- MIDDLE-COLUMN -------- */
 
 #middle-column{
-	position:fixed;
-	margin-left:130px;
-	padding-left:25px;
-	padding-top:10px;
+	padding-left:32px;
+	padding-top:6px;
 	width:520px;
 }
 
@@ -41,7 +34,7 @@
 /*--------- LIVE VIDEO ------------- */
 
 #live-video{
-	width:92%;
+	width:500px;
 }
 
 #youtube-player{
@@ -236,7 +229,7 @@
 #right-column{
 	float:right;
 	text-align:left;
-	padding-top:12px;
+	padding-top:6px;
 	width:310px;
 }
 
@@ -291,7 +284,7 @@
 .tab_content{
 	display:none;
 	padding-top:10px;
-	padding-left:3%;
+	padding-left:1%;
 	padding-right:3%;
 	padding-bottom:20px;
 	width:94%;
@@ -365,6 +358,7 @@
 
 #search_tab #search{
 	width:100%;
+	padding-bottom:10px;
 }
 
 #search_tab #search form{
@@ -388,7 +382,6 @@ input#search_button{
 }
 
 #search_tab #search_results{
-	padding-top:10px;
 	width:100%;
 }
 
@@ -397,10 +390,14 @@ input#search_button{
 }
 
 #search_tab .search_result{
-	padding-top:10px;
-	padding-bottom:10px;
+	padding-top:8px;
+	padding-bottom:8px;
 	width:100%;
 	height:60px;
+}
+
+#search_tab .search_result:first-child{
+	padding-top:0px;
 }
 
 #search_tab img{
@@ -459,7 +456,6 @@ input#search_button{
 }
 
 #latest div.loader img.loader{
-	xmargin-top:20px;
 	width:20px;
 	margin-left:45%;
 	border:none;

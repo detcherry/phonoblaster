@@ -87,13 +87,20 @@ $(function(){
 	//Set focus to true when the page had finished loading
 	window_focus = true;
 	
+	
+	// GLOBAL VARIABLES ----> FOR THE YOUTUBE PLAYER
+	YOUTUBE_ID = "";
+	VIDEO_START = 0;
+	
 });
 
 /* ------------- VOLUME MANAGEMENT -------------- */
 
 //Youtube Volume Management
 function onYouTubePlayerReady(playerId) {
-    ytplayer = document.getElementById("myytplayer");
+    //ytplayer = document.getElementById("myytplayer");
+	ytplayer = document.getElementById("ytplayer");
+	ytplayer.loadVideoById(YOUTUBE_ID, VIDEO_START);
 
 	//If the volume had been turned off, mute the player
 	if(!volume){
@@ -295,6 +302,8 @@ TracklistManager.prototype = {
 /* ------ UI TRACKLIST CONTROLLER -------- */
 
 function UITracklistController(){
+	//Init slimscroll
+	this.scrollbar = new Scrollbar("#tracks_tab #tracks", "309px", "510px")
 }
 
 
@@ -305,6 +314,7 @@ UITracklistController.prototype = {
 			track = tracklist[i];
 			this.add(track);
 		}
+		this.scrollbar.updateSize();
 	},
 	
 	add: function(track){
@@ -444,10 +454,16 @@ YoutubeController.prototype = {
 	init: function(youtubeID, videoStart){
 		this.empty();
 		
-		var videoURL = "http://www.youtube.com/e/" + youtubeID + "?enablejsapi=1&autoplay=1&controls=0&playerapiid=ytplayer&start=" + videoStart;
+		//var videoURL = "http://www.youtube.com/e/" + youtubeID + "?version=3&enablejsapi=1&autoplay=1&controls=0&playerapiid=ytplayer&start=" + videoStart;
 		var params = { allowScriptAccess: "always"};
-		var atts = { id: "myytplayer" };
+		//var atts = { id: "myytplayer" };
+		//swfobject.embedSWF(videoURL, "youtube_player", "425", "356", "8", null, null, params, atts);
+		var atts = { id: "ytplayer" };
+		var videoURL = "http://www.youtube.com/apiplayer?version=3&enablejsapi=1&playerapiid=player1"
 		swfobject.embedSWF(videoURL, "youtube_player", "425", "356", "8", null, null, params, atts);
+		
+		YOUTUBE_ID = youtubeID;
+		VIDEO_START = videoStart;
 		
 	},
 	

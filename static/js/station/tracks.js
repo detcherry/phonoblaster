@@ -5,6 +5,10 @@ $(function(){
 function TracksBrowser(station_id, next){
 	this.station = station_id;
 	this.next = parseInt(next);
+	
+	//Init slimscroll
+	this.scrollbar = new Scrollbar("#tracks_tab #tracks_history", "309px", "510px")
+	
 	this.init();
 }
 
@@ -40,6 +44,10 @@ TracksBrowser.prototype = {
 	
 	listen: function(){
 		var that = this;
+		
+		// Reset listeners
+		$("a.play_old_track").unbind("click");
+		$("a#fetch_old_tracks").unbind("click");
 		
 		// Play events
 		$("a.play_old_track")
@@ -154,7 +162,7 @@ TracksBrowser.prototype = {
 					)
 			)
 		
-		
+		this.scrollbar.updateSize();
 	},
 	
 }

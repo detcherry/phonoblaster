@@ -95,9 +95,9 @@ a.button:focus{
 }
 
 a.button:active {
-  -webkit-box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.25), 0 1px 2px rgba(0, 0, 0, 0.05);
-  -moz-box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.25), 0 1px 2px rgba(0, 0, 0, 0.05);
-  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.25), 0 1px 2px rgba(0, 0, 0, 0.05);
+	-webkit-box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.25), 0 1px 2px rgba(0, 0, 0, 0.05);
+  	-moz-box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.25), 0 1px 2px rgba(0, 0, 0, 0.05);
+  	box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.25), 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
 a.img{
@@ -194,9 +194,9 @@ input[type=text]:focus, textarea:focus {
 }
 
 .submit:active {
-  -webkit-box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.25), 0 1px 2px rgba(0, 0, 0, 0.05);
-  -moz-box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.25), 0 1px 2px rgba(0, 0, 0, 0.05);
-  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.25), 0 1px 2px rgba(0, 0, 0, 0.05);
+  	-webkit-box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.25), 0 1px 2px rgba(0, 0, 0, 0.05);
+  	-moz-box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.25), 0 1px 2px rgba(0, 0, 0, 0.05);
+  	box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.25), 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
 input.submit{
@@ -275,32 +275,32 @@ h3{
 }
 
 .close {
-  float: right;
-  color: #000000;
-  font-size: 20px;
-  font-weight: bold;
-  line-height: 13.5px;
-  text-shadow: 0 1px 0 #ffffff;
-  filter: alpha(opacity=20);
-  -khtml-opacity: 0.2;
-  -moz-opacity: 0.2;
-  opacity: 0.2;
+  	float: right;
+  	color: #000000;
+  	font-size: 20px;
+  	font-weight: bold;
+  	line-height: 13.5px;
+  	text-shadow: 0 1px 0 #ffffff;
+  	filter: alpha(opacity=20);
+  	-khtml-opacity: 0.2;
+  	-moz-opacity: 0.2;
+  	opacity: 0.2;
 }
 
 .close:hover {
-  color: #000000;
-  text-decoration: none;
-  filter: alpha(opacity=40);
-  -khtml-opacity: 0.4;
-  -moz-opacity: 0.4;
-  opacity: 0.4;
+  	color: #000000;
+  	text-decoration: none;
+  	filter: alpha(opacity=40);
+  	-khtml-opacity: 0.4;
+  	-moz-opacity: 0.4;
+  	opacity: 0.4;
 }
 
 /* ------------ MAIN --------------- */
 
 #main{
 	width:100%;
-	padding-top:70px;
+	min-width:1000px;
 	padding-bottom:20px;
 	min-height:500px;
 	background:#F6F6F6;

@@ -3,6 +3,10 @@
 function LatestTracksManager(tracklistManager){
 	this.tracklistManager = tracklistManager;
 	this.date_limit = parseInt(Date.parse(new Date()))/1000 + 3600;
+	
+	//Scrollbar for this column
+	this.scrollbar = new Scrollbar("#latest_tab #latest", "310px", "510px");
+	
 	this.init();
 }
 
@@ -56,6 +60,9 @@ LatestTracksManager.prototype = {
 					that.date_limit = parseInt(json.date_limit);
 				}
 				
+				// Scrollbar update
+				that.scrollbar.updateSize();
+				
 				// Listen to events on this tab
 				that.listen();
 				
@@ -65,6 +72,7 @@ LatestTracksManager.prototype = {
 	},
 	
 	display: function(id, title, thumbnail, duration){
+		// Duration handling
 		seconds = parseInt(duration,10) % 60;
 		minutes = (parseInt(duration,10) - seconds)/60
 		if(seconds < 10){
@@ -230,6 +238,7 @@ LatestTracksManager.prototype = {
 	},
 	
 	displayAtTheTop: function(title, id, thumbnail, duration){
+		// Duration handling
 		seconds = parseInt(duration,10) % 60;
 		minutes = (parseInt(duration,10) - seconds)/60
 		if(seconds < 10){
@@ -296,6 +305,9 @@ LatestTracksManager.prototype = {
 							)
 					)
 			)
+		
+		// Scrollbar update
+		this.scrollbar.updateSize();
 		
 		// Listen to the add_to_buffer link that is on the track just added
 		this.listen();

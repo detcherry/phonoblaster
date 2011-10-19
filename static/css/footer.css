@@ -3,6 +3,7 @@
 footer{
 	float:left;
 	width:100%;
+	min-width:1000px;
 	padding-top:10px;
 	padding-bottom:30px;
 	color:white;

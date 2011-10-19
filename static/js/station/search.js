@@ -2,6 +2,10 @@
 
 function YoutubeSearch(tracklistManager){
 	this.tracklistManager = tracklistManager;
+	
+	// Slim scroll for the chat
+	this.scrollbar = new Scrollbar("#search_tab #search_results", "310px", "465px")
+	
 	this.init();
 }
 
@@ -14,6 +18,7 @@ YoutubeSearch.prototype = {
 		$("form#search")
 			.submit(function(){
 				content = $("input[id='search_content']").val();
+				that.removeResults();
 				that.makeQuery(content);
 				return false;
 			});
@@ -29,10 +34,9 @@ YoutubeSearch.prototype = {
 	
 	makeQuery: function(content){		
 		var that = this;
-		that.removeResults();
 				
 		var youtube_search_api_url = "https://gdata.youtube.com/feeds/api/videos?q=";
-		var parameters ="&max-results=10&v=2&alt=jsonc&callback=?";
+		var parameters ="&max-results=20&v=2&alt=jsonc&callback=?";
 		var url = youtube_search_api_url + encodeURIComponent(content) + parameters;	
 			
 		$.getJSON(
@@ -46,6 +50,7 @@ YoutubeSearch.prototype = {
 					});
 					
 					that.listen();
+					that.scrollbar.updateSize();
 				}
 			})
 			.error(function() { console.log("error"); });		
@@ -110,6 +115,9 @@ YoutubeSearch.prototype = {
 	
 	listen: function(){
 		var that = this;
+		
+		// Reset listeners
+		$("a.add_track").unbind("click");
 		
 		//Listen to add events
 		$("a.add_track")

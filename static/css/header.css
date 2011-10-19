@@ -1,11 +1,13 @@
 /* ---------- HEADER ------------ */
 
 header{
-	position:fixed;
+	xposition:absolute;
+	xposition:fixed;
 	float:left;
 	padding-top:6px;
 	padding-bottom:8px;
 	width:100%;
+	min-width:1000px;
 	height:40px;
 	color:white;
 	background-color: #222;
