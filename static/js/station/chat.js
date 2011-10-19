@@ -4,6 +4,15 @@ function ChatController(){
 	this.user_id = user_id;
 	this.user_public_name = user_public_name;
 	this.user_fcbk_id = user_fcbk_id;
+	
+	// Slim scroll for the chat
+	this.scrollbar = new Scrollbar("#conversation", "500px", "114px")
+	/*
+	$("#conversation").slimScroll({
+        width: "500px",
+		height: "114px",
+	});
+	*/
 }
 
 ChatController.prototype = {
@@ -75,14 +84,25 @@ ChatController.prototype = {
 	},
 	
 	display: function(message){
+		//Update slimscroll
+		this.scrollbar.updateSize();
+		/*
+		var minBarHeight = 30;
+		var me = $("#conversation")
+		outerHeight = me.outerHeight()
+		scrollHeight = me[0].scrollHeight
+		newHeight = Math.max(0.8 * (outerHeight/ scrollHeight) * outerHeight, minBarHeight);
+		$("#conversation").parent().find(".slimScrollBar").css("height", newHeight+"px");
+		*/
 		
-		//Data handling
+		
+		
+		//Date handling
 		date = new Date(parseInt(message.added)*1000);
 		hours = parseInt(date.getHours());
 		if(hours < 10){
 			hours = "0" + hours.toString()
 		}
-		
 		minutes = parseInt(date.getMinutes());
 		if(minutes < 10){
 			minutes = "0" + minutes.toString();
@@ -137,10 +157,8 @@ ChatController.prototype = {
 			re = new RegExp("[(]{1}[0-9]+[)]{1}","g");
 			array = re.exec(old_title);
 			
+			//If there is already a number in the title. Add +1
 			if(array){
-				//number = parseInt(array[0]);
-				//new_number = number + 1;
-				//new_title = old_title.replace(re, new_number);
 				number_between_brackets = array[0];
 				re2 = new RegExp("[0-9]+","g");
 				number = parseInt(re2.exec(number_between_brackets));
@@ -149,7 +167,7 @@ ChatController.prototype = {
 				new_title = old_title.replace(re, new_number_between_brackets);
 			}
 			else{
-				console.log("just insert 1");
+				//Else, put (1) in the title
 				new_title = "(1) " + old_title;
 			}
 			document.title = new_title;
