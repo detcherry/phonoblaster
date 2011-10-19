@@ -94,11 +94,10 @@ $(function(){
 	
 });
 
-/* ------------- VOLUME MANAGEMENT -------------- */
+/* ------------- YOUTUBE PLAYER MANAGEMENT -------------- */
 
-//Youtube Volume Management
+//Youtube PLAY & VOLUME management
 function onYouTubePlayerReady(playerId) {
-    //ytplayer = document.getElementById("myytplayer");
 	ytplayer = document.getElementById("ytplayer");
 	ytplayer.loadVideoById(YOUTUBE_ID, VIDEO_START);
 
@@ -454,10 +453,7 @@ YoutubeController.prototype = {
 	init: function(youtubeID, videoStart){
 		this.empty();
 		
-		//var videoURL = "http://www.youtube.com/e/" + youtubeID + "?version=3&enablejsapi=1&autoplay=1&controls=0&playerapiid=ytplayer&start=" + videoStart;
 		var params = { allowScriptAccess: "always"};
-		//var atts = { id: "myytplayer" };
-		//swfobject.embedSWF(videoURL, "youtube_player", "425", "356", "8", null, null, params, atts);
 		var atts = { id: "ytplayer" };
 		var videoURL = "http://www.youtube.com/apiplayer?version=3&enablejsapi=1&playerapiid=player1"
 		swfobject.embedSWF(videoURL, "youtube_player", "425", "356", "8", null, null, params, atts);
