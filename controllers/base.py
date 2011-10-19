@@ -1,5 +1,7 @@
 import os.path
 import logging
+import traceback
+import sys
 
 import controllers.config
 import controllers.facebook 
@@ -83,8 +85,8 @@ class BaseHandler(webapp.RequestHandler):
 	    self.response.out.write(template.render(path, self.template_values))
 
     def handle_exception(self, exception, debug_mode):
-	   logging.error(exception)
-	   path = os.path.join(os.path.dirname(__file__), "../templates/error.html")
-	   self.response.out.write(template.render(path, None))
+	    logging.info(''.join(traceback.format_exception(*sys.exc_info())))
+	    path = os.path.join(os.path.dirname(__file__), "../templates/error.html")
+	    self.response.out.write(template.render(path, None))
 		
 		
