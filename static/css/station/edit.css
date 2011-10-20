@@ -7,6 +7,10 @@
 
 /* ---------- STATION EDIT --------------*/
 
+h3{
+	margin-top:20px;
+}
+
 .fields{
 	padding-top:10px;
 	clear:left;
