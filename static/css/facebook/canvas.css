@@ -1,7 +1,17 @@
+/* ------- CORRECTION ------- */
+
 .container{
 	float:none;
 	width:600px;
 	margin:auto;
+}
+
+header{
+	min-width:720px;
+}
+
+#main{
+	min-width:720px;
 }
 
 /*-------- CANVAS FACEBOOK FOR REQUESTS ------*/
