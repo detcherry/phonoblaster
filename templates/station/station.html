@@ -131,7 +131,9 @@
 	<script type="text/javascript" src="/static/js/station/swfobject.js"></script>
 	<script type="text/javascript" src="/static/js/station/station.js"></script>
 	<script type="text/javascript" src="/static/js/station/chat.js"></script>
-	<script type="text/javascript" src="/static/js/station/latest.js"></script>
+	{% if allowed_to_post %}
+		<script type="text/javascript" src="/static/js/station/latest.js"></script>
+	{% endif %}
 	<script type="text/javascript" src="/_ah/channel/jsapi"></script>
 	<script>
 		//Global variables

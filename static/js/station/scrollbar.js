@@ -30,7 +30,6 @@ Scrollbar.prototype = {
 			
 			contentPosition = (oldTotalHeight - outerHeight) * parseInt(bar.position().top) / (outerHeight - oldBarHeight)
 			delta = contentPosition * (outerHeight - newBarHeight)/ (newTotalHeight - outerHeight);
-			//delta = (oldTotalHeight - outerHeight) * (outerHeight - newBarHeight)/ (newTotalHeight - outerHeight);
 		}
 		else{
 			delta = 0;

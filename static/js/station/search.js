@@ -4,7 +4,9 @@ function YoutubeSearch(tracklistManager){
 	this.tracklistManager = tracklistManager;
 	
 	// Slim scroll for the chat
-	this.scrollbar = new Scrollbar("#search_tab #search_results", "310px", "465px")
+	if($("#search_tab #search_results").is(":visible")){
+		this.scrollbar = new Scrollbar("#search_tab #search_results", "310px", "465px")
+	}
 	
 	this.init();
 }
