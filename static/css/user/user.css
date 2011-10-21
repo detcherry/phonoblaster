@@ -1,15 +1,8 @@
 /* --------- USER PROFILE --------- */
 
-/* -------- CORRECTION --------- */
-
-#main{
-	padding-top:50px;
-}
-
 /*-------- LEFT-COLUMN ---------- */
 
 #left-column{
-	position:fixed;
 	padding-top:10px;
 	width:120px;
 	height:100%;
@@ -29,7 +22,7 @@
 /*-------- MIDDLE-COLUMN -------- */
 
 #middle-column{
-	margin-left:13%;
+	margin-left:10px;
 	padding-top:10px;
 	width:700px;
 }
