@@ -100,7 +100,7 @@
 
 .welcome-bottom{
 	width:33.33%;
-	height:180px;
+	height:280px;
 }
 
 .welcome-bottom h4{
@@ -118,6 +118,14 @@
 	padding-left:10%;
 	font-size:15px;
 	line-height:20px;
+}
+
+.welcome-bottom img{
+	display:block;
+	float:left;
+	height:110px;
+	margin-top:20px;
+	margin-left:50px;
 }
 
 /* ---------- STATION LISTING ---------- */
