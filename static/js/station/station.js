@@ -171,8 +171,8 @@ function TracklistManager(){
 	this.tracklist = [];
 	this.uiTracklistController = new UITracklistController();
 	this.youtubeController = new YoutubeController();
-	this.searchController = new YoutubeSearch(this);
-	if(user_fcbk_id){
+	if(allowed_to_post){
+		this.searchController = new YoutubeSearch(this);
 		this.latestTracksManager = new LatestTracksManager(this);
 	}
 }

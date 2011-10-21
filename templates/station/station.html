@@ -142,6 +142,11 @@
 		user_id = "{{ current_user.key.id }}"
 		user_public_name = "{{ current_user.public_name }}"
 		user_fcbk_id = "{{ current_user.facebook_id }}"
+		{% if allowed_to_post %}
+			allowed_to_post = true;
+		{% else %}
+			allowed_to_post = false;
+		{% endif %}
 		dispatcher = new Dispatcher();
   </script>
 {% endblock %}
