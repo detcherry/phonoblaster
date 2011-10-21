@@ -1,3 +1,125 @@
+/*---------- WELCOME PAGE -------------- */
+
+#welcome-top-left{
+	padding:20px;
+	padding-bottom:0px;
+	width:410px;
+	height:400px;
+}
+
+#welcome-top-left h2{
+	margin-top:20px;
+	margin-bottom:10px;
+	width:100%;
+	font-size:26px;
+	font-weight:bold;
+	height:36px;
+	line-height:36px;
+	color: #404040;
+}
+
+#welcome-top-left p.description{
+	width:100%;
+	padding-top:8px;
+	padding-bottom:8px;
+	font-size:18px;
+	line-height:21px;
+	color: #404040;
+}
+
+#welcome-action{
+	margin-top:15px;
+	padding:10px;
+	cursor:default;
+	display:block;
+	background-color: #e6e6e6;
+	background-repeat: no-repeat;
+	background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#ffffff), color-stop(25%, #ffffff), to(#e6e6e6));
+	background-image: -webkit-linear-gradient(#ffffff, #ffffff 25%, #e6e6e6);
+	background-image: -moz-linear-gradient(top, #ffffff, #ffffff 25%, #e6e6e6);
+	background-image: -ms-linear-gradient(#ffffff, #ffffff 25%, #e6e6e6);
+	background-image: -o-linear-gradient(#ffffff, #ffffff 25%, #e6e6e6);
+	background-image: linear-gradient(#ffffff, #ffffff 25%, #e6e6e6);
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#e6e6e6', GradientType=0);
+	text-shadow: 0 1px 1px rgba(255, 255, 255, 0.75);
+	color: #333;
+	font-size: 13px;
+	line-height: normal;
+	border: 1px solid #ccc;
+	border-bottom-color: #bbb;
+	-webkit-border-radius: 4px;
+	-moz-border-radius: 4px;
+	border-radius: 4px;
+	-webkit-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05);
+	-moz-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05);
+	box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05);
+	-webkit-transition: 0.1s linear all;
+	-moz-transition: 0.1s linear all;
+	-ms-transition: 0.1s linear all;
+	-o-transition: 0.1s linear all;
+	transition: 0.1s linear all;
+}
+
+#welcome-top-left #create{
+	margin-left:8px;
+	padding-top:2px;
+	font-size:16px;
+	font-style:italic;
+}
+
+#welcome-station-listing{
+	margin-top:60px;
+	width:90%;
+	height:140px;
+	overflow:hidden;
+}
+
+#welcome-station-listing h3{
+	margin-bottom:8px;
+	width:100%;
+}
+
+.welcome-station-item{
+	padding:4px;
+	height:48px;
+	width:48px;
+}
+
+.welcome-station-item img{
+	height:40px;
+	width:40px;	
+}
+
+#welcome-top-right{
+	padding:20px;
+	padding-top:40px;
+	padding-bottom:0px;
+	width:510px;
+	height:380px;
+}
+
+.welcome-bottom{
+	width:33.33%;
+	height:180px;
+}
+
+.welcome-bottom h4{
+	padding-top:8px;
+	padding-bottom:16px;
+	width:80%;
+	padding-left:10%;
+	font-size:24px;
+	font-weight:bold;
+	color: #404040;
+}
+
+.welcome-bottom p{
+	width:80%;
+	padding-left:10%;
+	font-size:15px;
+	line-height:20px;
+}
+
 /* ---------- STATION LISTING ---------- */
 
 .station-listing{

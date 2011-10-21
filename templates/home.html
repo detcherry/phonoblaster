@@ -1,70 +1,108 @@
 {% extends "base.html" %}
 
 {% block main %}
-	<div class="station-listing">
-		<h2>Your station</h2>
-		<div id="your-station">
-	    {% if current_user %}
-			{% if current_user_station %}
-				<a href="/{{ current_user_station.identifier }}" class="img">
-					<img src="/picture/view/{{ current_user_station.thumbnail.key }}"/>
-				</a>
-				<a href="/{{ current_user_station.identifier }}"><h3>{{ current_user_station.identifier }}</h3></a>
-				<a href="/{{ current_user_station.identifier }}" class="button">Tune in!</a>
-			{% else %}
-				<h3>You don't have any station yet</h3>
-				<a href="/station/create" class="button">Create your radio station now!</a>
-			{% endif %}
-		{% else %}
-			<h3>Login to create your station now!</h3>
-			<div id="facebook">
-				<fb:login-button autologoutlink="true" scope="email"></fb:login-button>
-			</div>
-	    {% endif %}
-		</div>
-	</div>
-	{% if current_user_contributing_stations %}
-	<div class="station-listing">
-		<h2>Stations you contribute to</h2>
-		<div id="station-items">
-			{% for station in current_user_contributing_stations %}
-			<div class="station-item">
-				<h3><a href="/{{ station.identifier }}">{{ station.identifier }}</a></h3>
-				<a href="/{{ station.identifier }}" class="img">
-					<img src="/picture/view/{{ station.thumbnail.key }}">
-				</a>
-				<a href="/{{ station.identifier }}" class="button">Tune in!</a>
-			</div>
-			{% endfor %}
-		</div>
-	</div>
-	{% endif %}
-	{% if active_stations %}
+	{% if current_user %}
+	<!-- User is logged in-->
 		<div class="station-listing">
-			<h2>Latest stations on the air</h2>
+			<h2>Your station</h2>
+			<div id="your-station">
+				{% if current_user_station %}
+					<a href="/{{ current_user_station.identifier }}" class="img">
+						<img src="/picture/view/{{ current_user_station.thumbnail.key }}"/>
+					</a>
+					<a href="/{{ current_user_station.identifier }}"><h3>{{ current_user_station.identifier }}</h3></a>
+					<a href="/{{ current_user_station.identifier }}" class="button">Tune in!</a>
+				{% else %}
+					<h3>You don't have any station yet</h3>
+					<a href="/station/create" class="button">Create your radio station now!</a>
+				{% endif %}
+			</div>
+		</div>
+		{% if current_user_contributing_stations %}
+		<div class="station-listing">
+			<h2>Stations you contribute to</h2>
 			<div id="station-items">
-				{% for station in active_stations %}
+				{% for station in current_user_contributing_stations %}
 				<div class="station-item">
 					<h3><a href="/{{ station.identifier }}">{{ station.identifier }}</a></h3>
-					<a href="/{{ station.identifier }}" class="img"><img src="/picture/view/{{ station.thumbnail.key }}"></a>
+					<a href="/{{ station.identifier }}" class="img">
+						<img src="/picture/view/{{ station.thumbnail.key }}">
+					</a>
 					<a href="/{{ station.identifier }}" class="button">Tune in!</a>
 				</div>
 				{% endfor %}
 			</div>
 		</div>
-	{% else %}
-		<div class="station-listing">
-			<h2>Stations not yet on the air</h2>
-			<div id="station-items">
-				{% for station in non_active_stations %}
-				<div class="station-item">
-					<h3><a href="/{{ station.identifier }}">{{ station.identifier }}</a></h3>
-					<a href="/{{ station.identifier }}" class="img"><img src="/picture/view/{{ station.thumbnail.key }}"></a>
-					<a href="/{{ station.identifier }}" class="button">Tune in!</a>
+		{% endif %}
+		{% if active_stations %}
+			<div class="station-listing">
+				<h2>Latest stations on the air</h2>
+				<div id="station-items">
+					{% for station in active_stations %}
+					<div class="station-item">
+						<h3><a href="/{{ station.identifier }}">{{ station.identifier }}</a></h3>
+						<a href="/{{ station.identifier }}" class="img"><img src="/picture/view/{{ station.thumbnail.key }}"></a>
+						<a href="/{{ station.identifier }}" class="button">Tune in!</a>
+					</div>
+					{% endfor %}
 				</div>
-				{% endfor %}				
 			</div>
-		</div>	
+		{% else %}
+			<div class="station-listing">
+				<h2>Stations not yet on the air</h2>
+				<div id="station-items">
+					{% for station in non_active_stations %}
+					<div class="station-item">
+						<h3><a href="/{{ station.identifier }}">{{ station.identifier }}</a></h3>
+						<a href="/{{ station.identifier }}" class="img"><img src="/picture/view/{{ station.thumbnail.key }}"></a>
+						<a href="/{{ station.identifier }}" class="button">Tune in!</a>
+					</div>
+					{% endfor %}				
+				</div>
+			</div>	
+		{% endif %}
+	{% else %}
+	<!-- User is not logged in-->
+	<div id="welcome-top-left">
+		<h2>Tune into people’s music!</h2>
+		<p class="description">Music streams from your friends to your favorite bloggers, artists or brands.</p>
+		<div id="welcome-action" class="button">
+			<p id="facebook"><fb:login-button autologoutlink="true" scope="email"></fb:login-button></p>
+			<p id="create">to create your station</p>
+		</div>
+		<div id="welcome-station-listing">
+			{% if active_stations %}
+				<h3>Stations on the air</h3>
+				{% for station in active_stations %}
+					<div class="welcome-station-item">
+						<a href="/{{ station.identifier }}" class="img"><img src="/picture/view/{{ station.thumbnail.key }}"></a>
+					</div>
+				{% endfor %}
+			{% else %}
+				<h3>Stations not yet on the air</h3>
+				{% for station in non_active_stations %}
+					<div class="welcome-station-item">
+						<a href="/{{ station.identifier }}" class="img"><img src="/picture/view/{{ station.thumbnail.key }}"></a>
+					</div>
+				{% endfor %}
+			{% endif %}
+		</div>
+	</div>
+	<div id="welcome-top-right">
+		<img src="/static/images/welcome-page-mac.png"/>
+	</div>
+	<div class="welcome-bottom">
+		<h4>Create your station</h4>
+		<p>Turn on your own station, invite contributors, and start sharing your tasty music to the entire world!</p>
+	</div>
+	<div class="welcome-bottom">
+		<h4>Share music together</h4>
+		<p>Bring your friends in and broadcast together the greatest music selection of all times -	yes, you’re on the air!</p>
+	</div>
+	<div class="welcome-bottom">
+		<h4>Discover new songs</h4>
+		<p>No idea what to listen to today? Just tune into a station and listen to great new tracks immediately</p>
+	</div>
 	{% endif %}
 {% endblock %}
 
