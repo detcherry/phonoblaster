@@ -2,6 +2,7 @@ import logging
 import os
 
 from models.interface import config
+from models.interface.user import InterfaceUser
 
 from datetime import datetime
 from datetime import timedelta
@@ -67,8 +68,10 @@ class InterfaceStation():
 		if not hasattr(self, "_station"):
 			self._station = memcache.get(self.memcache_station_id)
 			if self._station is None:
+				logging.info("Station not in memcache")
 				self._station = Station.get(self.station_key)
 				if(self._station):
+					logging.info("Station exists")
 					self.memcache_station_identifier_id = config.MEMCACHE_STATION_PREFIX + str(self._station.identifier)
 					memcache.set_multi({
 						self.memcache_station_id: self._station,
@@ -135,6 +138,15 @@ class InterfaceStation():
 			self.memcache_station_identifier_id: self.station,
 		})
 		logging.info("Station expiration time updated TWICE in memcache (key and identifier)")
+	
+	# Get the station creator
+	@property
+	def station_creator(self):
+		if not hasattr(self, "_station_creator"):
+			creator_key = Station.creator.get_value_for_datastore(self.station)
+			user_proxy = InterfaceUser(user_key = creator_key)
+			self._station_creator = user_proxy.user
+		return self._station_creator
 	
 	# Check if creator
 	def is_creator(self, user_key):

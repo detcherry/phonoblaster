@@ -21,10 +21,9 @@
 	<a href="/{{ current_station.identifier}}/contributors">
 		<p class="top">Contributors ({{ number_of_contributions }})</p>
 	</a>
-	<!--<p class="bottom" id="number_of_contributors">{{ number_of_contributions }}</p>-->
 	<div id="contributor_items">
-		<a href="/user/{{ current_station.creator.key.id }}">
-			<img src="http://graph.facebook.com/{{ current_station.creator.facebook_id }}/picture?type=square"/>
+		<a href="/user/{{ current_creator.key.id }}">
+			<img src="http://graph.facebook.com/{{ current_creator.facebook_id }}/picture?type=square"/>
 		</a>
 		{% for contributor in current_contributors %}
 		<a href="/user/{{ contributor.key.id }}">

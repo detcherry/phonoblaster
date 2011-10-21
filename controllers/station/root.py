@@ -21,6 +21,12 @@ class RootStationHandler(BaseHandler):
 		return self._status_creator
 	
 	@property
+	def current_creator(self):
+		if not hasattr(self, "_current_creator"):
+			self._current_creator = self.station_proxy.station_creator
+		return self._current_creator
+	
+	@property
 	def allowed_to_post(self):
 		if not hasattr(self, "_allowed_to_post"):
 			self._allowed_to_post = False
@@ -48,6 +54,7 @@ class RootStationHandler(BaseHandler):
 		# Standard values that are added to the station.py, tracks.py, contributors.py handlers
 		self.additional_template_values["current_station"] = self.current_station
 		self.additional_template_values["number_of_tracks"] = self.number_of_tracks	
+		self.additional_template_values["current_creator"] = self.current_creator
 		self.additional_template_values["current_contributors"] = self.current_contributors
 		self.additional_template_values["number_of_contributions"] = len(self.current_contributors) + 1
 		
