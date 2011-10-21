@@ -37,11 +37,13 @@ class BaseHandler(webapp.RequestHandler):
 			if cookie:
 				# Store a local instance of the user data so we don't need
 				# a round-trip to Facebook on every request
-				user = InterfaceUser.get_by_facebook_id(cookie["uid"])
+				user_proxy = InterfaceUser(facebook_id = cookie["uid"])
+				user = user_proxy.user
+								
 				if not user:
 					graph = controllers.facebook.GraphAPI(cookie["access_token"])
 					profile = graph.get_object("me")
-					user = InterfaceUser.put(
+					user = user_proxy.put_user(
 						facebook_id = str(profile["id"]), 
 						facebook_access_token = cookie["access_token"],
 						name = profile["name"],
@@ -63,11 +65,11 @@ class BaseHandler(webapp.RequestHandler):
 						if user.facebook_access_token != cookie["access_token"]:
 							facebook_access_token = cookie["access_token"]
 						
-						user = InterfaceUser.put_email_and_access_token(user, email, facebook_access_token)
+						user = user_proxy.update_user(facebook_access_token = facebook_access_token, email = email)
 					
 				self._current_user = user
 		return self._current_user
-	
+		
     @property
     def template_values(self):
 		if not hasattr(self,"_template_values"):
