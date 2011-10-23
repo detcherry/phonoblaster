@@ -29,7 +29,7 @@
 		{% for contributor in current_contributors %}
 		<a href="/user/{{ contributor.key.id }}" class="user" title="{{ current_creator.public_name }}">
 			<img src="http://graph.facebook.com/{{ contributor.facebook_id }}/picture?type=square" 
-				class="user" title="{{ current_creator.public_name }}"/>
+				class="user" title="{{ contributor.public_name }}"/>
 		</a>
 		{% endfor %}
 	</div>
