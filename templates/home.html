@@ -89,7 +89,13 @@
 		</div>
 	</div>
 	<div id="welcome-top-right">
-		<img src="/static/images/welcome-page-mac.png"/>
+		<div id="slideshow">
+			<img src="/static/images/tracklist-state-1.png" class="active"/>
+			<img src="/static/images/tracklist-state-2.png"/>
+			<img src="/static/images/tracklist-state-3.png"/>
+			<img src="/static/images/tracklist-state-4.png"/>
+		</div>
+		<img src="/static/images/welcome-animated.gif" id="animated"/>
 	</div>
 	<div class="welcome-bottom">
 		<h4>Create your station</h4>
@@ -109,3 +115,36 @@
 	{% endif %}
 {% endblock %}
 
+{% if not current_user %}
+{% block script %}
+	<script>
+	function slideSwitch() {
+	    var $active = $('#slideshow img.active');
+
+	    if ( $active.length == 0 ) $active = $('#slideshow img:last');
+
+	    // use this to pull the images in the order they appear in the markup
+	    var $next =  $active.next().length ? $active.next()
+	        : $('#slideshow img:first');
+
+	    $active.addClass('last-active');
+		/*
+		//With fade in/out
+	    $next.css({opacity: 0.0})
+	        .addClass('active')
+	        .animate({opacity: 1.0}, 1000, function() {
+	            $active.removeClass('active last-active');
+	        });
+		*/
+		//Without fade in/out
+		$next.addClass("active")
+		$active.removeClass("active last-active")
+	}
+
+	$(function() {
+	    setInterval( "slideSwitch()", 3577 );
+	});
+
+	</script>
+{% endblock %}
+{% endif %}
