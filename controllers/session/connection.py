@@ -45,6 +45,7 @@ class ChannelConnectionHandler(webapp.RequestHandler):
 					"duration": track.youtube_duration,
 					"submitter_id": submitter.key().id(),
 					"submitter_fcbk_id": submitter.facebook_id,
+					"submitter_public_name": submitter.public_name,
 					"added": timegm(track.added.utctimetuple()),
 					"expired": timegm(track.expired.utctimetuple()),
 				})

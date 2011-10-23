@@ -371,6 +371,8 @@ UITracklistController.prototype = {
 									$("<img/>")
 										.attr({
 											"src": "http://graph.facebook.com/" + track.submitter_fcbk_id + "/picture?type=square",
+											"class": "user",
+											"title": track.submitter_public_name,
 										})
 								)
 						)
