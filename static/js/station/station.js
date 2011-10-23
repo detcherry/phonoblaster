@@ -87,6 +87,11 @@ $(function(){
 	//Set focus to true when the page had finished loading
 	window_focus = true;
 	
+	//Trigger the Twipsy module
+	$("img.user").twipsy({
+		live: "true",
+		offset: 3,
+	});
 	
 	// GLOBAL VARIABLES ----> FOR THE YOUTUBE PLAYER
 	YOUTUBE_ID = "";
@@ -112,6 +117,7 @@ function onYouTubePlayerReady(playerId) {
 function Dispatcher(){
 	this.tracklistManager = new TracklistManager();
 	this.chatController = new ChatController();
+	this.listenerController = new ListenerController();
 }
 
 Dispatcher.prototype = {
@@ -145,21 +151,23 @@ Dispatcher.prototype = {
 		}
 		if(data.type == "listener_init"){
 			console.log("listener_init");
-			//Init the number of listeners
-			number_of_listeners = data.content;
-			$("#number_of_listeners").html(number_of_listeners);
+			//Init the listeners list
+			listeners = data.content;
+			this.listenerController.init(listeners);
+			
 		}
 		if(data.type == "listener_new"){
 			console.log("listener_new");
-			//Add +1 to the number of listeners counter
-			number_of_listeners = parseInt($("#number_of_listeners").html(),10) + 1;
-			$("#number_of_listeners").html(number_of_listeners);			
+			// Add a new listener to the list
+			new_listener = data.content;
+			this.listenerController.add(new_listener);
 		}
 		if(data.type == "listener_delete"){
 			console.log("listener_delete");
-			//Add -1 to the number of listeners counter
-			number_of_listeners = parseInt($("#number_of_listeners").html(),10) - 1;
-			$("#number_of_listeners").html(number_of_listeners);		
+			// Remove a listener from the list
+			old_session_id = data.content.session_id;
+			this.listenerController.remove(old_session_id);
+			
 		}
 			
 	},
@@ -302,7 +310,7 @@ TracklistManager.prototype = {
 
 function UITracklistController(){
 	//Init slimscroll
-	this.scrollbar = new Scrollbar("#tracks_tab #tracks", "309px", "510px")
+	this.scrollbar = new Scrollbar("#tracks_tab #tracks", "309px", "510px");
 }
 
 
@@ -361,7 +369,9 @@ UITracklistController.prototype = {
 								.addClass("submitter")
 								.append(
 									$("<img/>")
-										.attr("src", "http://graph.facebook.com/" + track.submitter_fcbk_id + "/picture?type=square")
+										.attr({
+											"src": "http://graph.facebook.com/" + track.submitter_fcbk_id + "/picture?type=square",
+										})
 								)
 						)
 				)
@@ -477,5 +487,85 @@ YoutubeController.prototype = {
 					)
 			);
 	},
+	
+}
+
+/* ---------- LISTENER CONTROLLER ---------- */
+
+function ListenerController(){
+	this.listeners = []
+}
+
+ListenerController.prototype = {
+	
+	init: function(listeners){
+		for(i = 0, c = listeners.length; i < c; i++){
+			listener = listeners[i];
+			this.add(listener);
+		}
+	},
+	
+	add: function(new_listener){
+		this.listeners.push(new_listener);
+		
+		//Change the number of listeners
+		this.update_number_of_listeners();
+		
+		if(new_listener.phonoblaster_id){
+			//Display logged in listener
+			$("#listener_items")
+				.append(
+					$("<a/>")
+						.attr({
+							"id": new_listener.session_id,
+							"href": "/user/"+ new_listener.phonoblaster_id,
+							"target": "_blank",
+						})
+						.append(
+							$("<img/>")
+								.attr({
+									"src": "http://graph.facebook.com/" + new_listener.facebook_id + "/picture?type=square",
+									"title": new_listener.public_name,
+									"class": "user",
+								})
+						)
+				)
+		}
+		else{
+			//Display unknown listener
+			$("#listener_items")
+				.append(
+					$("<a/>")
+						.attr("id", new_listener.session_id)
+						.append(
+							$("<img/>").attr("src", "/static/images/unknown-listener.png")
+						)
+				)
+		}
+
+	},
+	
+	remove: function(old_session_id){
+		new_listener_list = []
+		for(i = 0, c = this.listeners.length; i<c; i++){
+			listener = this.listeners[i]
+			if(old_session_id == listener.session_id){
+				// Remove listener from UI
+				$("#listener_items #" + old_session_id).remove();
+			}
+			else{
+				new_listener_list.push(listener)
+			}
+		}
+		
+		this.listeners = new_listener_list;
+		this.update_number_of_listeners();
+	},
+	
+	update_number_of_listeners: function(){
+		number_of_listeners = this.listeners.length;
+		$("#number_of_listeners").html(number_of_listeners);
+	},
+	
 	
 }

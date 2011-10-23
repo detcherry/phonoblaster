@@ -22,11 +22,14 @@ class ChannelDisconnectionHandler(webapp.RequestHandler):
 		station_proxy = InterfaceStation(station_key = station_key)
 		station_proxy.end_session(session)
 		
-		#Send everyone a message that a listener has left the room
-		listener_delete_data = {
-			"type":"listener_delete",
-			"content": [],
+		listener_delete_output = {
+			"session_id": session.key().id(),
 		}
+		listener_delete_data = {
+			"type": "listener_delete",
+			"content": listener_delete_output,
+		}
+		
 		excluded_channel_id = None
 		task = Task(
 			url = "/taskqueue/notify",

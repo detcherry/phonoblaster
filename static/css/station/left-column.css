@@ -41,7 +41,6 @@
 	width:45%;
 	padding:8px;
 	text-align:center;
-	cursor: pointer;
 	display: inline-block;
 	background-color: #e6e6e6;
 	background-repeat: no-repeat;
@@ -94,23 +93,60 @@
 	text-decoration:underline;
 }
 
-#left-column #contributor_items{
+/*---------- CONTRIBUTORS AND LISTENERS ------------ */
+
+#left-column .items{
 	margin-top:4px;
-	width:100%;
+	width:120px;
 	text-align:center;
 }
 
-#left-column #contributor_items a{
-	display:inline;
+#left-column .items a{
 	float:none;
+	width:24px;
+	height:20px;	
+}
+
+#left-column .items img{
+	display:inline;
 	width:20px;
 	height:20px;
 }
 
-#left-column #contributor_items img{
-	width:20px;
-	height:20px;
+/*-------- CONTRIBUTORS ----------*/
+
+
+#left-column #contributor_items a{
+	display:inline;
 }
+
+/* ------------ LISTENERS ------------ */
+
+#left-column #listener_items a{
+	display:inline-block;
+}
+
+/* ----------- VOLUME ------------*/
+
+#volume{
+	margin-left:4px;
+	padding-top:10px;
+	padding-left:35px;
+	width:30px;
+}
+
+#volume a{
+	display:block;
+	float:left;
+}
+
+#volume img{
+	height:40px;
+	border:none;
+}
+
+/*------- EDIT STATION ----------*/
+
 
 #left-column #edit_station{
 	margin-top:10px;

@@ -1,6 +1,7 @@
 @import url("left-column.css");
 @import url("contributors.css");
 @import url("tracks.css");
+@import url("twipsy.css");
 
 /* --------------------- STATION ------------------------ */
 
@@ -70,25 +71,6 @@
 #live-video object embed{
 	width:500px;
 	height:370px;
-}
-
-/* ----------- VOLUME ------------*/
-
-#volume{
-	margin-left:4px;
-	padding-top:10px;
-	padding-left:35px;
-	width:30px;
-}
-
-#volume a{
-	display:block;
-	float:left;
-}
-
-#volume img{
-	height:40px;
-	border:none;
 }
 
 /*------- PROGRESSION BAR -------*/

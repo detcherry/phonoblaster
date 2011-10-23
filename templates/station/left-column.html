@@ -18,16 +18,18 @@
 	</a>
 </div>
 <div class="info">
-	<a href="/{{ current_station.identifier}}/contributors">
-		<p class="top">Contributors ({{ number_of_contributions }})</p>
-	</a>
-	<div id="contributor_items">
+	<p class="top">
+		<a href="/{{ current_station.identifier}}/contributors">Contributors ({{ number_of_contributions }})</a>
+	</p>
+	<div id="contributor_items" class="items">
 		<a href="/user/{{ current_creator.key.id }}">
-			<img src="http://graph.facebook.com/{{ current_creator.facebook_id }}/picture?type=square"/>
+			<img src="http://graph.facebook.com/{{ current_creator.facebook_id }}/picture?type=square" 
+				class="user" title="{{ current_creator.public_name }}"/>
 		</a>
 		{% for contributor in current_contributors %}
-		<a href="/user/{{ contributor.key.id }}">
-			<img src="http://graph.facebook.com/{{ contributor.facebook_id }}/picture?type=square"/>
+		<a href="/user/{{ contributor.key.id }}" class="user" title="{{ current_creator.public_name }}">
+			<img src="http://graph.facebook.com/{{ contributor.facebook_id }}/picture?type=square" 
+				class="user" title="{{ current_creator.public_name }}"/>
 		</a>
 		{% endfor %}
 	</div>

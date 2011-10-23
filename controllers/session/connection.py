@@ -71,11 +71,11 @@ class ChannelConnectionHandler(webapp.RequestHandler):
 			
 			for message, author in zip(messages, authors):
 				chat_init_output.append({
-							"text": message.text,
-							"author_id": author.key().id(),
-							"author_public_name": author.public_name,
-							"author_fcbk_id": author.facebook_id,
-							"added": timegm(message.added.utctimetuple()),
+					"text": message.text,
+					"author_id": author.key().id(),
+					"author_public_name": author.public_name,
+					"author_fcbk_id": author.facebook_id,
+					"added": timegm(message.added.utctimetuple()),
 				})
 
 		# We format a message and send it to the client
@@ -87,10 +87,24 @@ class ChannelConnectionHandler(webapp.RequestHandler):
 		logging.info("Latest messages sent")
 		
 		# Inform everyone a new listener has arrived
+		new_listener = session.user
+		if new_listener:
+			listener_new_output = {
+				"session_id": session.key().id(),
+				"phonoblaster_id" : new_listener.key().id(),
+				"public_name": new_listener.public_name,
+				"facebook_id": new_listener.facebook_id,
+			}
+		else:
+			listener_new_output = {
+				"session_id": session.key().id(),
+			}
+		
 		listener_new_data = {
 			"type":"listener_new",
-			"content": [],
+			"content": listener_new_output,
 		}
+		
 		excluded_channel_id = channel_id
 		task = Task(
 			url = "/taskqueue/notify",
@@ -104,12 +118,43 @@ class ChannelConnectionHandler(webapp.RequestHandler):
 			queue_name = "listener-queue-1"
 		)
 		
-		nb_of_listeners = len(station_proxy.station_sessions)
+		opened_sessions = station_proxy.station_sessions
+		logged_in_sessions = []
+		unlogged_sessions = []
+		listener_keys = []
 		
+		for session in opened_sessions:
+			listener_key = Session.user.get_value_for_datastore(session)
+			if listener_key:
+				logged_in_sessions.append(session)
+				listener_keys.append(listener_key)
+			else:
+				unlogged_sessions.append(session)
+		
+		listeners = db.get(listener_keys);
+		
+		listener_init_output = []
+		for session, listener in zip(logged_in_sessions, listeners):
+			listener_init_output.append({
+				"session_id": session.key().id(),
+				"phonoblaster_id": listener.key().id(),
+				"public_name": listener.public_name,
+				"facebook_id": listener.facebook_id,
+			})
+		
+		for session in unlogged_sessions:
+			listener_init_output.append({
+				"session_id": session.key().id(),
+				"phonoblaster_id": "",
+				"public_name": "",
+				"facebook_id": "",
+			})	
+
 		listener_init_data = {
-			"type":"listener_init",
-			"content": nb_of_listeners,
-		}
+			"type": "listener_init",
+			"content": listener_init_output,
+		}		
+		
 		channel.send_message(channel_id, simplejson.dumps(listener_init_data))
 		logging.info("New listener got the number of listeners")
 

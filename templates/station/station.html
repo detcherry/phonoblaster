@@ -21,8 +21,9 @@
 
 {% block left-column %}
 	<div class="info">
-		<p class="top">Listeners</p>
-		<p class="bottom" id="number_of_listeners"></p>
+		<p class="top">Listeners (<span id="number_of_listeners"></span>)</p>
+		<div id="listener_items" class="items">
+		</div>
 	</div>
 	<div id="volume">
 		<a href="">
@@ -125,7 +126,8 @@
 	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.js"></script>
 	<script type="text/javascript" src="/static/js/station/slimscroll.js"></script>
 	<script type="text/javascript" src="/static/js/station/scrollbar.js"></script>
-	<script  type="text/javascript" src="/static/js/json_parse.js"></script>
+	<script type="text/javascript" src="/static/js/json_parse.js"></script>
+	<script type="text/javascript" src="/static/js/station/twipsy.js"></script>
 	<script type="text/javascript" src="/static/js/station/tab.js"></script>
 	<script type="text/javascript" src="/static/js/station/search.js"></script>
 	<script type="text/javascript" src="/static/js/station/swfobject.js"></script>
