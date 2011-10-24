@@ -1,0 +1,45 @@
+{% extends "../base.html" %}
+
+{% block header %}
+	{% include "../header.html" %}
+{% endblock %}
+
+{% block style %}
+	<link type="text/css" rel="stylesheet" href="/static/css/widget/tour.css" />
+{% endblock %}
+
+{% block main %}
+	<h2>Share music instantly with your followers!</h2>
+	<div class="horizontal-paragraph">
+		<div class="left">
+			<img src="/static/images/blog-without-widget.png" class="img">
+		</div>
+		<div class="right">
+			<h3>YOU HAVE A BLOG</h3>
+			<p>With Phonoblaster you can now bring a musical content to your blog</p>
+			<p><span>You are two steps away from streaming music to the entire world!</span></p>
+		</div>
+	</div>
+	<div class="horizontal-paragraph">
+		<div class="left">
+			<h3>CREATE YOUR STATION</h3>
+			<p>Create your station on Phonoblaster and start broadcasting your favorite music with your community</p>
+		</div>
+		<div class="right">
+			<img src="/static/images/station-screenshot.png" class="img">
+		</div>
+	</div>
+	<div class="horizontal-paragraph">
+		<div class="left">
+			<h3>ADD A WIDGET TO YOUR BLOG</h3>
+			<p>The new widget will allow you to tell them when you're on the air and bring them to the beat!!</p>
+		</div>
+		<div class="right">
+			<img src="/static/images/blog-with-widget.png" class="img">
+		</div>
+	</div>
+{% endblock %}
+
+{% block footer %}
+	{% include "../footer.html" %}
+{% endblock %}

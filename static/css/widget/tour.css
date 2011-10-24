@@ -1,0 +1,48 @@
+/*---- CORRECTION ---*/
+
+h2{
+	margin-top:40px;
+	margin-bottom:40px;
+	font-size: 26px;
+	font-weight: bold;
+	height: 36px;
+	line-height: 36px;
+	color: #404040;
+	border-bottom: 1px solid #DDD;
+}
+
+.horizontal-paragraph{
+	width:100%;
+	margin-bottom:20px;
+}
+
+.horizontal-paragraph .left{
+	width:32%;
+	padding-left:4%;
+	padding-right:4%;
+}
+
+.horizontal-paragraph .right{
+	width:60%;
+}
+
+.horizontal-paragraph h3{
+	margin-top:50px;
+	margin-bottom:30px;
+	width:100%;
+}
+
+.horizontal-paragraph p{
+	margin-bottom:10px;
+	font-size: 15px;
+	line-height: 20px;
+}
+
+.horizontal-paragraph p span{
+	font-style:italic;
+	font-weight:bold;
+}
+
+.horizontal-paragraph .right img{
+	width:480px;
+}
