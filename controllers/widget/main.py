@@ -26,7 +26,7 @@ class WidgetCreationHandler(webapp.RequestHandler):
 			'site_url': config.SITE_URL,
 		}
 							
-		path = os.path.join(os.path.dirname(__file__), '../../templates/widget.html')
+		path = os.path.join(os.path.dirname(__file__), '../../templates/widget/init.html')
 		self.response.out.write(template.render(path, template_values))
 	
 class WidgetConfigureHandler(webapp.RequestHandler):
