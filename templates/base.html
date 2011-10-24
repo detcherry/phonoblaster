@@ -3,10 +3,17 @@
     <head>
 		{% block meta %}
         <title>Phonoblaster</title>
-		<meta name="description" content="Phonoblaster is a place to share, post, blog and listen to music LIVE with the world. Where people converge to discover great music together. It's a social music revolution.">
+		<meta name="description" content="Tune into people's music! With Phonoblaster, listen to what your friends, favorite bloggers, artists or brands are listening... at the same time! A social music revolution.">
 		{% endblock %}
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 		{% block facebook %}
+			<meta property="og:title" content="Phonoblaster" />
+			<meta property="og:type" content="article" />
+			<meta property="og:url" content="{{ site_url }}" />
+			<meta property="og:image" content="{{ site_url }}/static/images/icon.jpg" />
+			<meta property="og:description" content="Tune into people's music! With Phonoblaster, listen to what your friends, favorite bloggers, artists or brands are listening... at the same time! A social music revolution."/>
+			<meta property="og:site_name" content="Phonoblaster"/>
+			<meta property="fb:app_id" content="{{ facebook_app_id }}" />
 		{% endblock %}
 		<link rel="shortcut icon" href="/static/images/favicon.ico" type="image/x-icon" />
 		<link type="text/css" rel="stylesheet" href="/static/css/base.css" />

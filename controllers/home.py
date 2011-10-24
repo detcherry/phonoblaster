@@ -34,6 +34,7 @@ class HomeHandler(BaseHandler):
 		
 		
 		self.additional_template_values = {
+			"site_url": controllers.config.SITE_URL,
 			"current_user_station": current_user_station,
 			"active_stations": active_stations,
 			"non_active_stations": non_active_stations,
