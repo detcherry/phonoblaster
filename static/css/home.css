@@ -136,14 +136,22 @@ img#animated{
 	z-index:100;
 }
 
+#separator{
+	margin-top:10px;
+	margin-bottom:20px;
+	margin-left:20%;
+	width:56%;
+	border-bottom: 1px solid #DDD;
+}
+
 .welcome-bottom{
 	width:33.33%;
 	height:280px;
 }
 
 .welcome-bottom h4{
-	padding-top:8px;
-	padding-bottom:16px;
+	padding-top:12px;
+	padding-bottom:28px;
 	width:80%;
 	padding-left:10%;
 	font-size:24px;
