@@ -10,7 +10,7 @@ WidgetFetcher.prototype = {
 		tracks = [];
 		
 		$.ajax({
-			url: "/plugin/widget/configure",
+			url: "/widget/configure",
 			type: "GET",
 			dataType: "json",
 			timeout: 60000,
@@ -34,7 +34,7 @@ WidgetFetcher.prototype = {
 		var history = [];
 		
 		$.ajax({
-			url: "/plugin/widget/history",
+			url: "/widget/history",
 			type: "GET",
 			dataType: "json",
 			timeout: 60000,

@@ -61,9 +61,9 @@ class WidgetHistoryHandler(webapp.RequestHandler):
 
 
 application = webapp.WSGIApplication([
-	("/plugin/widget/init", WidgetCreationHandler),
-	("/plugin/widget/configure", WidgetConfigureHandler),
-	("/plugin/widget/history", WidgetHistoryHandler),
+	("/widget/init", WidgetCreationHandler),
+	("/widget/configure", WidgetConfigureHandler),
+	("/widget/history", WidgetHistoryHandler),
 ], debug=True)
 
 def main():
