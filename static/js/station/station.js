@@ -496,6 +496,7 @@ YoutubeController.prototype = {
 
 function ListenerController(){
 	this.listeners = []
+	this.duplicate_listeners = []
 }
 
 ListenerController.prototype = {
@@ -508,10 +509,110 @@ ListenerController.prototype = {
 	},
 	
 	add: function(new_listener){
-		this.listeners.push(new_listener);
 		
-		//Change the number of listeners
+		duplicate = false;
+		//Check if user logged in not already in listener list
+		if(new_listener.phonoblaster_id){
+			for(j = 0, d = this.listeners.length; j<d; j++){
+				listener = this.listeners[j]
+				// In the case below there is a duplicate
+				if(listener.phonoblaster_id == new_listener.phonoblaster_id){
+					duplicate = true;
+				}
+			}
+		}
+
+		// If duplicate, put in duplicate list
+		if(duplicate){
+			this.duplicate_listeners.push(new_listener);
+		}
+		// Else, it's ok (this case also handles when user not logged in)
+		else{
+			this.listeners.push(new_listener);
+			
+			//Change the number of listeners
+			this.update_number_of_listeners();
+
+			this.display(new_listener);
+			
+		}
+		
+	},
+	
+	remove: function(old_session_id){
+		
+		new_listeners_list = [];
+		new_duplicate_list = [];
+		
+		in_listeners = false;
+		
+		// Check which listener it is
+		for(i = 0, c = this.listeners.length; i<c; i++){
+			listener = this.listeners[i]
+			if(old_session_id == listener.session_id){
+				// Remove listener from UI
+				$("#listener_items #" + old_session_id).remove();
+				
+				listener_to_delete = listener
+				
+				// Check if also in duplicate
+				for(j = 0, d = this.duplicate_listeners.length; j<d; j++){
+					duplicate_listener = this.duplicate_listeners[j];
+					// If also in duplicate, add it in the listeners list and display it
+					if(listener_to_delete.phonoblaster_id == duplicate_listener.phonoblaster_id){
+						new_listeners_list.push(duplicate_listener)
+												
+						// Display on the UI
+						this.display(duplicate_listener);
+					}
+					// Or just copy to the future duplicate list
+					else{
+						new_duplicate_list.push(duplicate_listener)
+					}
+				}
+				
+				// The listener to remove has been found in the listeners list
+				in_listeners = true;
+				
+			}
+			// Or just copy to the future listeners list
+			else{
+				new_listeners_list.push(listener)
+			}
+		}
+		
+		// Look in the duplicate list if not found in the listeners list
+		if(!in_listeners){
+			// reset the duplicate list again
+			new_duplicate_list = [];
+			
+			for(k = 0, e = this.duplicate_listeners.length; k<e; k++){
+				duplicate_listener = this.duplicate_listeners[k];
+				
+				if(duplicate_listener.session_id == old_session_id){
+					//do nothing
+				}
+				// Just copy it to the future duplicate list
+				else{
+					new_duplicate_list.push(duplicate_listener)
+				}
+			}
+			
+		}
+		
+		// Do all the updates
+		this.listeners = new_listeners_list;
+		this.duplicate_listeners = new_duplicate_list;
 		this.update_number_of_listeners();
+
+	},
+	
+	update_number_of_listeners: function(){
+		number_of_listeners = this.listeners.length;
+		$("#number_of_listeners").html(number_of_listeners);
+	},
+	
+	display: function(new_listener){
 		
 		if(new_listener.phonoblaster_id){
 			//Display logged in listener
@@ -543,31 +644,9 @@ ListenerController.prototype = {
 							$("<img/>").attr("src", "/static/images/unknown-listener.png")
 						)
 				)
-		}
-
-	},
-	
-	remove: function(old_session_id){
-		new_listener_list = []
-		for(i = 0, c = this.listeners.length; i<c; i++){
-			listener = this.listeners[i]
-			if(old_session_id == listener.session_id){
-				// Remove listener from UI
-				$("#listener_items #" + old_session_id).remove();
-			}
-			else{
-				new_listener_list.push(listener)
-			}
-		}
+		}	
 		
-		this.listeners = new_listener_list;
-		this.update_number_of_listeners();
-	},
-	
-	update_number_of_listeners: function(){
-		number_of_listeners = this.listeners.length;
-		$("#number_of_listeners").html(number_of_listeners);
-	},
+	}
 	
 	
 }
