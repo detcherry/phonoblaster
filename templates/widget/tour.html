@@ -38,8 +38,45 @@
 			<img src="/static/images/blog-with-widget.png" class="img">
 		</div>
 	</div>
+	<h2>See the widget live!</h2>
+	<div class="horizontal-paragraph">
+		<div class="left">
+			<iframe src="/widget/init?identifier=cookies" height="301" width="265" frameborder="0"></iframe>
+		</div>
+		<div class="right">
+			<h3>COPY AND PASTE THE CODE BELOW</h3>
+			<p>Your station name: <input type="text" id="station-identifier" value="cookies"/></p>
+			<p>Your code:</p>
+			<p class="code">
+				&lt;iframe src=&#34;http:&#47;&#47;www.phonoblaster.com&#47;widget&#47;init?identifier=<strong>cookies</strong>&#34; height=&#34;301&#34; width=&#34;265&#34; frameborder=&#34;0&#34;&gt;&lt;&#47;iframe&gt;
+			</p>
+		</div>
+	</div>
 {% endblock %}
 
 {% block footer %}
 	{% include "../footer.html" %}
+{% endblock %}
+
+{% block script %}
+	<script type="text/javascript">
+		$("input[id='station-identifier']")
+			.focus(function(e){
+				$(this).val("")
+				$("strong").html("")
+			})
+		
+		
+		$("input[id='station-identifier']")
+			.bind("keyup", function(e){
+			 	text = $(this).val();
+				display(text)
+			});
+		
+		display = function(text){
+			$("strong")
+				.html(text);
+		}
+		
+	</script>
 {% endblock %}
