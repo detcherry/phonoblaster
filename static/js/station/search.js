@@ -151,6 +151,15 @@ YoutubeSearch.prototype = {
 	
 	addToTracklist: function(title, id, thumbnail, duration){		
 		var that = this;
+		tracks_to_add = [];
+		track = {
+			"title": title,
+			"id": id,
+			"thumbnail": thumbnail,
+			"duration": duration,
+		}
+		tracks_to_add.push(track);
+		
 		$.ajax({
 			url: "/track/add",
 			type: "POST",
@@ -158,10 +167,7 @@ YoutubeSearch.prototype = {
 			timeout: 60000,
 			data: {
 				station_key: station_key,
-				title: title,
-				id: id,
-				thumbnail: thumbnail,
-				duration: duration,
+				tracks: JSON.stringify(tracks_to_add),
 				channel_id: channel_id,
 			},
 			error: function(xhr, status, error) {

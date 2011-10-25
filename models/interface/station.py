@@ -266,52 +266,65 @@ class InterfaceStation():
 				else:
 					logging.info("Tracklist already in memcache and no need to clean up")
 
-		return self._station_tracklist
+		return self._station_tracklist	
 	
-	# Add a new track to the station tracklist
-	def add_track(self, title, id, thumbnail, duration, user_key):		
-		# If user is allowed to add
-		if(self.is_allowed_to_add(user_key)):
-			logging.info("User allowed to add in %s" %(self.station.identifier))
+	# Add some tracks to the station tracklist
+	def add_tracks(self, tracks, user_key):
+		if(tracks):
+			# If user is allowed to add
+			if(self.is_allowed_to_add(user_key)):
+				logging.info("User allowed to add in %s" %(self.station.identifier))
 			
-			# If the station queue has already 10 tracks it's full!
-			if(len(self.station_tracklist) == 10):
-				logging.info("Tracklist full")
-				return None
+				room_in_tracklist = 10 - len(self.station_tracklist)
+				# If the station queue has already 10 tracks it's full!
+				if(room_in_tracklist == 0):
+					logging.info("Tracklist full")
+					return None
+				# Otherwise, there is room for new tracks
+				else:
+					logging.info("Some room left in the tracklist")
+					current_expiration_time = self.previous_expiration_time()
 				
-			# Otherwise, there is room for new tracks
+					# Shorten the number of tracks to the room in the tracklist
+					tracks_to_add = tracks[:room_in_tracklist-1]
+					logging.info(tracks_to_add)
+				
+					tracks_saved = []
+					for track in tracks_to_add:
+						current_expiration_time += timedelta(0,int(track["duration"]))
+						new_track = Track(
+							youtube_title = track["title"],
+							youtube_id = track["id"],
+							youtube_thumbnail_url = db.Link(track["thumbnail"]),
+							youtube_duration = int(track["duration"]),
+							station = self.station.key(),
+							submitter = db.Key(str(user_key)),
+							expired = current_expiration_time,
+						)
+						tracks_saved.append(new_track)
+		
+					# Save tracks in the datastore
+					db.put(tracks_saved)
+					logging.info("New tracks saved in the datastore")
+		
+					# Now the memcache
+					self.station_tracklist += tracks_saved
+					memcache.set(self.memcache_station_tracklist_id, self.station_tracklist)
+					logging.info("Added to the station tracklist in memcache")
+		
+					# Update Station Expiration Time
+					self.update_station_expiration_time(current_expiration_time)
+		
+					# Increment the station tracks counter by the right number
+					self.increment_station_track_counter(len(tracks_saved))
+		
+					return tracks_saved
+
 			else:
-				logging.info("Some room left in the tracklist")
-				self.calculate_track_expiration_time(duration)
-				
-				# Save new track to the datastore
-				new_track = Track(
-					youtube_title = title,
-					youtube_id = id,
-					youtube_thumbnail_url = db.Link(thumbnail),
-					youtube_duration = int(duration),
-					station = self.station.key(),
-					submitter = db.Key(str(user_key)),
-					expired = self.new_track_expiration_time,
-				)
-				new_track.put()
-				logging.info("New track %s saved in the datastore" %(title))
-				
-				# Add track to the memcache 
-				self.station_tracklist.append(new_track)
-				memcache.set(self.memcache_station_tracklist_id, self.station_tracklist)
-				logging.info("Added to the station tracklist in memcache")				
-				
-				# Update Station Expiration Time
-				self.update_station_expiration_time(self.new_track_expiration_time)
-				
-				# Increment Station Track Counter
-				self.increment_station_track_counter()
-				
-				return new_track
+				return None
 		else:
-			return None		
-	
+			return None
+				
 	# Check if user is allowed to add track to the station
 	def is_allowed_to_add(self, user_key):
 		user_key = db.Key(str(user_key))
@@ -327,23 +340,22 @@ class InterfaceStation():
 			logging.info("User not allowed to add in %s station" %(self.station.identifier))
 			return False
 	
-	# Calculate the expiration time of the track being added
-	def calculate_track_expiration_time(self, duration):
-		expiration_interval = timedelta(0,int(duration))
+	# Returns the current station expiration time or the current time if there is no track in the tracklist
+	def previous_expiration_time(self):
 		if(len(self.station_tracklist) == 0):
 			logging.info("Tracklist empty")
-			self.new_track_expiration_time = datetime.now() + expiration_interval
+			return datetime.now()
 		else:
 			logging.info("Tracklist not empty")
 			last_track = self.station_tracklist[-1]
-			self.new_track_expiration_time = last_track.expired + expiration_interval
+			return last_track.expired
 	
 	# Increment the station tracks counter
-	def increment_station_track_counter(self):
+	def increment_station_track_counter(self, value):
 		counter_name = "tracks_counter_station_" + str(self.station_id)
-		GeneralCounterShardConfig.increment(counter_name)
+		GeneralCounterShardConfig.bulk_increment(counter_name, value)
 		logging.info("Station track counter incremented")
-	
+		
 	# Delete a track from the station tracklist
 	def delete_track(self, user_key, track_id):
 		self.user_key = db.Key(user_key)

@@ -43,21 +43,22 @@ class GeneralCounterShardConfig(db.Model):
 		memcache.set(name, num)
 	
 	@staticmethod
-	def increment(name):
+	def bulk_increment(name, value):
 	    """Increment the value for a given sharded counter.
 
 	    Parameters:
 	      name - The name of the counter
+		  value - The value to add to the counter
 	    """
 	    config = GeneralCounterShardConfig.get_or_insert(name, name=name)
 	    def txn():
-	        index = random.randint(0, config.num_shards - 1)
-	        shard_name = name + str(index)
-	        counter = GeneralCounterShard.get_by_key_name(shard_name)
-	        if counter is None:
-	            counter = GeneralCounterShard(key_name=shard_name, name=name)
-	        counter.count += 1
-	        counter.put()
+		    index = random.randint(0, config.num_shards - 1)
+		    shard_name = name + str(index)
+		    counter = GeneralCounterShard.get_by_key_name(shard_name)
+		    if counter is None:
+			    counter = GeneralCounterShard(key_name=shard_name, name=name)
+		    counter.count += int(value)
+		    counter.put()
 	    db.run_in_transaction(txn)
 	    memcache.incr(name)
 	

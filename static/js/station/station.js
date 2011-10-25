@@ -35,7 +35,7 @@ $(function(){
 	}
 	
 	function onMessage(m){
-		dispatcher.dispatch(json_parse(m.data));
+		dispatcher.dispatch(JSON.parse(m.data));
 	}
 	
 	function onError(){
