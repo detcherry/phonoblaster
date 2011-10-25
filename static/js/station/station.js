@@ -101,15 +101,28 @@ $(function(){
 
 /* ------------- YOUTUBE PLAYER MANAGEMENT -------------- */
 
-//Youtube PLAY & VOLUME management
+//Youtube PLAY & VOLUME & ERROR management
 function onYouTubePlayerReady(playerId) {
 	ytplayer = document.getElementById("ytplayer");
+	
+	// Puts handler in case the video does not work
+	ytplayer.addEventListener("onError", "onPlayerError");
+	
+	// Triggers the video
 	ytplayer.loadVideoById(YOUTUBE_ID, VIDEO_START);
 
 	//If the volume had been turned off, mute the player
 	if(!volume){
 		ytplayer.mute();
 	}
+}
+
+
+function onPlayerError(){	
+	console.log("Error: track not working");
+	
+	// Raise video error
+	dispatcher.tracklistManager.errorController.raise();
 }
 
 /* --------- DISPATCHER --------- */
@@ -179,6 +192,9 @@ function TracklistManager(){
 	this.tracklist = [];
 	this.uiTracklistController = new UITracklistController();
 	this.youtubeController = new YoutubeController();
+	
+	this.errorController = new ErrorController(this);
+	
 	if(allowed_to_post){
 		this.searchController = new YoutubeSearch(this);
 		this.latestTracksManager = new LatestTracksManager(this);
@@ -247,10 +263,13 @@ TracklistManager.prototype = {
 			time_out = expired_at - datetime_now/1000;
 			video_start = duration - time_out;
 			
+			// Put track in the error controller
+			this.errorController.addTrack(this.new_track);
+			
 			console.log("▶ New track launched: "+ this.new_track.title + " at " + video_start.toString() +" sec")	
 			this.youtubeController.init(this.new_track.id, video_start);
 			this.displayInformation(video_start);
-			this.displayProgress(video_start);
+			this.displayProgress(video_start, this.new_track.duration);
 		}
 		else{
 			console.log("No track found")
@@ -296,13 +315,13 @@ TracklistManager.prototype = {
 		
 	},
 	
-	displayProgress: function(video_start){
-		x = parseInt(video_start*500/(this.new_track.duration));
+	displayProgress: function(video_start, duration){
+		x = parseInt(video_start*500/duration);
 		$('#filler').css('width', x.toString() + 'px');
 		$('#filler').animate({
 			width:'500px',
-		},parseInt(this.new_track.duration - video_start)*1000,'linear');
-	},
+		},parseInt(duration - video_start)*1000,'linear');
+	},	
 	
 }
 
@@ -647,6 +666,85 @@ ListenerController.prototype = {
 		}	
 		
 	}
+	
+}
+
+/* --------------- ERROR CONTROLLER ------------------ */
+
+function ErrorController(tracklistManager){
+	this.working_tracks = [];
+	this.tracklistManager = tracklistManager;
+}
+
+ErrorController.prototype = {
+	
+	addTrack: function(newTrack){
+		console.log("track added in the working tracks")
+		this.working_tracks.push(newTrack);
+	},
+	
+	raise: function(){
+		
+		// Empty div and display GIF for a few seconds...
+		this.displayTransitionImage();
+
+		console.log(this.working_tracks);
+		// Removes the last video of the working videos array!
+		track_not_working = this.working_tracks.pop()
+		
+		// Calculate the time out (the time before the video was supposed to end)
+		expired_at = parseInt(track_not_working.expired,10);
+		datetime_now = Date.parse(new Date());
+		duration = parseInt(track_not_working.duration,10);
+		time_out = expired_at - datetime_now/1000;
+
+		// Retrieves the last video working
+		if(this.working_tracks.length == 0){
+			// El Guincho - Bombay is our standard track (in case there is no other working tracks in the array)
+			replacing_track = {
+				"id": "-CreEuaS8QY",
+				"duration": "269",
+			}
+		}
+		else{
+			replacing_track = this.working_tracks[this.working_tracks.length - 1];
+			if(replacing_track.duration > track_not_working.duration){
+				//it's ok
+			}
+			else{
+				replacing_track = {
+					"id": "-CreEuaS8QY",
+					"duration": "269",
+				}
+			}
+		}
+		
+		image_display_time = 5;
+		
+		// Calculate the video start
+		video_start = replacing_track.duration - time_out + image_display_time;
+
+		var that = this;
+		setTimeout(function(){
+			// Init video player
+			that.tracklistManager.youtubeController.init(replacing_track.id, video_start);
+			// Display progress
+			that.tracklistManager.displayProgress(video_start, replacing_track.duration);
+		}, image_display_time * 1000);
+
+		
+	},
+	
+	displayTransitionImage: function(){
+		$("#live-video").empty();
+		
+		$("#live-video")
+			.append(
+				$("<img/>")
+					.attr("src","/static/images/video-error.png")
+					.css("paddingLeft","1px")
+			)
+	},
 	
 	
 }
