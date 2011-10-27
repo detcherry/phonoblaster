@@ -52,7 +52,7 @@ class StationEditHandler(BaseHandler):
 				picture_ok = self.check_image(self.submitted_picture)
 				thumbnail_ok = self.check_image(self.submitted_thumbnail)				
 				id_ok = self.check_identifier(self.submitted_identifier)
-				website_ok = self.check_size(self.submitted_website, 40)
+				website_ok = self.check_size(self.submitted_website, 148)
 				description_ok = self.check_size(self.submitted_description, 141)
 				
 				

@@ -37,7 +37,7 @@ class StationCreateHandler(BaseHandler):
 		pictureOk = self.checkBlobKey(picture_key)
 		thumbnailOk = self.checkBlobKey(thumbnail_key)
 		identifierOk = self.checkStationID(identifier)
-		websiteOk = self.checkSize(website, 40)
+		websiteOk = self.checkSize(website, 148)
 		descriptionOk = self.checkSize(description, 141)
 		
 		if(notStationCreator):
