@@ -37,6 +37,8 @@
 	    <div id="fb-root"></div>
 		<script type="text/javascript" src="/static/js/jquery-1.6.2.min.js"></script>
 		<script type="text/javascript" src="http://platform.twitter.com/widgets.js"></script>
+		<script type="text/javascript" src="/static/js/modal.js"></script>
+
 		{% block script %}
 		{% endblock %}
 		<script type="text/javascript">
@@ -52,7 +54,7 @@
 		  })();
 
 		</script>
-	    <script>
+	    <script type="text/javascript">
 	      	window.fbAsyncInit = function() {
 		        FB.init({
 					appId: '{{ facebook_app_id }}',

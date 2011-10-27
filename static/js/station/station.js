@@ -435,9 +435,9 @@ UITracklistController.prototype = {
 	
 	listen: function(){
 		//In case there were previous links bound to an event handler
-		$("a.close").unbind("click");
+		$("#tracks a.close").unbind("click");
 		
-		$("a.close").click(function(){
+		$("#tracks a.close").click(function(){
 			cross = $(this);
 			img = $(this).parent().find("img");
 			phonoblaster_id = $(this).parent().parent().attr("id");
