@@ -430,6 +430,40 @@ input#search_button{
 	width:100%;
 }
 
+#latest #header_buttons{
+	width:100%;
+	margin-bottom:10px;
+}
+
+#latest #header_buttons a{
+	height:11px;
+	font-size:11px;
+}
+
+#latest #header_buttons img.loader{
+	margin-top:8px;
+	height:10px;
+	width:10px;
+}
+
+#latest div.fill_buffer{
+	width:110px;
+}
+
+#latest div.fill_buffer a{
+	margin-right:2px;
+	width:71px;
+	text-align:center;
+}
+
+#latest div.fill_buffer img.loader{
+	margin-left:45px;
+}
+
+#latest div.shuffle_buffer img.loader{
+	margin-left:28px;
+}
+
 #latest p{
 	width:100%;
 }
@@ -482,8 +516,18 @@ input#search_button{
 	font-size:11px;
 	color:#373535;
 }
-
+/*
 #latest a.add_to_buffer{
+	display:block;
+	float:left;
+	margin-left:44%;
+	width:35%;
+	padding:4px;
+	font-size:11px;
+	text-align:center;
+}*/
+
+#latest .track a.button{
 	display:block;
 	float:left;
 	margin-left:44%;

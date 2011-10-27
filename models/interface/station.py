@@ -286,7 +286,7 @@ class InterfaceStation():
 					current_expiration_time = self.previous_expiration_time()
 				
 					# Shorten the number of tracks to the room in the tracklist
-					tracks_to_add = tracks[:room_in_tracklist-1]
+					tracks_to_add = tracks[:room_in_tracklist]
 					logging.info(tracks_to_add)
 				
 					tracks_saved = []
