@@ -452,7 +452,6 @@ input#search_button{
 
 #latest div.fill_buffer a{
 	margin-right:2px;
-	width:71px;
 	text-align:center;
 }
 
@@ -516,16 +515,6 @@ input#search_button{
 	font-size:11px;
 	color:#373535;
 }
-/*
-#latest a.add_to_buffer{
-	display:block;
-	float:left;
-	margin-left:44%;
-	width:35%;
-	padding:4px;
-	font-size:11px;
-	text-align:center;
-}*/
 
 #latest .track a.button{
 	display:block;
@@ -544,54 +533,6 @@ input#search_button{
 	margin-left:60%;
 	height:10px;
 	width:10px;
-	border:none;
-}
-
-/* ------- SHUFFLE -----------*/
-
-a#shuffle{
-	display:block;
-	float:left;
-	margin-top:10px;
-	margin-left:25%;
-	padding-top:5px;
-	padding-bottom:5px;
-	padding-left:3%;
-	padding-right:3%;
-	width:40%;
-	text-align:center;
-}
-
-a#just_shuffled{
-	display:block;
-	float:left;
-	margin-top:10px;
-	margin-left:25%;
-	padding-top:5px;
-	padding-bottom:5px;
-	padding-left:3%;
-	padding-right:3%;
-	width:40%;
-	text-align:center;
-}
-
-a#not_shuffled{
-	display:block;
-	float:left;
-	margin-top:10px;
-	margin-left:25%;
-	padding-top:5px;
-	padding-bottom:5px;
-	padding-left:3%;
-	padding-right:3%;
-	width:40%;
-	text-align:center;
-}
-
-#shuffle img.loader{
-	margin-top:15px;
-	height:20px;
-	margin-left:45%;
 	border:none;
 }
 
