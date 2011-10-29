@@ -36,7 +36,7 @@ YoutubeSearch.prototype = {
 		var that = this;
 				
 		var youtube_search_api_url = "https://gdata.youtube.com/feeds/api/videos?q=";
-		var parameters ="&max-results=20&v=2&alt=jsonc&callback=?";
+		var parameters ="&max-results=20&format=5&v=2&alt=jsonc&callback=?";
 		var url = youtube_search_api_url + encodeURIComponent(content) + parameters;	
 			
 		$.getJSON(
