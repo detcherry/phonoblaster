@@ -103,7 +103,7 @@ $(function(){
 
 //Youtube PLAY & VOLUME & ERROR management
 function onYouTubePlayerReady(playerId) {
-	ytplayer = document.getElementById("ytplayer");
+	var ytplayer = document.getElementById("ytplayer");
 	
 	// Puts handler in case the video does not work
 	ytplayer.addEventListener("onError", "onPlayerError");
@@ -116,7 +116,6 @@ function onYouTubePlayerReady(playerId) {
 		ytplayer.mute();
 	}
 }
-
 
 function onPlayerError(){	
 	console.log("Error: track not working");
@@ -165,20 +164,20 @@ Dispatcher.prototype = {
 		if(data.type == "listener_init"){
 			console.log("listener_init");
 			//Init the listeners list
-			listeners = data.content;
+			var listeners = data.content;
 			this.listenerController.init(listeners);
 			
 		}
 		if(data.type == "listener_new"){
 			console.log("listener_new");
 			// Add a new listener to the list
-			new_listener = data.content;
+			var new_listener = data.content;
 			this.listenerController.add(new_listener);
 		}
 		if(data.type == "listener_delete"){
 			console.log("listener_delete");
 			// Remove a listener from the list
-			old_session_id = data.content.session_id;
+			var old_session_id = data.content.session_id;
 			this.listenerController.remove(old_session_id);
 			
 		}
@@ -213,7 +212,7 @@ TracklistManager.prototype = {
 	
 	add: function(tracklist){
 		for(i=0, c=tracklist.length; i<c; i++){
-			track = tracklist[i];
+			var track = tracklist[i];
 			this.tracklist.push(track);
 			this.uiTracklistController.add(track);
 			this.uiTracklistController.listen();
@@ -227,10 +226,10 @@ TracklistManager.prototype = {
 	remove: function(phonoblaster_id){
 		var that = this		
 		for(i=0, c = that.tracklist.length; i<c; i++){
-			track = that.tracklist[i];
+			var track = that.tracklist[i];
 			if(track.phonoblaster_id == phonoblaster_id){
 				//Expiration of tracks after the track deleted should occur earlier
-				offset = parseInt(track.duration,10);
+				var offset = parseInt(track.duration,10);
 				
 				for(j = i, c = that.tracklist.length; j < c; j++){
 					that.tracklist[j].expired = parseInt(that.tracklist[j].expired, 10) - offset;
@@ -242,7 +241,7 @@ TracklistManager.prototype = {
 				that.uiTracklistController.remove(phonoblaster_id)
 				
 				//Substract 1 to the number of tracks counter
-				number_of_tracks = parseInt($("#number_of_tracks").html(),10) - 1;
+				var number_of_tracks = parseInt($("#number_of_tracks").html(),10) - 1;
 				$("#number_of_tracks").html(number_of_tracks);
 				
 				break;
@@ -256,12 +255,12 @@ TracklistManager.prototype = {
 		if(this.new_track){	
 			this.uiTracklistController.removeCross(this.new_track.phonoblaster_id);
 					
-			expired_at = parseInt(this.new_track.expired,10);
-			datetime_now = Date.parse(new Date());
-			duration = parseInt(this.new_track.duration,10);
+			var expired_at = parseInt(this.new_track.expired,10);
+			var datetime_now = Date.parse(new Date());
+			var duration = parseInt(this.new_track.duration,10);
 			
-			time_out = expired_at - datetime_now/1000;
-			video_start = duration - time_out;
+			var time_out = expired_at - datetime_now/1000;
+			var video_start = duration - time_out;
 			
 			console.log("▶ New track launched: "+ this.new_track.title + " at " + video_start.toString() +" sec")	
 			this.youtubeController.init(this.new_track.id, video_start);
@@ -279,7 +278,7 @@ TracklistManager.prototype = {
 	programNextVideo: function(time_out){
 		var that = this;
 		
-		first_timer = setTimeout(function(){
+		var first_timer = setTimeout(function(){
 			that.nextVideo();
 		},time_out*1000);		
 	},
@@ -289,7 +288,7 @@ TracklistManager.prototype = {
 			this.uiTracklistController.remove(this.new_track.phonoblaster_id);
 		}		
 		var that = this;
-		second_timer = setTimeout(function(){
+		var second_timer = setTimeout(function(){
 			that.playNext();
 		},1000);
 	},
@@ -306,7 +305,7 @@ TracklistManager.prototype = {
 	},
 	
 	displayProgress: function(video_start, duration){
-		x = parseInt(video_start*500/duration);
+		var x = parseInt(video_start*500/duration);
 		$('#filler').css('width', x.toString() + 'px');
 		$('#filler').animate({
 			width:'500px',
@@ -334,12 +333,12 @@ UITracklistController.prototype = {
 	},
 	
 	add: function(track){
-		seconds = parseInt(track.duration,10) % 60;
-		minutes = (parseInt(track.duration,10) - seconds)/60
+		var seconds = parseInt(track.duration,10) % 60;
+		var minutes = (parseInt(track.duration,10) - seconds)/60
 		if(seconds < 10){
 			seconds = "0"+ seconds.toString();
 		}
-		to_display = minutes.toString() + ":" + seconds;
+		var to_display = minutes.toString() + ":" + seconds;
 		
 		$("#tracks").append(
 			$("<div/>")
@@ -428,9 +427,9 @@ UITracklistController.prototype = {
 		$("#tracks a.close").unbind("click");
 		
 		$("#tracks a.close").click(function(){
-			cross = $(this);
-			img = $(this).parent().find("img");
-			phonoblaster_id = $(this).parent().parent().attr("id");
+			var cross = $(this);
+			var img = $(this).parent().find("img");
+			var phonoblaster_id = $(this).parent().parent().attr("id");
 			
 			cross.hide();
 			img.show();
@@ -512,18 +511,18 @@ ListenerController.prototype = {
 	
 	init: function(listeners){
 		for(i = 0, c = listeners.length; i < c; i++){
-			listener = listeners[i];
+			var listener = listeners[i];
 			this.add(listener);
 		}
 	},
 	
 	add: function(new_listener){
 		
-		duplicate = false;
+		var duplicate = false;
 		//Check if user logged in not already in listener list
 		if(new_listener.phonoblaster_id){
 			for(j = 0, d = this.listeners.length; j<d; j++){
-				listener = this.listeners[j]
+				var listener = this.listeners[j]
 				// In the case below there is a duplicate
 				if(listener.phonoblaster_id == new_listener.phonoblaster_id){
 					duplicate = true;
@@ -550,23 +549,23 @@ ListenerController.prototype = {
 	
 	remove: function(old_session_id){
 		
-		new_listeners_list = [];
-		new_duplicate_list = [];
+		var new_listeners_list = [];
+		var new_duplicate_list = [];
 		
-		in_listeners = false;
+		var in_listeners = false;
 		
 		// Check which listener it is
 		for(i = 0, c = this.listeners.length; i<c; i++){
-			listener = this.listeners[i]
+			var listener = this.listeners[i]
 			if(old_session_id == listener.session_id){
 				// Remove listener from UI
 				$("#listener_items #" + old_session_id).remove();
 				
-				listener_to_delete = listener
+				var listener_to_delete = listener
 				
 				// Check if also in duplicate
 				for(j = 0, d = this.duplicate_listeners.length; j<d; j++){
-					duplicate_listener = this.duplicate_listeners[j];
+					var duplicate_listener = this.duplicate_listeners[j];
 					// If also in duplicate, add it in the listeners list and display it
 					if(listener_to_delete.phonoblaster_id == duplicate_listener.phonoblaster_id){
 						new_listeners_list.push(duplicate_listener)
@@ -596,7 +595,7 @@ ListenerController.prototype = {
 			new_duplicate_list = [];
 			
 			for(k = 0, e = this.duplicate_listeners.length; k<e; k++){
-				duplicate_listener = this.duplicate_listeners[k];
+				var duplicate_listener = this.duplicate_listeners[k];
 				
 				if(duplicate_listener.session_id == old_session_id){
 					//do nothing
@@ -617,7 +616,7 @@ ListenerController.prototype = {
 	},
 	
 	update_number_of_listeners: function(){
-		number_of_listeners = this.listeners.length;
+		var number_of_listeners = this.listeners.length;
 		$("#number_of_listeners").html(number_of_listeners);
 	},
 	

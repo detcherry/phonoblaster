@@ -15,11 +15,11 @@ function TracksBrowser(station_id, next){
 TracksBrowser.prototype = {
 	
 	init: function(){
-		firstDivTrack = $(".track").first();
+		var firstDivTrack = $(".track").first();
 		if(firstDivTrack.length > 0){
-			firstTrackInfo = firstDivTrack.find(".info");
-			track_id = firstTrackInfo.find(".id").html();
-			track_title = firstTrackInfo.find(".title").html();
+			var firstTrackInfo = firstDivTrack.find(".info");
+			var track_id = firstTrackInfo.find(".id").html();
+			var track_title = firstTrackInfo.find(".title").html();
 			this.play(track_id, track_title, false);
 		}
 		this.listen();
@@ -92,10 +92,10 @@ TracksBrowser.prototype = {
 			success: function(json){
 				$("#tracks_history img.loader").remove();
 				$.each(json.tracks, function(i){
-					track = json.tracks[i];
-					id = track.id;
-					title = track.title;
-					thumbnail = track.thumbnail;
+					var track = json.tracks[i];
+					var id = track.id;
+					var title = track.title;
+					var thumbnail = track.thumbnail;
 					
 					that.display(id, title, thumbnail)
 				})

@@ -32,7 +32,7 @@ PictureUploader.prototype = {
 			})
 		
 		//We change the way it's submitted	
-		options = {
+		var options = {
 			success: that.showResponse,
 			dataType: "json",
 			timeout: 60000,
@@ -80,12 +80,12 @@ PictureUploader.prototype = {
 			}
 			else{
 				//Find if some images had already been uploaded to the blobstore
-				existing_picture_input = $("input[id='blob_key']");
-				existing_thumbnail_input = $("input[id='thumbnail_blob_key']");
+				var existing_picture_input = $("input[id='blob_key']");
+				var existing_thumbnail_input = $("input[id='thumbnail_blob_key']");
 
 				if(existing_picture_input.attr("value")){
-					existing_picture_blob_key = existing_picture_input.attr("value");
-					existing_thumbnail_blob_key = existing_thumbnail_input.attr("value");
+					var existing_picture_blob_key = existing_picture_input.attr("value");
+					var existing_thumbnail_blob_key = existing_thumbnail_input.attr("value");
 
 					//Delete the existing picture from the blobstore
 					$.ajax({
@@ -218,8 +218,8 @@ StationIDManager.prototype = {
 	
 	keyUpHandler: function(){
 		var re = new RegExp("[^a-zA-Z0-9_]","g");
-		oldInputValue = $("input[id='identifier']").val();
-		newInputValue = oldInputValue.replace(re,"");
+		var oldInputValue = $("input[id='identifier']").val();
+		var newInputValue = oldInputValue.replace(re,"");
 		
 		this.stationID = newInputValue.toLowerCase();
 		$("input[id='identifier']").val(this.stationID);
@@ -286,7 +286,7 @@ function DescriptionLimitSetter(){
 DescriptionLimitSetter.prototype = {
 	
 	init: function(){
-		that = this
+		var that = this
 		$("textarea[id='description']")
 			.bind("keyup", function(event){
 				that.keyUpHandler(event);
@@ -294,19 +294,19 @@ DescriptionLimitSetter.prototype = {
 	},
 	
 	keyUpHandler: function(){
-		textContent = $("textarea[id='description']").val();
+		var textContent = $("textarea[id='description']").val();
 		this.textLength = textContent.length;
 		if(this.textLength < 141){
 			this.displayCharactersLeft();
 		}
 		else{
-			newContent = textContent.substr(0, 140);
+			var newContent = textContent.substr(0, 140);
 			$("textarea[id='description']").val(newContent);
 		}
 	},
 	
 	displayCharactersLeft: function(){
-		numberOfCharactersLeft = 140 - this.textLength;
+		var numberOfCharactersLeft = 140 - this.textLength;
 		$("#characters_left")
 			.html(numberOfCharactersLeft.toString() + " characters left");
 	}
@@ -347,9 +347,9 @@ SubmitHandler.prototype = {
 	},
 	
 	everythingOk: function(){
-		pictureOk = false;
-		thumbnailOk = false;
-		identifierOk = false;
+		var pictureOk = false;
+		var thumbnailOk = false;
+		var identifierOk = false;
 		
 		if($("input[id='blob_key']").attr("value")){
 			pictureOk = true;
@@ -359,7 +359,7 @@ SubmitHandler.prototype = {
 			thumbnailOk = true;
 		}
 		
-		station_id_availability = $("#availability").html();
+		var station_id_availability = $("#availability").html();
 		if(station_id_availability == "Available"){
 			identifierOk = true;
 		}

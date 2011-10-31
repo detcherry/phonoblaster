@@ -12,7 +12,7 @@ function FcbkRequestsManager(){
 FcbkRequestsManager.prototype = {
 	
 	init: function(){
-		that = this;
+		var that = this;
 		$("a[id='invite']")
 			.bind("click", function(){
 				that.displayLoadingIndicator();
@@ -35,7 +35,7 @@ FcbkRequestsManager.prototype = {
 	},
 	
 	store: function(request, recipient_ids){
-		recipients = recipient_ids.join(',');
+		var recipients = recipient_ids.join(',');
 		
 		$.ajax({
 			url: "/contribution/add",

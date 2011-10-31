@@ -17,7 +17,7 @@ YoutubeSearch.prototype = {
 		//Listen to search events
 		$("form#search")
 			.submit(function(){
-				content = $("input[id='search_content']").val();
+				var content = $("input[id='search_content']").val();
 				that.removeResults();
 				that.makeQuery(content);
 				return false;
@@ -45,7 +45,7 @@ YoutubeSearch.prototype = {
 				//Generate the results on the page
 				if(json.data.items){
 					$.each( json.data.items, function(i) {
-						item = json.data.items[i];
+						var item = json.data.items[i];
 						that.generateResult(item);
 					});
 					
@@ -122,13 +122,13 @@ YoutubeSearch.prototype = {
 		//Listen to add events
 		$("a.add_track")
 			.click(function(){				
-				divResult = $(this).parent();
-				divInfo = divResult.find(".info");
+				var divResult = $(this).parent();
+				var divInfo = divResult.find(".info");
 
-				title = divInfo.find(".title").html();
-				id = divInfo.find(".id").html();
-				thumbnail = divInfo.find(".thumbnail").html();
-				duration = divInfo.find(".duration").html();
+				var title = divInfo.find(".title").html();
+				var id = divInfo.find(".id").html();
+				var thumbnail = divInfo.find(".thumbnail").html();
+				var duration = divInfo.find(".duration").html();
 				
 				if(that.tracklistManager.tracklist.length < 9){
 					$(this).replaceWith(
@@ -151,8 +151,8 @@ YoutubeSearch.prototype = {
 	
 	addToTracklist: function(title, id, thumbnail, duration){		
 		var that = this;
-		tracks_to_add = [];
-		track = {
+		var tracks_to_add = [];
+		var track = {
 			"title": title,
 			"id": id,
 			"thumbnail": thumbnail,
@@ -183,7 +183,7 @@ YoutubeSearch.prototype = {
 						"thumbnail": thumbnail,
 						"duration": duration,
 					}
-					tracks_to_add = [track];
+					var tracks_to_add = [track];
 					that.tracklistManager.libraryController.add_new_tracks(tracks_to_add);
 				}
 				else{
