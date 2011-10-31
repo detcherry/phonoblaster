@@ -16,7 +16,7 @@ ChatController.prototype = {
 		
 		//Supposed to respond to the chat_init dispatch message
 		for(i = 0, c = messages.length; i < c; i++){
-			message = messages[i];
+			var message = messages[i];
 			this.display(message);
 		}
 		
@@ -30,12 +30,12 @@ ChatController.prototype = {
 		//Starts listening to submit events in the chat form
 		$("form#chat")
 			.submit(function(){
-				content = $("input[id='chat_content']").val();
+				var content = $("input[id='chat_content']").val();
 				if(content.length > 0){
 					date = Date.parse(new Date())/1000;
 					
 					//Display message in the zone
-					message = {
+					var message = {
 						text: content,
 						author_id : that.user_id,
 						author_fcbk_id: that.user_fcbk_id,
@@ -85,28 +85,28 @@ ChatController.prototype = {
 	
 	display: function(message){
 		//Date handling
-		date = new Date(parseInt(message.added)*1000);
-		hours = parseInt(date.getHours());
+		var date = new Date(parseInt(message.added)*1000);
+		var hours = parseInt(date.getHours());
 		if(hours < 10){
 			hours = "0" + hours.toString()
 		}
-		minutes = parseInt(date.getMinutes());
+		var minutes = parseInt(date.getMinutes());
 		if(minutes < 10){
 			minutes = "0" + minutes.toString();
 		}
-		date_to_display = hours +":"+minutes;
+		var date_to_display = hours +":"+minutes;
 		
 		//Links handling
-		re = /(http:)\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/;
-		occurrences = re.exec(message.text);
+		var re = /(http:)\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/;
+		var occurrences = re.exec(message.text);
 		try{
-			link = occurrences.shift();
-			newRe = new RegExp(link,"g");
-			text_to_display = message.text.replace(newRe, "<a href=" + link + " target='_blank'>" + link + "</a>");
+			var link = occurrences.shift();
+			var newRe = new RegExp(link,"g");
+			var text_to_display = message.text.replace(newRe, "<a href=" + link + " target='_blank'>" + link + "</a>");
 		}
 		catch(e){
 			//do nothing
-			text_to_display = message.text;
+			var text_to_display = message.text;
 		}
 		
 		//Display messages in the chat zone
@@ -140,22 +140,22 @@ ChatController.prototype = {
 		//If the window is not focused, put a number in the title
 		if(!window_focus){
 			console.log("have to display something");
-			old_title = document.title;
-			re = new RegExp("[(]{1}[0-9]+[)]{1}","g");
-			array = re.exec(old_title);
+			var old_title = document.title;
+			var re = new RegExp("[(]{1}[0-9]+[)]{1}","g");
+			var array = re.exec(old_title);
 			
 			//If there is already a number in the title. Add +1
 			if(array){
-				number_between_brackets = array[0];
-				re2 = new RegExp("[0-9]+","g");
-				number = parseInt(re2.exec(number_between_brackets));
-				new_number = number + 1;
-				new_number_between_brackets = "("+ new_number + ")";
-				new_title = old_title.replace(re, new_number_between_brackets);
+				var number_between_brackets = array[0];
+				var re2 = new RegExp("[0-9]+","g");
+				var number = parseInt(re2.exec(number_between_brackets));
+				var new_number = number + 1;
+				var new_number_between_brackets = "("+ new_number + ")";
+				var new_title = old_title.replace(re, new_number_between_brackets);
 			}
 			else{
 				//Else, put (1) in the title
-				new_title = "(1) " + old_title;
+				var new_title = "(1) " + old_title;
 			}
 			document.title = new_title;
 		}
