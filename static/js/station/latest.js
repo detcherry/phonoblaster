@@ -295,7 +295,8 @@ LatestTracksManager.prototype = {
 			setTimeout(function(){
 				obj = repl;
 				obj.removeClass("success").addClass("add_to_buffer").html("Add to list")
-			}, 1000)
+				//It has to stay 30 sec displayed as "succes" so that people know what they've just added
+			}, 30000)
 			
 		}
 		else{
