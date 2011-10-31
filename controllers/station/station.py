@@ -14,19 +14,32 @@ class StationHandler(RootStationHandler):
 		if not self.current_station:
 			self.redirect("/error/404")
 		else:
-			# Retrieve the number of listeners
-			number_of_listeners = len(self.station_proxy.station_sessions)
-			
-			if(number_of_listeners < 100):
+			# When you're the station creator or a contributor, you'll always have access to!
+			if(self.allowed_to_post):
+				logging.info("Allowed to post, doesn't matter if station too crowded")
 				self.additional_template_values = {
 					"site_url": controllers.config.SITE_URL,
 					"allowed_to_post": self.allowed_to_post,
 					"status_creator": self.status_creator,
 				}		
 				self.render("../../templates/station/station.html")
+				
 			else:
-				self.additional_template_values = {}
-				self.render("../../templates/station/toocrowded.html")
+				# Retrieve the number of listeners
+				number_of_listeners = len(self.station_proxy.station_sessions)
+			
+				if(number_of_listeners < 100):
+					logging.info("Number of listeners < 100")
+					self.additional_template_values = {
+						"site_url": controllers.config.SITE_URL,
+						"allowed_to_post": self.allowed_to_post,
+						"status_creator": self.status_creator,
+					}		
+					self.render("../../templates/station/station.html")
+				else:
+					logging.info("Number of listeners > 100, station too crowded")
+					self.additional_template_values = {}
+					self.render("../../templates/station/toocrowded.html")
 				
 
 application = webapp.WSGIApplication([
