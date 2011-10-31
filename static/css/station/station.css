@@ -111,26 +111,7 @@
 	padding-left:1%;
 	padding-right:1%;
 	width:98%;
-}
-
-#conversation .announcement{
-	padding-top:2px;
-	padding-bottom:2px;
-	padding-left:1%;
-	padding-right:1%;
-	width:98%;
 	font-size:11px;
-	background-color: #222;
-	background-repeat: repeat-x;
-	background-image: -khtml-gradient(linear, left top, left bottom, from(#333333), to(#222222));
-	background-image: -moz-linear-gradient(top, #333333, #222222);
-	background-image: -ms-linear-gradient(top, #333333, #222222);
-	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #333333), color-stop(100%, #222222));
-	background-image: -webkit-linear-gradient(top, #333333, #222222);
-	background-image: -o-linear-gradient(top, #333333, #222222);
-	background-image: linear-gradient(top, #333333, #222222);
-	color: white;
-	line-height: normal;
 }
 
 #conversation .message:nth-child(odd){

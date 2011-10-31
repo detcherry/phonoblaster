@@ -265,7 +265,7 @@ TracklistManager.prototype = {
 			
 			console.log("▶ New track launched: "+ this.new_track.title + " at " + video_start.toString() +" sec")	
 			this.youtubeController.init(this.new_track.id, video_start);
-			this.displayInformation(video_start);
+			this.displayInformation();
 			this.displayProgress(video_start, this.new_track.duration);
 		}
 		else{
@@ -294,20 +294,13 @@ TracklistManager.prototype = {
 		},1000);
 	},
 	
-	displayInformation: function(video_start){
-		seconds = parseInt(video_start,10) % 60;
-		minutes = (parseInt(video_start,10) - seconds)/60
-		if(seconds < 10){
-			seconds = "0"+ seconds.toString();
-		}
-		to_display = minutes.toString() + ":" + seconds;
-			
+	displayInformation: function(){
 		document.title = "▶ "+ this.new_track.title;
 		$("#conversation")
 			.prepend(
 				$("<div/>")
-					.addClass("announcement")
-					.html("▶ "+ this.new_track.title + " at " + to_display)
+					.addClass("message")
+					.html("▶ "+ this.new_track.title)
 			)
 		
 	},
