@@ -193,7 +193,7 @@ function TracklistManager(){
 	this.uiTracklistController = new UITracklistController();
 	this.youtubeController = new YoutubeController();
 	
-	this.errorController = new ErrorController(this);
+	this.errorController = new ErrorController();
 	
 	if(allowed_to_post){
 		this.searchController = new YoutubeSearch(this);
@@ -262,9 +262,6 @@ TracklistManager.prototype = {
 			
 			time_out = expired_at - datetime_now/1000;
 			video_start = duration - time_out;
-			
-			// Put track in the error controller
-			this.errorController.addTrack(this.new_track);
 			
 			console.log("▶ New track launched: "+ this.new_track.title + " at " + video_start.toString() +" sec")	
 			this.youtubeController.init(this.new_track.id, video_start);
@@ -671,68 +668,13 @@ ListenerController.prototype = {
 
 /* --------------- ERROR CONTROLLER ------------------ */
 
-function ErrorController(tracklistManager){
-	this.working_tracks = [];
-	this.tracklistManager = tracklistManager;
+function ErrorController(){
 }
 
 ErrorController.prototype = {
-	
-	addTrack: function(newTrack){
-		console.log("track added in the working tracks")
-		this.working_tracks.push(newTrack);
-	},
-	
 	raise: function(){
-		
 		// Empty div and display GIF for a few seconds...
 		this.displayTransitionImage();
-
-		console.log(this.working_tracks);
-		// Removes the last video of the working videos array!
-		track_not_working = this.working_tracks.pop()
-		
-		// Calculate the time out (the time before the video was supposed to end)
-		expired_at = parseInt(track_not_working.expired,10);
-		datetime_now = Date.parse(new Date());
-		duration = parseInt(track_not_working.duration,10);
-		time_out = expired_at - datetime_now/1000;
-
-		// Retrieves the last video working
-		if(this.working_tracks.length == 0){
-			// El Guincho - Bombay is our standard track (in case there is no other working tracks in the array)
-			replacing_track = {
-				"id": "-CreEuaS8QY",
-				"duration": "269",
-			}
-		}
-		else{
-			replacing_track = this.working_tracks[this.working_tracks.length - 1];
-			if(replacing_track.duration > track_not_working.duration){
-				//it's ok
-			}
-			else{
-				replacing_track = {
-					"id": "-CreEuaS8QY",
-					"duration": "269",
-				}
-			}
-		}
-		
-		image_display_time = 5;
-		
-		// Calculate the video start
-		video_start = replacing_track.duration - time_out + image_display_time;
-
-		var that = this;
-		setTimeout(function(){
-			// Init video player
-			that.tracklistManager.youtubeController.init(replacing_track.id, video_start);
-			// Display progress
-			that.tracklistManager.displayProgress(video_start, replacing_track.duration);
-		}, image_display_time * 1000);
-
-		
 	},
 	
 	displayTransitionImage: function(){
@@ -742,7 +684,10 @@ ErrorController.prototype = {
 			.append(
 				$("<img/>")
 					.attr("src","/static/images/video-error.png")
-					.css("paddingLeft","1px")
+					.css({
+						"paddingLeft":"1px",
+						"width":"500px",
+					})
 			)
 	},
 	
