@@ -197,7 +197,7 @@ function TracklistManager(){
 	
 	if(allowed_to_post){
 		this.searchController = new YoutubeSearch(this);
-		this.latestTracksManager = new LatestTracksManager(this);
+		this.libraryController = new LibraryController(this);
 	}
 }
 

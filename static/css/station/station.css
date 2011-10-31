@@ -413,99 +413,99 @@ input#search_button{
 	border:none;
 }
 
-/*------- LATEST ------------ */
+/*------- LIBRARY------------ */
 
-#latest{
+#library{
 	width:100%;
 }
 
-#latest #header_buttons{
+#library #header_buttons{
 	width:100%;
 	margin-bottom:10px;
 }
 
-#latest #header_buttons a{
+#library #header_buttons a{
 	height:11px;
 	font-size:11px;
 }
 
-#latest #header_buttons img.loader{
+#library #header_buttons img.loader{
 	margin-top:8px;
 	height:10px;
 	width:10px;
 }
 
-#latest div.fill_buffer{
+#library div.fill_buffer{
 	width:110px;
 }
 
-#latest div.fill_buffer a{
+#library div.fill_buffer a{
 	margin-right:2px;
 	text-align:center;
 }
 
-#latest div.fill_buffer img.loader{
+#library div.fill_buffer img.loader{
 	margin-left:45px;
 }
 
-#latest div.shuffle_buffer img.loader{
+#library div.shuffle_buffer img.loader{
 	margin-left:28px;
 }
 
-#latest p{
+#library p{
 	width:100%;
 }
 
-#latest div.loader{
+#library div.loader{
 	width:100%;
 }
 
-#latest div.loader img.loader{
+#library div.loader img.loader{
 	width:20px;
 	margin-left:45%;
 	border:none;
 }
 
-#latest .info{
+#library .info{
 	display:none;
 }
 
-#latest .track{
+#library .track{
 	padding-top:10px;
 	padding-bottom:10px;
 	width:100%;
 }
 
-#latest .track img{
+#library .track img{
 	margin-right:10px;
 	width:110px;
 	height:82px;
 }
 
-#latest .track .title{
+#library .track .title{
 	padding-top:2px;
 	width:160px;
 	height:60px;
 	overflow:hidden;
 }
 
-#latest .track .title span{
+#library .track .title span{
 	display:table-cell;
 	height:60px;
 	vertical-align:middle;
 }
 
-#latest .track .subtitle{
+#library .track .subtitle{
 	width:55%;
 }
 
-#latest .track .duration{
+#library .track .duration{
 	padding-top:5px;
 	font-size:11px;
 	color:#373535;
 }
 
-#latest .track a.button{
+#library .track a.button{
 	display:block;
 	float:left;
 	margin-left:44%;
@@ -515,7 +515,7 @@ input#search_button{
 	text-align:center;
 }
 
-#latest .track img.loader{
+#library .track img.loader{
 	display:block;
 	float:left;
 	margin-top:none;
@@ -523,6 +523,19 @@ input#search_button{
 	height:10px;
 	width:10px;
 	border:none;
+}
+
+#library a#fetch_more_tracks{
+	display: block;
+	float: left;
+	margin-bottom: 20px;
+	margin-right: 3%;
+	padding-top: 5px;
+	padding-bottom: 5px;
+	padding-left: 3%;
+	padding-right: 3%;
+	width: 90%;
+	text-align: center;
 }
 
 

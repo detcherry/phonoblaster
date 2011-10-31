@@ -184,7 +184,7 @@ YoutubeSearch.prototype = {
 						"duration": duration,
 					}
 					tracks_to_add = [track];
-					that.tracklistManager.latestTracksManager.display_at_the_top(tracks_to_add)
+					that.tracklistManager.libraryController.add_new_tracks(tracks_to_add);
 				}
 				else{
 					console.log("Already 10 songs in the list. Wait for a few minutes before submitting a new song");
