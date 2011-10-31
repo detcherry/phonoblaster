@@ -170,14 +170,34 @@ LatestTracksManager.prototype = {
 		// Listen to fill events
 		$("a.fill_buffer").live("click", function(){
 			var obj = $(this);
-			that.check_tracklist_room(obj, that.process_fill_buffer);
+			if($("#latest .track").size() > 0){
+				that.check_tracklist_room(obj, that.process_fill_buffer);
+			}
+			else{
+				var repl = $("<a/>").addClass("button").addClass("danger").html("No track");
+				obj.replaceWith(repl);
+
+				setTimeout(function(){
+					repl.removeClass("danger").addClass("fill_buffer").html("Add the latest!");
+				}, 1000)
+			}
 			return false;
 		});
 		
 		// Listen to shuffle events
 		$("a.shuffle_buffer").live("click", function(){
 			var obj = $(this);
-			that.check_tracklist_room(obj, that.process_shuffle_buffer);
+			if($("#latest .track").size() > 0){
+				that.check_tracklist_room(obj, that.process_shuffle_buffer);
+			}
+			else{
+				var repl = $("<a/>").addClass("button").addClass("danger").html("No track");
+				obj.replaceWith(repl);
+
+				setTimeout(function(){
+					repl.removeClass("danger").addClass("shuffle_buffer").html("Shuffle!");
+				}, 1000)
+			}
 			return false;
 		});
 		
