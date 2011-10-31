@@ -60,16 +60,14 @@
 		</div>
 	</div>
 	<div id="live-chat">
-		<div id="conversation">
-		</div>
 		<div id="typebox">
 			{% if current_user %}
 				<div id="current-user-chat">
 					<img src="http://graph.facebook.com/{{ current_user.facebook_id }}/picture?type=square">
 				</div>
 				<form method="post" action="" id="chat">
-					<input type="text" name="message" id="chat_content" autocomplete="off"/>
-					<input type="submit" value="send" class="submit"/>
+					<input type="text" name="message" id="chat_content" value="Start chatting, commenting, sharing the love" autocomplete="off"/>
+					<input type="submit" value="Chat" class="submit"/>
 				</form>
 			{% else %}
 				<div id="no-current-user-chat">
@@ -77,6 +75,8 @@
 					to chat now!
 				</div>
 			{% endif %}
+		</div>
+		<div id="conversation">
 		</div>
 	</div>
 

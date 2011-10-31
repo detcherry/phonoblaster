@@ -15,11 +15,17 @@ ChatController.prototype = {
 		var that = this;
 		
 		//Supposed to respond to the chat_init dispatch message
-		
 		for(i = 0, c = messages.length; i < c; i++){
 			message = messages[i];
 			this.display(message);
 		}
+		
+		//Starts listening to focus events in the chat form
+		$("#typebox input#chat_content")
+			.focus(function(){
+				//Clear the input text
+				$(this).val("")
+			})
 		
 		//Starts listening to submit events in the chat form
 		$("form#chat")

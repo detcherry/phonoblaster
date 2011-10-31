@@ -164,6 +164,7 @@
 	padding-left:1%;
 	padding-right:1%;
 	height:24px;
+	border-bottom: 1px solid #ddd;
 }
 
 #current-user-chat{
@@ -190,6 +191,13 @@
 	padding-left:1%;
 	height:16px;
 	width:84%;
+	color:#ddd;
+	font-style:italic;
+}
+
+#typebox input#chat_content:focus{
+	color:#333;
+	font-style:normal;
 }
 
 #typebox input.submit{
