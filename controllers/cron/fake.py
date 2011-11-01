@@ -68,27 +68,27 @@ class FakeHandler(webapp.RequestHandler):
 			if(session_to_end):
 				proxy.end_session(session_to_end)
 			
-			# Warn everybody
-			listener_delete_output = {
-				"session_id": session_to_end.key().id(),
-			}
-			listener_delete_data = {
-				"type": "listener_delete",
-				"content": listener_delete_output,
-			}
+				# Warn everybody
+				listener_delete_output = {
+					"session_id": session_to_end.key().id(),
+				}
+				listener_delete_data = {
+					"type": "listener_delete",
+					"content": listener_delete_output,
+				}
 
-			excluded_channel_id = None
-			task = Task(
-				url = "/taskqueue/notify",
-				params = { 
-					"station_key": str(key),
-					"data": simplejson.dumps(listener_delete_data),
-					"excluded_channel_id": excluded_channel_id,
-				},
-			)
-			task.add(
-				queue_name = "listener-queue-1"
-			)
+				excluded_channel_id = None
+				task = Task(
+					url = "/taskqueue/notify",
+					params = { 
+						"station_key": str(key),
+						"data": simplejson.dumps(listener_delete_data),
+						"excluded_channel_id": excluded_channel_id,
+					},
+				)
+				task.add(
+					queue_name = "listener-queue-1"
+				)
 			
 			# Restart a session
 			new_session = proxy.add_session(user_key = creator.key())
