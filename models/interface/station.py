@@ -534,7 +534,8 @@ class InterfaceStation():
 			
 			return new_session
 			
-	# End a session			
+	# End a session
+	# Not efficient seems to require a refactoring.... (should only provide the channel_id)
 	def end_session(self, ending_session):
 		old_sessions_list = self.station_sessions
 		

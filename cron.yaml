@@ -1,0 +1,4 @@
+cron:
+- description: Fake welloiled and darlingvibes stations
+  url: /cron/fake
+  schedule: every 30 minutes

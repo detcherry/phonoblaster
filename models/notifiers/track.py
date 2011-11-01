@@ -48,7 +48,8 @@ class TrackNotifier():
 		}
 	
 	def sendToMe(self):
-		channel.send_message(self.excluded_channel_id, simplejson.dumps(self.data))
+		if(self.excluded_channel_id):
+			channel.send_message(self.excluded_channel_id, simplejson.dumps(self.data))
 	
 	def sendToEveryone(self):
 		task = Task(
