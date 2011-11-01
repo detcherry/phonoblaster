@@ -103,7 +103,7 @@ $(function(){
 
 //Youtube PLAY & VOLUME & ERROR management
 function onYouTubePlayerReady(playerId) {
-	var ytplayer = document.getElementById("ytplayer");
+	ytplayer = document.getElementById("ytplayer");
 	
 	// Puts handler in case the video does not work
 	ytplayer.addEventListener("onError", "onPlayerError");
