@@ -1,5 +1,6 @@
 import logging
 from random import randrange
+from django.utils import simplejson
 
 from controllers.cron import config
 
@@ -7,8 +8,10 @@ from google.appengine.ext import webapp
 from google.appengine.ext.webapp.util import run_wsgi_app
 from google.appengine.ext import db
 
+from models.db.session import Session
 from models.interface.station import InterfaceStation
 from models.notifiers.track import TrackNotifier
+from google.appengine.api.taskqueue import Task
 
 class FakeHandler(webapp.RequestHandler):
 	def get(self):
@@ -20,50 +23,101 @@ class FakeHandler(webapp.RequestHandler):
 			- Picked a random number of tracks from the selection
 			- Add them
 			- Notify everybody listening
+			- End/restart fake sessions for the creators
 		"""
+				
+		# Init information
+		welloiled = config.WELLOILED
+		darlingvibes = config.DARLINGVIBES
 		
-		# Init the keys
-		welloiled_key = db.Key.from_path("Station", config.WELLOILED_ID)
-		darlingvibes_key = db.Key.from_path("Station", config.DARLINGVIBES_ID)
+		infos = [welloiled, darlingvibes]
 		
-		# Init the proxys
-		welloiled_proxy = InterfaceStation(station_key = welloiled_key)
-		darlingvibes_proxy = InterfaceStation(station_key = darlingvibes_key)
+		for info in infos:
+			# Init the key
+			key = db.Key.from_path("Station", info["id"])
 		
-		# Init the creators
-		welloiled_creator = welloiled_proxy.station_creator
-		darlingvibes_creator = darlingvibes_proxy.station_creator
-		
-		# Determine how much room is left in each station tracklist
-		room_in_welloiled = 10 - len(welloiled_proxy.station_tracklist)
-		room_in_darlingvibes = 10 - len(darlingvibes_proxy.station_tracklist)
-		
-		# Init the collections
-		welloiled_collection = config.WELLOILED_LIBRARY
-		darlingvibes_collection = config.DARLINGVIBES_LIBRARY
-		welloiled_collection_length = len(welloiled_collection)
-		darlingvibes_collection_length = len(darlingvibes_collection)
-		
-		# Collect tracks to add in welloiled and darlingvibes (only collect as many as necessary)
-		welloiled_tracks_to_add = []
-		for i in range(room_in_welloiled):
-			random_integer = randrange(welloiled_collection_length)
-			random_track = welloiled_collection[random_integer]
-			welloiled_tracks_to_add.append(random_track)
-		
-		darlingvibes_tracks_to_add = []
-		for i in range(room_in_darlingvibes):
-			random_integer = randrange(darlingvibes_collection_length)
-			random_track = darlingvibes_collection[random_integer]
-			darlingvibes_tracks_to_add.append(random_track)
-		
-		# Add tracks 
-		welloiled_tracks_added = welloiled_proxy.add_tracks(welloiled_tracks_to_add, welloiled_creator.key())
-		darlingvibes_tracks_added = darlingvibes_proxy.add_tracks(darlingvibes_tracks_to_add, darlingvibes_creator.key())
-		
-		# Notify everybody
-		welloiled_notifier = TrackNotifier(welloiled_key, welloiled_tracks_added, None)
-		darlingvibes_notifier = TrackNotifier(darlingvibes_key, darlingvibes_tracks_added, None)
+			# Init the proxy
+			proxy = InterfaceStation(station_key = key)
+			
+			# Init the creator
+			creator = proxy.station_creator
+			
+			# Determine how much room is left in each station tracklist
+			room = 10 - len(proxy.station_tracklist)
+			
+			# Init the library
+			library = info["library"]
+			library_length = len(library)
+			
+			# Collect tracks to add (only collect as many as necessary)
+			tracks_to_add = []
+			for i in range(room):
+				random_integer = randrange(library_length)
+				random_track = library[random_integer]
+				tracks_to_add.append(random_track)
+			
+			# Add tracks
+			tracks_added = proxy.add_tracks(tracks_to_add, creator.key())
+			
+			# Notify everybody
+			notifier = TrackNotifier(key, tracks_added, None)
+			
+			# Get the creator session
+			session_to_end = Session.all().filter("user", creator.key()).get()
+			
+			if(session_to_end):
+				proxy.end_session(session_to_end)
+			
+			# Warn everybody
+			listener_delete_output = {
+				"session_id": session_to_end.key().id(),
+			}
+			listener_delete_data = {
+				"type": "listener_delete",
+				"content": listener_delete_output,
+			}
+
+			excluded_channel_id = None
+			task = Task(
+				url = "/taskqueue/notify",
+				params = { 
+					"station_key": str(key),
+					"data": simplejson.dumps(listener_delete_data),
+					"excluded_channel_id": excluded_channel_id,
+				},
+			)
+			task.add(
+				queue_name = "listener-queue-1"
+			)
+			
+			# Restart a session
+			new_session = proxy.add_session(user_key = creator.key())
+			
+			# Inform everyone 
+			new_listener = new_session.user
+			listener_new_output = {
+				"session_id": new_session.key().id(),
+				"phonoblaster_id" : new_listener.key().id(),
+				"public_name": new_listener.public_name,
+				"facebook_id": new_listener.facebook_id,
+			}
+			listener_new_data = {
+				"type":"listener_new",
+				"content": listener_new_output,
+			}
+
+			excluded_channel_id = None
+			task = Task(
+				url = "/taskqueue/notify",
+				params = { 
+					"station_key": str(key),
+					"data": simplejson.dumps(listener_new_data),
+					"excluded_channel_id": excluded_channel_id,
+				},
+			)
+			task.add(
+				queue_name = "listener-queue-1"
+			)
 
 
 application = webapp.WSGIApplication([
