@@ -211,6 +211,10 @@ img#animated{
 	width:85%;
 }
 
+#your-station a.button{
+	margin-top:10px;
+}
+
 #your-station form{
 	width:100%;
 }
