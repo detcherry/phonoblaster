@@ -6,8 +6,10 @@
 {% if current_station.description %}
 	{{ current_station.description }}
 {% else %}
-	{% if not current_station.website %}
-	<a href="/{{ current_station.identifier}}/edit">Add description and website</a>
+	{% if status_creator %}
+		{% if not current_station.website %}
+		<a href="/{{ current_station.identifier}}/edit">Add description and website</a>
+		{% endif %}
 	{% endif %}
 {% endif %}
 </div>
