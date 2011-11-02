@@ -87,7 +87,7 @@ class StationCreateHandler(BaseHandler):
 		if not existingID:
 			stationAvailability = True
 		
-		idSizeOk = self.checkSize(station_id, 20)
+		idSizeOk = self.checkSize(station_id, 21)
 		
 		if(idOk and stationAvailability and idSizeOk):
 			return True
@@ -114,7 +114,6 @@ class StationCreateHandler(BaseHandler):
 		)
 		station.put()
 		logging.info("Station %s saved" % (identifier))
-		
 		
 
 application = webapp.WSGIApplication([

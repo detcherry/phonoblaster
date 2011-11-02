@@ -2,15 +2,22 @@ from datetime import datetime
 
 from controllers.base import *
 
+from google.appengine.ext import blobstore
+
 from models.db.station import Station
 from models.db.contribution import Contribution
 
 class HomeHandler(BaseHandler):
     def get(self):
 		current_user_station = None
+		blobstore_url = None
+		
 		# We get the user station
 		if(self.current_user):
 			current_user_station = Station.all().filter("creator", self.current_user.key()).get()
+		
+			if not current_user_station:
+				blobstore_url = blobstore.create_upload_url('/picture/upload')
 		
 		# We get the stations where the user contributes
 		current_user_contributing_stations = None
@@ -35,6 +42,7 @@ class HomeHandler(BaseHandler):
 		
 		self.additional_template_values = {
 			"site_url": controllers.config.SITE_URL,
+			"blobstore_url": blobstore_url,
 			"current_user_station": current_user_station,
 			"active_stations": active_stations,
 			"non_active_stations": non_active_stations,

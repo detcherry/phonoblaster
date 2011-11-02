@@ -7,14 +7,50 @@
 			<h2>Your station</h2>
 			<div id="your-station">
 				{% if current_user_station %}
+					<!-- User has a station-->
 					<a href="/{{ current_user_station.identifier }}" class="img">
 						<img src="/picture/view/{{ current_user_station.thumbnail.key }}"/>
 					</a>
 					<a href="/{{ current_user_station.identifier }}"><h3>{{ current_user_station.identifier }}</h3></a>
 					<a href="/{{ current_user_station.identifier }}" class="button">Tune in!</a>
 				{% else %}
-					<h3>You don't have any station yet</h3>
-					<a href="/station/create" class="button">Create your radio station now!</a>
+					<!-- User does not have any station -->
+					<form action="{{ blobstore_url }}" method="post" enctype="multipart/form-data" id="picture_upload">
+						<div class="row">						
+							<div class="left">
+								<label for="picture">Picture*</label>
+							</div>
+							<div class="right">
+								<div id="image_wrapper"></div>
+								<input type="file" name="picture" id="picture"/>
+								<img src="/static/images/small-ajax-loader.gif" style="clear:left; display:none"/>
+								<div class="info">
+									Maximum Size of 700k. JPEG, PNG, GIF
+								</div>
+							</div>
+						</div>
+					</form>
+					<form action="/station/create" method="post" id="create_station">
+						<div class="row">
+							<div class="left">
+								<label for="identifier">Name*</label>
+							</div>
+							<div class="right">
+								<input type="text" name="identifier" maxlength="20" id="identifier"/>
+								<div id="availability"></div>
+								<div class="info">
+									The station web address will be <strong>http://phonoblaster.com/<em id="station_id"></em></strong>
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="left">
+							</div>
+							<div class="right">
+								<input type="submit" class="submit" value="Create now!"/><span> and start broadcasting your sound!</span>
+							</div>
+						</div>
+					</form>
 				{% endif %}
 			</div>
 		</div>
@@ -147,5 +183,10 @@
 		});
 
 		</script>
+	{% else %}
+		{% if not current_user_station %}
+			<script type="text/javascript" src="/static/js/jquery.form.js"></script>
+			<script type="text/javascript" src="/static/js/home.js"></script>
+		{% endif %}
 	{% endif %}
 {% endblock %}
