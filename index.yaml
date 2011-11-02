@@ -32,11 +32,6 @@ indexes:
   - name: station
   - name: created
 
-- kind: Session
-  properties:
-  - name: station
-  - name: ended
-
 - kind: Station
   properties:
   - name: active
@@ -63,15 +58,4 @@ indexes:
   properties:
   - name: submitter
   - name: added
-    direction: desc
-
-- kind: Track
-  properties:
-  - name: submitter
-  - name: expired
-
-- kind: Track
-  properties:
-  - name: submitter
-  - name: expired
     direction: desc
