@@ -1,16 +1,24 @@
 <a href="/{{ current_station.identifier }}" class="img">
 	<img src="/picture/view/{{ current_station.picture.key }}" id="profile"/>
 </a>
-{% if current_station.description %}
+
 <div id="description">
+{% if current_station.description %}
 	{{ current_station.description }}
-</div>
+{% else %}
+	{% if not current_station.website %}
+	<a href="/{{ current_station.identifier}}/edit">Add description and website</a>
+	{% endif %}
 {% endif %}
+</div>
+
 {% if current_station.website %}
 <div id="website">
 	<a href="{{ current_station.website }}" target="_blank">Website</a>
 </div>
 {% endif %}
+
+
 <div class="info">
 	<a href="/{{ current_station.identifier}}/tracks">
 		<p class="top">Tracks</p>
