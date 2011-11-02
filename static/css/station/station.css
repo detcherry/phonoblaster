@@ -333,6 +333,39 @@
 	padding-bottom:10px;
 }
 
+/* ---- WHEN USER NOT ALLOWED TO POST -----*/
+
+#search_tab #not_contributor{
+	padding-left:5px;
+}
+
+#search_tab h3{
+	margin-top:5px;
+	margin-bottom:5px;
+	font-size:16px;
+}
+
+#search_tab #your_station a.img{
+	margin-right:10px;
+	height:68px;
+}
+
+#search_tab #your_station a.img img{
+	height:68px;
+}
+
+#search_tab #your_station h4{
+	margin-top:12px;
+	margin-bottom:4px;
+	width: 130px;
+}
+
+#search_tab #your_station a.button{
+	margin-top:4px;
+}
+
+/* ------- WHEN USER ALLOWED TO POST ------*/
+
 #search_tab #search form{
 	width:100%;
 }

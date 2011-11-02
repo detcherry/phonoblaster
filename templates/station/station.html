@@ -84,6 +84,85 @@
 
 {% block right-column %}
 	<ul id="tabs">
+		{% if current_user %}
+			<!-- User logged in, put the tracklist tab to current -->
+			<li style="width:72px;"><a href="#tracks_tab" class="current" style="width:58px">Tracklist</a></li>
+			<li style="width:100px;"><a href="#search_tab" style="width:86px;">Add tracks</a></li>
+		{% else %}
+			<!-- User not logged in, put the add tracks tab to current -->
+			<li style="width:72px;"><a href="#tracks_tab" style="width:58px">Tracklist</a></li>
+			<li style="width:100px;"><a href="#search_tab" class="current" style="width:86px;">Add tracks</a></li>
+		{% endif %}
+		
+		{% if allowed_to_post %}
+		<li style="width:76px;"><a href="#library_tab" style="width:62px;">Library</a></li>
+		{% endif %}
+	</ul>
+	<div id="tab_content_wrap">
+		<div id="tracks_tab" class="tab_content">
+			<div id="tracks">
+			</div>
+		</div>
+		<div id="search_tab" class="tab_content">
+			{% if current_user%}
+				{% if allowed_to_post %}
+					<!-- User allowed to post tracks in this station -->
+					<div id="search">
+						<form method="post" action="" id="search">
+							<input type="text" name="search_content" id="search_content" autocomplete="off"/>
+							<input type="submit" value="Search" id="search_button" class="submit"/>
+						</form>
+					</div>
+					<div id="search_results">
+						No search yet.
+					</div>
+				{% else %}
+					<!-- User logged in but not allowed to post tracks in this station -->
+					<div id="not_contributor">
+						<h3>Not a contributor</h3>
+						<div style="margin-bottom:25px;">You cannot add tracks to this station.</div>
+						{% if user_station %}
+							<h3>Add tracks to your station!</h3>
+							<div id="your_station">
+								<a href="/{{ user_station.identifier }}" class="img">
+									<img src="/picture/view/{{ user_station.thumbnail.key }}">
+								</a>
+								<h4><a href="/{{ user_station.identifier }}">{{ user_station.identifier }}</a></h4>
+								<a href="/{{ user_station.identifier }}" class="button">Tune in!</a>
+							</div>
+						{% else %}
+							<h3>To post, create your station!</h3>
+							<a href="/station/create" class="button">Create your station now!</a>
+						{% endif %}
+					</div>
+				{% endif %}
+			{% else %}
+				<!-- User not logged in, invited to log in to add tracks -->
+				<div style="margin:4px; margin-top:0px;">Please log in to add tracks</div>
+				<div style="clear:left; margin:4px;"><fb:login-button autologoutlink="true" scope="email"></fb:login-button></div>
+			{% endif %}
+		</div>
+		{% if allowed_to_post %}
+		<div id="library_tab" class="tab_content">
+			<div id="library">
+				<div id="header_buttons">
+					<div class="fill_buffer"><a href="" class="button fill_buffer">Add the latest!</a></div>
+					<div class="shuffle_buffer"><a href="" class="button shuffle_buffer">Shuffle!</a></div>
+				</div>
+				<p id="latest_tracks_paragraph">Tracks you recently posted:</p>
+				<div class="loader" style="margin-top:20px;">
+					<img src="/static/images/small-ajax-loader.gif" class="loader"/>
+				</div>
+			</div>
+		</div>
+		{% endif %}
+	</div>
+
+{% endblock %}
+
+
+<!--
+	<ul id="tabs">
 		<li style="width:72px;"><a href="#tracks_tab" class="current" style="width:58px">Tracklist</a></li>
 		{% if allowed_to_post %}
 		<li style="width:100px;"><a href="#search_tab" style="width:86px;">Add tracks</a></li>
@@ -121,8 +200,7 @@
 		</div>
 		{% endif %}
 	</div>
-{% endblock %}
-
+-->
 {% block footer %}
 {% endblock %}
 
