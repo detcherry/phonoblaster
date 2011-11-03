@@ -332,7 +332,6 @@ SubmitHandler.prototype = {
 		var that = this;
 		$("input[type='submit']")
 			.bind("click", function(){
-				console.log("toto")
 				if(that.everythingOk()){
 					//Do nothing
 				}

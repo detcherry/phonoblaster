@@ -99,7 +99,6 @@ TracksBrowser.prototype = {
 					
 					that.display(id, title, thumbnail)
 				})
-				console.log(json.next)
 				
 				if(json.next){
 					$("#tracks_history")
