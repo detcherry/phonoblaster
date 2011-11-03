@@ -93,6 +93,9 @@ class FakeHandler(webapp.RequestHandler):
 			# Restart a session
 			new_session = proxy.add_session(user_key = creator.key())
 			
+			# Confirm the session
+			proxy.confirm_session(new_session)
+			
 			# Inform everyone 
 			new_listener = new_session.user
 			listener_new_output = {
