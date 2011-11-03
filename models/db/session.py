@@ -9,5 +9,5 @@ class Session(db.Model):
 	station = db.ReferenceProperty(Station, required = True, collection_name = "sessionStation")
 	user = db.ReferenceProperty(User, required = False, collection_name = "sessionUser")
 	created = db.DateTimeProperty(auto_now_add = True)
-	updated = db.DateTimeProperty(auto_now = True)
+	updated = db.DateTimeProperty()
 	ended = db.DateTimeProperty()

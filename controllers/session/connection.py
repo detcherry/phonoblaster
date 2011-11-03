@@ -23,11 +23,16 @@ class ChannelConnectionHandler(webapp.RequestHandler):
 		logging.info("%s is ready to receive messages" %(channel_id))
 		
 		#We extract the session
-		session = Session.all().filter("channel_id", channel_id).get()
-		station_key = Session.station.get_value_for_datastore(session)
+		client_session = Session.all().filter("channel_id", channel_id).get()
+		station_key = Session.station.get_value_for_datastore(client_session)
+		
+		# We initialize the proxy
+		station_proxy = InterfaceStation(station_key = station_key)
+		
+		# We confirm the session
+		station_proxy.confirm_session(client_session)
 		
 		#We get the current playlist
-		station_proxy = InterfaceStation(station_key = station_key)
 		tracklist = station_proxy.station_tracklist
 
 		tracklist_init_output = []
@@ -88,17 +93,17 @@ class ChannelConnectionHandler(webapp.RequestHandler):
 		logging.info("Latest messages sent")
 		
 		# Inform everyone a new listener has arrived
-		new_listener = session.user
+		new_listener = client_session.user
 		if new_listener:
 			listener_new_output = {
-				"session_id": session.key().id(),
+				"session_id": client_session.key().id(),
 				"phonoblaster_id" : new_listener.key().id(),
 				"public_name": new_listener.public_name,
 				"facebook_id": new_listener.facebook_id,
 			}
 		else:
 			listener_new_output = {
-				"session_id": session.key().id(),
+				"session_id": client_session.key().id(),
 			}
 		
 		listener_new_data = {

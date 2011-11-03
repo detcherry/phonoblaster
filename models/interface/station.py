@@ -451,12 +451,22 @@ class InterfaceStation():
 			self._station_sessions = memcache.get(self.memcache_station_sessions_id)
 			
 			if self._station_sessions is None:
-				# Retrieve the number of active sessions
+				# Retrieve the number of non expired sessions (but we don't know yet if they have been confirmed...)
 				q = Session.all()
 				q.filter("station", self.station_key)
 				q.filter("ended", None)
 				q.filter("created >", datetime.now() - timedelta(0,7200))
+				"""
 				self._station_sessions = q.fetch(100)
+				"""
+				
+				# In theory there could be max 111 sessions (100 listeners + 10 contributors + 1 creator) but I fetch more in case...
+				candidate_sessions = q.fetch(200)
+				self._station_sessions = []
+				for session in candidate_sessions:
+					# The session has been confirmed
+					if(session.updated):
+						self._station_sessions.append(session)
 				
 				# Put it in memcache
 				memcache.add(self.memcache_station_sessions_id, self._station_sessions)
@@ -489,11 +499,37 @@ class InterfaceStation():
 		q = Session.all()
 		q.filter("created >", datetime.now() - timedelta(0,3600))
 		q.filter("station", self.station_key)
-		last_sessions = q.fetch(100)
+		# 200 is arbitrary
+		last_sessions = q.fetch(200)
 		
 		for session in last_sessions:
-			# If the station has already an end date, we gonna reuse it
+			# Session already ended + Token still available => we reuse it
+			# Session never confirmed + Token created more than 5 ago => we reuse it
 			# NB: it would have been cool to do this test in the query but app engine does not allow more than one inequality filter...
+						
+			# Session already ended + Token still available => we reuse it
+			if(session.ended !=None):
+				new_session = session
+				logging.info("We reuse an old channel_id and token because this session already ended")			
+				
+				# We completly reset this session
+				new_session.updated = None
+				new_session.ended = None
+			
+			# Session never confirmed + Token created more than 5 minutes ago => we reuse it
+			if(session.updated == None and session.created < datetime.now() - timedelta(0,300)):
+				new_session = session
+				logging.info("We reuse an old channel_id and token because this session has never been confirmed")
+			
+			if(new_session):	
+				new_session.user = user_key
+				new_session.put()
+				logging.info("New station session saved in datastore. To put in memcache after client connection")
+				
+				return new_session
+			
+			
+			"""
 			if(session.ended != None):
 				new_session = session
 				logging.info("We reuse an old channel_id and token")			
@@ -509,6 +545,7 @@ class InterfaceStation():
 				logging.info("Station sessions list updated in memcache")
 				
 				return new_session
+			"""
 		
 		if not(new_session):
 			logging.info("There is no old channel_id or token to reuse")
@@ -525,14 +562,33 @@ class InterfaceStation():
 				user = user_key,
 			)
 			new_session.put()
-			logging.info("New station session saved in datastore")
+			logging.info("New station session saved in datastore. To put in memcache after client connection")
+			
+			"""
+			logging.info("New station session saved in datastore.")
 			
 			# Put it in memcache
 			station_sessions.append(new_session)
 			memcache.set(self.memcache_station_sessions_id, station_sessions)
 			logging.info("Station sessions list updated in memcache")
+			"""
 			
 			return new_session
+	
+	# Confirm a session (a client has requested a token and has connected to the channel)
+	# Not efficient, seems to require a refactoring.... 
+	def confirm_session(self, session_to_confirm):
+		station_sessions = self.station_sessions
+
+		# Put an updated date in the session entity
+		session_to_confirm.updated = datetime.now()
+		session_to_confirm.put()
+		logging.info("Session to confirm saved in the datastore")
+
+		# Add the station confirmed to the memcache
+		station_sessions.append(session_to_confirm)
+		memcache.set(self.memcache_station_sessions_id, station_sessions)
+		logging.info("Station sessions list updated in memcache")	
 			
 	# End a session
 	# Not efficient seems to require a refactoring.... (should only provide the channel_id)
