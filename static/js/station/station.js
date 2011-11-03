@@ -275,12 +275,11 @@ TracklistManager.prototype = {
 		this.programNextVideo(time_out)
 	},
 	
-	programNextVideo: function(time_out){
+	programNextVideo: function(time_out){		
 		var that = this;
-		
 		var first_timer = setTimeout(function(){
 			that.nextVideo();
-		},time_out*1000);		
+		},time_out*1000);
 	},
 	
 	nextVideo: function(){		
@@ -307,6 +306,8 @@ TracklistManager.prototype = {
 	displayProgress: function(video_start, duration){
 		var x = parseInt(video_start*500/duration);
 		$('#filler').css('width', x.toString() + 'px');
+		
+		$("#filler").clearQueue();
 		$('#filler').animate({
 			width:'500px',
 		},parseInt(duration - video_start)*1000,'linear');
@@ -471,16 +472,26 @@ function YoutubeController(){
 YoutubeController.prototype = {
 	
 	init: function(youtubeID, videoStart){
-		this.empty();
-		
-		var params = { allowScriptAccess: "always"};
-		var atts = { id: "ytplayer" };
-		var videoURL = "http://www.youtube.com/apiplayer?version=3&enablejsapi=1&playerapiid=player1"
-		swfobject.embedSWF(videoURL, "youtube_player", "425", "356", "8", null, null, params, atts);
 		
 		YOUTUBE_ID = youtubeID;
 		VIDEO_START = videoStart;
 		
+		// Player already loaded
+		try{
+			ytplayer.loadVideoById(YOUTUBE_ID, VIDEO_START);
+			console.log("Player already loaded");
+		}
+		// Player not loaded yet
+		catch(e){
+			this.empty();
+			
+			console.log("Player not loaded yet")
+			var params = { allowScriptAccess: "always"};
+			var atts = { id: "ytplayer" };
+			var videoURL = "http://www.youtube.com/apiplayer?version=3&enablejsapi=1&playerapiid=player1"
+			swfobject.embedSWF(videoURL, "youtube_player", "425", "356", "8", null, null, params, atts);
+		}
+
 	},
 	
 	empty: function(){
