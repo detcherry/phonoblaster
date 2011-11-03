@@ -31,7 +31,7 @@ class InterfaceStation():
 		# In other operations, we have the station identifier
 		elif station_identifier:
 			logging.info("Station proxy initialized with identifier")
-			self.memcache_station_identifier_id = config.MEMCACHE_STATION_PREFIX + str(station_identifier)
+			self.memcache_station_identifier_id = config.MEMCACHE_STATION_IDENTIFIER_PREFIX + str(station_identifier)
 			self._station = memcache.get(self.memcache_station_identifier_id)
 			
 			if self._station is None:
@@ -72,7 +72,7 @@ class InterfaceStation():
 				self._station = Station.get(self.station_key)
 				if(self._station):
 					logging.info("Station exists")
-					self.memcache_station_identifier_id = config.MEMCACHE_STATION_PREFIX + str(self._station.identifier)
+					self.memcache_station_identifier_id = config.MEMCACHE_STATION_IDENTIFIER_PREFIX + str(self._station.identifier)
 					memcache.set_multi({
 						self.memcache_station_id: self._station,
 						self.memcache_station_identifier_id: self._station,
@@ -105,7 +105,7 @@ class InterfaceStation():
 			else:
 				logging.info("Different identifier, need to remove old value from memcache")
 				old_memcache_station_identifier_id = self.memcache_station_identifier_id
-				new_memcache_station_identifier_id = config.MEMCACHE_STATION_PREFIX + str(identifier)
+				new_memcache_station_identifier_id = config.MEMCACHE_STATION_IDENTIFIER_PREFIX + str(identifier)
 		
 				self.station.identifier = identifier
 				self.memcache_station_identifier_id = new_memcache_station_identifier_id
@@ -131,7 +131,7 @@ class InterfaceStation():
 		self.station.put()
 		logging.info("Station expiration time updated in datastore")
 
-		self.memcache_station_identifier_id = config.MEMCACHE_STATION_PREFIX + str(self.station.identifier)
+		self.memcache_station_identifier_id = config.MEMCACHE_STATION_IDENTIFIER_PREFIX + str(self.station.identifier)
 
 		memcache.set_multi({
 			self.memcache_station_id: self.station,
