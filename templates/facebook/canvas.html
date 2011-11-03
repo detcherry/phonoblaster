@@ -9,7 +9,9 @@
 		<div class="container">
 			<div id="logo">
 				<h1>Phonoblaster</h1>
-				<a href="/" target="_blank"><img src="/static/images/phonoblaster.png" alt="phonoblaster logo"/></a>
+				<a href="{{ site_url }}" target="_blank">
+					<img src="{{ site_url }}/static/images/phonoblaster.png" alt="phonoblaster logo"/>
+				</a>
 			</div>
 			<h2>Tune into people's music!</h2>
 		</div>
@@ -22,9 +24,9 @@
 	<div class="facebook-request">
 		<div class="top-request">
 			<img src="http://graph.facebook.com/{{ request.0.facebook_id }}/picture?type=square" class="img">
-			<img src="/static/images/bubble.png" class="bubble">
+			<img src="{{ site_url }}/static/images/bubble.png" class="bubble">
 			<p>
-				<a href="/user/{{ request.0.key.id }}" style="text-decoration:none; font-weight:bold;" target="_blank">
+				<a href="{{ site_url }}/user/{{ request.0.key.id }}" style="text-decoration:none; font-weight:bold;" target="_blank">
 					{{ request.0.name }}
 				</a> says:<br/>
 				You should come and post tracks to the station I just created:<br/>
@@ -34,7 +36,7 @@
 			</p>
 		</div>
 		<div class="bottom-request">
-			<img src="/picture/view/{{ request.1.picture.key }}" class="img"/>
+			<img src="{{ site_url }}/picture/view/{{ request.1.picture.key }}" class="img"/>
 			<p class="identifier">{{ request.1.identifier }}</p>
 			<p class="description">{{ request.1.description }}</p>
 			<a href="{{ site_url }}/{{ request.1.identifier }}" target="_blank" class="submit">Share music now!</a>
