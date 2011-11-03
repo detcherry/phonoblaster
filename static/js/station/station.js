@@ -1,6 +1,6 @@
 /* -------- INITIALIZATION ------ */
 
-$(function(){
+$(function(){	
 	//Request a channel id and token
 	$.ajax({
 		url: "/channel/request",
@@ -11,10 +11,10 @@ $(function(){
 			station_key: station_key,
 		},
 		error: function(xhr, status, error) {
-			console.log('An error occurred: ' + error + '\nPlease retry.');
+			phonoblaster.log('An error occurred: ' + error + '\nPlease retry.');
 		},
 		success: function(json){
-			console.log(json);
+			phonoblaster.log(json);
 			channel_id = json.channel_id;
 			token = json.token
 			
@@ -58,7 +58,7 @@ $(function(){
 		if(volume){
 			//turn it off
 			try{ytplayer.mute();}
-			catch(e){console.log(e);}
+			catch(e){phonoblaster.log(e);}
 			volume = false;
 			$("#volume img#on").css("display","none");
 			$("#volume img#off").css("display","inline");
@@ -66,7 +66,7 @@ $(function(){
 		else{
 			//turn it on
 			try{ytplayer.unMute();}
-			catch(e){console.log(e);}
+			catch(e){phonoblaster.log(e);}
 			volume = true;
 			$("#volume img#on").css("display","inline");
 			$("#volume img#off").css("display","none");			
@@ -99,6 +99,23 @@ $(function(){
 	
 });
 
+/* ---------- WORKAROUND FOR CONSOLE.LOG --------------*/
+
+function Phonoblaster(){
+}
+
+Phonoblaster.prototype = {
+	log: function(content){
+		try{
+			console.log(content);
+		}
+		catch(e){
+			//console.log not available
+		}
+	}
+}
+
+
 /* ------------- YOUTUBE PLAYER MANAGEMENT -------------- */
 
 //Youtube PLAY & VOLUME & ERROR management
@@ -118,7 +135,7 @@ function onYouTubePlayerReady(playerId) {
 }
 
 function onPlayerError(){	
-	console.log("Error: track not working");
+	phonoblaster.log("Error: track not working");
 	
 	// Raise video error
 	dispatcher.tracklistManager.errorController.raise();
@@ -135,47 +152,47 @@ function Dispatcher(){
 Dispatcher.prototype = {
 	
 	dispatch: function(data){
-		console.log(data);
+		phonoblaster.log(data);
 		if(data.type == "tracklist_init"){
 			$("#youtube-player img").hide();
 			$("#youtube-player p").show();
 			this.tracklistManager.init(data.content);
 		}
 		if(data.type == "tracklist_new"){
-			console.log("tracklist_new");
+			phonoblaster.log("tracklist_new");
 			this.tracklistManager.add(data.content);
 		}	
 		if(data.type == "tracklist_delete"){
-			console.log("tracklist_delete");
+			phonoblaster.log("tracklist_delete");
 			this.tracklistManager.remove(data.content);
 		}
 		if(data.type == "chat_init"){
-			console.log("chat_init")
+			phonoblaster.log("chat_init")
 			this.chatController.init(data.content);
 		}
 		if(data.type == "chat_new"){
-			console.log("chat_new");
+			phonoblaster.log("chat_new");
 			this.chatController.receive(data.content);
 		}
 		if(data.type == "chat_delete"){
-			console.log("chat_delete");
+			phonoblaster.log("chat_delete");
 			//etc
 		}
 		if(data.type == "listener_init"){
-			console.log("listener_init");
+			phonoblaster.log("listener_init");
 			//Init the listeners list
 			var listeners = data.content;
 			this.listenerController.init(listeners);
 			
 		}
 		if(data.type == "listener_new"){
-			console.log("listener_new");
+			phonoblaster.log("listener_new");
 			// Add a new listener to the list
 			var new_listener = data.content;
 			this.listenerController.add(new_listener);
 		}
 		if(data.type == "listener_delete"){
-			console.log("listener_delete");
+			phonoblaster.log("listener_delete");
 			// Remove a listener from the list
 			var old_session_id = data.content.session_id;
 			this.listenerController.remove(old_session_id);
@@ -203,7 +220,7 @@ function TracklistManager(){
 TracklistManager.prototype = {
 	
 	init: function(tracklist){
-		console.log("Init Track Manager")
+		phonoblaster.log("Init Track Manager")
 		this.tracklist = tracklist;
 		this.uiTracklistController.display(this.tracklist);
 		this.uiTracklistController.listen();
@@ -250,7 +267,7 @@ TracklistManager.prototype = {
 	},
 	
 	playNext: function(){
-		console.log("Trying to play a new track");
+		phonoblaster.log("Trying to play a new track");
 		this.new_track = this.tracklist.shift();
 		if(this.new_track){	
 			this.uiTracklistController.removeCross(this.new_track.phonoblaster_id);
@@ -262,13 +279,13 @@ TracklistManager.prototype = {
 			var time_out = expired_at - datetime_now/1000;
 			var video_start = duration - time_out;
 			
-			console.log("▶ New track launched: "+ this.new_track.title + " at " + video_start.toString() +" sec")	
+			phonoblaster.log("▶ New track launched: "+ this.new_track.title + " at " + video_start.toString() +" sec")	
 			this.youtubeController.init(this.new_track.id, video_start);
 			this.displayInformation();
 			this.displayProgress(video_start, this.new_track.duration);
 		}
 		else{
-			console.log("No track found")
+			phonoblaster.log("No track found")
 			document.title = station_id;
 			time_out = 5;
 		}
@@ -445,14 +462,14 @@ UITracklistController.prototype = {
 					station_key: station_key,
 				},
 				error: function(xhr, status, error) {
-					console.log('An error occurred: ' + error + '\nPlease retry.');
+					phonoblaster.log('An error occurred: ' + error + '\nPlease retry.');
 				},
 				success: function(json){
 					if(json.status == "Deleted"){						
-						console.log("Your song has been removed from the tracklist");
+						phonoblaster.log("Your song has been removed from the tracklist");
 					}
 					else{
-						console.log("Your song hasn't been remove from the tracklist");
+						phonoblaster.log("Your song hasn't been remove from the tracklist");
 						img.hide();
 					}
 				},
@@ -479,13 +496,13 @@ YoutubeController.prototype = {
 		// Player already loaded
 		try{
 			ytplayer.loadVideoById(YOUTUBE_ID, VIDEO_START);
-			console.log("Player already loaded");
+			phonoblaster.log("Player already loaded");
 		}
 		// Player not loaded yet
 		catch(e){
 			this.empty();
 			
-			console.log("Player not loaded yet")
+			phonoblaster.log("Player not loaded yet")
 			var params = { allowScriptAccess: "always"};
 			var atts = { id: "ytplayer" };
 			var videoURL = "http://www.youtube.com/apiplayer?version=3&enablejsapi=1&playerapiid=player1"

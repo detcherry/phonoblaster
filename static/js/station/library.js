@@ -32,7 +32,7 @@ LibraryController.prototype = {
 				date_limit: that.date_limit,
 			},
 			error: function(xhr, status, error) {
-				console.log('An error occurred: ' + error + '\nPlease retry.');
+				phonoblaster.log('An error occurred: ' + error + '\nPlease retry.');
 			},
 			success: function(json){
 				// Add tracks received				
@@ -171,7 +171,7 @@ LibraryController.prototype = {
 		var room_in_tracklist = 10 - tracklist_length;
 		
 		if(room_in_tracklist > 0){
-			console.log("Some room in the tracklist");
+			phonoblaster.log("Some room in the tracklist");
 
 			var repl = $("<img/>").attr("src","/static/images/small-ajax-loader.gif").addClass("loader");
 			obj.replaceWith(repl);			
@@ -179,7 +179,7 @@ LibraryController.prototype = {
 			callback.call(this, repl, room_in_tracklist);
 		}
 		else{
-			console.log("Already 10 tracks in the list");
+			phonoblaster.log("Already 10 tracks in the list");
 			var origin_class = obj.attr("class");
 			var origin_content = obj.html();
 			
@@ -228,16 +228,16 @@ LibraryController.prototype = {
 				channel_id: channel_id,
 			},
 			error: function(xhr, status, error) {
-				console.log('An error occurred: ' + error + '\nPlease retry.');
+				phonoblaster.log('An error occurred: ' + error + '\nPlease retry.');
 				callback.call(this, false)
 			},
 			success: function(json){
 				if(json.status == "Added"){						
-					console.log("Your songs have been added to the tracklist");
+					phonoblaster.log("Your songs have been added to the tracklist");
 					callback.call(this, true)
 				}
 				else{
-					console.log("Already 10 songs in the list. Wait for a few minutes before submitting a new song");
+					phonoblaster.log("Already 10 songs in the list. Wait for a few minutes before submitting a new song");
 					callback.call(this, false)
 				}
 			},

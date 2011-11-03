@@ -53,7 +53,7 @@ YoutubeSearch.prototype = {
 					that.scrollbar.updateSize();
 				}
 			})
-			.error(function() { console.log("error"); });		
+			.error(function() { phonoblaster.log("error"); });		
 	},
 	
 	removeResults: function(){
@@ -141,7 +141,7 @@ YoutubeSearch.prototype = {
 					}
 				}
 				else{
-					console.log("Too many songs in the list");
+					phonoblaster.log("Too many songs in the list");
 					that.trackNotAdded(id);
 				}
 				
@@ -171,11 +171,11 @@ YoutubeSearch.prototype = {
 				channel_id: channel_id,
 			},
 			error: function(xhr, status, error) {
-				console.log('An error occurred: ' + error + '\nPlease retry.');
+				phonoblaster.log('An error occurred: ' + error + '\nPlease retry.');
 			},
 			success: function(json){
 				if(json.status == "Added"){						
-					console.log("Your song has been added to the tracklist");
+					phonoblaster.log("Your song has been added to the tracklist");
 					that.trackAdded(id);
 					track = {
 						"title": title,
@@ -187,7 +187,7 @@ YoutubeSearch.prototype = {
 					that.tracklistManager.libraryController.add_new_tracks(tracks_to_add);
 				}
 				else{
-					console.log("Already 10 songs in the list. Wait for a few minutes before submitting a new song");
+					phonoblaster.log("Already 10 songs in the list. Wait for a few minutes before submitting a new song");
 					that.trackNotAdded(id);
 				}
 			},

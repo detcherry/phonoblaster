@@ -160,47 +160,6 @@
 
 {% endblock %}
 
-
-<!--
-	<ul id="tabs">
-		<li style="width:72px;"><a href="#tracks_tab" class="current" style="width:58px">Tracklist</a></li>
-		{% if allowed_to_post %}
-		<li style="width:100px;"><a href="#search_tab" style="width:86px;">Add tracks</a></li>
-		<li style="width:76px;"><a href="#library_tab" style="width:62px;">Library</a></li>
-		{% endif %}
-	</ul>
-	<div id="tab_content_wrap">
-		<div id="tracks_tab" class="tab_content">
-			<div id="tracks">
-			</div>
-		</div>
-		{% if allowed_to_post %}
-		<div id="search_tab" class="tab_content">
-			<div id="search">
-				<form method="post" action="" id="search">
-					<input type="text" name="search_content" id="search_content" autocomplete="off"/>
-					<input type="submit" value="Search" id="search_button" class="submit"/>
-				</form>
-			</div>
-			<div id="search_results">
-				No search yet.
-			</div>
-		</div>
-		<div id="library_tab" class="tab_content">
-			<div id="library">
-				<div id="header_buttons">
-					<div class="fill_buffer"><a href="" class="button fill_buffer">Add the latest!</a></div>
-					<div class="shuffle_buffer"><a href="" class="button shuffle_buffer">Shuffle!</a></div>
-				</div>
-				<p id="latest_tracks_paragraph">Tracks you recently posted:</p>
-				<div class="loader" style="margin-top:20px;">
-					<img src="/static/images/small-ajax-loader.gif" class="loader"/>
-				</div>
-			</div>
-		</div>
-		{% endif %}
-	</div>
--->
 {% block footer %}
 {% endblock %}
 
@@ -231,6 +190,10 @@
 		{% else %}
 			allowed_to_post = false;
 		{% endif %}
+		// Useful for dispatching every message coming to the channel
 		dispatcher = new Dispatcher();
+		
+		// Useful to log without any bug ;-) (Firefox 3.6...etc)
+		phonoblaster = new Phonoblaster();
   </script>
 {% endblock %}

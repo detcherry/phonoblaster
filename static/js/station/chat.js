@@ -71,12 +71,12 @@ ChatController.prototype = {
 				text: content,
 			},
 			error: function(xhr, status, error) {
-				console.log('An error occurred: ' + error + '\nPlease retry.');
+				phonoblaster.log('An error occurred: ' + error + '\nPlease retry.');
 			},
 			success: function(json){
 				if(json.status == "Added"){					
 					//Do nothing. Message has already been displayed!
-					console.log("Message sent to everyone: "+ content)
+					phonoblaster.log("Message sent to everyone: "+ content)
 				}
 			},
 		});
@@ -139,7 +139,6 @@ ChatController.prototype = {
 		
 		//If the window is not focused, put a number in the title
 		if(!window_focus){
-			console.log("have to display something");
 			var old_title = document.title;
 			var re = new RegExp("[(]{1}[0-9]+[)]{1}","g");
 			var array = re.exec(old_title);
