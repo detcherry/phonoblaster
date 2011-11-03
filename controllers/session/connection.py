@@ -58,11 +58,11 @@ class ChannelConnectionHandler(webapp.RequestHandler):
 		channel.send_message(channel_id, simplejson.dumps(tracklist_init_data))
 		logging.info("Tracklist sent")
 		
-		#We get the 10 last messages (from the last 3 minutes)
+		#We get the 50 last messages (from the last 3 minutes)
 		query = Message.all()
 		query.filter("station", station_key)
 		query.filter("added >", datetime.now() - timedelta(0,180))
-		messages = query.fetch(10)
+		messages = query.fetch(50)
 		
 		chat_init_output = []
 		if(messages):
