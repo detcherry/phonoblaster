@@ -125,7 +125,8 @@
 }
 
 #conversation div.content{
-	width:78%;
+	padding-left:2%;
+	width:76%;
 	font-size:11px;
 }
 
