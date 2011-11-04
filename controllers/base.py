@@ -87,7 +87,7 @@ class BaseHandler(webapp.RequestHandler):
 	    self.response.out.write(template.render(path, self.template_values))
 
     def handle_exception(self, exception, debug_mode):
-	    logging.info(''.join(traceback.format_exception(*sys.exc_info())))
+	    logging.error(''.join(traceback.format_exception(*sys.exc_info())))
 	    path = os.path.join(os.path.dirname(__file__), "../templates/error.html")
 	    self.response.out.write(template.render(path, None))
 		
