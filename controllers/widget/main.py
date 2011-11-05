@@ -1,3 +1,6 @@
+from google.appengine.dist import use_library
+use_library('django', '0.96')
+
 import os
 from datetime import datetime
 from datetime import timedelta
