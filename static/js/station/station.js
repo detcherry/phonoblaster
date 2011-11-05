@@ -50,7 +50,7 @@ $(function(){
 	$("a").attr("target","_blank");
 	$("#edit_station a").removeAttr("target");
 	$("#volume a").removeAttr("target");
-	$("a#shuffle").removeAttr("target");
+	$("#right_column a").removeAttr("target");
 	
 	//Listen to volume events
 	volume = true;
@@ -342,7 +342,7 @@ function UITracklistController(){
 
 UITracklistController.prototype = {
 	
-	display: function(tracklist){
+	display: function(tracklist){		
 		for(i = 0, c = tracklist.length; i < c; i++){
 			track = tracklist[i];
 			this.add(track);
@@ -351,6 +351,8 @@ UITracklistController.prototype = {
 	},
 	
 	add: function(track){
+		$("#station_tutorial").remove();
+		
 		var seconds = parseInt(track.duration,10) % 60;
 		var minutes = (parseInt(track.duration,10) - seconds)/60
 		if(seconds < 10){
