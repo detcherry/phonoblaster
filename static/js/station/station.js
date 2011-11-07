@@ -96,10 +96,15 @@ $(function(){
 		trigger: "manual",
 	});
 	
-	$("#tutorial").popover("show");
-	$("#tutorial").click(function(){
-		$("#tutorial").popover("hide");
-	})
+	if(allowed_to_post){
+		$("#tutorial").popover("show");
+		$("#tutorial").click(function(){
+			$("#tutorial").popover("hide");
+		})
+		setTimeout(function(){
+			$("#tutorial").popover("hide");
+		}, 5000)
+	}
 	
 	// GLOBAL VARIABLES ----> FOR THE YOUTUBE PLAYER
 	YOUTUBE_ID = "";
