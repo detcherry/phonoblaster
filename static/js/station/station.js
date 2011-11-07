@@ -46,12 +46,6 @@ $(function(){
 		window.location.reload();
 	}
 	
-	//Transforms all the links in target = _blank except the following links
-	$("a").attr("target","_blank");
-	$("#edit_station a").removeAttr("target");
-	$("#volume a").removeAttr("target");
-	$("#right_column a").removeAttr("target");
-	
 	//Listen to volume events
 	volume = true;
 	$("#volume a").click(function(){
