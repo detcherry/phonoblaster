@@ -93,6 +93,20 @@ $(function(){
 		offset: 3,
 	});
 	
+	// Trigger the tutorial popover
+	$("#tutorial").popover({
+		placement: "below",
+		offset: 8,
+		//title: "Where to add tracks!",
+		//content: "This is where you can search and add tracks to your tracklist. It includes all of Youtube music catalog!",
+		trigger: "manual",
+	});
+	
+	$("#tutorial").popover("show");
+	$("#tutorial").click(function(){
+		$("#tutorial").popover("hide");
+	})
+	
 	// GLOBAL VARIABLES ----> FOR THE YOUTUBE PLAYER
 	YOUTUBE_ID = "";
 	VIDEO_START = 0;
@@ -351,7 +365,7 @@ UITracklistController.prototype = {
 	},
 	
 	add: function(track){
-		$("#station_tutorial").remove();
+		$("#station_init").remove();
 		
 		var seconds = parseInt(track.duration,10) % 60;
 		var minutes = (parseInt(track.duration,10) - seconds)/60

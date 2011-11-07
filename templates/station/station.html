@@ -87,7 +87,11 @@
 		{% if current_user %}
 			<!-- User logged in, put the tracklist tab to current -->
 			<li style="width:72px;"><a href="#tracks_tab" class="current" style="width:58px">Tracklist</a></li>
-			<li style="width:100px;"><a href="#search_tab" style="width:86px;" id="tutorial">Add tracks</a></li>
+			<li style="width:100px;">
+				<a href="#search_tab" style="width:86px;" rel="popover" id="tutorial" data-original-title="Where to add tracks!" data-content="This is where you can search and add tracks to your tracklist. It includes all of Youtube music catalog!">
+					Add tracks
+				</a>
+			</li>
 		{% else %}
 			<!-- User not logged in, put the add tracks tab to current -->
 			<li style="width:72px;"><a href="#tracks_tab" style="width:58px">Tracklist</a></li>
@@ -101,16 +105,9 @@
 	<div id="tab_content_wrap">
 		<div id="tracks_tab" class="tab_content">
 			<div id="tracks">
-				{% if allowed_to_post %}
-					<div id="station_tutorial">
-						<img src="/static/images/tutorial.png">
-						<a onclick="$('#tutorial').trigger('click');" style="margin-left:25px" class="button">
-							Search for a track to broadcast now!
-						</a>
-					</div>
-				{% else %}
-					No tracks yet.
-				{% endif %}
+				<div id="station_init">
+					No tracks yet.	
+				</div>
 			</div>
 		</div>
 		<div id="search_tab" class="tab_content">
@@ -179,6 +176,7 @@
 	<script type="text/javascript" src="/static/js/station/scrollbar.js"></script>
 	<script type="text/javascript" src="/static/js/json2.js"></script>
 	<script type="text/javascript" src="/static/js/station/twipsy.js"></script>
+	<script type="text/javascript" src="/static/js/station/popover.js"></script>
 	<script type="text/javascript" src="/static/js/station/tab.js"></script>
 	<script type="text/javascript" src="/static/js/station/search.js"></script>
 	<script type="text/javascript" src="/static/js/station/swfobject.js"></script>
