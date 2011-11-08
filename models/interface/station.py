@@ -527,25 +527,6 @@ class InterfaceStation():
 				logging.info("New station session saved in datastore. To put in memcache after client connection")
 				
 				return new_session
-			
-			
-			"""
-			if(session.ended != None):
-				new_session = session
-				logging.info("We reuse an old channel_id and token")			
-				
-				new_session.ended = None
-				new_session.user = user_key
-				new_session.put()
-				logging.info("New station session saved in datastore")
-				
-				# Put it in the memcache
-				station_sessions.append(new_session)
-				memcache.set(self.memcache_station_sessions_id, station_sessions)
-				logging.info("Station sessions list updated in memcache")
-				
-				return new_session
-			"""
 		
 		if not(new_session):
 			logging.info("There is no old channel_id or token to reuse")
@@ -563,15 +544,6 @@ class InterfaceStation():
 			)
 			new_session.put()
 			logging.info("New station session saved in datastore. To put in memcache after client connection")
-			
-			"""
-			logging.info("New station session saved in datastore.")
-			
-			# Put it in memcache
-			station_sessions.append(new_session)
-			memcache.set(self.memcache_station_sessions_id, station_sessions)
-			logging.info("Station sessions list updated in memcache")
-			"""
 			
 			return new_session
 	
