@@ -69,11 +69,11 @@ class PictureProcessHandler(BaseHandler):
 			return False
 
 	def sizeIsOk(self):
-		if(self.blob_info.size < 716800):
-			logging.info("The image size is below 700Ko")
+		if(self.blob_info.size < 2097152):
+			logging.info("The image size is below 2 Mo")
 			return True
 		else:
-			logging.info("The image size is above 700Ko")
+			logging.info("The image size is above 2 Mo")
 			return False
 	
 	#If local development, we have to transform http://localhost:8080/ into http://localho.st:8080/
