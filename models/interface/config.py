@@ -10,3 +10,6 @@ MEMCACHE_STATION_SESSIONS_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".sessions
 # User related prefixes
 MEMCACHE_USER_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".user."
 MEMCACHE_USER_FACEBOOK_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".user.facebook."
+
+# On the air related prefixes
+MEMCACHE_ONAIR = os.environ["CURRENT_VERSION_ID"] + ".onair"

@@ -300,23 +300,98 @@ img#animated{
 	color:#F36359;
 }
 
-/*
-#your-station a.button{
-	margin-top:15px;
-}
-
-#your-station #facebook{
-	padding-top:15px;
-	padding-left:10px;
-	clear:left;
-}*/
-
 /* ------- OTHER STATIONS -------*/
 
 #station-items{
 	clear:left;
 	width:100%;
 }
+
+/* ----- WHERE STATIONS ARE ON THE AIR ----- */
+
+.station-track-item{
+	margin-left:-25px;
+	margin-right:25px;
+}
+
+.track-item{
+	margin-top:46px;
+	margin-left:-22px;
+}
+
+.track-item .arrow {
+	top:70px;
+	position: relative;
+	width: 0;
+	height: 0;
+	margin-top: -5px;
+	border-top: 5px solid transparent;
+	border-bottom: 5px solid transparent;
+	border-right: 5px solid #000000;
+}
+
+.track-item .inner {
+	background: #DDD;
+	background: rgba(0, 0, 0, 0.8);
+	padding: 2px;
+	overflow: hidden;
+	width: 180px;
+	-webkit-border-radius: 6px;
+	-moz-border-radius: 6px;
+	border-radius: 6px;
+	-webkit-box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
+	-moz-box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
+	box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
+}
+
+.track-item  .title {
+	background-color: #f5f5f5;
+	padding: 9px 9px;
+	width:162px;
+	height:15px;
+	overflow:hidden;
+	line-height:20px;
+	font-weight:bold;
+	-webkit-border-radius: 3px 3px 0 0;
+	-moz-border-radius: 3px 3px 0 0;
+	border-radius: 3px 3px 0 0;
+	border-bottom: 1px solid #eee;
+}
+
+.track-item  .content {
+	background-color: #ffffff;
+	padding: 8px;
+	width:164px;
+	-webkit-border-radius: 0 0 3px 3px;
+	-moz-border-radius: 0 0 3px 3px;
+	border-radius: 0 0 3px 3px;
+	-webkit-background-clip: padding-box;
+	-moz-background-clip: padding-box;
+	background-clip: padding-box;
+}
+
+.track-item  .content img{
+	padding:2px;
+	height:50px;
+}
+
+.track-item .content p{
+	margin-left: 10px;
+	padding-top: 2px;
+	height: 50px;
+	width: 80px;
+	overflow:hidden;
+	font-size: 11px;
+	line-height:13px;
+}
+
+.track-item .content p span{
+	display: table-cell;
+	height: 50px;
+	vertical-align: middle;
+}
+
+/* ---- REALLY USEFULL WHERE STATIONS ARE NOT ON THE AIR ----*/
 
 .station-item{
 	margin-top:10px;

@@ -6,6 +6,7 @@ from google.appengine.ext import blobstore
 
 from models.db.station import Station
 from models.db.contribution import Contribution
+from models.interface.onair import InterfaceOnAir
 
 class HomeHandler(BaseHandler):
     def get(self):
@@ -33,12 +34,11 @@ class HomeHandler(BaseHandler):
 		else:
 			number_of_stations_to_fetch = 12
 			
-		# We get the active or non active stations	
-		active_stations = Station.all().filter("active >", datetime.now()).order("-active").fetch(number_of_stations_to_fetch)
+		onair_proxy = InterfaceOnAir()
+		active_stations = onair_proxy.stations_and_tracks
 		non_active_stations = None
 		if(len(active_stations) == 0):
 			non_active_stations = Station.all().order("-active").fetch(number_of_stations_to_fetch)
-		
 		
 		self.additional_template_values = {
 			"site_url": controllers.config.SITE_URL,

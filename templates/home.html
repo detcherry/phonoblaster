@@ -1,5 +1,9 @@
 {% extends "base.html" %}
 
+{% block style %}
+	<link type="text/css" rel="stylesheet" href="/static/css/station/popover.css" />
+{% endblock %}
+
 {% block main %}
 	{% if current_user %}
 	<!-- User is logged in-->
@@ -70,15 +74,29 @@
 			</div>
 		</div>
 		{% endif %}
+		
 		{% if active_stations %}
 			<div class="station-listing">
 				<h2>Stations on the air</h2>
 				<div id="station-items">
 					{% for station in active_stations %}
-					<div class="station-item">
-						<h3><a href="/{{ station.identifier }}">{{ station.identifier }}</a></h3>
-						<a href="/{{ station.identifier }}" class="img"><img src="/picture/view/{{ station.thumbnail.key }}"></a>
-						<a href="/{{ station.identifier }}" class="button">Tune in!</a>
+					<div class="station-track-item">
+						<div class="station-item">
+							<h3><a href="/{{ station.0.identifier }}">{{ station.0.identifier }}</a></h3>
+							<a href="/{{ station.0.identifier }}" class="img">
+								<img src="/picture/view/{{ station.0.thumbnail.key }}">
+							</a>
+						</div>
+						<div class="track-item">
+							<div class="arrow"></div>
+							<div class="inner">
+								<div class="title">Currently playing</div>
+								<div class="content">
+									<img src="{{ station.1.thumbnail}}" class="img">
+									<p><span>{{ station.1.title }}</span></p>
+								</div>
+							</div>
+						</div>
 					</div>
 					{% endfor %}
 				</div>
@@ -97,11 +115,12 @@
 				</div>
 			</div>	
 		{% endif %}
+		
 	{% else %}
 	<!-- User is not logged in-->
 	<div id="welcome-top-left">
 		<h2>Tune into people’s music!</h2>
-		<p class="description">Music streams from your friends to your favorite bloggers, artists or brands.</p>
+		<p class="description">Music streams from your friends, your favorite bloggers, artists or brands.</p>
 		<div id="welcome-action" class="button">
 			<p id="facebook"><fb:login-button autologoutlink="true" scope="email"></fb:login-button></p>
 			<p id="create">to create your station</p>
