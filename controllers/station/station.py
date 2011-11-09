@@ -20,10 +20,11 @@ class StationHandler(RootStationHandler):
 			if(self.allowed_to_post or number_of_listeners < 100):
 				logging.info("Allowed to post or station not too crowded")
 				
-				# Probably not efficient, will require a refactoring at some point using the memcache
+				# When the user is not a contributor of the station he's currently on, it's useful to display his station
 				self.user_station = None
 				if(self.current_user):
-					self.user_station = Station.all().filter("creator", self.current_user.key()).get()
+					# Probably not efficient, will require a refactoring at some point using the memcache
+					self.user_station = Station.all().filter("creator", self.current_user.key()).get()				
 				
 				self.additional_template_values = {
 					"site_url": controllers.config.SITE_URL,
