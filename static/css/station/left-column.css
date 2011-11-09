@@ -24,7 +24,7 @@
 	color:#373535;
 }
 
-.info a:hover p.top{
+.info p.top:hover{
 	text-decoration:underline;
 }
 
