@@ -130,7 +130,7 @@
 				<h3>Stations on the air</h3>
 				{% for station in active_stations %}
 					<div class="welcome-station-item">
-						<a href="/{{ station.identifier }}" class="img"><img src="/picture/view/{{ station.thumbnail.key }}"></a>
+						<a href="/{{ station.0.identifier }}" class="img"><img src="/picture/view/{{ station.0.thumbnail.key }}"></a>
 					</div>
 				{% endfor %}
 			{% else %}

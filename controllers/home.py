@@ -34,11 +34,9 @@ class HomeHandler(BaseHandler):
 		else:
 			number_of_stations_to_fetch = 12
 		
-		if(self.current_user):	
-			onair_proxy = InterfaceOnAir()
-			active_stations = onair_proxy.stations_and_tracks
-		else:
-			active_stations = Station.all().filter("active >", datetime.now()).order("-active").fetch(number_of_stations_to_fetch)
+		# Get stations on air
+		onair_proxy = InterfaceOnAir()
+		active_stations = onair_proxy.stations_and_tracks
 			
 		non_active_stations = None
 		if(len(active_stations) == 0):
