@@ -22,7 +22,7 @@ tabController.prototype = {
 		$(current_tab).show();
 		
 		// Listen for click on tabs.
-	 	$("#tabs a").click(function() {
+	 	$("#tabs a").bind("click",function() {
 			// If not current tab. 
 			if (!$(this).hasClass("current")) {
 				// Change the current indicator.
