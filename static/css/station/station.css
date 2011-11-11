@@ -573,6 +573,75 @@ input#search_button{
 	text-align: center;
 }
 
+/* ------- ON AIR TAB ---------*/
+
+#onair_init{
+	padding-left:8px;
+	padding-top:4px;
+}
+
+.onair_item{
+	margin-bottom:12px;
+	padding-left:8px;
+	padding-bottom: 10px;
+	border-bottom: 1px solid #DDD;
+}
+
+.onair_item .left a{
+	padding: 2px;
+}
+
+.onair_item .left img{
+	height: 44px;
+}
+
+.onair_item .right{
+	width: 233px;
+}
+
+.onair_item .right h5{
+	padding: 5px;
+	padding-left: 8px;
+	height: 15px;
+	width:100%;
+	line-height: 17px;
+	overflow: hidden;
+}
+
+.onair_item .right img{
+	height: 50px;
+	padding: 2px;
+	margin-left: 5px;
+}
+
+.onair_item p{
+	font-size:11px;
+	padding:2px;
+	padding-bottom:0px;
+	padding-left: 6px;
+}
+
+.onair_item .right .title{
+	width:148px;
+	height:50px;
+	overflow: hidden;
+	line-height: 13px;
+}
+
+.onair_item .right .title span{
+	height:50px;
+	vertical-align: middle;
+	display: table-cell;
+}
+
+.onair_item .right .added{
+	display:none;
+}
+
+.onair_item .right p em{
+	color:grey;
+}
+
 
 /*-------- SECONDARY PAGES -------- */
 

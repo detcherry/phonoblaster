@@ -87,26 +87,27 @@
 		{% if current_user %}
 			<!-- User logged in, put the tracklist tab to current -->
 			<li style="width:72px;"><a href="#tracks_tab" class="current" style="width:58px">Tracklist</a></li>
-			<li style="width:100px;">
-				<a href="#search_tab" style="width:86px;" rel="popover" id="tutorial" data-original-title="Where to add tracks!" data-content="This is where you can search and add tracks to your tracklist. It includes all of Youtube music catalog!">
+			<li style="width:94px;">
+				<a href="#search_tab" style="width:80px;" rel="popover" id="tutorial" data-original-title="Where to add tracks!" data-content="This is where you can search and add tracks to your tracklist. It includes all of Youtube music catalog!">
 					Add tracks
 				</a>
 			</li>
 		{% else %}
 			<!-- User not logged in, put the add tracks tab to current -->
 			<li style="width:72px;"><a href="#tracks_tab" style="width:58px">Tracklist</a></li>
-			<li style="width:100px;"><a href="#search_tab" class="current" style="width:86px;">Add tracks</a></li>
+			<li style="width:94px;"><a href="#search_tab" class="current" style="width:80px;">Add tracks</a></li>
 		{% endif %}
-		
 		{% if allowed_to_post %}
-		<li style="width:76px;"><a href="#library_tab" style="width:62px;">Library</a></li>
+			<!-- User allowed to post, library tab displayed -->
+			<li style="width:72px;"><a href="#library_tab" style="width:58px;">Library</a></li>
 		{% endif %}
+		<li style="width:72px;"><a href="#onair_tab" style="width:58px;" id="onair">On Air</a></li>
 	</ul>
 	<div id="tab_content_wrap">
 		<div id="tracks_tab" class="tab_content">
 			<div id="tracks">
-				<div id="station_init">
-					No tracks yet.	
+				<div id="station_init" style="padding-left: 8px; padding-top:4px">
+					No track yet.	
 				</div>
 			</div>
 		</div>
@@ -163,6 +164,13 @@
 			</div>
 		</div>
 		{% endif %}
+		<div id="onair_tab" class="tab_content">
+			<div id="onair_items">
+				<div id="onair_init">
+					No other station on the air yet.
+				</div>
+			</div>
+		</div>
 	</div>
 
 {% endblock %}
@@ -182,6 +190,7 @@
 	<script type="text/javascript" src="/static/js/station/swfobject.js"></script>
 	<script type="text/javascript" src="/static/js/station/station.js"></script>
 	<script type="text/javascript" src="/static/js/station/chat.js"></script>
+	<script type="text/javascript" src="/static/js/station/onair.js"></script>
 	{% if allowed_to_post %}
 		<script type="text/javascript" src="/static/js/station/library.js"></script>
 	{% endif %}

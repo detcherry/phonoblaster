@@ -3,6 +3,7 @@ import os
 
 from models.interface import config
 from models.interface.user import InterfaceUser
+from models.interface.onair import InterfaceOnAir
 
 from datetime import datetime
 from datetime import timedelta
@@ -124,7 +125,7 @@ class InterfaceStation():
 			memcache.delete(old_memcache_station_identifier_id)
 			logging.info("Old station value pointed by old identifier removed from memcache")
 		
-	
+	""" DEPRECATED 
 	# Update the station expiration time	
 	def update_station_expiration_time(self, new_station_expiration_time):
 		self.station.active = new_station_expiration_time
@@ -138,6 +139,7 @@ class InterfaceStation():
 			self.memcache_station_identifier_id: self.station,
 		})
 		logging.info("Station expiration time updated TWICE in memcache (key and identifier)")
+	"""
 	
 	# Get the station creator
 	@property
@@ -312,9 +314,16 @@ class InterfaceStation():
 					memcache.set(self.memcache_station_tracklist_id, self.station_tracklist)
 					logging.info("Added to the station tracklist in memcache")
 		
+					""" 
+					DEPRECATED
 					# Update Station Expiration Time
 					self.update_station_expiration_time(current_expiration_time)
-		
+					"""
+					
+					# Put station in station in the air
+					onair_proxy = InterfaceOnAir()
+					onair_proxy.add_station_id(self.station_key.id())
+					
 					# Increment the station tracks counter by the right number
 					self.increment_station_track_counter(len(tracks_saved))
 		
@@ -409,9 +418,11 @@ class InterfaceStation():
 						memcache.set(self.memcache_station_tracklist_id, edited_tracklist)
 						logging.info("Track removed and tracklist edited in memcache")
 
+						""" DEPRECATED
 						# Update station expiration time
 						self.update_station_expiration_time(new_station_expiration_time)
-
+						"""
+						
 						# Decrement station track counter
 						self.decrement_station_tracks_counter()
 
@@ -456,9 +467,6 @@ class InterfaceStation():
 				q.filter("station", self.station_key)
 				q.filter("ended", None)
 				q.filter("created >", datetime.now() - timedelta(0,7200))
-				"""
-				self._station_sessions = q.fetch(100)
-				"""
 				
 				# In theory there could be max 111 sessions (100 listeners + 10 contributors + 1 creator) but I fetch more in case...
 				candidate_sessions = q.fetch(200)
@@ -506,22 +514,21 @@ class InterfaceStation():
 			# Session already ended + Token still available => we reuse it
 			# Session never confirmed + Token created more than 5 ago => we reuse it
 			# NB: it would have been cool to do this test in the query but app engine does not allow more than one inequality filter...
-						
-			# Session already ended + Token still available => we reuse it
-			if(session.ended !=None):
-				new_session = session
-				logging.info("We reuse an old channel_id and token because this session already ended")			
-				
-				# We completly reset this session
-				new_session.updated = None
-				new_session.ended = None
 			
 			# Session never confirmed + Token created more than 5 minutes ago => we reuse it
 			if(session.updated == None and session.created < datetime.now() - timedelta(0,300)):
 				new_session = session
 				logging.info("We reuse an old channel_id and token because this session has never been confirmed")
 			
-			if(new_session):	
+			# Session already ended + Token still available => we reuse it
+			if(session.ended !=None):
+				new_session = session
+				logging.info("We reuse an old channel_id and token because this session already ended")			
+				
+			if(new_session):
+				# We completly reset this session
+				new_session.updated = None
+				new_session.ended = None	
 				new_session.user = user_key
 				new_session.put()
 				logging.info("New station session saved in datastore. To put in memcache after client connection")
