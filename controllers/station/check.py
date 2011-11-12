@@ -9,9 +9,11 @@ class StationCheckHandler(BaseHandler):
 	def post(self):
 		station_id = self.request.get("station_id").lower()
 		json_response = {}
+		existing_station = None
 		
-		station_proxy = InterfaceStation(station_identifier = station_id)
-		existing_station = station_proxy.station
+		if(station_id):
+			station_proxy = InterfaceStation(station_identifier = station_id)
+			existing_station = station_proxy.station
 		
 		if(existing_station):
 			json_response["available"] = "False"
