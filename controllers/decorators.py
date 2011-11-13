@@ -10,7 +10,7 @@ def login_required(method):
 				redirection = {"redirect_url": self.request.url}
 				self.redirect("/account/login?" + urllib.urlencode(redirection))
 				return
-            raise self.error(403)
+            self.error(403)
         else:
             return method(self, *args, **kwargs)
     return wrapper
