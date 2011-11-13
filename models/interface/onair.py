@@ -92,7 +92,7 @@ class InterfaceOnAir():
 		for key, station in dict_stations_onair.iteritems():
 			if(station):
 				id_of_station = key.replace(config.MEMCACHE_STATION_PREFIX, "")
-				onair[id_of_station] = { "station": station }
+				onair[id_of_station] = {"station":station}
 		
 		
 		logging.info("Stations on the air retrieved")
@@ -101,14 +101,18 @@ class InterfaceOnAir():
 		
 		# Collect memcache tracklist ids
 		memcache_tracklist_ids = []
-		for station_id in self.station_ids:
+		#for station_id in self.station_ids:
+		for key, obj in onair.iteritems():
+			station = obj["station"]
+			station_id = station.key().id()
 			memcache_tracklist_id = config.MEMCACHE_STATION_TRACKLIST_PREFIX + str(station_id)
 			memcache_tracklist_ids.append(memcache_tracklist_id)
 		logging.info("Memcache ids for tracklists on the air built")
 		
 		# Collect all tracklists
 		dict_tracklists = memcache.get_multi(memcache_tracklist_ids)
-		index = 0
+		
+		# Collect current track
 		for key, tracklist in dict_tracklists.iteritems():
 			id_of_station = key.replace(config.MEMCACHE_STATION_TRACKLIST_PREFIX, "")
 			
@@ -133,13 +137,11 @@ class InterfaceOnAir():
 				del onair[id_of_station]
 				self.remove_station_id(id_of_station)
 			
-			# Incremement index
-			index += 1
 		logging.info("Tracks on the air retrieved")
 		
-		for key, dictio in onair.iteritems():
-			stations_onair.append(dictio["station"])
-			tracks_onair.append(dictio["track"])
+		for key, obj in onair.iteritems():
+			stations_onair.append(obj["station"])
+			tracks_onair.append(obj["track"])
 		
 		# Zip stations and tracks on air
 		stations_and_tracks = zip(stations_onair, tracks_onair)	
