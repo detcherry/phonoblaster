@@ -172,8 +172,9 @@
 			</div>
 		</div>
 	</div>
-	<div id="room_displayer">Number of tracks: <span id="room_counter" rel="popover" data-original-title="10 tracks max" data-content="Your station tracklist can only have 10 tracks at the same time.">0</span>/10</div>
-
+	{% if allowed_to_post %}
+	<div id="room_displayer">Number of tracks: <span id="room_counter" rel="popover" data-original-title="10 tracks max" data-content="Station tracklists can only have 10 tracks at the same time.">0</span>/10</div>
+	{% endif %}
 {% endblock %}
 
 {% block footer %}
