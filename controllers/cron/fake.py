@@ -16,9 +16,9 @@ from google.appengine.api.taskqueue import Task
 class FakeHandler(webapp.RequestHandler):
 	def get(self):
 		"""
-			This cron jobs aimed at faking 2 radio stations: welloiled & darlingvibes
+			This cron jobs aimed at faking 1 radio station: welloiled 
 			What we have to do every 30 minutes:
-			- Init station proxy welloiled & darlingvibes
+			- Init station proxy welloiled 
 			- Determine how many tracks we can add
 			- Picked a random number of tracks from the selection
 			- Add them
@@ -28,9 +28,10 @@ class FakeHandler(webapp.RequestHandler):
 				
 		# Init information
 		welloiled = config.WELLOILED
-		darlingvibes = config.DARLINGVIBES
+		#darlingvibes = config.DARLINGVIBES
 		
-		infos = [welloiled, darlingvibes]
+		#infos = [welloiled, darlingvibes]
+		infos = [welloiled]
 		
 		for info in infos:
 			# Init the key
@@ -38,7 +39,7 @@ class FakeHandler(webapp.RequestHandler):
 		
 			# Init the proxy
 			proxy = InterfaceStation(station_key = key)
-			
+						
 			# Init the creator
 			creator = proxy.station_creator
 			
