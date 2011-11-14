@@ -89,7 +89,7 @@ OnAirController.prototype = {
 
 function OnAirDisplayer(){
 	//Init slimscroll
-	this.scrollbar = new Scrollbar("#onair_tab #onair_items", "309px", "510px");
+	this.scrollbar = new Scrollbar("#onair_tab #onair_items", "309px", "490px");
 }
 
 OnAirDisplayer.prototype = {

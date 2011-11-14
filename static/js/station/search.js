@@ -4,7 +4,7 @@ function YoutubeSearch(tracklistManager){
 	this.tracklistManager = tracklistManager;
 	
 	// Slim scroll for the chat
-	this.scrollbar = new Scrollbar("#search_tab #search_results", "310px", "465px")
+	this.scrollbar = new Scrollbar("#search_tab #search_results", "310px", "445px")
 		
 	this.init();
 }
@@ -188,7 +188,7 @@ YoutubeSearch.prototype = {
 				}
 				else{
 					phonoblaster.log("Already 10 songs in the list. Wait for a few minutes before submitting a new song");
-					that.trackNotAdded(id);
+					that.trackNotAdded(id); //to refactor does not work correctly in this case...
 				}
 			},
 		});
@@ -213,6 +213,7 @@ YoutubeSearch.prototype = {
 					.addClass("danger")
 					.html("List full")
 			)
+		$("#room_counter").popover("show")
 
 		setTimeout(function(){
 			$("#search_results #"+ track_id + " a.add_track")
@@ -227,9 +228,11 @@ YoutubeSearch.prototype = {
 						.html("Add to list")
 				)
 			
+			$("#room_counter").popover("hide")
+			
 			that.listen()
 
-		}, 1000)
+		}, 3000)
 	},
 
 	

@@ -87,24 +87,28 @@ $(function(){
 		offset: 3,
 	});
 	
-	// Trigger the tutorial popover
-	$("#tutorial").popover({
+	// Init the add tracks tutorial popover
+	$("#add_tracks_tutorial").popover({
 		placement: "below",
 		offset: 8,
-		//title: "Where to add tracks!",
-		//content: "This is where you can search and add tracks to your tracklist. It includes all of Youtube music catalog!",
 		trigger: "manual",
 	});
 	
 	if(allowed_to_post){
-		$("#tutorial").popover("show");
-		$("#tutorial").click(function(){
-			$("#tutorial").popover("hide");
+		$("#add_tracks_tutorial").popover("show");
+		$("#add_tracks_tutorial").click(function(){
+			$("#add_tracks_tutorial").popover("hide");
 		})
 		setTimeout(function(){
-			$("#tutorial").popover("hide");
+			$("#add_tracks_tutorial").popover("hide");
 		}, 5000)
 	}
+	
+	// Init the room counter popover
+	$("#room_counter").popover({
+		placement:"above",
+		offset:8,
+	})
 	
 	// GLOBAL VARIABLES ----> FOR THE YOUTUBE PLAYER
 	YOUTUBE_ID = "";
@@ -349,7 +353,7 @@ TracklistManager.prototype = {
 
 function UITracklistController(){
 	//Init slimscroll
-	this.scrollbar = new Scrollbar("#tracks_tab #tracks", "309px", "510px");
+	this.scrollbar = new Scrollbar("#tracks_tab #tracks", "309px", "490px");
 }
 
 
@@ -365,6 +369,7 @@ UITracklistController.prototype = {
 	
 	add: function(track){
 		$("#station_init").remove();
+		this.increment_room_counter();
 		
 		var seconds = parseInt(track.duration,10) % 60;
 		var minutes = (parseInt(track.duration,10) - seconds)/60
@@ -453,6 +458,7 @@ UITracklistController.prototype = {
 	
 	remove: function(phonoblaster_id){
 		$("#" + phonoblaster_id).remove();
+		this.decrement_room_counter();
 	},
 	
 	listen: function(){
@@ -492,8 +498,17 @@ UITracklistController.prototype = {
 			
 			return false;
 		})
-	}
+	},
 	
+	increment_room_counter: function(){
+		number_of_tracks = parseInt($("#room_counter").html(),10) + 1; 
+		$("#room_counter").html(number_of_tracks);
+	},
+	
+	decrement_room_counter: function(){
+		number_of_tracks = parseInt($("#room_counter").html(),10) - 1; 
+		$("#room_counter").html(number_of_tracks);
+	},
 }
 
 /* --------- YOUTUBE CONTROLLER ---------- */

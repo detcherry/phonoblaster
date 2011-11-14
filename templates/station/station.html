@@ -88,7 +88,7 @@
 			<!-- User logged in, put the tracklist tab to current -->
 			<li style="width:72px;"><a href="#tracks_tab" class="current" style="width:58px">Tracklist</a></li>
 			<li style="width:94px;">
-				<a href="#search_tab" style="width:80px;" rel="popover" id="tutorial" data-original-title="Where to add tracks!" data-content="This is where you can search and add tracks to your tracklist. It includes all of Youtube music catalog!">
+				<a href="#search_tab" style="width:80px;" rel="popover" id="add_tracks_tutorial" data-original-title="Where to add tracks!" data-content="This is where you can search and add tracks to your tracklist. It includes all of Youtube music catalog!">
 					Add tracks
 				</a>
 			</li>
@@ -172,6 +172,7 @@
 			</div>
 		</div>
 	</div>
+	<div id="room_displayer">Number of tracks: <span id="room_counter" rel="popover" data-original-title="10 tracks max" data-content="Your station tracklist can only have 10 tracks at the same time.">0</span>/10</div>
 
 {% endblock %}
 

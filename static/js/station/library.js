@@ -180,6 +180,7 @@ LibraryController.prototype = {
 		}
 		else{
 			phonoblaster.log("Already 10 tracks in the list");
+			$("#room_counter").popover("show")
 			var origin_class = obj.attr("class");
 			var origin_content = obj.html();
 			
@@ -187,8 +188,9 @@ LibraryController.prototype = {
 			obj.replaceWith(repl);
 			
 			setTimeout(function(){
+				$("#room_counter").popover("hide")
 				repl.removeClass("button").removeClass("danger").addClass(origin_class).html(origin_content);
-			}, 1000)	
+			}, 3000)	
 		}
 	},
 	
@@ -367,7 +369,7 @@ LibraryController.prototype = {
 function UILibraryController(){
 	
 	//Scrollbar for this column
-	this.scrollbar = new Scrollbar("#library_tab #library", "310px", "510px");
+	this.scrollbar = new Scrollbar("#library_tab #library", "310px", "490px");
 	
 }
 
