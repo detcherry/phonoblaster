@@ -92,29 +92,25 @@ class InterfaceOnAir():
 		for key, station in dict_stations_onair.iteritems():
 			if(station):
 				id_of_station = key.replace(config.MEMCACHE_STATION_PREFIX, "")
-				onair[id_of_station] = {"station":station}
-		
-		
+				onair[id_of_station] = {"station":station }
 		logging.info("Stations on the air retrieved")
 		
 		# ------------- tracklist -----------------
 		
 		# Collect memcache tracklist ids
 		memcache_tracklist_ids = []
-		#for station_id in self.station_ids:
 		for key, obj in onair.iteritems():
-			station = obj["station"]
-			station_id = station.key().id()
-			memcache_tracklist_id = config.MEMCACHE_STATION_TRACKLIST_PREFIX + str(station_id)
+			memcache_tracklist_id = config.MEMCACHE_STATION_TRACKLIST_PREFIX + key
 			memcache_tracklist_ids.append(memcache_tracklist_id)
 		logging.info("Memcache ids for tracklists on the air built")
 		
 		# Collect all tracklists
 		dict_tracklists = memcache.get_multi(memcache_tracklist_ids)
+		logging.info(dict_tracklists)
 		
 		# Collect current track
 		for key, tracklist in dict_tracklists.iteritems():
-			id_of_station = key.replace(config.MEMCACHE_STATION_TRACKLIST_PREFIX, "")
+			the_id_of_station = key.replace(config.MEMCACHE_STATION_TRACKLIST_PREFIX, "")
 			
 			if(tracklist and len(tracklist)>0):
 				current_track = None;
@@ -125,17 +121,16 @@ class InterfaceOnAir():
 						break
 				
 				if(current_track):
-					onair[id_of_station]["track"] = current_track
-					
+					onair[the_id_of_station]["track"] = current_track	
 				else:
 					# There is no current track in the list so we can remove station from the on the air list
-					del onair[id_of_station]
-					self.remove_station_id(id_of_station)
+					del onair[the_id_of_station]
+					self.remove_station_id(the_id_of_station)
 						
 			else:
 				# If tracklist not found in memcache or empty, remove station from the on the air list
-				del onair[id_of_station]
-				self.remove_station_id(id_of_station)
+				del onair[the_id_of_station]
+				self.remove_station_id(the_id_of_station)
 			
 		logging.info("Tracks on the air retrieved")
 		
