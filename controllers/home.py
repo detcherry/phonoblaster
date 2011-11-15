@@ -28,11 +28,11 @@ class HomeHandler(BaseHandler):
 			current_user_contributing_stations = db.get(station_keys)
 		
 		
-		# If user is logged in, we fetched up to 48 stations. Otherwise just 12
+		# If user is logged in, we fetched up to 36 stations. Otherwise just 18
 		if(self.current_user):
-			number_of_stations_to_fetch = 48
+			number_of_stations_to_fetch = 36
 		else:
-			number_of_stations_to_fetch = 12
+			number_of_stations_to_fetch = 18
 		
 		# Get stations on air
 		onair_proxy = InterfaceOnAir()

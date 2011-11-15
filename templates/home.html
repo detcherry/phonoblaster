@@ -119,93 +119,116 @@
 	{% else %}
 	<!-- User is not logged in-->
 	<div id="welcome-top-left">
-		<h2>Tune into people’s music!</h2>
-		<p class="description">Music streams from your friends, your favorite bloggers, artists or brands.</p>
+		<h2>Broadcast your music!</h2>
+		<p class="description">Create your station, invite contributors, play your favorite music and let the world listen to it!</p>
 		<div id="welcome-action" class="button">
 			<p id="facebook"><fb:login-button autologoutlink="true" scope="email"></fb:login-button></p>
 			<p id="create">to create your station</p>
 		</div>
-		<div id="welcome-station-listing">
-			{% if active_stations %}
-				<h3>Stations on the air</h3>
-				{% for station in active_stations %}
-					<div class="welcome-station-item">
-						<a href="/{{ station.0.identifier }}" class="img"><img src="/picture/view/{{ station.0.thumbnail.key }}"></a>
-					</div>
-				{% endfor %}
-			{% else %}
-				<h3>Stations not yet on the air</h3>
-				{% for station in non_active_stations %}
-					<div class="welcome-station-item">
-						<a href="/{{ station.identifier }}" class="img"><img src="/picture/view/{{ station.thumbnail.key }}"></a>
-					</div>
-				{% endfor %}
-			{% endif %}
-		</div>
 	</div>
 	<div id="welcome-top-right">
-		<div id="slideshow">
-			<img src="/static/images/tracklist-state-1.png" class="active"/>
-			<img src="/static/images/tracklist-state-2.png"/>
-			<img src="/static/images/tracklist-state-3.png"/>
-			<img src="/static/images/tracklist-state-4.png"/>
-		</div>
-		<img src="/static/images/welcome-animated.gif" id="animated"/>
+		{% if active_stations %}
+			<h3>Latest stations on the air</h3>
+			{% for station in active_stations %}
+				<div class="active-station">
+					<a href="/{{ station.0.identifier }}" class="img">
+						<img src="/picture/view/{{ station.0.thumbnail.key }}">
+					</a>
+					<div class="track-item">
+						<div class="arrow"></div>
+						<div class="inner">
+							<div class="content">
+								<img src="{{ station.1.youtube_thumbnail_url }}" class="img">
+								<p><span>{{ station.1.youtube_title }}</span></p>
+							</div>
+						</div>
+					</div>
+				</div>
+			{% endfor %}
+
+
+		{% else %}
+			<h3>Stations on Phonoblaster</h3>
+			{% for station in non_active_stations %}
+				<div class="not-active-station">
+					<a href="/{{ station.identifier }}" class="img"><img src="/picture/view/{{ station.thumbnail.key }}"></a>
+				</div>
+			{% endfor %}
+		{% endif %}
 	</div>
 	<div id="separator"></div>
 	<div class="welcome-bottom" style="width:33%;">
-		<h4>Create your station</h4>
-		<p>Turn on your own station, invite contributors, and start sharing your tasty music to the entire world!</p>
-		<img src="/static/images/pyramides.png"/>
+		<h4 style="text-align: left; padding-left: 8%; width: 94%;">Create your station</h4>
+		<img src="/static/images/welcome-left.png" class="img" style="margin-left: 10px;"/>
+		<p style="padding-left: 0%;">
+			Become a radio programmer in 1 click. Start broadcasting and let people discover your awesome music!
+		</p>
 	</div>
 	<div class="welcome-bottom" style="width:34%;">
-		<h4>Share music together</h4>
-		<p>Bring your friends in and broadcast together the greatest music selection<br/> of all times - yes, you’re on the air!</p>
-		<img src="/static/images/plane.jpg"/>
+		<h4 style="width: 97%;">Play your music</h4>
+		<img src="/static/images/welcome-center.png" class="img" style="margin-left:48px;"/>
+		<p>Powered by Youtube, we have the largest online music catalog. Pick up your favorite songs!</p>
 	</div>
 	<div class="welcome-bottom" style="width:33%;">
-		<h4>Discover new songs</h4>
-		<p>No idea what to listen to today? Just tune into a station and listen to great new tracks immediately</p>
-		<img src="/static/images/origami.jpg" style="margin-left:100px;"/>
+		<h4>Let anybody listen to it</h4>
+		<img src="/static/images/welcome-right.png" class="img"/>		
+		<p>When someone tunes into your station, he's listening to the exact same music you're listening to!</p>
 	</div>
 	{% endif %}
 {% endblock %}
 
 {% block script %}
-	{% if not current_user %}
-		<script type="text/javascript">
-		function slideSwitch() {
-		    var $active = $('#slideshow img.active');
-
-		    if ( $active.length == 0 ) $active = $('#slideshow img:last');
-
-		    // use this to pull the images in the order they appear in the markup
-		    var $next =  $active.next().length ? $active.next()
-		        : $('#slideshow img:first');
-
-		    $active.addClass('last-active');
-			/*
-			//With fade in/out
-		    $next.css({opacity: 0.0})
-		        .addClass('active')
-		        .animate({opacity: 1.0}, 1000, function() {
-		            $active.removeClass('active last-active');
-		        });
-			*/
-			//Without fade in/out
-			$next.addClass("active")
-			$active.removeClass("active last-active")
-		}
-
-		$(function() {
-		    setInterval( "slideSwitch()", 3577 );
-		});
-
-		</script>
-	{% else %}
+	{% if current_user %}
 		{% if not current_user_station %}
-			<script type="text/javascript" src="/static/js/jquery.form.js"></script>
-			<script type="text/javascript" src="/static/js/home.js"></script>
+		<script type="text/javascript" src="/static/js/jquery.form.js"></script>
+		<script type="text/javascript" src="/static/js/home.js"></script>
 		{% endif %}
+	{% else%}
+		<script type="text/javascript">
+			$(function(){
+				var number_of_active_stations = $(".active-station").size()
+				if(number_of_active_stations > 0){
+					var number_of_stations_to_add = 6 - number_of_active_stations
+					for(var i=0; i<number_of_stations_to_add; i++){
+						$("#welcome-top-right").append(
+							$("<div/>")
+								.addClass("active-station")
+								.append(
+									$("<img/>")
+										.addClass("img")
+										.css({
+											"margin":"5px",
+											"height":"60px",
+										})
+										.attr("src", "static/images/blurry.png")
+									
+								)
+								.append(
+									$("<div/>")
+										.addClass("track-item")
+										.append(
+											$("<div/>").addClass("arrow")
+										)
+										.append(
+											$("<div/>")
+												.addClass("inner")
+												.append(
+													$("<div/>")
+														.addClass("content")
+														.append(
+															$("<p/>")
+																.css("width","120px")
+																.append(
+																	$("<span/>").html("No other station on the air")
+																)
+														)
+												)
+										)
+								)
+						)
+					}
+				}
+			});
+		</script>
 	{% endif %}
 {% endblock %}
