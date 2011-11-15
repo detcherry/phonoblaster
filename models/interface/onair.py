@@ -139,10 +139,15 @@ class InterfaceOnAir():
 			
 		logging.info("Tracks on the air retrieved")
 		
-		for key, obj in onair.iteritems():
-			stations_onair.append(obj["station"])
-			tracks_onair.append(obj["track"])
+		logging.info(onair)
 		
+		for key, obj in onair.iteritems():
+			try:
+				tracks_onair.append(obj["track"])
+				stations_onair.append(obj["station"])
+			except KeyError:
+				logging.error("An error occured")
+
 		# Zip stations and tracks on air
 		stations_and_tracks = zip(stations_onair, tracks_onair)	
 		
