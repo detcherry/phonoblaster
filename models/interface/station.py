@@ -501,7 +501,6 @@ class InterfaceStation():
 	# Add a session
 	def add_session(self, user_key = None):
 		new_session = None
-		station_sessions = self.station_sessions
 		
 		# We retrieve the latest sessions whose channel API token is not expired (3600 sec ~ 1h) / NB: tokens expired after 2 hours
 		q = Session.all()
