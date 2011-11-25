@@ -67,6 +67,8 @@ class TwitterAuthorizeHandler(BaseHandler):
 					user.name = twituser.name
 					user.username = twituser.screen_name
 					user.thumbnail_url = image_url
+					user.description = twituser.description
+					user.url = twituser.url
 					user.put()
 					logging.info("@%s updated in datastore"%(user.username))
 				else:
@@ -88,6 +90,8 @@ class TwitterAuthorizeHandler(BaseHandler):
 					name = twituser.name,
 					username = twituser.screen_name,
 					thumbnail_url = image_url,
+					description = twituser.description,
+					url = twituser.url,
 				)
 				user.put()
 				logging.info("@%s saved in datastore"%(user.username))
