@@ -9,5 +9,6 @@ class User(db.Model):
 	thumbnail_url = db.StringProperty(required = True)
 	description = db.StringProperty(required = True)
 	url = db.StringProperty(required = True)
+	email = db.StringProperty()
 	created = db.DateTimeProperty(auto_now_add = True)
 	updated = db.DateTimeProperty(auto_now = True)
