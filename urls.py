@@ -23,6 +23,7 @@ from controllers.oauth.authorize import TwitterAuthorizeHandler
 from controllers.oauth.close import TwitterCloseHandler
 from controllers.oauth.cleanup import TwitterCleanupHandler
 from controllers.oauth.logout import TwitterLogoutHandler
+from controllers.broadcaster.broadcaster import BroadcasterHandler
 
 application = webapp.WSGIApplication(
 	[
@@ -33,6 +34,7 @@ application = webapp.WSGIApplication(
 		('/oauth/close', TwitterCloseHandler),
 		('/oauth/cleanup', TwitterCleanupHandler),
 		('/oauth/logout', TwitterLogoutHandler),
+		('/(\w+)', BroadcasterHandler),
 	],
     debug=True)
 
