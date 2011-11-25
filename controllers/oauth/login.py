@@ -6,5 +6,10 @@ class TwitterLoginHandler(BaseHandler):
 		if not self.current_user:
 			self.render("oauth/login.html", None)
 		else:
-			# If user logged in, redirect to homepage
-			self.redirect("/")
+			redirect_url = self.request.get("redirect_url")
+			if redirect_url:
+				# Redirect to the initial page
+				self.redirect(redirect_url)
+			else:
+				# Redirect to homepage
+				self.redirect("/")

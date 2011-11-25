@@ -1,4 +1,24 @@
 {% extends "base.html" %}
+
+{% block style %}
+	<link type="text/css" rel="stylesheet" href="/static/css/login.css">
+{% endblock %}
+
 {% block main %}
-	account login
+	<h1>Connect to Phonoblaster!</h1>
+	<div id="sign-in">
+		<a href="#" class="login"><img alt="Sign in with Twitter" src="/static/images/sign-in.png"/></a>
+	</div>
+	<div class="welcome-bottom" style="width:33%;">
+		<h4 style="text-align: left; padding-left:25%; width:94%;">Your station</h4>
+		<img src="/static/images/welcome-left.png" class="img" style="margin-left: 10px;"/>
+	</div>
+	<div class="welcome-bottom" style="width:34%;">
+		<h4 style="width:97%;">Your music</h4>
+		<img src="/static/images/welcome-center.png" class="img" style="margin-left:48px;"/>
+	</div>
+	<div class="welcome-bottom" style="width:33%;">
+		<h4>Your listeners</h4>
+		<img src="/static/images/welcome-right.png" class="img"/>		
+	</div>
 {% endblock %}

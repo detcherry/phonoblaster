@@ -1,0 +1,27 @@
+@import url("home.css");
+
+/* -------- LOGIN PAGE --------- */
+
+#main h1{
+	padding-top:50px;
+	padding-bottom:50px;
+	width:100%;
+	text-align:center;
+}
+
+#main div#sign-in{
+	margin-left:25%;
+	margin-bottom:50px;
+	padding-top:50px;
+	padding-bottom:50px;
+	width:50%;
+	text-align:center;
+	border-top: 1px solid #DDD;
+	border-bottom: 1px solid #DDD;
+}
+
+#main h4{
+	font-style:italic;
+	font-size:19px;
+	font-weight:normal;
+}
