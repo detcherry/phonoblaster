@@ -1,0 +1,20 @@
+<div class="topbar">
+	<div class="topbar-inner">
+		<div class="container">
+			<h1>Phonoblaster</h1>
+			<a id="logo" href="/"><img src="/static/images/phonoblaster.png"/></a>
+			<div id="menu">
+			{% if current_user %}
+				<p><a href="/{{ current_user.username }}">@{{ current_user.username }}</a></p>
+				<p id="login-status">
+					<a href="#" class="logout"><img alt="Sign out" src="/static/images/sign-out.png"/></a>
+				</p>
+			{% else %}
+				<p id="login-status">
+		    		<a href="#" class="login"><img alt="Sign in with Twitter" src="/static/images/sign-in.png"/></a>
+				</p>
+			{% endif %}
+			</div>
+		</div>
+	</div>
+</div>

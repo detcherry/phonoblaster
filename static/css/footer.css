@@ -1,0 +1,10 @@
+#bottom-bar{
+	height:50px;
+	background:transparent;
+}
+
+#like-phonoblaster, #follow-phonoblaster{
+	float:left;
+	margin-top:8px;
+}
+

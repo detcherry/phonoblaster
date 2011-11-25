@@ -1,0 +1,98 @@
+@import url("base.css");
+
+/*---------- WELCOME PAGE -------------- */
+
+#welcome-top-left{
+	padding:20px;
+	padding-bottom:0px;
+	width:410px;
+	height:300px;
+}
+
+#welcome-top-left h2{
+	margin-top:30px;
+	margin-bottom:15px;
+	width:100%;
+	font-size:26px;
+	font-weight:bold;
+	height:36px;
+	line-height:36px;
+	color: #404040;
+}
+
+#welcome-top-left .btn{
+	padding-left:6px;
+	padding-right:6px;
+}
+
+#welcome-top-left p.description{
+	width:100%;
+	padding-top:8px;
+	padding-bottom:8px;
+	font-size:18px;
+	line-height:21px;
+	color: #404040;
+}
+
+#welcome-top-left img, #welcome-top-left span{
+	display:block;
+	float:left;
+}
+
+#welcome-top-left span{
+	padding:4px;
+	padding-left:6px;
+}
+
+#welcome-top-left p.info{
+	font-size:9px;
+	font-style:italic;
+	padding:3px;
+}
+
+#separator{
+	margin-top:10px;
+	margin-bottom:20px;
+	margin-left:20%;
+	width:56%;
+	border-bottom: 1px solid #DDD;
+}
+
+.welcome-bottom{
+	width:33.33%;
+}
+
+
+#welcome-top-right{
+	padding-top:20px;
+	padding-left:50px;
+	width:500px;
+	height:300px;
+	overflow:hidden;
+}
+
+.welcome-bottom h4{
+	padding-top:12px;
+	padding-bottom:17px;
+	width:100%;
+	text-align:center;
+	font-size:22px;
+	font-weight:bold;
+	color: #404040;
+}
+
+.welcome-bottom p{
+	width:80%;
+	padding-left:10%;
+	padding-bottom:28px;
+	font-size:15px;
+	line-height:20px;
+	
+}
+
+.welcome-bottom img{
+	display:block;
+	height:150px;
+	margin-left:45px;
+	margin-bottom:28px;
+}
