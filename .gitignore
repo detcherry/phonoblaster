@@ -1,4 +1,3 @@
 app.yaml
 controllers/config.py
-controllers/cron/config.py
 *.pyc
