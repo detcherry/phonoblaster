@@ -1,5 +1,24 @@
-{% extends "base.html" %}
+{% extends "broadcaster/root.html" %}
 
-{% block main %}
+{% block meta %}
+	<title>@{{ current_broadcaster.username }}</title>
+	<meta name="description" content="@{{ current_broadcaster.username }} on Phonoblaster: {{ current_broadcaster.description }}">
+{% endblock %}
+
+{% block facebook %}
+	<meta property="og:title" content="@{{ current_broadcaster.username }}" />
+	<meta property="og:type" content="article" />
+	<meta property="og:url" content="{{ site_url }}/{{ current_broadcaster.username }}" />
+	<meta property="og:image" content="{{ current_broadcaster.thumbnail_url }}" />
+	<meta property="og:description" content="{{ current_broadcaster.description }}"/>
+	<meta property="og:site_name" content="Phonoblaster"/>
+	<meta property="fb:app_id" content="{{ facebook_app_id }}" />
+{% endblock %}
+
+{% block additional-style %}
+	<link type="text/css" rel="stylesheet" href="/static/css/broadcaster/broadcaster.css">
+{% endblock %}
+
+{% block middle-column %}
 	@{{ current_broadcaster.username }}
 {% endblock %}

@@ -13,11 +13,14 @@
 		{% endblock %}
 		<!-- Standard stylesheet -->
 		<link rel="shortcut icon" href="/static/images/favicon.ico" type="image/x-icon" />
+		<!-- Bootstrap stylesheet -->
 		<link type="text/css" rel="stylesheet" href="/static/bootstrap/bootstrap.min.css">
+		<!-- Base stylesheet -->
 		<link type="text/css" rel="stylesheet" href="/static/css/base.css">
-		<!-- Additional Stylesheets -->
+		<!-- Page relative stylesheets -->
 		{% block style %}
 		{% endblock %}
+		<!-- Additional Stylesheets -->	
 	</head>
 	<body>
 		{% block header %}
@@ -32,7 +35,7 @@
 		{% block footer %}
 			{% include "footer.html" %}
 		{% endblock %}
-		<!-- jQuery -->
+		<!-- External scripts -->
 		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.0/jquery.min.js"></script>
 		<!-- oAuth -->
 		<script type="text/javascript" src="/static/js/oauth.js"></script>
