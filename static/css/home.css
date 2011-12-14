@@ -1,0 +1,47 @@
+/*---------- WELCOME PAGE -------------- */
+
+#welcome-box{
+	margin-top:60px;
+	width:400px;
+	margin-left:300px;
+	text-align:center;
+}
+
+#welcome-box img{
+	height:100px;
+}
+
+#welcome-box h2{
+	margin-top:10px;
+	margin-bottom:10px;
+	width:100%;
+	font-size:26px;
+	font-weight:bold;
+	height:36px;
+	line-height:36px;
+	color: #404040;
+}
+
+#welcome-box p{
+	width:100%;
+}
+
+#welcome-box p.description{
+	padding-top:8px;
+	padding-bottom:8px;
+	font-size:18px;
+	line-height:21px;
+	color: #404040;
+}
+
+#welcome-box .btn{
+	padding-left:6px;
+	padding-right:6px;
+}
+
+#welcome-box p.info{
+	clear:left;
+	font-size:9px;
+	font-style:italic;
+	padding:3px;
+}
