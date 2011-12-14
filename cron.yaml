@@ -1,5 +1,0 @@
-cron:
-- description: daily session cleanup
-  url: /oauth/cleanup
-  schedule: every 24 hours
-

@@ -15,26 +15,8 @@ except RuntimeError:
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp.util import run_wsgi_app
 
-from controllers import base
-from controllers.home import HomeHandler
-from controllers.oauth.login import TwitterLoginHandler
-from controllers.oauth.request import TwitterRequestHandler
-from controllers.oauth.authorize import TwitterAuthorizeHandler
-from controllers.oauth.close import TwitterCloseHandler
-from controllers.oauth.cleanup import TwitterCleanupHandler
-from controllers.oauth.logout import TwitterLogoutHandler
-from controllers.broadcaster.broadcaster import BroadcasterHandler
-
 application = webapp.WSGIApplication(
 	[
-		('/', HomeHandler),
-		('/oauth/login', TwitterLoginHandler),
-		('/oauth/request', TwitterRequestHandler),
-		('/oauth/authorize', TwitterAuthorizeHandler),
-		('/oauth/close', TwitterCloseHandler),
-		('/oauth/cleanup', TwitterCleanupHandler),
-		('/oauth/logout', TwitterLogoutHandler),
-		('/(\w+)', BroadcasterHandler),
 	],
     debug=True)
 
