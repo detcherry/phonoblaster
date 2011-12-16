@@ -5,7 +5,10 @@
 			<a id="logo" href="/"><img src="/static/images/phonoblaster.png"/></a>
 			<div id="menu">
 			{% if current_user %}
+				<p><a href="#" class="logout">Logout</a></p>
 			{% else %}
+				<p>Broadcast your music now!</p>
+				<p><a href="#" class="login btn primary">Login with Facebook</a></p>
 			{% endif %}
 			</div>
 		</div>

@@ -2,6 +2,7 @@ import os.path
 import logging
 import traceback
 import sys
+from django.utils import simplejson
 
 from config import *
 
@@ -15,9 +16,12 @@ def login_required(method):
         user = self.current_user
         if not user:
             if self.request.method == "GET":
-				# !!!!!!!redirect directly to Facebook
-				redirection = {"redirect_url": self.request.url}
-				self.redirect("/account/login?" + urllib.urlencode(redirection))
+				redirection = {
+					"client_id": FACEBOOK_APP_ID,
+					"redirect_uri": self.request.url,
+					"scope": "email,publish_actions,read_stream,publish_stream,manage_pages"
+				}
+				self.redirect("https://www.facebook.com/dialog/oauth?" + urllib.urlencode(redirection))
 				return
             self.error(403)
         else:
@@ -51,6 +55,8 @@ class BaseHandler(webapp.RequestHandler):
 	# Handle exceptions, errors that are raised
 	def handle_exception(self, exception, debug_mode):
 		logging.error(''.join(traceback.format_exception(*sys.exc_info())))
-		# !!!!!! Handle it in different ways if it's not the same type of request GET or POST
-		path = os.path.join(os.path.dirname(__file__), "../templates/error.html")
-		self.response.out.write(template.render(path, None))
+		if self.request.method == "GET":
+			path = os.path.join(os.path.dirname(__file__), "../templates/error.html")
+			self.response.out.write(template.render(path, None))
+		else:
+			self.response.out.write(simplejson.dumps({"error":"An error occurred."}))

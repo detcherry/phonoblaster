@@ -37,15 +37,13 @@
 
 .topbar-inner #menu p{
 	float:left;
+	padding-top:4px;
 	padding-right:8px;
 	padding-left:8px;
+	color:white;
 }
 
 .topbar-inner #menu p a{
 	float:left;
-}
-
-.topbar-inner #menu p#login-status{
-	padding:8px;
-	line-height:0px;
+	margin-top:4px;
 }

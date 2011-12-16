@@ -16,11 +16,12 @@ from google.appengine.ext import webapp
 from google.appengine.ext.webapp.util import run_wsgi_app
 
 from controllers.home import HomeHandler
+from controllers.all import AllHandler
 
 application = webapp.WSGIApplication(
 	[
 		('/', HomeHandler),
-		# !!!! write a global handler
+		('/.*', AllHandler),
 	],
     debug=True)
 
