@@ -1,1 +1,0 @@
-# File necessary for django 1.2

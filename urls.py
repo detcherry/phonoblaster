@@ -1,17 +1,9 @@
-import logging
+import os
+os.environ['DJANGO_SETTINGS_MODULE'] = 'settings'
+from google.appengine.dist import use_library
+use_library('django', '1.2')
 
-try:
-	from google.appengine.dist import use_library
-	use_library('django', '1.2')
-except:
-	logging.info("Older django version seems to be reluctant...")
-
-try:	
-	from django.conf import settings
-	settings.configure(INSTALLED_APPS=('empty',))
-except RuntimeError:
-	logging.info("Runtime has already been set up with django 1.2")
-	
+import logging	
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp.util import run_wsgi_app
 
