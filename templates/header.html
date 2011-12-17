@@ -4,11 +4,11 @@
 			<h1>Phonoblaster</h1>
 			<a id="logo" href="/"><img src="/static/images/phonoblaster.png"/></a>
 			<div id="menu">
-			{% if current_user %}
-				<p><a href="#" class="logout">Logout</a></p>
+			{% if user_proxy %}
+				<div><a href="#" class="logout">Logout</a></div>
 			{% else %}
-				<p>Broadcast your music now!</p>
-				<p><a href="#" class="login btn primary">Login with Facebook</a></p>
+				<div>Broadcast your music now!</div>
+				<div><a href="#" class="login btn primary">Login with Facebook</a></div>
 			{% endif %}
 			</div>
 		</div>

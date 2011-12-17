@@ -56,12 +56,19 @@
 				$("a.login").click(function(){
 					FB.login(function(response){
 						if(response.authResponse){
-							console.log("Logged in!");
 							window.location.reload();
 						}
 					 },{scope: 'email, publish_actions, read_stream, publish_stream, manage_pages'});
 					return false;	
 				})
+				
+				$("a.logout").click(function(){
+					FB.logout(function(response){
+						window.location.reload();
+					})
+					return false;
+				})
+				
 	      	};
 	      	(function() {
 				var e = document.createElement('script');

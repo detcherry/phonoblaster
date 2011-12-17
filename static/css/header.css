@@ -2,7 +2,7 @@
 
 .topbar{
 	float:left;
-	height:54px;	
+	height:46px;	
 }
 
 .topbar-inner{
@@ -28,22 +28,23 @@
 }
 
 .topbar-inner a#logo img{
-	width: 200px;
+	width: 150px;
 }
 
 .topbar-inner #menu{
 	float:right;
+	padding-top:2px;
 }
 
-.topbar-inner #menu p{
+.topbar-inner #menu div{
 	float:left;
-	padding-top:4px;
 	padding-right:8px;
 	padding-left:8px;
+	line-height:30px;
 	color:white;
 }
 
-.topbar-inner #menu p a{
+.topbar-inner #menu div a{
 	float:left;
-	margin-top:4px;
+	color:white;
 }

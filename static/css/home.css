@@ -45,3 +45,89 @@
 	font-style:italic;
 	padding:3px;
 }
+
+/*--------------- HOME PAGE ---------------*/
+
+#home-left{
+	margin-left:200px;
+	margin-right:8px;
+	padding:8px;
+	width:230px;
+	background:white;
+	border: 1px solid rgba(0, 0, 0, .1);
+	-webkit-border-radius: 4px;
+	-moz-border-radius: 4px;
+	border-radius: 4px;
+}
+
+#home-left img{
+	float:left;
+	width:50px;
+	height:50px;
+}
+
+#home-left .user-information{
+	width:170px;
+}
+
+#home-left p{
+	padding:6px;
+	padding-left:12px;
+}
+
+#home-right{
+	width:416px;
+	background:white;
+	border: 1px solid rgba(0, 0, 0, .1);
+	-webkit-border-radius: 4px;
+	-moz-border-radius: 4px;
+	border-radius: 4px;
+}
+
+#home-right h2{
+	padding:8px;
+	width:400px;
+	text-align:center;
+	font-size:14px;
+	font-weight:normal;
+	color:#999;
+	border-bottom: 1px solid rgba(0, 0, 0, .1);
+}
+
+#home-right h2 em{
+	font-size:20px;
+	font-weight:bold;
+	color:#333;
+}
+
+#home-right .contribution{
+	padding:8px;
+	width:400px;
+	border-bottom: 1px solid rgba(0, 0, 0, .1);
+}
+
+#home-right .contribution img{
+	float:left;
+	width:50px;
+	height:50px;
+}
+
+#home-right p.page-name{
+	padding:8px;
+	width:224px;
+	height:44px;
+}
+
+#home-right p.page-name span{
+	display:table-cell;
+	vertical-align:middle;
+	height:44px;
+}
+
+#home-right .contribution a.btn{
+	margin-top:14px;
+}
+
+
+
+

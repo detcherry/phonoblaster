@@ -9,24 +9,33 @@ body{
 
 .container{
 	width:1000px;
+	height:100%;
 }
 
 /* ----- CUSTOM CSS ----- */
 
 #main{
-	margin-top:54px;
+	margin-top:46px;
 	width:100%;
+	padding-top:20px;
 	padding-bottom:20px;
 	min-height:500px;
 	background:#F6F6F6;
 }
 
-#main div, #main p, #main h1, #main h2, #main h3, #main h4, #main h5, #main h6, #main form {
+#main div, #main p, #main h1, #main h2, #main h3{
 	float:left;
+	margin-bottom:0px;
 }
 
 #main div.container{
 	float:none;
+}
+
+h2{
+	font-size: 18px;
+	font-weight: bold;
+	line-height: 20px;
 }
 
 img.thumbnail{
@@ -39,3 +48,28 @@ img.thumbnail{
 	-moz-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075);
 	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075);
 }
+
+.stats a{
+	float:left;
+	color: #999;
+	font-size:11px;
+	line-height: 16px;
+	text-transform: uppercase;
+}
+
+.stats strong{
+	float:left;
+	padding-right:10px;
+	font-size:13px;
+	color: #333;
+}
+
+.stats a:hover{
+	text-decoration:none;
+	color:#0084B4;
+}
+
+.stats a:hover strong{
+	color:#0084B4;
+}
+
