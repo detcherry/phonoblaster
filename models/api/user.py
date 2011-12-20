@@ -79,7 +79,6 @@ class UserApi:
 						if(account["category"] != "Application"):
 							contribution = {
 								"page_name": account["name"],
-								"page_access_token": account["access_token"],
 								"page_id": account["id"],
 							}
 							contributions.append(contribution)
