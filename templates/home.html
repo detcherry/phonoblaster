@@ -87,8 +87,8 @@
 					</div>
 				</div>
 				<div id="address-confirmation">
-					<form method="post" action="station/confirm">
-						<input type="text" name="page-id" id="page-id" style="display:none"/>
+					<form method="post" action="station/create">
+						<input type="text" name="page-id" id="page-id" style="display:none;"/>
 						<h3>2. Confirm your address!</h3>
 						<p>http://www.phonoblaster.com/</p>
 						<input type="text" name="page-shortname" id="page-shortname"/>
@@ -106,6 +106,5 @@
 
 {% block script %}
 	<script type="text/javascript" src="/static/js/home.js"></script>
-	<script type="text/javascript" src="/static/js/library/shortname.js"></script>
 	<script type="text/javascript" src="static/plugins/fancybox/source/jquery.fancybox.pack.js"></script>
 {% endblock %}

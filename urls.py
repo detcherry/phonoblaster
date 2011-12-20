@@ -18,7 +18,6 @@ application = webapp.WSGIApplication(
 		('/', HomeHandler),
 		('/station/create', StationCreateHandler),
 		('/station/check', StationCheckHandler),
-		('/station/confirm', StationConfirmHandler),
 		('/.*', AllHandler),
 	],
     debug=True)
