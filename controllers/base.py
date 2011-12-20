@@ -16,8 +16,8 @@ from functools import wraps
 def login_required(method):
     @wraps(method)
     def wrapper(self, *args, **kwargs):
-        user = self.current_user
-        if not user:
+        user_proxy = self.user_proxy
+        if not user_proxy:
             if self.request.method == "GET":
 				redirection = {
 					"client_id": config.FACEBOOK_APP_ID,
@@ -62,7 +62,7 @@ class BaseHandler(webapp.RequestHandler):
 					# If token is different, update the token
 					if user.facebook_access_token != cookie["access_token"]:
 						user_proxy.update_token(cookie["access_token"])
-						logging.info("Token updated in user %s"%(user.name))
+						logging.info("Token updated in user %s %s"%(user.first_name, user.last_name))
 				self._user_proxy = user_proxy
 
 		return self._user_proxy

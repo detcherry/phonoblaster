@@ -1,11 +1,11 @@
 {% extends "base.html" %}
 {% block style %}
 	<link type="text/css" rel="stylesheet" href="/static/css/home.css">
+	<link rel="stylesheet" href="static/plugins/fancybox/source/jquery.fancybox.css" type="text/css" media="screen" />
 {% endblock %}
 
 {% block main %}
 	{% if not user_proxy %}
-		<!-- User is not logged in -->
 		<div id="welcome-box">
 			<img src="/static/images/icon.png">
 			<h2>Broadcast your music!</h2>
@@ -23,9 +23,29 @@
 		</div>
 		<div id="home-right">
 			{% if user_stations %}
+				<h2>Your stations on <em>Phonoblaster!</em></h2>
 				{% for station in user_stations %}
-					<p><img src="https://graph.facebook.com/{{ station.facebook_page_id }}/picture" class="thumbnail"/></p>
-					<p><a href="http://www.phonoblaster.com/{{ station.key.name }}">{{ station.name }}</a></p>
+					<div class="station">
+						{% if station.shortname %}
+						<a href="http://www.phonoblaster.com/{{ station.shortname }}">
+							<img src="https://graph.facebook.com/{{ station.key.name }}/picture" class="thumbnail"/>
+						</a>
+						<p class="page-name">
+							<span><a href="http://www.phonoblaster.com/{{ station.shortname }}">{{ station.name }}</a></span>
+						</p>
+						<p>
+							<img class="loader" src="/static/images/loader.gif" style="visibility:hidden;"/>
+							<a href="http://www.phonoblaster.com/{{ station.shortname }}" class="btn">Broadcast!</a>
+						</p>
+						{% else %}
+						<img src="https://graph.facebook.com/{{ station.key.name }}/picture" class="thumbnail"/>
+						<p class="page-name"><span>{{ station.name }}</span></p>
+						<p>
+							<img class="loader" src="/static/images/loader.gif" style="visibility:hidden;"/>
+							<a href="#" class="btn station-confirm" id="{{ station.key.name }}">Confirm</a>
+						</p>
+						{% endif %}
+					</div>
 				{% endfor %}
 			{% else %}
 				{% if user_contributions %}
@@ -34,12 +54,58 @@
 						<div class="contribution">
 							<img src="https://graph.facebook.com/{{ contribution.page_id }}/picture" class="thumbnail"/>
 							<p class="page-name"><span>{{ contribution.page_name }}</span></p>
-							<p><a href="#" class="btn">Create now!</a></p>
+							<p>
+								<img class="loader" src="/static/images/loader.gif" style="visibility:hidden;"/>
+								<a href="#" class="btn" id="{{ contribution.page_id }}">Create now!</a>
+							</p>
 						</div>
 					{% endfor %}
 				{% else %}
 				{% endif %}
 			{% endif %}
+			<div id="popup-contribution">
+				<div id="page-confirmation">
+					<h3>1. Successfully created!</h3>
+					<p>on your fan page</p>
+				</div>
+				<div id="page-screenshot">
+					<div class="facebook-tab">
+						<span class="facebook-sprit wall"></span>
+						<div>Wall</div>
+					</div>
+					<div class="facebook-tab">
+						<span class="facebook-sprit info"></span>
+						<div>Info</div>
+					</div>
+					<div class="facebook-tab">
+						<span class="facebook-sprit photos"></span>
+						<div>Photos</div>
+					</div>
+					<div class="facebook-tab" style="background-color:#D8DFEA;">
+						<span class="facebook-sprit phonoblaster"></span>
+						<div>Phonoblaster</div>
+					</div>
+				</div>
+				<div id="address-confirmation">
+					<form method="post" action="station/confirm">
+						<input type="text" name="page-id" id="page-id" style="display:none"/>
+						<h3>2. Confirm your address!</h3>
+						<p>http://www.phonoblaster.com/</p>
+						<input type="text" name="page-shortname" id="page-shortname"/>
+						<div id="shortname-status"></div>
+						<div class="modal-footer">
+							<input type="submit" class="btn primary" value="Go!"/>
+							<div id="shortname-warning">Choose an unavailable address first. Thanks</div>
+						</div>
+					</form>
+				</div>
+			</div>
 		</div>
 	{% endif %}
+{% endblock %}
+
+{% block script %}
+	<script type="text/javascript" src="/static/js/home.js"></script>
+	<script type="text/javascript" src="/static/js/library/shortname.js"></script>
+	<script type="text/javascript" src="static/plugins/fancybox/source/jquery.fancybox.pack.js"></script>
 {% endblock %}

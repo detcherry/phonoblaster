@@ -2,7 +2,8 @@
 
 .topbar{
 	float:left;
-	height:46px;	
+	height:46px;
+	z-index:999;	
 }
 
 .topbar-inner{

@@ -159,9 +159,13 @@ class GraphAPI(object):
             response = _parse_json(file.read())
         finally:
             file.close()
-        if response.get("error"):
-            raise GraphAPIError(response["error"]["type"],
-                                response["error"]["message"])
+
+        try:
+	        if response.get("error"):
+                 raise GraphAPIError(response["error"]["type"],response["error"]["message"])
+        except AttributeError:
+	        logging.info("Response is a boolean") 
+		
         return response
 
 

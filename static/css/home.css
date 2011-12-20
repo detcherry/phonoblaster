@@ -100,13 +100,13 @@
 	color:#333;
 }
 
-#home-right .contribution{
+#home-right .contribution, #home-right .station{
 	padding:8px;
 	width:400px;
 	border-bottom: 1px solid rgba(0, 0, 0, .1);
 }
 
-#home-right .contribution img{
+#home-right img{
 	float:left;
 	width:50px;
 	height:50px;
@@ -114,7 +114,7 @@
 
 #home-right p.page-name{
 	padding:8px;
-	width:224px;
+	width:200px;
 	height:44px;
 }
 
@@ -124,10 +124,146 @@
 	height:44px;
 }
 
-#home-right .contribution a.btn{
-	margin-top:14px;
+#home-right img.loader{
+	margin-top:18px;
+	margin-right:5px;
+	height:20px;
+	width:20px;
 }
 
+#home-right .btn{
+	margin-top:14px;
+	width:69px;
+	text-align:center;
+}
 
+/*---------- POP UP STYLE -----------*/
+
+#popup-contribution{
+	display:none;
+	width:498px;
+	height:291px;
+	padding-top:18px;
+	-webkit-border-radius:4px;
+	-moz-border-radius:4px;
+	border-radius:4px;
+	border:1px solid #CCC;
+}
+
+#popup-contribution div, #popup-contribution h3{
+	float:left;
+}
+
+#popup-contribution h3{
+	width:245px;
+	margin-left:20px;
+	margin-top:25px;
+}
+
+#page-confirmation p{
+	margin-left:40px;
+}
+
+#page-screenshot{
+	padding:4px;
+	width:190px;
+	-webkit-border-radius:4px;
+	-moz-border-radius:4px;
+	border-radius:4px;
+	border: 1px solid #CCC;
+}
+
+#page-screenshot div.facebook-tab{
+	padding:4px;
+	width:182px;
+}
+
+#page-screenshot span.facebook-sprit{
+	float:left;
+	display:inline-block;
+	height:16px;
+	width:16px;
+	margin-right:4px;
+	background-repeat:no-repeat;
+	background:url("/static/images/facebook-sprits.png");
+}
+
+#page-screenshot span.wall{
+	background-position:-120px -108px;
+}
+
+#page-screenshot span.info{
+	background-position:-85px -126px;
+}
+
+#page-screenshot span.photos{
+	background-position:-50px -91px;
+}
+
+#page-screenshot span.phonoblaster{
+	background-position:-52px -143px;
+}
+
+#address-confirmation{
+	width:100%;
+}
+
+#address-confirmation form{
+	float:left;
+	width:100%;
+	margin-bottom:0px;
+}
+
+#address-confirmation p{
+	clear:left;
+	float:left;
+	margin-top:5px;
+	margin-left:40px;
+	margin-bottom:0px;
+	margin-right:5px;
+	width:180px;
+}
+
+#address-confirmation input#page-shortname{
+	float:left;
+	width:150px;
+}
+
+#shortname-status{
+	margin-top:7px;
+	margin-left:7px;
+}
+
+#address-confirmation .checking{
+	font-style:italic;
+}
+
+#address-confirmation .available{
+	color:#57A957;
+}
+
+#address-confirmation .unavailable{
+	color:#C43C35;
+}
+
+#popup-contribution .modal-footer{
+	clear:left;
+	float:left;
+	width:100%;
+	width:94%;
+	margin-top:30px;
+	-webkit-border-radius:0px 0px 4px 4px;
+	-moz-border-radius:0px 0px 4px 4px;
+	border-radius:0px 0px 4px 4px;
+}
+
+div#shortname-warning{
+	display:none;
+	float:right;
+	margin:0px;
+	padding-top:8px;
+	width:270px;
+	color:#C43C35;
+}
 
 
