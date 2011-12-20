@@ -11,7 +11,6 @@ from controllers.home import HomeHandler
 from controllers.all import AllHandler
 from controllers.station.create import StationCreateHandler
 from controllers.station.check import StationCheckHandler
-from controllers.station.confirm import StationConfirmHandler
 
 application = webapp.WSGIApplication(
 	[

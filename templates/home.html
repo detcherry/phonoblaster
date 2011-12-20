@@ -26,7 +26,6 @@
 				<h2>Your stations on <em>Phonoblaster!</em></h2>
 				{% for station in user_stations %}
 					<div class="station">
-						{% if station.shortname %}
 						<a href="http://www.phonoblaster.com/{{ station.shortname }}">
 							<img src="https://graph.facebook.com/{{ station.key.name }}/picture" class="thumbnail"/>
 						</a>
@@ -37,14 +36,6 @@
 							<img class="loader" src="/static/images/loader.gif" style="visibility:hidden;"/>
 							<a href="http://www.phonoblaster.com/{{ station.shortname }}" class="btn">Broadcast!</a>
 						</p>
-						{% else %}
-						<img src="https://graph.facebook.com/{{ station.key.name }}/picture" class="thumbnail"/>
-						<p class="page-name"><span>{{ station.name }}</span></p>
-						<p>
-							<img class="loader" src="/static/images/loader.gif" style="visibility:hidden;"/>
-							<a href="#" class="btn station-confirm" id="{{ station.key.name }}">Confirm</a>
-						</p>
-						{% endif %}
 					</div>
 				{% endfor %}
 			{% else %}
