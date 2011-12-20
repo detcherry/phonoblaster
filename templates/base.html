@@ -40,7 +40,7 @@
 		<script type="text/javascript">
 			// Global object
 			function PhB(){
-				this.app_id = "{{ facebook_app_id }}"
+				this.facebook_app_id = "{{ facebook_app_id }}"
 			}
 			PhB.prototype = {
 				// Workaround for Firefox 3.6 and older versions
@@ -52,7 +52,7 @@
 			var phb = new PhB();
 		</script>
 		{% if user_proxy %}
-		<script type="text/javascript" src="/static/js/library/facebook.js"></script>
+			<script type="text/javascript" src="/static/js/library/facebook.js"></script>
 		{% endif %}
 		{% block script %}
 		{% endblock %}

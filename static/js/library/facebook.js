@@ -1,5 +1,5 @@
 $(function(){
-	var app_id = phb.app_id;
+	var app_id = phb.facebook_app_id;
 	facebook = new Facebook(app_id);
 })
 
