@@ -26,15 +26,15 @@
 				<h2>Your stations on <em>Phonoblaster!</em></h2>
 				{% for station in user_stations %}
 					<div class="station">
-						<a href="http://www.phonoblaster.com/{{ station.shortname }}">
+						<a href="{{ site_url }}/{{ station.shortname }}">
 							<img src="https://graph.facebook.com/{{ station.key.name }}/picture" class="thumbnail"/>
 						</a>
 						<p class="page-name">
-							<span><a href="http://www.phonoblaster.com/{{ station.shortname }}">{{ station.name }}</a></span>
+							<span><a href="{{ site_url }}/{{ station.shortname }}">{{ station.name }}</a></span>
 						</p>
 						<p>
 							<img class="loader" src="/static/images/loader.gif" style="visibility:hidden;"/>
-							<a href="http://www.phonoblaster.com/{{ station.shortname }}" class="btn">Broadcast!</a>
+							<a href="{{ site_url }}/{{ station.shortname }}" class="btn">Broadcast!</a>
 						</p>
 					</div>
 				{% endfor %}
