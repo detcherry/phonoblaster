@@ -12,6 +12,24 @@ body{
 	height:100%;
 }
 
+/*
+	
+	COLORS:
+	
+	grey:
+	- #F6F6F6 (background)
+	- #DDD (thumbnail border)
+	- #B3B3B3 (hell grey but still ok)
+	- #999 (hell darker grey for links)
+	- #333 (dark grey for text)
+	
+	blue
+	- #0084B4 (hover links)
+	
+	
+*/
+
+
 /* ----- CUSTOM CSS ----- */
 
 #main{
@@ -33,12 +51,17 @@ body{
 }
 
 h2{
-	font-size: 18px;
-	font-weight: bold;
-	line-height: 20px;
+	font-size:16px;
+	font-weight:bold;
+	line-height:20px;
 }
 
-img.thumbnail{
+h3{
+	font-size:14px;
+	line-height:18px;
+}
+
+.thumbnail{
 	padding: 4px;
 	border: 1px solid #DDD;
 	-webkit-border-radius: 4px;
@@ -52,6 +75,21 @@ img.thumbnail{
 img.loader{
 	height:20px;
 	width:20px;
+}
+
+.clip{
+	display:block;
+	float:left;
+	position:relative;
+	height:68px;
+	width:122px;
+	overflow:hidden;
+}
+
+.clip img{
+	height:90px;
+	position:absolute;
+	top:-11px;
 }
 
 .stats a{
@@ -77,4 +115,10 @@ img.loader{
 .stats a:hover strong{
 	color:#0084B4;
 }
+
+.middle{
+	display:table-cell;
+	vertical-align:middle;
+}
+
 

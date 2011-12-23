@@ -1,0 +1,170 @@
+@import url("root.css");
+
+/* -------- LEFT COLUMN ----------- */
+
+#left-column .friend-listening{
+	padding-top:0px;
+	border:none;
+}
+
+
+#left-column .friend-listening a{
+	display:block;
+	float:left;
+	font-size:11px;
+	height:33px;
+	color:#999;
+}
+
+
+#left-column .friend-listening a img{
+	display:block;
+	float:left;
+	height:28px;
+	width:28px;
+	margin-top:4px;
+	margin-left:4px;
+	margin-right:11px;
+}
+
+#left-column .friend-listening .title{
+	margin-top:8px;
+	width:81px;
+	height:20px;
+	overflow:hidden;
+}
+
+#listening-rows .btn{
+	margin-left:23px;
+}
+
+
+/*-------- LIVE COMMENTS ---------*/
+
+#live-comments{
+	width:508px;
+	border:1px solid #DDD;
+	border-top:none;	
+}
+
+#comment-box{
+	width:500px;
+	padding:4px;
+	height:28px;
+	border-bottom: 1px solid #ddd;
+}
+
+#comment-box img{
+	display:block;
+	float:left;
+	margin-right:4px;
+	height:26px;
+	width:26px;
+	border: 1px solid #ddd;
+}
+
+#comment-box form{
+	display:block;
+	float:left;
+	width:468px;
+	margin:0px;
+}
+
+input#comment{
+	display:block;
+	float:left;
+	width:386px;
+	margin-right:4px;
+}
+
+#conversation{
+	min-height:200px;
+	width:100%;
+	background:white;
+}
+
+.comment{
+	padding:4px;
+	padding-bottom:0px;
+	width:502px;	
+}
+
+.comment img.user, .comment img.station{
+	display:block;
+	float:left;
+	margin-right:8px;
+	height:32px;
+}
+
+.comment .content{
+	width:462px;
+}
+
+.comment .content p{
+	width:100%;
+	line-height:16px;
+	font-size:11px;
+}
+
+.comment .content p a{
+	font-weight:bold;
+	color:#0084B4;
+}
+
+.comment .content p a:hover{
+	color:#0084B4;
+}
+
+.comment .content span.clip{
+	margin-top:4px;
+	margin-bottom:4px;
+	margin-right:8px;
+	height:52px;
+	width:96px;
+}
+
+.comment .content span.clip img{
+	height:72px;
+}
+
+.comment .title{
+	height:52px;
+	width:358px;
+	font-size:11px;
+}
+
+.comment .title span{
+	height:52px;
+}
+
+.comment .border{
+	margin-right:8px;
+	width:446px;
+	height:4px;
+	border-bottom:1px solid #CCC;
+}
+
+.comment .time{
+	margin-top:-4px;
+	color:#CCC;
+	font-size:11px;
+	line-height: 10px;
+}
+
+/*---------- SEARCH -----------*/
+
+#queue-header span#search-icon{
+	width:18px;
+}
+
+#popup-search{
+	position:fixed;
+	z-index:2;
+	margin-top:27px;
+	margin-left:-24px;
+	height:254px;
+	width:300px;
+	background:white;
+	border:1px solid #DDD;
+	overflow-y:scroll;
+}

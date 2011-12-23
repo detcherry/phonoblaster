@@ -1,0 +1,309 @@
+{% extends "station/root.html" %}
+
+{% block meta %}
+	<title>French Siliconnection</title>
+	<meta name="description" content="Listen now to French Siliconnection music stream on Phonoblaster.">
+{% endblock %}
+
+{% block style %}
+	<link type="text/css" rel="stylesheet" href="/static/css/station/station.css" />
+	<link rel="stylesheet" href="static/plugins/fancybox/source/jquery.fancybox.css" type="text/css" media="screen"/>
+{% endblock %}
+
+{% block left-column %}
+	<div id="listening-rows">
+		<div class="row" id="listeners" style="border:none">
+			<a href="#">
+				<strong class="number">0</strong>
+				<span class="title">Listeners</span>
+			</a>
+		</div>
+		<div class="row friend-listening">
+			<a href="/user/663812262">
+				<img src="https://graph.facebook.com/663812262/picture?type=square">
+				<div class="title">Damien Detcherry</div>
+			</a>
+		</div>
+		<div class="row friend-listening">
+			<a href="/user/698198735">
+				<img src="http://graph.facebook.com/698198735/picture?type=square">
+				<div class="title">Florian Monfrini</div>
+			</a>
+		</div>
+		<div class="row friend-listening">
+			<a href="/user/602720460">
+				<img src="https://graph.facebook.com/602720460/picture?type=square">
+				<div class="title">Pierre-Louis Vigne</div>
+			</a>
+		</div>
+		<a class="btn fancybox.iframe" href="http://www.youtube.com/embed/IS_WabpOf0Q?autoplay=1">Shout out!</a>
+	</div>
+{% endblock %}
+
+{% block middle-column %}
+	<div class="fixed">
+		<div id="station-title">
+			<h2>French Siliconnection</h2>
+			<div class="fb-like" data-href="http://facebook.com/frenchsiliconnection" data-send="false" data-layout="button_count"  data-show-faces="false"></div>
+		</div>
+		<div id="live-video">
+			<div id="youtube-player"></div>
+			<div id="video-settings">
+				<div id="counter-left">0:30</div>
+				<div id="progression-bar"></div>
+				<div id="counter-right">-2:00</div>
+				<div id="volume"><img src="/static/images/unmuted.png"/></div>
+			</div>
+		</div>
+		<div id="current-track">
+			<span class="clip">
+				<img src="http://i2.ytimg.com/vi/IS_WabpOf0Q/default.jpg">
+			</span>
+			<div class="above-title">
+				<h3>Current track</h3>
+				<div class="fb-like" data-href="http://facebook.com/frenchsiliconnection" data-send="false" data-layout="button_count"  data-show-faces="false"></div>
+			</div>
+			<div class="title">
+				<span class="middle">Teams vs Star Slinger - Close to me</span>
+			</div>
+		</div>
+	</div>
+	<div id="live-comments">
+		<div id="comment-box">
+			<img src="http://graph.facebook.com/663812262/picture?type=square">
+			<form method="post" action="" id="chat">
+				<input type="text" name="comment" id="comment" value="Comment..." autocomplete="off"/>
+				<input type="submit" value="Comment" class="submit"/>
+			</form>
+		</div>
+		<div id="conversation">
+			<div class="comment">
+				<img src="http://graph.facebook.com/663812262/picture?type=square" class="user"/>
+				<div class="content">
+					<p><a href="/user/663812262">Damien Detcherry</a> Oh my god this song is totally awesome. Never heard something as
+					freaking good as this stuff</p>
+				</div>
+				<div class="border"></div>
+				<div class="time">04:35 pm</div>
+			</div>
+			<div class="comment">
+				<img src="https://graph.facebook.com/166601710024295/picture?type=square" class="station"/>
+				<div class="content">
+					<p><a href="/frenchsiliconnection">French Siliconnection</a> just started broadcasting a track</p>
+					<span class="clip"><img src="http://i2.ytimg.com/vi/IS_WabpOf0Q/default.jpg"></span>
+					<div class="title"><span class="middle">Teams vs Star slinger - Close to me</span></div>
+				</div>
+				<div class="border"></div>
+				<div class="time">04:32 pm</div>
+			</div>
+		</div>
+	</div>
+{% endblock %}
+
+{% block right-column %}
+	<div class="fixed">
+		<div id="station-status">
+			<span class="btn danger">On air</span>
+			<p><span class="middle"><strong>French Siliconnection</strong> is <em>on air</em></span></p>
+			<div id="queue-status">
+				<span class="black circle"></span>
+				<span class="black circle"></span>
+				<span class="black circle"></span>
+				<span class="grey circle"></span>
+				<span class="grey circle"></span>
+				<span class="grey circle"></span>
+				<span class="grey circle"></span>
+				<span class="grey circle"></span>
+				<span class="grey circle"></span>
+				<span class="grey circle"></span>
+				<div id="queue-counter"><span>3</span>/10</div>
+			</div>
+		</div>
+		<ul id="tabs">
+			<li><a href="#queue-tab" class="current">Queue</a></li>
+			<li style="width:86px;"><a href="#suggestions-tab" style="width:72px">Suggestions</a></li>
+			<li style="width:80px;"><a href="#favorites-tab" style="width:66px">Favorites</a></li>	
+			<li><a href="#library-tab">Library</a></li>
+		</ul>
+	</div>
+	<div id="tab-content-wrap">
+		<div id="queue-tab" class="tab-content">
+			<div id="queue-header" class="fixed">
+				<span id="search-icon"></span><input type="text" value="Add a track" id="search"/>
+				<!--<div id="popup-search">
+					<div class="track">
+						<span class="square"><img src="http://i.ytimg.com/vi/uac2ztiRLG4/default.jpg"></span>
+						<div class="title"><span class="middle">Washed Out - Feel it all around (Toro Y Moi remix)</span></div>
+						<div class="subtitle">
+							<div class="duration">3:45</div>
+							<div class="add-queue">
+								<a class="btn">Queue</a>
+								<span class="preview"></span>
+							</div>
+						</div>
+					</div>
+					<div class="track">
+						<span class="square"><img src="http://i.ytimg.com/vi/uac2ztiRLG4/default.jpg"></span>
+						<div class="title"><span class="middle">Washed Out - Feel it all around (Toro Y Moi remix)</span></div>
+						<div class="subtitle">
+							<div class="duration">3:45</div>
+							<div class="add-queue">
+								<a class="btn">Queue</a>
+								<span class="preview"></span>
+							</div>
+						</div>
+					</div>
+					<div class="track">
+						<span class="square"><img src="http://i.ytimg.com/vi/uac2ztiRLG4/default.jpg"></span>
+						<div class="title"><span class="middle">Washed Out - Feel it all around (Toro Y Moi remix)</span></div>
+						<div class="subtitle">
+							<div class="duration">3:45</div>
+							<div class="add-queue">
+								<a class="btn">Queue</a>
+								<span class="preview"></span>
+							</div>
+						</div>
+					</div>
+					<div class="track">
+						<span class="square"><img src="http://i.ytimg.com/vi/uac2ztiRLG4/default.jpg"></span>
+						<div class="title"><span class="middle">Washed Out - Feel it all around (Toro Y Moi remix)</span></div>
+						<div class="subtitle">
+							<div class="duration">3:45</div>
+							<div class="add-queue">
+								<a class="btn">Queue</a>
+								<span class="preview"></span>
+							</div>
+						</div>
+					</div>
+					<div class="track">
+						<span class="square"><img src="http://i.ytimg.com/vi/uac2ztiRLG4/default.jpg"></span>
+						<div class="title"><span class="middle">Washed Out - Feel it all around (Toro Y Moi remix)</span></div>
+						<div class="subtitle">
+							<div class="duration">3:45</div>
+							<div class="add-queue">
+								<a class="btn">Queue</a>
+								<span class="preview"></span>
+							</div>
+						</div>
+					</div>
+					<div class="track">
+						<span class="square"><img src="http://i.ytimg.com/vi/uac2ztiRLG4/default.jpg"></span>
+						<div class="title"><span class="middle">Washed Out - Feel it all around (Toro Y Moi remix)</span></div>
+						<div class="subtitle">
+							<div class="duration">3:45</div>
+							<div class="add-queue">
+								<a class="btn">Queue</a>
+								<span class="preview"></span>
+							</div>
+						</div>
+					</div>
+					<div class="track">
+						<span class="square"><img src="http://i.ytimg.com/vi/uac2ztiRLG4/default.jpg"></span>
+						<div class="title"><span class="middle">Washed Out - Feel it all around (Toro Y Moi remix)</span></div>
+						<div class="subtitle">
+							<div class="duration">3:45</div>
+							<div class="add-queue">
+								<a class="btn">Queue</a>
+								<span class="preview"></span>
+							</div>
+						</div>
+					</div>
+				</div>-->
+			</div>
+			<div class="tab-items">
+				<div class="track">
+					<span class="square"><img src="http://i.ytimg.com/vi/uac2ztiRLG4/default.jpg"></span>
+					<div class="title"><span class="middle">Washed Out - Feel it all around (Toro Y Moi remix)</span></div>
+					<div class="subtitle">
+						<div class="duration">3:45</div>
+						<div class="submitter">
+							<img src="https://graph.facebook.com/166601710024295/picture?type=square" class="station"/>
+							<span>Added by</span>
+						</div>
+					</div>
+				</div>
+				<div class="track">
+					<span class="square"><img src="http://i.ytimg.com/vi/_5XfAYZAA7w/default.jpg"></span>
+					<div class="title"><span class="middle">Telepopmusik - Breathe</span></div>
+					<div class="subtitle">
+						<div class="duration">4:25</div>
+						<div class="submitter">
+							<img src="https://graph.facebook.com/602720460/picture?type=square" class="station"/>
+							<span>Suggested by</span>
+						</div>
+					</div>
+				</div>
+				<div class="track">
+					<span class="square"><img src="http://i.ytimg.com/vi/-CreEuaS8QY/default.jpg"></span>
+					<div class="title"><span class="middle">El guincho - Bombay</span></div>
+					<div class="subtitle">
+						<div class="duration">5:22</div>
+						<div class="submitter">
+							<img src="https://graph.facebook.com/166601710024295/picture?type=square" class="station"/>
+							<span>Rebroadcast from</span>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div id="suggestions-tab" class="tab-content">
+			<div class="tab-items">
+				No suggestion
+			</div>
+		</div>
+		<div id="favorites-tab" class="tab-content">
+			<div class="tab-items">
+				No favorite
+			</div>
+		</div>
+		<div id="library-tab" class="tab-content">
+			<div class="tab-items">
+				No track in your library
+			</div>
+		</div>
+	</div>
+{% endblock %}
+
+{% block script %}
+<script>
+$(function(){
+	$("#listening-rows a.btn").fancybox({
+		maxWidth	: 510,
+		maxHeight	: 300,
+		fitToView	: false,
+		width		: 510,
+		height		: 300,
+		autoSize	: false,
+		closeClick	: false,
+		openEffect	: 'none',
+		closeEffect	: 'none'
+	});
+	
+	loadPlayer();
+});
+
+// This function is automatically called by the player once it loads
+function onYouTubePlayerReady(playerId) {
+	ytplayer = document.getElementById("ytPlayer");
+	//Load an initial video into the player
+	ytplayer.cueVideoById("IS_WabpOf0Q");
+}
+
+function loadPlayer() {
+	// Lets Flash from another domain call JavaScript
+	var params = { 
+		allowScriptAccess: "always",
+		wmode: "transparent"
+	};
+	// The element id of the Flash embed
+	var atts = { id: "ytPlayer" };
+	// All of the magic handled by SWFObject (http://code.google.com/p/swfobject/)
+	var video_url = "http://www.youtube.com/apiplayer?version=3&enablejsapi=1&playerapiid=player1"
+	swfobject.embedSWF(video_url, "youtube-player", "510", "287", "9", null, null, params, atts);
+}
+
+</script>
+<script type="text/javascript" src="/static/js/station/swfobject.js"></script>
+<script type="text/javascript" src="/static/plugins/fancybox/source/jquery.fancybox.pack.js"></script>
+<script type="text/javascript" src="/static/js/station/tab.js"></script>
+{% endblock %}
