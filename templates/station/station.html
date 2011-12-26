@@ -1,8 +1,8 @@
 {% extends "station/root.html" %}
 
 {% block meta %}
-	<title>French Siliconnection</title>
-	<meta name="description" content="Listen now to French Siliconnection music stream on Phonoblaster.">
+	<title>{{ station_proxy.station.name }}</title>
+	<meta name="description" content="Listen now to {{ station_proxy.station.name }} music stream on Phonoblaster.">
 {% endblock %}
 
 {% block style %}
@@ -43,8 +43,8 @@
 {% block middle-column %}
 	<div class="fixed">
 		<div id="station-title">
-			<h2>French Siliconnection</h2>
-			<div class="fb-like" data-href="http://facebook.com/frenchsiliconnection" data-send="false" data-layout="button_count"  data-show-faces="false"></div>
+			<h2>{{ station_proxy.station.name }}</h2>
+			<div class="fb-like" data-href="{{ station_proxy.station.link }}" data-send="false" data-layout="button_count"  data-show-faces="false"></div>
 		</div>
 		<div id="live-video">
 			<div id="youtube-player"></div>

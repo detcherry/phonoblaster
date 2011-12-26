@@ -97,15 +97,6 @@ class UserApi:
 			if(contribution["page_id"] == page_id):
 				return True
 		return False
-		
-	# Retrieves the page contribution for a given page and user (access token, page name)
-	def get_page_contribution(self, page_id):
-		page_contribution = None
-		for contribution in self.contributions:
-			if(contribution["page_id"] == page_id):
-				page_contribution = contribution
-				break
-		return page_contribution
 	
 	
 
