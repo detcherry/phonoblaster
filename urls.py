@@ -12,6 +12,7 @@ from controllers.all import AllHandler
 from controllers.station.create import StationCreateHandler
 from controllers.station.check import StationCheckHandler
 from controllers.station.station import StationHandler
+from controllers.station.broadcasts import StationBroadcastsHandler
 
 application = webapp.WSGIApplication(
 	[
@@ -19,6 +20,7 @@ application = webapp.WSGIApplication(
 		('/station/create', StationCreateHandler),
 		('/station/check', StationCheckHandler),
 		('/(\w+)', StationHandler),
+		('/(\w+)/broadcasts', StationBroadcastsHandler),
 		('/.*', AllHandler),
 	],
     debug=True)

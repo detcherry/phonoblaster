@@ -1,0 +1,71 @@
+{% extends "station/root.html" %}
+
+{% block meta %}
+	<title>French Siliconnection Broadcasts</title>
+	<meta name="description" content="Past broadcasts of French Siliconnection on Phonoblaster.">
+{% endblock %}
+
+{% block style %}
+	<link type="text/css" rel="stylesheet" href="/static/css/station/station.css" />
+{% endblock %}
+
+
+{% block middle-column %}
+<div class="fixed">
+	<div id="station-title">
+		<h2>French Siliconnection</h2>
+		<div class="fb-like" data-href="http://facebook.com/frenchsiliconnection" data-send="false" data-layout="button_count"  data-show-faces="false"></div>
+	</div>
+	<div id="live-video">
+		<div id="youtube-player"></div>
+		<div id="video-settings">
+			<div id="counter-left">0:30</div>
+			<div id="progression-bar"></div>
+			<div id="counter-right">-2:00</div>
+			<div id="volume"><img src="/static/images/unmuted.png"/></div>
+		</div>
+	</div>
+	<div id="current-track">
+		<span class="clip">
+			<img src="http://i2.ytimg.com/vi/IS_WabpOf0Q/default.jpg">
+		</span>
+		<div class="above-title">
+			<h3>Current track</h3>
+			<div class="fb-like" data-href="http://facebook.com/frenchsiliconnection" data-send="false" data-layout="button_count"  data-show-faces="false"></div>
+		</div>
+		<div class="title">
+			<span class="middle">Teams vs Star Slinger - Close to me</span>
+		</div>
+	</div>
+</div>
+{% endblock %}
+
+{% block script %}
+<script>
+$(function(){
+	loadPlayer();
+});
+
+// This function is automatically called by the player once it loads
+function onYouTubePlayerReady(playerId) {
+	ytplayer = document.getElementById("ytPlayer");
+	//Load an initial video into the player
+	ytplayer.cueVideoById("IS_WabpOf0Q");
+}
+
+function loadPlayer() {
+	// Lets Flash from another domain call JavaScript
+	var params = { 
+		allowScriptAccess: "always",
+		wmode: "transparent"
+	};
+	// The element id of the Flash embed
+	var atts = { id: "ytPlayer" };
+	// All of the magic handled by SWFObject (http://code.google.com/p/swfobject/)
+	var video_url = "http://www.youtube.com/apiplayer?version=3&enablejsapi=1&playerapiid=player1"
+	swfobject.embedSWF(video_url, "youtube-player", "510", "287", "9", null, null, params, atts);
+}
+
+</script>
+<script type="text/javascript" src="/static/js/station/swfobject.js"></script>
+{% endblock %}
