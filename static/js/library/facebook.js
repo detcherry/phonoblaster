@@ -36,6 +36,13 @@ Facebook.prototype = {
 		);
 	},
 	
+	retrieveFriends: function(callback){
+		var url = "/me/friends"
+		FB.api(url, function(response){
+			callback(response.data)
+		})
+	}
+	
 
 		
 }

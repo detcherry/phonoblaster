@@ -1,14 +1,19 @@
 import logging
 import os
 
+from datetime import datetime
+from datetime import timedelta
+from calendar import timegm
+
 from google.appengine.ext import db
 from google.appengine.api import memcache
 
 from models.db.station import Station
+from models.db.presence import Presence
 
 MEMCACHE_STATION_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".station."
 MEMCACHE_STATION_QUEUE_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".queue.station."
-MEMCACHE_STATION_SESSIONS_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".sessions.station."
+MEMCACHE_STATION_PRESENCES_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".presences.station."
 
 class StationApi():
 	
@@ -16,7 +21,7 @@ class StationApi():
 		self._shortname = shortname
 		self._memcache_station_id = MEMCACHE_STATION_PREFIX + self._shortname
 		self._memcache_station_queue_id = MEMCACHE_STATION_QUEUE_PREFIX + self._shortname
-		self._memcache_station_sessions_id = MEMCACHE_STATION_SESSIONS_PREFIX + self._shortname
+		self._memcache_station_presences_id = MEMCACHE_STATION_PRESENCES_PREFIX + self._shortname
 	
 	# Return the station
 	@property
@@ -36,3 +41,150 @@ class StationApi():
 				logging.info("Station already in memcache")	
 		return self._station
 	
+	# Check if station is on air
+	@property
+	def on_air(self):
+		return False
+
+	# Format an extended presence (what is stored in memcache)
+	def format_extended_presences(self, presences):
+		extended_presences = []
+		authenticated_presences = []
+		unauthenticated_presences = []
+		user_keys = []
+		
+		# Dispatch authenticated and unauthenticated presences
+		for p in presences:
+			user_key = Presence.user.get_value_for_datastore(p)
+			if user_key:
+				authenticated_presences.append(p)
+				user_keys.append(user_key)
+			else:
+				unauthenticated_presences.append(p)
+		
+		# Retrieve users of authenticated presences
+		users = db.get(user_keys)
+			
+		# Add the extended presences (authenticated)
+		for presence, user in zip(authenticated_presences, users):
+			extended_presences.append({
+				"channel_id": presence.key().name(),
+				"created": timegm(presence.created.utctimetuple()),
+				"admin": presence.admin,
+				"user_key_name": user.key().name(),
+				"user_first_name": user.first_name,
+				"user_last_name": user.last_name,
+			})
+		
+		# Add the extended presences (unauthenticated)
+		for presence in unauthenticated_presences:
+			extended_presences.append({
+				"channel_id": presence.key().name(),
+				"created": timegm(presence.created.utctimetuple()),
+				"admin": False,
+				"user_key_name": None,
+				"user_first_name": None,
+				"user_last_name": None,
+			})
+			
+		return extended_presences
+
+	# Return the list of users connected to a station
+	@property
+	def presences(self):
+		if not hasattr(self, "_presences"):
+			self._presences = memcache.get(self._memcache_station_presences_id)
+			if self._presences is None:
+				self._presences = []
+				logging.info("Presences not in memcache")
+				q = Presence.all()
+				q.filter("station", self.station.key())
+				q.filter("connected", True)
+				q.filter("ended", None)
+				q.filter("created >",  datetime.now() - timedelta(0,7200))
+				presences = q.fetch(1000) # Max number of entities App Engine can fetch in one call
+				
+				# Format extended presences
+				self._presences = self.format_extended_presences(presences)
+				
+				# Put extended presences in memcache
+				memcache.set(self._memcache_station_presences_id, self._presences)
+				logging.info("Presences loaded in memcache")
+			else:
+				# We clean up the presences list in memcache
+				cleaned_up_presences_list = []
+				token_timeout = datetime.now() - timedelta(0,7200)
+				limit = timegm(token_timeout.utctimetuple())
+				
+				for presence in self._presences:
+					if(presence["created"] > limit):
+						cleaned_up_presences_list.append(presence)
+				
+				if(len(cleaned_up_presences_list) != len(self._presences)):
+					self._presences = cleaned_up_presences_list
+					memcache.set(self._memcache_station_presences_id, self._presences)
+					logging.info("Presences list already in memcache and cleaned up")
+				else:
+					logging.info("Presences list already in memcache but no need to clean up")
+			
+		return self._presences
+
+	# Add a presence to a station
+	def add_presence(self, channel_id):
+		# Get presence from datastore 
+		presence = Presence.get_by_key_name(channel_id)
+		
+		extended_presence = None
+		if(presence):
+			# Format presence into extended presence
+			extended_presence = self.format_extended_presences([presence])[0]
+
+			# Add it to the list in memcache
+			self.presences.append(extended_presence)
+
+			# Put new list in memcache
+			memcache.set(self._memcache_station_presences_id, self._presences)
+			logging.info("New presence put in memcache")
+			
+			# Put new present in datastore
+			presence.connected = True
+			presence.put()
+			logging.info("Presence updated in datastore")
+
+		return extended_presence
+	
+	# Remove a presence from a station
+	def remove_presence(self, channel_id):
+		# Get presence from datastore 
+		presence = Presence.get_by_key_name(channel_id)
+		
+		presence_gone = None
+		if(presence):	
+			# Format presence gone into extended presence
+			presence_gone = self.format_extended_presences([presence])[0]
+
+			# Update presences list
+			updated_presences = []
+			for p in self.presences:
+				if(p["channel_id"] != presence_gone["channel_id"]):
+					updated_presences.append(p)
+
+			# Put new list in proxy
+			self._presences = updated_presences
+			# Put new list in memcache
+			memcache.set(self._memcache_station_presences_id, self._presences)
+			logging.info("Presence removed from memcache")
+			
+			# Update presence in datastore
+			presence.ended = datetime.now()
+			presence.put()
+			logging.info("Presence updated in datastore")
+
+		return presence_gone
+	
+	# Returns the current station queue
+	@property
+	def queue(self):
+		return "queue"
+		
+		

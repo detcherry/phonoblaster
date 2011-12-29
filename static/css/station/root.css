@@ -120,13 +120,16 @@ body{
 	width:510px;
 }
 
+#live-video object{
+	margin-bottom:-5px;
+}
+
 #youtube-player{
 	height:287px;
 	width:510px;
 }
 
 #video-settings{
-	margin-top:-5px;
 	width:500px;
 	height:18px;
 	padding:4px;
@@ -357,6 +360,10 @@ div#volume{
 	min-height:500px;
 	background:white;
 	border: 1px solid #DDD;
+}
+
+#right-column .init{
+	padding:8px;
 }
 
 #right-column .track{

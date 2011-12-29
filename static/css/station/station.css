@@ -2,13 +2,18 @@
 
 /* -------- LEFT COLUMN ----------- */
 
-#left-column .friend-listening{
+#presence-rows{
+	height:160px;
+	overflow:hidden;
+}
+
+#left-column .presence{
 	padding-top:0px;
 	border:none;
 }
 
 
-#left-column .friend-listening a{
+#left-column .presence a{
 	display:block;
 	float:left;
 	font-size:11px;
@@ -17,7 +22,7 @@
 }
 
 
-#left-column .friend-listening a img{
+#left-column .presence a img{
 	display:block;
 	float:left;
 	height:28px;
@@ -27,15 +32,71 @@
 	margin-right:11px;
 }
 
-#left-column .friend-listening .title{
+#left-column .presence .title{
 	margin-top:8px;
 	width:81px;
 	height:20px;
 	overflow:hidden;
 }
 
-#listening-rows .btn{
+#presence-rows .btn{
 	margin-left:23px;
+}
+
+/*-------- PRESENCE POPUP --------*/
+
+#presence-popup h2{
+	padding:8px;
+	text-align:center;
+	border-bottom:1px solid #DDD;
+}
+
+#presence-popup .row{
+	margin:0px;
+}
+
+#presence-popup .presence{
+	padding:8px;
+}
+
+#presence-popup .presence a{
+	color:#333;
+}
+
+#presence-popup .presence a:hover{
+	color:#0084B4;
+	text-decoration:none;
+}
+
+#presence-popup .presence img{
+	float:left;
+	margin-right:8px;
+	height:50px;
+	width:50px;
+}
+
+#presence-popup .title{
+	float:left;
+	height:52px;
+}
+
+#presence-popup .title span{
+	height:52px;
+}
+
+#unauthenticated-presences{
+	margin-top:15px;
+	color:#999;
+}
+
+#unauthenticated-presences strong{
+	display:block;
+	float:left;
+	margin-right:8px;
+	width:50px;
+	font-size:18px;
+	text-align:center;
+	color:#333;
 }
 
 

@@ -1,17 +1,19 @@
-<a href="/frenchsiliconnection"><img src="https://graph.facebook.com/166601710024295/picture?type=large"  class="thumbnail"/></a>
+<a href="/{{ station_proxy.station.shortname }}">
+	<img src="https://graph.facebook.com/{{ station_proxy.station.key.name}}/picture?type=large"  class="thumbnail"/>
+</a>
 <div class="row" id="page">
-	<a href="http://facebook.com/frenchsiliconnection" target="_blank">
+	<a href="{{ station_proxy.station.link }}" target="_blank">
 		<span></span>Page
 	</a>
 </div>
 <div class="row" id="broadcasts">
-	<a href="{{ site_url }}/frenchsiliconnection/broadcasts">
-		<strong class="number">0</strong>
+	<a href="/{{ station_proxy.station.shortname }}/broadcasts">
+		<strong class="number">{{ broadcasts_number }}</strong>
 		<span class="title">Broadcasts</span>
 	</a>
 </div>
-<div class="row" id="broadcasts">
-	<strong class="number">0</strong>
+<div class="row" id="views">
+	<strong class="number">{{ views_number }}</strong>
 	<span class="title">Views</span>
 </div>
 

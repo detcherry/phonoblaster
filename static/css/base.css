@@ -121,4 +121,15 @@ img.loader{
 	vertical-align:middle;
 }
 
+/*----- FANCYBOX -----*/
+
+.fancybox-outer{
+	background:#F6F6F6;
+}
+
+.fancybox-inner{
+	background:white;
+	border:1px solid #DDD;
+}
+
 

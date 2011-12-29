@@ -34,19 +34,20 @@
 		{% block footer %}
 			{% include "footer.html" %}
 		{% endblock %}
-		<!-- jQuery -->
 		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.0/jquery.min.js"></script>
 		<!-- Additional scripts -->
 		<script type="text/javascript">
 			// Global object
 			function PhB(){
-				this.facebook_app_id = "{{ facebook_app_id }}"
+				this.facebook_app_id = "{{ facebook_app_id }}";
+				this.version = "{{ version }}";
 			}
 			PhB.prototype = {
 				// Workaround for Firefox 3.6 and older versions
 				log: function(content){
-					try{console.log(content);}
-					catch(e){}
+					if(console){
+						console.log(content);
+					}
 				},
 			}
 			var phb = new PhB();
