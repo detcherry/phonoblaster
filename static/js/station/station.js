@@ -301,7 +301,6 @@ PresenceManager.prototype = {
 						var re = RegExp("[.]","g");
 						var jquery_id = "#" + channel_id.replace(re, "\\.")
 						
-						phb.log(jquery_id);	
 						$(jquery_id).remove();
 					}
 					
