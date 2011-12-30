@@ -151,7 +151,7 @@
 	/*--- User Initialization ---*/
 	{% if user_proxy %} 
 	user = {
-		"facebook_id": "{{ user_proxy.user.key.name }}",
+		"key_name": "{{ user_proxy.user.key.name }}",
 		"first_name": "{{ user_proxy.user.first_name }}",
 		"last_name": "{{ user_proxy.user.last_name }}",
 	}
@@ -162,7 +162,7 @@
 	{% endif %}
 	/*--- Station Initialization ---*/
 	station = {
-		"facebook_id": "{{ station_proxy.station.key.name }}",
+		"key_name": "{{ station_proxy.station.key.name }}",
 		"shortname": "{{ station_proxy.station.shortname }}",
 		"name": "{{ station_proxy.station.name}}",
 	}

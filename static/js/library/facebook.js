@@ -36,6 +36,20 @@ Facebook.prototype = {
 		);
 	},
 	
+	retrieveAdmins: function(page_id, callback){
+		var that = this;
+		this.retrievePageToken(
+			page_id,
+			function(page_token){
+				var url = "/"+ page_id + "/admins"
+				FB.api(url, { access_token: page_token }, function(response){
+					var admins = response.data
+					callback(admins);
+				})
+			}
+		);
+	},
+	
 	retrieveFriends: function(callback){
 		var url = "/me/friends"
 		FB.api(url, function(response){

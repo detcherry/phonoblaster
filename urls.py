@@ -15,9 +15,9 @@ from controllers.station.create import StationCreateHandler
 from controllers.station.check import StationCheckHandler
 from controllers.station.station import StationHandler
 from controllers.station.broadcasts import StationBroadcastsHandler
-from controllers.presence.request import PresenceRequestHandler
 from controllers.api.queue import GetQueueHandler
-from controllers.api.presences import GetPresencesHandler
+from controllers.api.presences import ApiPresencesHandler
+from controllers.api.comments import GetCommentsHandler
 
 application = webapp.WSGIApplication(
 	[
@@ -26,9 +26,9 @@ application = webapp.WSGIApplication(
 		('/station/check', StationCheckHandler),
 		('/(\w+)', StationHandler),
 		('/(\w+)/broadcasts', StationBroadcastsHandler),
-		('/(\w+)/presence/request', PresenceRequestHandler),
 		('/api/queue', GetQueueHandler),
-		('/api/presences', GetPresencesHandler),
+		('/api/presences', ApiPresencesHandler),
+		('/api/comments', GetCommentsHandler),
 		('/.*', AllHandler),
 	],
     debug=True

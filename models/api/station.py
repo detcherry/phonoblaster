@@ -10,6 +10,7 @@ from google.appengine.api import memcache
 
 from models.db.station import Station
 from models.db.presence import Presence
+from models.db.comment import Comment
 
 MEMCACHE_STATION_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".station."
 MEMCACHE_STATION_QUEUE_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".queue.station."
@@ -65,23 +66,21 @@ class StationApi():
 		# Retrieve users of authenticated presences
 		users = db.get(user_keys)
 			
-		# Add the extended presences (authenticated)
+		# Add the extended presences (authenticated users)
 		for presence, user in zip(authenticated_presences, users):
 			extended_presences.append({
 				"channel_id": presence.key().name(),
 				"created": timegm(presence.created.utctimetuple()),
-				"admin": presence.admin,
 				"user_key_name": user.key().name(),
 				"user_first_name": user.first_name,
 				"user_last_name": user.last_name,
 			})
 		
-		# Add the extended presences (unauthenticated)
+		# Add the extended presences (unauthenticated users)
 		for presence in unauthenticated_presences:
 			extended_presences.append({
 				"channel_id": presence.key().name(),
 				"created": timegm(presence.created.utctimetuple()),
-				"admin": False,
 				"user_key_name": None,
 				"user_first_name": None,
 				"user_last_name": None,
@@ -181,6 +180,39 @@ class StationApi():
 			logging.info("Presence updated in datastore")
 
 		return presence_gone
+	
+	# Returns the latest comments (from the last 3 minutes)
+	@property
+	def comments(self):
+		if not hasattr(self, "_comments"):
+			q = Comment.all()
+			q.filter("station", self.station.key())
+			q.filter("created >", datetime.now() - timedelta(0,180))
+			q.order("created")
+			comments = q.fetch(200) # It means that more than one comment has been posted every second (= a lot more than necessary)
+			
+			# Format extended comments
+			self._comments = self.format_extended_comments(comments)
+		return self._comments
+	
+	# Format comments into extended comments
+	def format_extended_comments(self, comments):
+		extended_comments = []
+		
+		if(comments):
+			user_keys = [Comment.user.get_value_for_datastore(c) for c in comments]
+			users = db.get(user_keys)
+	
+			for comment, user in zip(comments, users):
+				extended_comments.append({
+					"content": comment.content,
+					"created": timegm(comment.created.utctimetuple()),
+					"user_key_name": user.key().name(),
+					"user_first_name": user.first_name,
+					"user_last_name": user.last_name,
+				})
+		
+		return extended_comments
 	
 	# Returns the current station queue
 	@property

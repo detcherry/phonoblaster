@@ -57,13 +57,17 @@ StationClient.prototype = {
 	
 	presence: function(){
 		var that = this;
-		
-		// Request Client ID and Token from Google App Engine
+				
+		// Add a new presence: request Client ID and Token from Google App Engine
 		$.ajax({
-			url: "/"+ that.station.shortname +"/presence/request",
+			//url: "/"+ that.station.shortname +"/presence/request",
+			url: "/api/presences",
 			type: "POST",
 			dataType: "json",
 			timeout: 60000,
+			data: {
+				shortname: that.station.shortname,
+			},
 			error: function(xhr, status, error) {
 				phb.log('An error occurred: ' + error + '\nPlease retry.');
 			},
@@ -100,6 +104,7 @@ function PresenceManager(station_client){
 	this.authenticated_presences = [];
 	this.unauthenticated_presences = [];
 	
+	this.admins = [];
 	this.friends = [];
 	this.init();
 }
@@ -113,30 +118,48 @@ PresenceManager.prototype = {
 			$("#admins-rows").show();
 		}
 		
-		// If user is logged in, fetch friends first
-		if(this.station_client.user){
-			var that = this
-			this.fetchFriends(function(){
-				// Then fetch station presences
-				that.fetchPresences()
+		var that = this;
+		// Fetch admins first
+		this.fetchAdmins(function(){
+			// Then fetch friends
+			that.fetchFriends(function(){
+				// Finally fetch presences
+				that.fetchPresences();
+			});
+		});
+	},
+	
+	// Fetch the admins of a page (only for station admins)
+	fetchAdmins: function(callback){
+		if(this.station_client.admin){
+			var that = this;
+			var page_id = this.station_client.station.key_name
+			facebook.retrieveAdmins(page_id, function(admins){
+				that.admins = admins;
+				callback();
 			})
 		}
 		else{
-			// If not, only fetch station presences
-			this.fetchPresences();
+			callback();
+		}
+
+	},
+	
+	// Fetch the user friends (only for authenticated users)
+	fetchFriends: function(callback){
+		if(this.station_client.user){
+			var that = this;
+			facebook.retrieveFriends(function(friends){
+				that.friends = friends;
+				callback();
+			})
+		}
+		else{
+			callback();
 		}
 	},
 	
-	// Fetch the user friends
-	fetchFriends: function(callback){
-		var that = this;
-		facebook.retrieveFriends(function(friends){
-			that.friends = friends;
-			callback();
-		})
-	},
-	
-	// Fetch station presences
+	// Fetch station presences (for everyone)
 	fetchPresences: function(){
 		var that = this;	
 		var shortname = this.station_client.station.shortname;
@@ -297,10 +320,11 @@ PresenceManager.prototype = {
 					
 					// If user is authenticated, we also remove it from the interface
 					if(this.isAuthenticated(presence_gone)){
-						var channel_id = presence_gone.channel_id
-						var re = RegExp("[.]","g");
-						var jquery_id = "#" + channel_id.replace(re, "\\.")
+						var channel_id = presence_gone.channel_id;
 						
+						// A little trick necessary for attributes that features a '.'
+						var re = RegExp("[.]","g");
+						var jquery_id = "#" + channel_id.replace(re, "\\.");
 						$(jquery_id).remove();
 					}
 					
@@ -371,7 +395,16 @@ PresenceManager.prototype = {
 	
 	// Check if a presence is an admin user
 	isAdmin: function(presence){
-		return presence.admin
+		var response = false;
+		var that = this;
+		for(i=0, c=that.admins.length; i<c; i++){
+			var admin = that.admins[i];
+			if(presence.user_key_name == admin.id){
+				response = true;
+				break;
+			}
+		}
+		return response;
 	},
 	
 	// Check if a presence is a friend of current user
@@ -448,15 +481,56 @@ PresenceManager.prototype = {
 function CommentManager(station_client){
 	// Reference useful to access the admin status of the current user
 	this.station_client = station_client;
-	this.comments = null;
 	this.init();
 }
 
 CommentManager.prototype = {
 	
 	init: function(){
-		phb.log("Fetch comments")
-	}
+		
+		// Fetch latest comments (Messages in the last 3 minutes)
+		this.fetchComments();
+		
+		// Listen to focus/ unfocus events
+		this.listen();
+		
+	},
+	
+	fetchComments: function(){
+		var that = this;	
+		var shortname = this.station_client.station.shortname;
+		// Fetch station comments
+		$.ajax({
+			url: "/api/comments",
+			type: "GET",
+			dataType: "json",
+			timeout: 60000,
+			data: {
+				shortname: shortname,
+			},
+			error: function(xhr, status, error) {
+				phb.log('An error occurred: ' + error + '\nPlease retry.');
+			},
+			success: function(json){
+				latest_comments = json;
+				
+				// Add each comment to the DOM
+				$.each(latest_comments, function(index, value){
+					var new_comment = value;
+					that.add(new_comment);
+				})
+			},
+		});
+		
+	},
+	
+	add: function(new_comment){
+		phb.log(new_comment)
+	},
+	
+	listen: function(){
+		
+	},
 		
 }
 
