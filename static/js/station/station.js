@@ -7,7 +7,6 @@ function StationClient(user, admin, station){
 	this.comment_manager = null;
 	this.status_manager = null;
 	this.queue_manager = null;
-	//this.init();
 	this.presence();
 }
 
