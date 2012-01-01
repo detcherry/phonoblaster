@@ -49,12 +49,45 @@
 						console.log(content);
 					}
 				},
+				
+				// Fetch time on the server (because we can never trust the local clock...)
+				time: function(callback){
+					var that = this;
+					$.ajax({
+						url: "/api/now",
+						type: "GET",
+						dataType: "json",
+						timeout: 60000,
+						error: function(xhr, status, error){
+							that.log(error);
+						},
+						success: function(json){
+							var time = json.time;
+							callback(time);
+						},
+					});
+				},
+				
+				// Convert seconds since epoch into a beautiful string
+				convert: function(time){					
+					var date = new Date(parseInt(time)*1000);
+					var hours = parseInt(date.getHours());
+					if(hours < 10){
+						hours = "0" + hours.toString()
+					}
+					var minutes = parseInt(date.getMinutes());
+					if(minutes < 10){
+						minutes = "0" + minutes.toString();
+					}
+					
+					var displayed_time = hours +":"+minutes;
+					return displayed_time;					
+				},
+				
 			}
-			var phb = new PhB();
+			var PHB = new PhB();
 		</script>
-		{% if user_proxy %}
-			<script type="text/javascript" src="/static/js/library/facebook.js"></script>
-		{% endif %}
+		<script type="text/javascript" src="/static/js/library/facebook.js"></script>
 		{% block script %}
 		{% endblock %}
 		<!-- Twitter -->
@@ -73,18 +106,12 @@
 				
 				// Login events
 				$("a.login").click(function(){
-					FB.login(function(response){
-						if(response.authResponse){
-							window.location.reload();
-						}
-					 },{scope: 'email, publish_actions, read_stream, publish_stream, manage_pages'});
+					FACEBOOK.login();
 					return false;	
 				})
 				
 				$("a.logout").click(function(){
-					FB.logout(function(response){
-						window.location.reload();
-					})
+					FACEBOOK.logout();
 					return false;
 				})
 				

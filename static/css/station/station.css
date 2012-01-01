@@ -138,33 +138,42 @@ input#comment{
 	margin-right:4px;
 }
 
-#conversation{
+#comments-zone{
+	padding-bottom:8px;
 	min-height:200px;
 	width:100%;
 	background:white;
 }
 
 .comment{
+	margin-top:-4px;
 	padding:4px;
 	padding-bottom:0px;
 	width:502px;	
+}
+
+.comment:first-child{
+	margin-top:0px;
 }
 
 .comment img.user, .comment img.station{
 	display:block;
 	float:left;
 	margin-right:8px;
-	height:32px;
+	height:25px;
+	border: 1px solid #ddd;
 }
 
 .comment .content{
+	min-height:27px;
 	width:462px;
 }
 
 .comment .content p{
 	width:100%;
-	line-height:16px;
+	line-height:15px;
 	font-size:11px;
+	overflow:hidden;
 }
 
 .comment .content p a{
@@ -200,13 +209,14 @@ input#comment{
 
 .comment .border{
 	margin-right:8px;
-	width:446px;
+	width:456px;
 	height:4px;
 	border-bottom:1px solid #CCC;
 }
 
 .comment .time{
-	margin-top:-4px;
+	margin-top:-1px;
+	xmargin-top:-4px;
 	color:#CCC;
 	font-size:11px;
 	line-height: 10px;

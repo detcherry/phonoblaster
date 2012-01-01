@@ -1,6 +1,6 @@
 $(function(){
-	var app_id = phb.facebook_app_id;
-	facebook = new Facebook(app_id);
+	var app_id = PHB.facebook_app_id;
+	FACEBOOK = new Facebook(app_id);
 })
 
 function Facebook(app_id){
@@ -8,6 +8,20 @@ function Facebook(app_id){
 }
 
 Facebook.prototype = {
+	
+	login: function(){
+		FB.login(function(response){
+			if(response.authResponse){
+				window.location.reload();
+			}
+		 },{scope: 'email, publish_actions, read_stream, publish_stream, manage_pages'});
+	},
+	
+	logout: function(){
+		FB.logout(function(response){
+			window.location.reload();
+		})
+	},
 	
 	retrievePageToken: function(page_id, callback){
 		var url = "/" + page_id + "?fields=access_token";
@@ -53,10 +67,9 @@ Facebook.prototype = {
 	retrieveFriends: function(callback){
 		var url = "/me/friends"
 		FB.api(url, function(response){
-			callback(response.data)
+			var friends = response.data
+			callback(friends)
 		})
-	}
-	
-
+	},
 		
 }

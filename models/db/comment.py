@@ -5,6 +5,7 @@ from models.db.station import Station
 
 class Comment(db.Model):
 	user = db.ReferenceProperty(User, required = True, collection_name = "commentUser")
+	admin = db.BooleanProperty(default = False, required = True)
 	station = db.ReferenceProperty(Station, required = True, collection_name = "commentStation")
 	content = db.StringProperty(default ="", required = True)
 	created = db.DateTimeProperty(auto_now_add = True)

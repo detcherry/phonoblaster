@@ -54,16 +54,20 @@
 	<div id="live-comments">
 		<div id="comment-box">
 			{% if user_proxy %}
-			<img src="http://graph.facebook.com/{{ user_proxy.user.key.name }}/picture?type=square">
+				{% if is_admin %}
+				<img src="http://graph.facebook.com/{{ station_proxy.station.key.name }}/picture?type=square">
+				{% else %}
+				<img src="http://graph.facebook.com/{{ user_proxy.user.key.name }}/picture?type=square">
+				{% endif %}
 			{% else %}
 			<img src="/static/images/unknown-listener.png">
 			{% endif %}
-			<form method="post" action="" id="chat">
+			<form method="post" action="" id="comment">
 				<input type="text" name="comment" id="comment" value="Comment..." autocomplete="off"/>
 				<input type="submit" value="Comment" class="submit"/>
 			</form>
 		</div>
-		<div id="conversation">
+		<div id="comments-zone">
 		</div>
 	</div>
 {% endblock %}
@@ -152,8 +156,7 @@
 	{% if user_proxy %} 
 	user = {
 		"key_name": "{{ user_proxy.user.key.name }}",
-		"first_name": "{{ user_proxy.user.first_name }}",
-		"last_name": "{{ user_proxy.user.last_name }}",
+		"name": "{{ user_proxy.user.first_name }} {{ user_proxy.user.last_name }}",
 	}
 	{% endif %}
 	/*--- Admin Initialization ---*/

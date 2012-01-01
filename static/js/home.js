@@ -32,8 +32,8 @@ TabCreationManager.prototype = {
 	createTab: function(callback){
 		var that = this;
 		// Make sure facebook.js has been loaded
-		if(facebook){
-			facebook.createPhonoblasterTab(that.page_id, callback);
+		if(FACEBOOK){
+			FACEBOOK.createPhonoblasterTab(that.page_id, callback);
 		}
 		else{
 			callback.call(this, false);
@@ -210,7 +210,7 @@ StationCreationManager.prototype = {
 					page_shortname: that.page_shortname,
 				},
 				error: function(xhr, status, error) {
-					phb.log('An error occurred: ' + error + '\nPlease retry.');
+					PHB.log('An error occurred: ' + error + '\nPlease retry.');
 					callback.call(this, false);
 				},
 				success: function(json){
