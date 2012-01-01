@@ -1,10 +1,10 @@
 queue:
-- name: broadcast-queue
+- name: broadcasts-queue
   rate: 500/s
   bucket_size: 100
-- name: message-queue
+- name: comments-queue
   rate: 500/s
   bucket_size: 100
-- name: presence-queue
+- name: presences-queue
   rate: 500/s
   bucket_size: 100

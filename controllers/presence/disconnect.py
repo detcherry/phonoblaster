@@ -33,7 +33,7 @@ class PresenceDisconnectHandler(webapp.RequestHandler):
 				"data": json.dumps(presence_removed_data)
 			}
 		)
-		task.add(queue_name="presence-queue")
+		task.add(queue_name="presences-queue")
 
 
 application = webapp.WSGIApplication([

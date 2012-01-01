@@ -33,7 +33,7 @@ class PresenceConnectHandler(webapp.RequestHandler):
 				"data": json.dumps(new_presence_data)
 			}
 		)
-		task.add(queue_name="presence-queue")
+		task.add(queue_name="presences-queue")
 
 
 application = webapp.WSGIApplication([
