@@ -7,11 +7,13 @@ function StationClient(user, admin, station){
 	this.comment_manager = null;
 	this.status_manager = null;
 	this.queue_manager = null;
-	this.init();
+	//this.init();
+	this.presence();
 }
 
 StationClient.prototype = {
 	
+	/*
 	init: function(){
 		var that = this;
 		var pubnub_channel = PHB.version + "-" + this.station.shortname
@@ -32,7 +34,7 @@ StationClient.prototype = {
 				that.presence();
 	        }
 		})
-	},
+	},*/
 	
 	dispatch: function(data){
 		var message = JSON.parse(data);
@@ -49,12 +51,13 @@ StationClient.prototype = {
 		}
 		if(event == "new-comment"){
 			PHB.log("new-comment");
-			this.comment_manager.add(content);
+			this.comment_manager.IOAdd(content);
 		}
 	},
 	
-	// Fetch comments and queue after connection to pubnub
+	// Fetch presences, comments and queue after connection to pubnub
 	fetch: function(){
+		this.presence_manager = new PresenceManager(this);
 		this.comment_manager = new CommentManager(this);
 		this.status_manager = new StatusManager(this);
 		this.queue_manager = new QueueManager(this);
@@ -91,10 +94,30 @@ StationClient.prototype = {
 				// - socket.onopen
 				// - socket.onmessage
 				
-				// Fetch the presences 
-				that.presence_manager = new PresenceManager(that);
+				// Subscribe to the station channel
+				that.pubnub();
 			},
 		});
+	},
+	
+	// Subscribe to the station channel with Pubnub
+	pubnub: function(){
+		var that = this;
+		var pubnub_channel = PHB.version + "-" + this.station.shortname
+		// Subscribe to the station channel with Pubnub
+		PUBNUB.subscribe({
+	        channel: pubnub_channel,      
+	        error: function(){
+				alert("Connection Lost. Will auto-reconnect when Online.");
+			},
+	        callback: function(message) {
+	            that.dispatch(message);
+	        },
+	        connect: function(){
+				// Fetch all the content: presences, comments, queue
+				that.fetch();
+	        }
+		})
 	},
 		
 }
