@@ -13,60 +13,10 @@ function StationClient(user, admin, station){
 
 StationClient.prototype = {
 	
-	/*
-	init: function(){
-		var that = this;
-		var pubnub_channel = PHB.version + "-" + this.station.shortname
-		// Subscribe to the station channel with Pubnub
-		PUBNUB.subscribe({
-	        channel: pubnub_channel,      
-	        error: function(){
-				alert("Connection Lost. Will auto-reconnect when Online.");
-			},
-	        callback: function(message) {
-	            that.dispatch(message);
-	        },
-	        connect: function(){
-				// Fetch all the content: queue, comments
-				that.fetch();
-				
-				// Open a presence channel with Google App Engine
-				that.presence();
-	        }
-		})
-	},*/
-	
-	dispatch: function(data){
-		var message = JSON.parse(data);
-		var event = message.event;
-		var content = message.content;
-		
-		if(event == "new-presence"){
-			PHB.log("new-presence");
-			this.presence_manager.add(content);
-		}
-		if(event == "presence-removed"){
-			PHB.log("presence-removed");
-			this.presence_manager.remove(content);
-		}
-		if(event == "new-comment"){
-			PHB.log("new-comment");
-			this.comment_manager.IOAdd(content);
-		}
-	},
-	
-	// Fetch presences, comments and queue after connection to pubnub
-	fetch: function(){
-		this.presence_manager = new PresenceManager(this);
-		this.comment_manager = new CommentManager(this);
-		this.status_manager = new StatusManager(this);
-		this.queue_manager = new QueueManager(this);
-	},
-	
+	// Add a new presence: request Client ID and Token from Google App Engine
 	presence: function(){
 		var that = this;
 				
-		// Add a new presence: request Client ID and Token from Google App Engine
 		$.ajax({
 			url: "/api/presences",
 			type: "POST",
@@ -119,7 +69,35 @@ StationClient.prototype = {
 	        }
 		})
 	},
+	
+	// Fetch presences, comments and queue after connection to pubnub
+	fetch: function(){
+		this.presence_manager = new PresenceManager(this);
+		this.comment_manager = new CommentManager(this);
+		this.status_manager = new StatusManager(this);
+		this.queue_manager = new QueueManager(this);
+	},
+	
+	// Dispatch incoming messages according to their content
+	dispatch: function(data){
+		var message = JSON.parse(data);
+		var event = message.event;
+		var content = message.content;
 		
+		if(event == "new-presence"){
+			PHB.log("new-presence");
+			this.presence_manager.add(content);
+		}
+		if(event == "presence-removed"){
+			PHB.log("presence-removed");
+			this.presence_manager.remove(content);
+		}
+		if(event == "new-comment"){
+			PHB.log("new-comment");
+			this.comment_manager.add(content);
+		}
+	},
+	
 }
 
 // ---------------------------------------------------------------------------
@@ -549,7 +527,7 @@ CommentManager.prototype = {
 		
 	},
 	
-	IOAdd: function(new_comment){		
+	add: function(new_comment){		
 		var that = this;
 		
 		following_comments = [];
@@ -638,8 +616,8 @@ CommentManager.prototype = {
 					// Empty the comment box
 					$("input[id='comment']").val("");
 
-					// Send comment to everyone
-					that.send(local_comment);
+					// post comment to everyone
+					that.post(local_comment);
 				})
 			}
 			
@@ -733,7 +711,7 @@ CommentManager.prototype = {
 		})
 	},
 	
-	send: function(new_comment){
+	post: function(new_comment){
 		var shortname = this.station_client.station.shortname
 		var that = this;
 		$.ajax({
