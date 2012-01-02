@@ -10,9 +10,9 @@ function TabManager(station_client){
 	
 	// Fetch settings
 	this.fetch_url = null;
-	this.default_offset = null;
 	this.fetch_offset = null;
 	this.fetch_datatype = null;	
+	this.load = false;
 }
 
 TabManager.prototype = {
@@ -30,10 +30,33 @@ TabManager.prototype = {
 	
 	// Listen to "add", "preview", "suggest" or "more" events (standard events)
 	standardListen: function(){
+		var that = this;
+		
+		var tab_selector = this.name;
+		// Infinite scrolling events handler
+		$(tab_selector).scroll(function(){	
+			var items = $(this).find(".tab-items")
+			var height = items.height();
+			var scroll_height = $(this).scrollTop();
+			var height_left = height - scroll_height;
+			
+			if(height_left < 400 && !that.load && that.fetch_offset < that.limit_fetch_offset){
+				that.fetch_offset = that.tracklist.length + 1;
+				that.load = true;
+				that.showLoader();
+				that.fetch(true);
+			}
+		})	
+		
+		var preview_selector = this.name + " a.preview"
+		// Preview events handler
+		$(preview_selector).fancybox();
 	},
 	
 	// Build the div for the track
 	UIBuild: function(new_track, callback){
+		var video_url = "http://www.youtube.com/embed/" + new_track.youtube_id + "?autoplay=1"
+		
 		callback(
 			$("<div/>")
 				.addClass("track")
@@ -51,7 +74,7 @@ TabManager.prototype = {
 							$("<div/>")
 								.addClass("queue-actions")
 								.append($("<a/>").addClass("btn").html("Queue"))
-								.append($("<span/>").addClass("preview"))
+								.append($("<a/>").addClass("preview").addClass("fancybox.iframe").attr("href",video_url))
 						)
 				)
 		)
@@ -66,12 +89,31 @@ TabManager.prototype = {
 		})
 	},
 	
+	// Append a loader image at the bottom of the tab
+	appendLoader: function(){
+		var jquery_selector = this.name + " .tab-items";
+		$(jquery_selector).append($("<div/>").addClass("loader"));
+	},
+	
+	// Show the loader gif because user is scrolling down
+	showLoader: function(){
+		var jquery_selector = this.name + " .tab-items .loader";
+		$(jquery_selector).show();
+	},
+	
+	removeLoader: function(){
+		var jquery_selector = this.name + " .tab-items .loader";
+		$(jquery_selector).remove();
+	},
+	
 	// Add to the queue or the suggestions queue
 	submit: function(track){
 		
 	},
 	
 	empty: function(callback){
+		this.tracklist = [];
+		
 		var jquery_selector = this.name + " .tab-items"
 		$(jquery_selector).empty();
 		callback();

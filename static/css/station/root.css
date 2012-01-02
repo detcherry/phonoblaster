@@ -439,7 +439,7 @@ div#volume{
 }
 
 
-#right-column .track span.preview{
+#right-column .track a.preview{
 	display:block;
 	float:right;
 	margin-right:8px;
@@ -456,6 +456,13 @@ div#volume{
 	font-size:11px;
 }
 
+#right-column .loader{
+	display:none;
+	height:40px;
+	width:100%;
+	background: url("/static/images/loader.gif") no-repeat;
+	background-position: center center;
+}
 
 
 

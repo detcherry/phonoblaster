@@ -8,12 +8,12 @@ SearchManager.prototype.constructor = SearchManager;
 function SearchManager(station_client){
 	TabManager.call(this, station_client);
 	
-	// Overwrite the parent offset attributes
+	// Overwrites the parent offset attributes
 	this.name = "#search-tab";
 	this.fetch_url = "https://gdata.youtube.com/feeds/api/videos"
-	this.default_offset = 1;
 	this.fetch_offset = 1;
-	this.fetch_datatype = "jsonp"
+	this.fetch_datatype = "jsonp";
+	this.limit_fetch_offset = 100;
 	
 	// Additional attribute
 	this.search_content = null
@@ -71,15 +71,15 @@ SearchManager.prototype.inputListen = function(){
 // Overwrites the fetch data method
 SearchManager.prototype.getFetchData = function(){
 	var that = this;
-	return {
+	fetch_data = {
 		"q": that.search_content,
-		"category": "music",
 		"start-index": that.fetch_offset,
 		"max-results": 20,
 		"format": 5,
 		"v": 2,
 		"alt": "jsonc",
-	}
+	}	
+	return fetch_data
 }
 
 // Overwrites the fetch method because Youtube makes it really specific
@@ -104,9 +104,7 @@ SearchManager.prototype.fetch = function(scrolling){
 			// Scrolling fetch
 			else{
 				that.fetchCallback(json.data.items);
-			}
-			
-			that.fetch_offset += 20;
+			}			
 		},
 	})
 }
@@ -133,6 +131,10 @@ SearchManager.prototype.fetchCallback = function(items){
 			that.UIAppend(new_track);
 		});				
 	}
+	
+	that.load = false;
+	that.removeLoader();
+	that.appendLoader();
 }
 
 
