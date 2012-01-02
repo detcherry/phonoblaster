@@ -20,63 +20,16 @@ TabManager.prototype = {
 	// Overwrite this function to format the data sent by fetch()
 	getFetchData: function(){},
 	
-	// Fetch extended tracks from the fetch address and the offset
+	// Parent fetch method for extended tracks 
 	fetch: function(){
-		var that = this;
-		$.ajax({
-			url: that.fetch_url,
-			dataType: that.fetch_datatype,
-			timeout: 60000,
-			data: that.getFetchData(),
-			error: function(xhr, status, error) {
-				PHB.log('An error occurred: ' + error + '\nPlease retry.');
-			},
-			success: function(json){
-				// First fetch
-				if(that.fetch_offset == that.default_offset){
-					// Empty the tab items zone before displaying everything
-					that.empty(function(){
-						that.fetchCallback(json.data.items);
-					})
-				}
-				// Scrolling fetch
-				else{
-					that.fetchCallback(json.data.items);
-				}
-				
-			},
-		})
-		
 	},
 	
-	fetchCallback: function(items){
-		var that = this;
-		if(items){
-			$.each(items, function(i) {
-				var item = items[i];
-				var new_track = {
-					"youtube_id": item.id,
-					"youtube_title": item.title,
-					"youtube_thumbnail": item.thumbnail.sqDefault,
-					"youtube_duration": item.duration,
-					"created": item.created,
-					"submitter_key_name": item.submitter_key_name,
-					"submitter_name": item.submitter_name,
-					"submitter_url": item.submitter_url,
-					"admin": item.admin,
-				}
-				
-				that.tracklist.push(new_track);
-				that.UIAppend(new_track);
-			});				
-		}
-		
-		this.offset += 20;
+	// Parent fetch callback once the extended tracks have been fetched from the server
+	fetchCallback: function(tracks){
 	},
 	
 	// Listen to "add", "preview", "suggest" or "more" events (standard events)
 	standardListen: function(){
-		
 	},
 	
 	// Build the div for the track

@@ -56,7 +56,7 @@ SearchManager.prototype.inputListen = function(){
 		$("#search-overlay").show();
 		$("#search-tab").show();
 		
-		that.fetch();	
+		that.fetch(false);	
 	})
 	
 	// Remove the search tab if click on overlay
@@ -68,7 +68,7 @@ SearchManager.prototype.inputListen = function(){
 	
 }
 
-// Format the fetch data
+// Overwrites the fetch data method
 SearchManager.prototype.getFetchData = function(){
 	var that = this;
 	return {
@@ -81,5 +81,59 @@ SearchManager.prototype.getFetchData = function(){
 		"alt": "jsonc",
 	}
 }
+
+// Overwrites the fetch method because Youtube makes it really specific
+SearchManager.prototype.fetch = function(scrolling){
+	var that = this;
+	$.ajax({
+		url: that.fetch_url,
+		dataType: that.fetch_datatype,
+		timeout: 60000,
+		data: that.getFetchData(),
+		error: function(xhr, status, error) {
+			PHB.log('An error occurred: ' + error + '\nPlease retry.');
+		},
+		success: function(json){
+			// First fetch
+			if(!scrolling){
+				// Empty the tab items zone before displaying everything
+				that.empty(function(){
+					that.fetchCallback(json.data.items);
+				})
+			}
+			// Scrolling fetch
+			else{
+				that.fetchCallback(json.data.items);
+			}
+			
+			that.fetch_offset += 20;
+		},
+	})
+}
+
+// Overwrites the fetchCallback method for the same reasons
+SearchManager.prototype.fetchCallback = function(items){
+	var that = this;
+	if(items){
+		$.each(items, function(i) {
+			var item = items[i];
+			var new_track = {
+				"youtube_id": item.id,
+				"youtube_title": item.title,
+				"youtube_thumbnail": item.thumbnail.sqDefault,
+				"youtube_duration": item.duration,
+				"created": null,
+				"submitter_key_name": null,
+				"submitter_name": null,
+				"submitter_url": null,
+				"admin": null,
+			}
+			
+			that.tracklist.push(new_track);
+			that.UIAppend(new_track);
+		});				
+	}
+}
+
 
 
