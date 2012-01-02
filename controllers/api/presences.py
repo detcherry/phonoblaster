@@ -20,6 +20,7 @@ class ApiPresencesHandler(BaseHandler):
 	def post(self):
 		shortname = self.request.get("shortname")
 		self.station_proxy = StationApi(shortname)
+		self.station = self.station_proxy.station 
 		
 		# Channel ID and token generation
 		time_now = str(timegm(gmtime()))
@@ -29,15 +30,19 @@ class ApiPresencesHandler(BaseHandler):
 
 		# Check if user logged in
 		user_key = None	
+		admin = False
 		if(self.user_proxy):
 			user_key = self.user_proxy.user.key()
+			if(self.user_proxy.is_admin_of(self.station.key().name())): 
+				admin = True
 		
 		# Put new presence in datastore
 		new_presence = Presence(
 			key_name = new_channel_id,
 			channel_token = new_channel_token,
-			station = self.station_proxy.station.key(),
+			station = self.station.key(),
 			user = user_key,
+			admin = admin,
 		)
 		new_presence.put()
 		logging.info("New station presence saved in datastore")

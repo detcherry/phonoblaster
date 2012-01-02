@@ -114,7 +114,7 @@ function PresenceManager(station_client){
 	this.authenticated_presences = [];
 	this.unauthenticated_presences = [];
 	
-	this.admins = [];
+	//this.admins = [];
 	this.friends = [];
 	this.init();
 }
@@ -123,33 +123,14 @@ PresenceManager.prototype = {
 	
 	init: function(){
 		var that = this;
-		// Fetch admins first
-		this.fetchAdmins(function(){
-			// Then fetch friends
-			that.fetchFriends(function(){
-				// Finally fetch presences
-				that.fetchPresences();
-			});
+		// First fetch friends
+		this.fetchFriends(function(){
+			// Then fetch presences
+			that.fetchPresences();
 		});
 	},
 	
-	// Fetch the admins of a page (only for station admins)
-	fetchAdmins: function(callback){
-		if(this.station_client.admin){
-			var that = this;
-			var page_id = this.station_client.station.key_name
-			FACEBOOK.retrieveAdmins(page_id, function(admins){
-				that.admins = admins;
-				callback();
-			})
-		}
-		else{
-			callback();
-		}
-
-	},
-	
-	// Fetch the user friends (only for authenticated users)
+	// Fetch the user friends (works only for authenticated users)
 	fetchFriends: function(callback){
 		if(this.station_client.user){
 			var that = this;
@@ -194,7 +175,7 @@ PresenceManager.prototype = {
 		});
 	},
 	
-	// Add new presence to the DOM
+	// Incoming presences
 	add: function(new_presence){		
 		var duplicate = false;
 		
@@ -204,11 +185,11 @@ PresenceManager.prototype = {
 			this.authenticated_presences,
 			this.unauthenticated_presences
 		);
-		
+
 		// Check if the new presence is not a duplicate of an existing presence
 		for(i=0, c=existing_presences.length; i<c; i++){
 			var existing_presence = existing_presences[i];
-			if(existing_presence.user_key_name == new_presence.user_key_name){
+			if(existing_presence.listener_key_name == new_presence.listener_key_name){
 				duplicate = true;
 				break;
 			}
@@ -248,10 +229,17 @@ PresenceManager.prototype = {
 		
 		// If user is authenticated 
 		if(outer_div){
+			
 			var channel_id = new_presence.channel_id
-			var user_url = "/user/"+ new_presence.user_key_name;
-			var user_picture_url = "https://graph.facebook.com/"+ new_presence.user_key_name + "/picture?type=square";
-			var user_name = new_presence.user_name;
+			var listener_picture_url = "https://graph.facebook.com/"+ new_presence.listener_key_name + "/picture?type=square";
+			var listener_name = new_presence.listener_name
+			
+			if(admin){
+				var listener_url = "/" + this.station_client.station.shortname;
+			}
+			else{
+				var listener_url = "/user/"+ new_presence.listener_key_name;
+			}
 			
 			// Append div to DOM
 			outer_div.append(
@@ -261,15 +249,15 @@ PresenceManager.prototype = {
 					.attr("id",channel_id)
 					.append(
 						$("<a/>")
-							.attr("href", user_url)
-							.append($("<img/>").attr("src", user_picture_url))
+							.attr("href", listener_url)
+							.append($("<img/>").attr("src", listener_picture_url))
 							.append(
 								$("<div/>")
 									.addClass("title")
 									.append(
 										$("<span/>")
 											.addClass("middle")
-											.html(user_name)
+											.html(listener_name)
 									)
 							)
 					)
@@ -337,11 +325,12 @@ PresenceManager.prototype = {
 				}
 			}
 			
+			
 			// If the same user was in the duplicate presences, we put it back in the correct list
 			if(this.isAuthenticated(presence_gone)){
 				for(i=0, c=that.duplicate_presences.length; i<c; i++){
 					var duplicate_presence = that.duplicate_presences[i];
-					if(duplicate_presence.user_key_name == presence_gone.user_key_name){
+					if(duplicate_presence.listener_key_name == presence_gone.listener_key_name){
 						// We remove the presence from the duplicates
 						that.duplicate_presences.splice(i,1)
 						
@@ -363,20 +352,11 @@ PresenceManager.prototype = {
 	getCounter: function(){
 		var existing_presences = [];
 		
-		// Whether the current user is an admin or not, we count the number of admins in the number of presences
-		if(this.station_client.admin){
-			existing_presences = this.admins_presences.concat(
-				this.friends_presences,
-				this.authenticated_presences,
-				this.unauthenticated_presences
-			);
-		}
-		else{
-			existing_presences = this.friends_presences.concat(
-				this.authenticated_presences,
-				this.unauthenticated_presences
-			);
-		}
+		existing_presences = this.admins_presences.concat(
+			this.friends_presences,
+			this.authenticated_presences,
+			this.unauthenticated_presences
+		);
 		
 		var presences_counter = existing_presences.length;
 		return presences_counter;
@@ -391,7 +371,7 @@ PresenceManager.prototype = {
 	// Check if a presence is an authenticated user
 	isAuthenticated: function(presence){
 		var response = false;
-		if(presence.user_key_name){
+		if(presence.listener_key_name){
 			response = true;
 		}
 		return response
@@ -399,16 +379,7 @@ PresenceManager.prototype = {
 	
 	// Check if a presence is an admin user
 	isAdmin: function(presence){
-		var response = false;
-		var that = this;
-		for(i=0, c=that.admins.length; i<c; i++){
-			var admin = that.admins[i];
-			if(presence.user_key_name == admin.id){
-				response = true;
-				break;
-			}
-		}
-		return response;
+		return presence.admin;
 	},
 	
 	// Check if a presence is a friend of current user
@@ -417,7 +388,7 @@ PresenceManager.prototype = {
 		var that = this;
 		for(i=0, c=that.friends.length; i<c; i++){
 			var friend = that.friends[i]
-			if(presence.user_key_name == friend.id){
+			if(presence.listener_key_name == friend.id){
 				response = true;
 				break;
 			}

@@ -8,6 +8,7 @@ class Presence(db.Model):
 	channel_token = db.StringProperty(required = True)
 	station = db.ReferenceProperty(Station, required = True, collection_name = "presenceStation")
 	user = db.ReferenceProperty(User, required = False, collection_name = "presenceUser")
+	admin = db.BooleanProperty(default = False, required = True)
 	created = db.DateTimeProperty(auto_now_add = True)
 	updated = db.DateTimeProperty(auto_now = True)
 	connected = db.BooleanProperty(default = False)
