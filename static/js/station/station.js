@@ -27,7 +27,7 @@ StationClient.prototype = {
 			error: function(xhr, status, error) {
 				PHB.log('An error occurred: ' + error + '\nPlease retry.');
 			},
-			success: function(json){
+			success: function(json){				
 				// Store the presence channel id
 				that.channel_id = json.channel_id;
 				
@@ -39,12 +39,14 @@ StationClient.prototype = {
 				socket.onerror = window.location.reload;
 				socket.onclose = window.location.reload;
 				
-				// We do not hook the following callbacks
-				// - socket.onopen
-				// - socket.onmessage
-				
 				// Subscribe to the station channel
-				that.pubnub();
+				var station_client = that;
+				socket.onopen = function(){
+					station_client.pubnub();
+				}
+				
+				// We do not hook the following callback
+				// - socket.onmessage
 			},
 		});
 	},
