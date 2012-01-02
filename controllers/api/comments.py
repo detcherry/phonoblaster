@@ -123,6 +123,7 @@ class ApiCommentsHandler(BaseHandler):
 				"created": timegm(comment.created.utctimetuple()),
 				"author_key_name": station.key().name(),
 				"author_name": station.name,
+				"author_url": "/" + station.shortname,
 				"admin": comment.admin,
 			}
 		
@@ -133,6 +134,7 @@ class ApiCommentsHandler(BaseHandler):
 				"created": timegm(comment.created.utctimetuple()),
 				"author_key_name": user.key().name(),
 				"author_name": user.first_name + " " + user.last_name,
+				"author_url": "/user/" + user.key().name(),
 				"admin": comment.admin,
 			}
 

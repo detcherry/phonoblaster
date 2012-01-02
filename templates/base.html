@@ -68,7 +68,7 @@
 					});
 				},
 				
-				// Convert seconds since epoch into a beautiful string
+				// Converts seconds since epoch into a human readable time
 				convert: function(time){					
 					var date = new Date(parseInt(time)*1000);
 					var hours = parseInt(date.getHours());
@@ -82,6 +82,17 @@
 					
 					var displayed_time = hours +":"+minutes;
 					return displayed_time;					
+				},
+				
+				// Converts seconds of a duration into a human readable duration
+				convertDuration: function(duration){
+					var seconds = parseInt(duration,10) % 60;
+					var minutes = (parseInt(duration, 10) - seconds)/60
+					if(seconds < 10){
+						seconds = "0"+ seconds.toString();
+					}
+					var displayed_duration = minutes.toString() + ":" + seconds;
+					return displayed_duration;
 				},
 				
 			}

@@ -216,7 +216,6 @@ input#comment{
 
 .comment .time{
 	margin-top:-1px;
-	xmargin-top:-4px;
 	color:#CCC;
 	font-size:11px;
 	line-height: 10px;
@@ -228,9 +227,20 @@ input#comment{
 	width:18px;
 }
 
-#popup-search{
+#search-overlay{
+	display:none;
 	position:fixed;
 	z-index:2;
+	top:0px;
+	bottom:0px;
+	right:0px;
+	left:0px;
+}
+
+#search-tab{
+	display:none;
+	position:fixed;
+	z-index:3;
 	margin-top:27px;
 	margin-left:-24px;
 	height:254px;
@@ -238,4 +248,10 @@ input#comment{
 	background:white;
 	border:1px solid #DDD;
 	overflow-y:scroll;
+}
+
+#search-tab .tab-items{
+	margin-top:0px;
+	width:285px;
+	border:none;
 }

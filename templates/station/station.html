@@ -73,46 +73,48 @@
 {% endblock %}
 
 {% block right-column %}
-	<div class="fixed">
-		<div id="station-status">
-			{% if station_proxy.on_air %}
-				<span class="btn danger">On air</span>
-				<p><span class="middle"><strong>{{ station_proxy.station.name }}</strong> is <em>on air</em></span></p>
-			{% else %}
-				<span class="btn">Off air</span>
-				<p><span class="middle"><strong>{{ station_proxy.station.name }}</strong> is <em>off air</em></span></p>
-			{% endif %}
-			<div id="queue-status">
-				<span class="grey circle"></span>
-				<span class="grey circle"></span>
-				<span class="grey circle"></span>
-				<span class="grey circle"></span>
-				<span class="grey circle"></span>
-				<span class="grey circle"></span>
-				<span class="grey circle"></span>
-				<span class="grey circle"></span>
-				<span class="grey circle"></span>
-				<span class="grey circle"></span>
-				<div id="queue-counter"><span>0</span>/10</div>
-			</div>
+<!--<div class="fixed">-->
+	<div id="station-status" class="fixed">
+		{% if station_proxy.on_air %}
+			<span class="btn danger">On air</span>
+			<p><span class="middle"><strong>{{ station_proxy.station.name }}</strong> is <em>on air</em></span></p>
+		{% else %}
+			<span class="btn">Off air</span>
+			<p><span class="middle"><strong>{{ station_proxy.station.name }}</strong> is <em>off air</em></span></p>
+		{% endif %}
+		<div id="queue-status">
+			<span class="grey circle"></span>
+			<span class="grey circle"></span>
+			<span class="grey circle"></span>
+			<span class="grey circle"></span>
+			<span class="grey circle"></span>
+			<span class="grey circle"></span>
+			<span class="grey circle"></span>
+			<span class="grey circle"></span>
+			<span class="grey circle"></span>
+			<span class="grey circle"></span>
+			<div id="queue-counter"><span>0</span>/10</div>
 		</div>
-		<ul id="tabs">
-			<li><a href="#queue-tab" class="current">Queue</a></li>
-			{% if is_admin %}
-			<li style="width:86px;"><a href="#suggestions-tab" style="width:72px">Suggestions</a></li>
-			<li style="width:80px;"><a href="#favorites-tab" style="width:66px">Favorites</a></li>	
-			<li><a href="#library-tab">Library</a></li>
-			{% endif %}
-		</ul>
 	</div>
+<!--</div>-->
+	<ul id="tabs" class="fixed">
+		<li><a href="#queue-tab" class="current">Queue</a></li>
+		{% if is_admin %}
+		<li style="width:86px;"><a href="#suggestions-tab" style="width:72px">Suggestions</a></li>
+		<li style="width:80px;"><a href="#favorites-tab" style="width:66px">Favorites</a></li>	
+		<li><a href="#library-tab">Library</a></li>
+		{% endif %}
+	</ul>
 	<div id="tab-content-wrap">
 		<div id="queue-tab" class="tab-content">
 			<div id="queue-header" class="fixed">
-				{% if is_admin %}
-				<span id="search-icon"></span><input type="text" value="Add a track" id="search-add"/>
-				{% else %}
-				<span id="search-icon"></span><input type="text" value="Suggest a track" id="search-suggest"/>
-				{% endif %}
+				<span id="search-icon"></span>
+				<input type="text" value="{% if is_admin %}Add a track{% else %}Suggest a track{% endif %}" id="search"/>
+				<div id="search-overlay"></div>
+				<div id="search-tab">
+					<div class="tab-items">
+					</div>
+				</div>
 			</div>
 			<div class="tab-items">
 				<div class="init">No track in the station queue</div>
@@ -144,8 +146,14 @@
 <script type="text/javascript" src="/_ah/channel/jsapi"></script>
 <!-- Station -->
 <script type="text/javascript" src="/static/js/library/json2.js"></script>
-<script type="text/javascript" src="/static/js/station/tab.js"></script>
+<script type="text/javascript" src="/static/js/library/tab.js"></script>
 <script type="text/javascript" src="static/plugins/fancybox/source/jquery.fancybox.pack.js"></script>
+<script type="text/javascript" src="/static/js/station/presence.js"></script>
+<script type="text/javascript" src="/static/js/station/comment.js"></script>
+<script type="text/javascript" src="/static/js/station/tab.js"></script>
+<script type="text/javascript" src="/static/js/station/search.js"></script>
+<script type="text/javascript" src="/static/js/station/status.js"></script>
+<script type="text/javascript" src="/static/js/station/queue.js"></script>
 <script type="text/javascript" src="/static/js/station/station.js"></script>
 <script type="text/javascript">
 	/*--- Reset ---*/

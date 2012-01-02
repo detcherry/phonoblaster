@@ -76,6 +76,7 @@ class StationApi():
 				"created": timegm(presence.created.utctimetuple()),
 				"listener_key_name": self.station.key().name(),
 				"listener_name": self.station.name,
+				"listener_url": "/"+ self.station.shortname,
 				"admin": True,
 			})
 		
@@ -89,6 +90,7 @@ class StationApi():
 				"created": timegm(presence.created.utctimetuple()),
 				"listener_key_name": user.key().name(),
 				"listener_name": user.first_name + " " + user.last_name,
+				"listener_url": "/user/" + user.key().name(),
 				"admin": False,
 			})
 		
@@ -99,6 +101,7 @@ class StationApi():
 				"created": timegm(presence.created.utctimetuple()),
 				"user_key_name": None,
 				"user_name": None,
+				"listener_url": None,
 				"admin": False,
 			})
 			
