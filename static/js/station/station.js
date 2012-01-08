@@ -3,6 +3,8 @@ function StationClient(user, admin, station){
 	this.admin = admin;
 	this.station = station;
 	this.channel_id = null;
+	this.time_delta = null;
+	
 	this.presence_manager = null;
 	this.comment_manager = null;
 	this.status_manager = null;
@@ -16,7 +18,7 @@ StationClient.prototype = {
 	// Add a new presence: request Client ID and Token from Google App Engine
 	presence: function(){
 		var that = this;
-				
+		
 		$.ajax({
 			url: "/api/presences",
 			type: "POST",
@@ -72,13 +74,20 @@ StationClient.prototype = {
 		})
 	},
 	
-	// Fetch presences, comments and queue after connection to pubnub
+	// Fetch presences, comments and queue after connection to pubnub + init all the tabs
 	fetch: function(){
 		this.presence_manager = new PresenceManager(this);
-		this.comment_manager = new CommentManager(this);
-		this.status_manager = new StatusManager(this);
-		this.search_manager = new SearchManager(this);
-		this.queue_manager = new QueueManager(this);
+		
+		// Once time has been initialized, fetch everything
+		var that = this;
+		PHB.time(function(){
+			that.comment_manager = new CommentManager(that);
+			that.queue_manager = new QueueManager(that);
+
+			that.suggestion_manager = new SuggestionManager(that);
+			that.search_manager = new SearchManager(that);
+			that.status_manager = new StatusManager(that);
+		})
 	},
 	
 	// Dispatch incoming messages according to their content
@@ -98,6 +107,10 @@ StationClient.prototype = {
 		if(event == "new-comment"){
 			PHB.log("new-comment");
 			this.comment_manager.add(content);
+		}
+		if(event == "new-broadcast"){
+			PHB.log("new-broadcast");
+			this.queue_manager.add(content);
 		}
 	},
 	

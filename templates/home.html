@@ -1,7 +1,6 @@
 {% extends "base.html" %}
 {% block style %}
 	<link type="text/css" rel="stylesheet" href="/static/css/home.css">
-	<link rel="stylesheet" href="static/plugins/fancybox/source/jquery.fancybox.css" type="text/css" media="screen" />
 {% endblock %}
 
 {% block main %}
@@ -98,6 +97,5 @@
 {% block script %}
 	{% if not user_stations and user_contributions %}
 		<script type="text/javascript" src="/static/js/home.js"></script>
-		<script type="text/javascript" src="static/plugins/fancybox/source/jquery.fancybox.pack.js"></script>
 	{% endif %}
 {% endblock %}

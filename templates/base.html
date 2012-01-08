@@ -15,6 +15,8 @@
 		<link rel="shortcut icon" href="/static/images/favicon.ico" type="image/x-icon" />
 		<!-- Bootstrap stylesheet -->
 		<link type="text/css" rel="stylesheet" href="/static/plugins/bootstrap/bootstrap.min.css">
+		<!-- Fancybox stylesheet -->
+		<link rel="stylesheet" href="static/plugins/fancybox/source/jquery.fancybox.css" type="text/css" media="screen"/>
 		<!-- Base stylesheet -->
 		<link type="text/css" rel="stylesheet" href="/static/css/base.css">
 		<!-- Additional stylesheets -->
@@ -36,11 +38,13 @@
 		{% endblock %}
 		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.0/jquery.min.js"></script>
 		<!-- Additional scripts -->
+		<script type="text/javascript" src="static/plugins/fancybox/source/jquery.fancybox.pack.js"></script>
 		<script type="text/javascript">
 			// Global object
 			function PhB(){
 				this.facebook_app_id = "{{ facebook_app_id }}";
 				this.version = "{{ version }}";
+				this.time_delta = null;
 			}
 			PhB.prototype = {
 				// Workaround for Firefox 3.6 and older versions
@@ -63,9 +67,36 @@
 						},
 						success: function(json){
 							var time = json.time;
-							callback(time);
+							that.time_delta = Date.parse(new Date())/1000 - time;
+							callback();
 						},
 					});
+				},
+				
+				now: function(){
+					var now = Date.parse(new Date())/1000 - this.time_delta
+					return now;
+				},
+				
+				error: function(error){
+					this.popup(
+						$("<div/>")
+							.addClass("phb-popup-error")
+							.append($("<img/>").attr("src", "/static/images/icon.png"))
+							.append($("<p/>").html("An error occured: " + error + " <br/>Please try again later."))
+						,{
+						autoSize: false,
+						width: 400,
+						maxWidth: 400,
+						height: 100,
+						maxHeight: 100,
+						topRatio: 0.3,
+					});
+				},
+				
+				// Trigger a popup containing HTML
+				popup: function(html, options){
+					$.fancybox(html, options);
 				},
 				
 				// Converts seconds since epoch into a human readable time

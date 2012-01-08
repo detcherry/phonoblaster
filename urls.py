@@ -1,10 +1,10 @@
 import os
+import logging
+
 from google.appengine.dist import use_library
 use_library('django', '1.2')
 from django.conf import settings
 settings.configure(INSTALLED_APPS=('settings',))
-
-import logging
 
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp.util import run_wsgi_app
@@ -15,7 +15,7 @@ from controllers.station.create import StationCreateHandler
 from controllers.station.check import StationCheckHandler
 from controllers.station.station import StationHandler
 from controllers.station.broadcasts import StationBroadcastsHandler
-from controllers.api.queue import GetQueueHandler
+from controllers.api.queue import ApiQueueHandler
 from controllers.api.presences import ApiPresencesHandler
 from controllers.api.comments import ApiCommentsHandler
 from controllers.api.now import ApiNowHandler
@@ -27,7 +27,7 @@ application = webapp.WSGIApplication(
 		('/station/check', StationCheckHandler),
 		('/(\w+)', StationHandler),
 		('/(\w+)/broadcasts', StationBroadcastsHandler),
-		('/api/queue', GetQueueHandler),
+		('/api/queue', ApiQueueHandler),
 		('/api/presences', ApiPresencesHandler),
 		('/api/comments', ApiCommentsHandler),
 		('/api/now', ApiNowHandler),

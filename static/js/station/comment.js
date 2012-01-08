@@ -48,20 +48,21 @@ CommentManager.prototype = {
 		
 	},
 	
+	// Incoming comments received via PubNub or during Initialization
 	add: function(new_comment){		
 		var that = this;
 		
-		following_comments = [];
-		previous_comments = this.comments;
+		var following_comments = [];
+		var previous_comments = this.comments;
 		var previous_comment = null;
 		
 		// If comments array empty, just add the new comment to the list
-		if(that.comments.length == 0){
+		if(this.comments.length == 0){
 			this.comments.push(new_comment)
 		}
 		else{
 			// Browse the comments list and insert the comment at the right place
-			for(i=0, c=that.comments.length; i<c; i++){
+			for(var i=0, c=that.comments.length; i<c; i++){
 				var comment = that.comments[i];
 
 				// The new comment has been posted before (NOT OK)
@@ -79,26 +80,23 @@ CommentManager.prototype = {
 		}
 		
 		// Insert new comment 
-		this.UIDisplay(new_comment, previous_comment)
+		this.UIAdd(new_comment, previous_comment);
 	},
 	
-	UIDisplay: function(new_comment, previous_comment){
-		var re = RegExp("[.]","g");
-		var new_comment_selector = "#" + new_comment.key_name.replace(re, "\\.");
-		
+	UIAdd: function(new_comment, previous_comment){
 		// If the comment was initially displayed, we don't care (honey badger style) and remove it
-		$(new_comment_selector).remove();
+		this.UIRemove(new_comment);
 		
 		if(previous_comment){
 			// If there was a previous comment, we insert the new comment just before
+			var re = RegExp("[.]","g");
 			var previous_comment_selector = "#" + previous_comment.key_name.replace(re, "\\.");
 			this.UIInsert(new_comment, previous_comment_selector)
 		}
 		else{
 			// Else, we have to append the comment at the top
-			this.UILocalDisplay(new_comment)
-		}
-		
+			this.UIPrepend(new_comment)
+		}	
 	},
 	
 	listen: function(){
@@ -125,21 +123,18 @@ CommentManager.prototype = {
 		$("form#comment").submit(function(){
 			var content = $("input[id='comment']").val();
 			
-			if(content.length > 0){
+			if(content.length > 0){	
+				// Build comment
+				var local_comment = that.localBuild(content);
 				
-				PHB.time(function(time){
-					// Build comment
-					var local_comment = that.localBuild(content, time);
+				// Add comment to the top
+				that.UIPrepend(local_comment);
 
-					// Add comment at the top
-					that.UILocalDisplay(local_comment);
+				// Empty the comment box
+				$("input[id='comment']").val("");
 
-					// Empty the comment box
-					$("input[id='comment']").val("");
-
-					// post comment to everyone
-					that.post(local_comment);
-				})
+				// post comment to everyone
+				that.post(local_comment);
 			}
 			
 			return false;
@@ -147,11 +142,12 @@ CommentManager.prototype = {
 		
 	},
 	
-	localBuild: function(content, time){
+	localBuild: function(content){
 		
 		// Build a comment key name
 		var channel_id = this.station_client.channel_id;
-		var comment_key_name = channel_id + ".comment." + time;
+		var created = PHB.now();
+		var comment_key_name = channel_id + ".comment." + created;
 		
 		if(this.station_client.admin){
 			var author_key_name = this.station_client.station.key_name;
@@ -174,7 +170,7 @@ CommentManager.prototype = {
 			author_name: author_name,
 			author_url: author_url,
 			admin: admin,
-			created: time,
+			created: created,
 		}
 
 		return local_comment;
@@ -214,7 +210,7 @@ CommentManager.prototype = {
 		
 	},
 	
-	UILocalDisplay: function(new_comment){
+	UIPrepend: function(new_comment){
 		this.UIBuild(new_comment, function(new_comment_jquery_object){
 			// Append new comment div at the top of the comments zone
 			$("#comments-zone").prepend(new_comment_jquery_object)
@@ -226,6 +222,12 @@ CommentManager.prototype = {
 			// Insert new comment div just before the previous comment div
 			new_comment_jquery_object.insertBefore(previous_comment_selector)
 		})
+	},
+	
+	UIRemove: function(comment){
+		var re = RegExp("[.]","g");
+		var comment_selector = "#" + comment.key_name.replace(re, "\\.");
+		$(comment_selector).remove();
 	},
 	
 	post: function(new_comment){
@@ -242,10 +244,15 @@ CommentManager.prototype = {
 				content: new_comment.content,
 			},
 			error: function(xhr, status, error) {
-				PHB.log('An error occurred: ' + error + '\nPlease retry.');
+				that.UIRemove(new_comment);
+				PHB.error(error);
 			},
 			success: function(json){
-				PHB.log(json.response)
+				if(!json.response){
+					var error = "POST comment response false"
+					that.UIRemove(new_comment);
+					PHB.error(error);
+				}
 			},
 		});		
 	},

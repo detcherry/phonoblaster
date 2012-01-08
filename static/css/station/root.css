@@ -154,7 +154,7 @@ div#volume{
 	width:18px;
 }
 
-#current-track{
+#live-broadcast{
 	padding:4px;
 	width:500px;
 	height:64px;
@@ -162,26 +162,26 @@ div#volume{
 	border-top:none;
 }
 
-#current-track .clip{
+#live-broadcast .clip{
 	height:64px;
 	width:118px;
 }
 
-#current-track .clip img{
+#live-broadcast .clip img{
 	height:88px;
 }
 
-#current-track h3{
+#live-broadcast h3{
 	padding:8px;
 	padding-top:4px;
 	padding-bottom:4px;
 }
 
-#current-track .fb-like{
+#live-broadcast .fb-like{
 	padding-top:2px;
 }
 
-#current-track .title{
+#live-broadcast .title{
 	padding:8px;
 	padding-top:4px;
 	width:362px;
@@ -189,7 +189,7 @@ div#volume{
 	overflow:hidden;
 }
 
-#current-track .title span{
+#live-broadcast .title span{
 	height:30px;
 }
 
@@ -434,7 +434,7 @@ div#volume{
 	color:#B3B3B3;
 }
 
-#right-column .track .queue-actions{
+#right-column .track .process-actions{
 	float:right;
 }
 

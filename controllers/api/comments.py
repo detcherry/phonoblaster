@@ -1,7 +1,6 @@
 import logging
 from datetime import datetime
 from datetime import timedelta
-from calendar import timegm
 from django.utils import simplejson as json
 
 from google.appengine.ext import db
@@ -48,8 +47,10 @@ class ApiCommentsHandler(BaseHandler):
 		new_comment.put()
 		logging.info("New comment put to the datastore")
 		
-		# Get the extended comment
-		extended_comment = self.get_extended_comment(new_comment, self.station, self.user)
+		if(admin):
+			extended_comment = Comment.get_extended_comment(new_comment, self.station, None)
+		else:
+			extended_comment = Comment.get_extended_comment(new_comment, None, self.user)
 		
 		# Add a taskqueue to warn everyone
 		new_comment_data = {
@@ -76,66 +77,5 @@ class ApiCommentsHandler(BaseHandler):
 			q.order("created")
 			comments = q.fetch(50) # Arbitrary number
 
-			# Format extended comments
-			self._comments = self.get_extended_comments(self.station, comments)
+			self._comments = Comment.get_extended_comments(comments, self.station)
 		return self._comments
-	
-	# Format comments into extended comments
-	def get_extended_comments(self, station, comments):
-		extended_comments = []
-		
-		if(comments):
-			
-			admin_comments = []
-			regular_comments = []
-			
-			# Dispatch comments in admin and regular
-			for c in comments:
-				if(c.admin):
-					admin_comments.append(c)
-				else:
-					regular_comments.append(c)
-			
-			# First we can format admin comments
-			for comment in admin_comments:
-				extended_comment = self.get_extended_comment(comment, station, None)
-				extended_comments.append(extended_comment)
-			
-			# For regular comments, we need to fetch the user
-			user_keys = [Comment.user.get_value_for_datastore(c) for c in regular_comments]
-			users = db.get(user_keys)
-			
-			# Then we format the regular comments
-			for comment, user in zip(regular_comments, users):
-				extended_comment = self.get_extended_comment(comment, station, user)
-				extended_comments.append(extended_comment)
-
-		return extended_comments
-	
-	# Format a comment and a user into an extended comment entitity
-	def get_extended_comment(self, comment, station, user):
-		extended_comment = None
-		
-		if(comment.admin):
-			extended_comment = {
-				"key_name": comment.key().name(),
-				"content": comment.content,
-				"created": timegm(comment.created.utctimetuple()),
-				"author_key_name": station.key().name(),
-				"author_name": station.name,
-				"author_url": "/" + station.shortname,
-				"admin": comment.admin,
-			}
-		
-		else:
-			extended_comment = {
-				"key_name": comment.key().name(),
-				"content": comment.content,
-				"created": timegm(comment.created.utctimetuple()),
-				"author_key_name": user.key().name(),
-				"author_name": user.first_name + " " + user.last_name,
-				"author_url": "/user/" + user.key().name(),
-				"admin": comment.admin,
-			}
-
-		return extended_comment

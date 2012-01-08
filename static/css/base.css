@@ -132,4 +132,19 @@ img.loader{
 	border:1px solid #DDD;
 }
 
+.phb-popup-error img{
+	float:left;
+	margin:20px;
+	width:80px;
+	height:80px;
+}
+
+.phb-popup-error p{
+	float:left;
+	color:#444;
+	font:14px;
+	margin:20px;
+	margin-top:40px;
+}
+
 

@@ -83,7 +83,7 @@ PresenceManager.prototype = {
 		);
 
 		// Check if the new presence is not a duplicate of an existing presence
-		for(i=0, c=existing_presences.length; i<c; i++){
+		for(var i=0, c=existing_presences.length; i<c; i++){
 			var existing_presence = existing_presences[i];
 			if(existing_presence.listener_key_name == new_presence.listener_key_name){
 				duplicate = true;
@@ -164,7 +164,7 @@ PresenceManager.prototype = {
 
 		// We gonna check first in the duplicate list
 		var that = this;
-		for(i=0, c=that.duplicate_presences.length; i<c; i++){
+		for(var i=0, c=that.duplicate_presences.length; i<c; i++){
 			var duplicate_presence = that.duplicate_presences[i];
 			if(duplicate_presence.channel_id == presence_gone.channel_id){
 				that.duplicate_presences.splice(i,1);
@@ -195,7 +195,7 @@ PresenceManager.prototype = {
 			}
 			
 			// Once we pick up the right user list, we remove the presence
-			for(i=0, c=correct_presences_list.length; i<c; i++){
+			for(var i=0, c=correct_presences_list.length; i<c; i++){
 				var presence = correct_presences_list[i];
 				if(presence.channel_id == presence_gone.channel_id){
 					correct_presences_list.splice(i,1);
@@ -218,7 +218,7 @@ PresenceManager.prototype = {
 			
 			// If the same user was in the duplicate presences, we put it back in the correct list
 			if(this.isAuthenticated(presence_gone)){
-				for(i=0, c=that.duplicate_presences.length; i<c; i++){
+				for(var i=0, c=that.duplicate_presences.length; i<c; i++){
 					var duplicate_presence = that.duplicate_presences[i];
 					if(duplicate_presence.listener_key_name == presence_gone.listener_key_name){
 						// We remove the presence from the duplicates
@@ -276,7 +276,7 @@ PresenceManager.prototype = {
 	isFriend: function(presence){
 		var response = false;
 		var that = this;
-		for(i=0, c=that.friends.length; i<c; i++){
+		for(var i=0, c=that.friends.length; i<c; i++){
 			var friend = that.friends[i]
 			if(presence.listener_key_name == friend.id){
 				response = true;

@@ -1,5 +1,10 @@
 import logging
 import os
+import re
+
+import gdata.youtube
+import gdata.youtube.service
+import gdata.alt.appengine
 
 from datetime import datetime
 from datetime import timedelta
@@ -11,6 +16,8 @@ from google.appengine.api import memcache
 from models.db.station import Station
 from models.db.presence import Presence
 from models.db.comment import Comment
+from models.db.broadcast import Broadcast
+from models.db.track import Track
 
 MEMCACHE_STATION_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".station."
 MEMCACHE_STATION_QUEUE_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".queue.station."
@@ -46,67 +53,7 @@ class StationApi():
 	@property
 	def on_air(self):
 		return False
-
-	# Format an extended presence (what is stored in memcache)
-	def format_extended_presences(self, presences):
-		extended_presences = []
-		
-		admins_presences = []
-		authenticated_presences = []
-		unauthenticated_presences = []
-		
-		user_keys = []
-		
-		# Dispatch admin, authenticated and unauthenticated presences
-		for p in presences:
-			if(p.admin):
-				admins_presences.append(p)
-			else:
-				user_key = Presence.user.get_value_for_datastore(p)
-				if user_key:
-					authenticated_presences.append(p)
-					user_keys.append(user_key)
-				else:
-					unauthenticated_presences.append(p)
-		
-		# Add the extended presences for admins
-		for presence in admins_presences:
-			extended_presences.append({
-				"channel_id": presence.key().name(),
-				"created": timegm(presence.created.utctimetuple()),
-				"listener_key_name": self.station.key().name(),
-				"listener_name": self.station.name,
-				"listener_url": "/"+ self.station.shortname,
-				"admin": True,
-			})
-		
-		# Retrieve users of authenticated presences
-		users = db.get(user_keys)
-		
-		# Add the extended presences for authenticated users
-		for presence, user in zip(authenticated_presences, users):
-			extended_presences.append({
-				"channel_id": presence.key().name(),
-				"created": timegm(presence.created.utctimetuple()),
-				"listener_key_name": user.key().name(),
-				"listener_name": user.first_name + " " + user.last_name,
-				"listener_url": "/user/" + user.key().name(),
-				"admin": False,
-			})
-		
-		# Add the extended presences for unauthenticated users
-		for presence in unauthenticated_presences:
-			extended_presences.append({
-				"channel_id": presence.key().name(),
-				"created": timegm(presence.created.utctimetuple()),
-				"user_key_name": None,
-				"user_name": None,
-				"listener_url": None,
-				"admin": False,
-			})
-			
-		return extended_presences
-
+	
 	# Return the list of users connected to a station
 	@property
 	def presences(self):
@@ -123,7 +70,7 @@ class StationApi():
 				presences = q.fetch(1000) # Max number of entities App Engine can fetch in one call
 				
 				# Format extended presences
-				self._presences = self.format_extended_presences(presences)
+				self._presences = Presence.get_extended_presences(presences, self.station)
 				
 				# Put extended presences in memcache
 				memcache.set(self._memcache_station_presences_id, self._presences)
@@ -155,8 +102,8 @@ class StationApi():
 		extended_presence = None
 		if(presence):
 			# Format presence into extended presence
-			extended_presence = self.format_extended_presences([presence])[0]
-
+			extended_presence = Presence.get_extended_presences([presence], self.station)[0]
+			
 			# Add it to the list in memcache
 			self.presences.append(extended_presence)
 
@@ -174,17 +121,16 @@ class StationApi():
 	# Remove a presence from a station
 	def remove_presence(self, channel_id):
 		# Get presence from datastore 
-		presence = Presence.get_by_key_name(channel_id)
+		presence_gone = Presence.get_by_key_name(channel_id)
 		
-		presence_gone = None
-		if(presence):	
+		if(presence_gone):	
 			# Format presence gone into extended presence
-			presence_gone = self.format_extended_presences([presence])[0]
+			extended_presence = Presence.get_extended_presences([presence_gone], self.station)[0]
 
 			# Update presences list
 			updated_presences = []
 			for p in self.presences:
-				if(p["channel_id"] != presence_gone["channel_id"]):
+				if(p["channel_id"] != extended_presence["channel_id"]):
 					updated_presences.append(p)
 
 			# Put new list in proxy
@@ -194,15 +140,144 @@ class StationApi():
 			logging.info("Presence removed from memcache")
 			
 			# Update presence in datastore
-			presence.ended = datetime.now()
-			presence.put()
+			presence_gone.ended = datetime.now()
+			presence_gone.put()
 			logging.info("Presence updated in datastore")
 
-		return presence_gone
+		return extended_presence
 	
 	# Returns the current station queue
 	@property
 	def queue(self):
-		return "queue"
+		if not hasattr(self, "_queue"):
+			self._queue = memcache.get(self._memcache_station_queue_id)
+			
+			if self._queue is None:
+				q = Broadcast.all()
+				q.filter("station", self.station.key())
+				q.filter("expired >", datetime.utcnow())
+				q.order("expired")
+		 		broadcasts = q.fetch(10)
 		
+				# Format extended broadcasts
+				self._queue = Broadcast.get_extended_broadcasts(broadcasts, self.station)
 		
+				# Put extended broadcasts in memcache
+				memcache.add(self._memcache_station_queue_id, self._queue)
+				logging.info("Queue loaded in memcache")
+			else:
+				# We probably have to clean the memcache from old tracks
+				cleaned_up_queue = []
+				datetime_now = timegm(datetime.utcnow().utctimetuple())
+				
+				for broadcast in self._queue:
+					if(broadcast["broadcast_expired"] > datetime_now):
+						cleaned_up_queue.append(broadcast)
+				
+				# We only update the memcache if some cleaning up was necessary
+				if(len(self._queue) != len(cleaned_up_queue)):
+					self._queue = cleaned_up_queue
+					memcache.set(self._memcache_station_queue_id, self._queue)
+					logging.info("Queue already in memcache and cleaned up")
+				else:
+					logging.info("Queue already in memcache and no need to clean up")
+
+		return self._queue		
+	
+	# Add a new braodcast to the queue
+	def add_to_queue(self, broadcast, user, admin):
+		extended_broadcast = None
+		if broadcast:
+			room = self.room()
+			if(room == 0):
+				logging.info("Queue full")
+			else:
+				logging.info("Some room in the queue")
+				
+				track = None
+				extended_track = None
+				if(broadcast["track_id"]):
+					track = Track.get_by_id(int(broadcast["track_id"]))
+
+					# If track on Phonoblaster, get extended track from Youtube
+					if(track):
+						logging.info("Track on Phonoblaster")
+						extended_track = Track.get_extended_tracks([track])[0]
+
+				else:
+					youtube_track = None
+					
+					if(broadcast["youtube_id"]):
+						# We check if the track has not been submitted by the same user
+						q = Track.all()
+						q.filter("youtube_id", broadcast["youtube_id"])
+						q.filter("user", user.key())
+						track = q.get()
+						
+						if(track):
+							logging.info("Track on Phonoblaster")
+							extended_track = Track.get_extended_tracks([track])[0]
+
+						# It's the first time the track is submitted by the user
+						else:
+							logging.info("Track not on Phonoblaster")
+							youtube_track = Track.get_youtube_tracks([broadcast["youtube_id"]])[0]
+						
+							# If track on Youtube, save the track on Phonoblaster, generate the extended track
+							if(youtube_track):
+								logging.info("Track on Youtube")
+								track = Track(
+									youtube_id = broadcast["youtube_id"],
+									user = user,
+									station = self.station,
+									admin = admin,
+								)
+								track.put()
+								logging.info("New track put in the datastore.")
+							
+								extended_track = {
+									"track_id": track.key().id(),
+									"track_created": timegm(track.created.utctimetuple()),
+									"track_admin": track.admin,
+									"youtube_id": youtube_track["id"],
+									"youtube_title": youtube_track["title"],
+									"youtube_duration": youtube_track["duration"],
+								}
+				
+				if(track and extended_track):
+					
+					# Get the queue expiration time
+					queue_expiration_time = self.expiration_time()
+					
+					new_broadcast = Broadcast(
+						key_name = broadcast["broadcast_key_name"],
+						admin = admin,
+						track = track.key(),
+						station = self.station.key(),
+						expired = queue_expiration_time + timedelta(0, extended_track["youtube_duration"]),
+					)
+					new_broadcast.put()
+					logging.info("New broadcast put in datastore")
+					
+					extended_broadcast = Broadcast.get_extended_broadcast(new_broadcast, extended_track, self.station, user)						
+					
+					# Put extended broadcasts in memcache
+					self._queue.append(extended_broadcast)
+					memcache.set(self._memcache_station_queue_id, self._queue)
+					logging.info("Queue updated in memcache")			
+					
+		return extended_broadcast
+	
+	# Returns the room in the queue
+	def room(self):
+		return(10 - len(self.queue))
+	
+	# Returns the station expiration time or the current time if there is no track in the tracklist
+	def expiration_time(self):
+		if(len(self.queue) == 0):
+			logging.info("Queue empty")
+			return datetime.utcnow()
+		else:
+			logging.info("Queue not empty")
+			last_broadcast = self.queue[-1]
+			return datetime.utcfromtimestamp(last_broadcast["broadcast_expired"])
