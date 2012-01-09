@@ -260,7 +260,10 @@ QueueManager.prototype = {
 		}
 		
 		// Insert new broadcast in the queue
-		that.UIAdd(new_broadcast, following_broadcast);	
+		this.UIAdd(new_broadcast, following_broadcast);
+		
+		// Update the room
+		this.UIUpdateRoom();
 	},
 	
 	UIAdd: function(new_broadcast, following_broadcast){
@@ -350,7 +353,6 @@ QueueManager.prototype = {
 			
 			// Display the current broadcast in the comments zone
 			this.station_client.comment_manager.UINewBroadcast(this.live_broadcast);
-			
 		}
 		this.nextVideo(time_out);
 	},
@@ -362,6 +364,7 @@ QueueManager.prototype = {
 				that.live_broadcast = null;
 				that.UILiveBroadcastRemove();
 			}
+			that.UIUpdateRoom();
 			that.playNext();
 		}, time_out * 1000)
 	},
@@ -395,6 +398,18 @@ QueueManager.prototype = {
 			$("#counter-left").html("0:00");
 			$("#counter-right").html("-0:00");
 		}, (duration - video_start)*1000);
+	},
+	
+	UIUpdateRoom: function(){
+		var room = this.queue.length;
+		if(this.live_broadcast){
+			room++
+		}
+		$("#queue-status .circle").each(function(index, element){
+			if(index < room){
+				$(this).removeClass("grey").addClass("black")
+			}
+		})
 	},
 	
 }
