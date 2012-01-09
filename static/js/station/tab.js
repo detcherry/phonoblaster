@@ -58,9 +58,8 @@ TabManager.prototype = {
 	processListen: function(){
 	},
 	
+	// Dispatch if the user is admin (queue) or not (suggest)
 	process: function(btn, to_submit){
-		this.UIProcess(btn);
-		
 		// If station admin it's a broadcast
 		if(this.station_client.admin){
 			var process_manager = this.station_client.queue_manager;
@@ -69,41 +68,7 @@ TabManager.prototype = {
 		else{
 			var process_manager = this.station_client.suggestion_manager;
 		}
-		
-		var that = this
-		process_manager.submit(to_submit, function(response){
-			that.UIProcessCallback(btn, response);
-		});
-	},
-	
-	// UI events when queue/suggest
-	UIProcess: function(btn){
-		var btn_content = btn.html();
-		
-		if(btn_content == "Queue"){
-			var new_btn_content = "Queued";
-		}
-		else{
-			var new_btn_content = "Suggested";
-		}		
-		
-		btn.addClass("success")
-		btn.html(new_btn_content)
-	},
-	
-	// Queue/suggest events callbacks
-	UIProcessCallback: function(btn, response){
-		var btn_content = btn.html();
-		
-		if(btn_content == "Queued"){
-			var new_btn_content = "Queue";
-		}
-		else{
-			var new_btn_content = "Suggest";
-		}
-		
-		btn.removeClass("success");
-		btn.html(new_btn_content);
+		process_manager.submit(btn, to_submit);
 	},
 	
 	// Build the div for the track

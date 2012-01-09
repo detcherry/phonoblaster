@@ -20,18 +20,72 @@ function QueueManager(station_client){
 
 QueueManager.prototype = {
 	
+	room: function(){
+		var response = true;
+		var room = this.queue.length;
+		if(this.live_broadcast){
+			room++
+		}
+		if(room > 9){
+			response = false;
+		}
+		return response;
+	},
+	
 	// Submit a track to the queue (Broadcast a track)
-	submit: function(track, callback){
-		var new_broadcast = this.prePostBuild(track);
+	submit: function(btn, track){
+		var room = this.room()
+		if(room){			
+			var new_broadcast = this.prePostBuild(track);
+			
+			// Display "queued" message
+			this.UISubmit(btn);
+			
+			// Append the track locally
+			this.UIAppend(new_broadcast);
 
-		// Append the track locally
-		this.UIAppend(new_broadcast);
-
-		// POST request to the server
-		var that = this;
-		this.post(new_broadcast, function(response){
-			that.postCallback(new_broadcast, response, callback);
-		});
+			// POST request to the server
+			var that = this;
+			this.post(new_broadcast, function(response){
+				that.postCallback(new_broadcast, btn, response);
+			});
+		}
+		else{
+			this.UIFull(btn)
+		}
+	},
+	
+	// If room in the queue, display queued 
+	UISubmit: function(btn){
+		btn.addClass("success")
+		btn.html("Queued")
+	},
+	
+	// If no room in the queue, display full
+	UIFull: function(btn){
+		btn.addClass("danger")
+		btn.html("Full")
+		
+		setTimeout(function(){
+			btn.removeClass("danger")
+			btn.html("Queue")
+		}, 2000)
+	},
+	
+	// Once the track has been submitted, we display an error message or nothing
+	postCallback: function(broadcast, btn, response){
+		if(!response){
+			that.UIRemove(broadcast)
+			PHB.error("New broadcast has not been published")
+		}
+		
+		this.UISubmitCallback(btn)
+	},
+	
+	// Once the submit action is completed, display the initial message
+	UISubmitCallback: function(btn){
+		btn.removeClass("success")
+		btn.html("Queue")
 	},
 	
 	// Before a track is submitted, we finish building it
@@ -46,18 +100,40 @@ QueueManager.prototype = {
 		return new_broadcast
 	},
 	
-	// Once the track has been submitted, we display an error message or nothing
-	postCallback: function(broadcast, response, callback){
-		if(!response){
-			// that.UIRemove(broadcast)
-			// WE NEED TO REMOVE THE BROADCAST THAT HAS FAILED!!
-			PHB.log("New broadcast has not been published")
+	// Wrapper above UIQueueAppend and UILiveBroadcastSet
+	UIAppend: function(new_broadcast){
+		var ui_live_broadcast = this.UILiveBroadcast();
+		if(ui_live_broadcast != ""){
+			this.UIQueueAppend(new_broadcast);
 		}
 		else{
-			PHB.log("New broadcast has been published")
+			this.UILiveBroadcastSet(new_broadcast);
+			this.youtube_manager.init(new_broadcast.youtube_id, 0);
 		}
+	},
+	
+	// Return the current live broadcast in the UI
+	UILiveBroadcast: function(){
+		var broadcast_key_name = $("#live-broadcast .key_name").html();
+		return broadcast_key_name;
+	},
+	
+	// Append a broadcast to the queue tab
+	UIQueueAppend: function(new_broadcast){
+		var ui_live_broadcast = this.UILiveBroadcast();
+		// Display the new broadcast in the queue only if it's not the current live broadcast!
+		if(ui_live_broadcast != new_broadcast.broadcast_key_name){
+			var tab_selector = this.name + " .tab-items";
 
-		callback(response);
+			// Reset the tab in case it contained some init content
+			var init_selector = tab_selector + " .init";
+			$(init_selector).remove();
+
+			var that = this;
+			this.UIBuild(new_broadcast, function(new_broadcast_jquery_object){
+				$(tab_selector).append(new_broadcast_jquery_object);
+			})
+		}
 	},
 	
 	// Put broadcast at the bottom of the video
@@ -65,24 +141,25 @@ QueueManager.prototype = {
 		var track_thumbnail = "http://i.ytimg.com/vi/" + new_broadcast.youtube_id + "/default.jpg"
 		
 		// Display the image
-		$("#live-broadcast span.clip").append($("<img/>").attr("src", track_thumbnail))
+		$("#live-broadcast span.clip").append($("<img/>").attr("src", track_thumbnail));
 		
 		// Display the title
-		$("#live-broadcast span.middle").html(new_broadcast.youtube_title)
+		$("#live-broadcast span.middle").html(new_broadcast.youtube_title);
+		
+		// Put the broadcast key_name in the div
+		$("#live-broadcast .key_name").html(new_broadcast.broadcast_key_name);
 	},
 	
-	// Append a broadcast to the queue tab
-	UIAppend: function(new_broadcast){
-		var tab_selector = this.name + " .tab-items";
-
-		// Reset the tab in case it contained some init content
-		var init_selector = tab_selector + " .init";
-		$(init_selector).remove();
-
-		var that = this;
-		this.UIBuild(new_broadcast, function(new_broadcast_jquery_object){
-			$(tab_selector).append(new_broadcast_jquery_object);
-		})
+	// Empty UI broadcast at the bottom of the video
+	UILiveBroadcastRemove : function(){
+		// Remove image
+		$("#live-broadcast span.clip").empty();
+		
+		// Remove title
+		$("#live-broadcast span.middle").html("No track is being broadcast");
+		
+		// Remove the braodcast key_name in the div
+		$("#live-broadcast .key_name").empty();
 	},
 	
 	// Build the div representing a broadcast
@@ -113,6 +190,7 @@ QueueManager.prototype = {
 						.addClass("title")
 						.append($("<span/>").addClass("middle").html(new_broadcast.youtube_title))
 				)
+				.append($("<a/>").attr("href","#").addClass("cross").html("X"))
 				.append(
 					$("<div/>")
 						.addClass("subtitle")
@@ -197,7 +275,7 @@ QueueManager.prototype = {
 		}
 		else{
 			// Else, we have to append the broadcast at the bottom
-			this.UIAppend(new_broadcast)
+			this.UIQueueAppend(new_broadcast)
 		}
 	},
 	
@@ -240,6 +318,7 @@ QueueManager.prototype = {
 				})
 				
 				that.playNext();
+				
 			},
 		});
 	},
@@ -247,24 +326,75 @@ QueueManager.prototype = {
 	playNext: function(){
 		this.live_broadcast = this.queue.shift();
 		var time_out = 2
-		if(this.live_broadcast){
-			this.UIRemove(this.live_broadcast);
+		if(this.live_broadcast){		
 			var expired_at = parseInt(this.live_broadcast.broadcast_expired,10);
 			var duration = parseInt(this.live_broadcast.youtube_duration,10);
 
 			var time_out = expired_at - PHB.now();
 			var video_start = duration - time_out;
-			this.youtube_manager.init(this.live_broadcast.youtube_id, video_start)
+			
+			// Check if the broadcast is not currently being played before initializing the youtube manager
+			var existing_ui_live_broadcast = this.UILiveBroadcast();
+			if(existing_ui_live_broadcast != this.live_broadcast.broadcast_key_name){
+				this.youtube_manager.init(this.live_broadcast.youtube_id, video_start);
+			}
+			
+			// Remove the display in the queue
+			this.UIRemove(this.live_broadcast);
+			
+			// Display the live broadcast in the UI
+			this.UILiveBroadcastSet(this.live_broadcast);
+			
+			// Display the progress of the video
+			this.UIProgress(video_start, duration);
+			
+			// Display the current broadcast in the comments zone
+			this.station_client.comment_manager.UINewBroadcast(this.live_broadcast);
 			
 		}
 		this.nextVideo(time_out);
 	},
 	
-	nextVideo: function(time_out){
+	nextVideo: function(time_out){		
 		var that = this;
 		setTimeout(function(){
+			if(that.live_broadcast){
+				that.live_broadcast = null;
+				that.UILiveBroadcastRemove();
+			}
 			that.playNext();
 		}, time_out * 1000)
+	},
+	
+	UIProgress: function(video_start, duration){		
+		var x = parseInt(video_start*400/duration);
+		$('#filler').css('width', x.toString() + 'px');
+		
+		$("#filler").clearQueue();
+		$('#filler').animate({
+			width:'400px',
+		}, (duration - video_start)*1000,'linear');
+		
+		var that = this;
+		var time_out = duration - video_start;
+		var elapsed = video_start;
+		
+		// Update a time counter
+		var time_counter = setInterval(function(){
+			time_out--;
+			elapsed++;
+			
+			$("#counter-left").html(PHB.convertDuration(elapsed));
+			$("#counter-right").html("-" + PHB.convertDuration(time_out));
+			
+		}, 1000);
+		
+		// Remove time counter once the broadcast is over
+		setTimeout(function(){
+			clearInterval(time_counter)
+			$("#counter-left").html("0:00");
+			$("#counter-right").html("-0:00");
+		}, (duration - video_start)*1000);
 	},
 	
 }

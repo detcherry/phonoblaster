@@ -145,6 +145,11 @@ body{
 	border:1px solid #DDD;
 }
 
+#filler{
+	height:16px;
+	background-color:#DDD;
+}
+
 div#volume{
 	float:right;
 }
@@ -191,6 +196,10 @@ div#volume{
 
 #live-broadcast .title span{
 	height:30px;
+}
+
+#live-broadcast .key_name{
+	display:none;
 }
 
 /*------- RIGHT COLUMN --------*/
@@ -397,7 +406,8 @@ div#volume{
 }
 
 #right-column .track .title{
-	width:180px;
+	padding-right:4px;
+	width:176px;
 	height:46px;
 	overflow:hidden;
 }
@@ -405,6 +415,19 @@ div#volume{
 #right-column .track .title span{
 	height:46px;
 	line-height:15px;
+}
+
+#right-column .track a.cross{
+	display:block;
+	float:left;
+	height:12px;
+	width:10px;
+	color:#B3B3B3;
+}
+
+#right-column .track a.cross:hover{
+	text-decoration:none;
+	color:#404040;
 }
 
 #right-column .track .subtitle{

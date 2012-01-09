@@ -256,5 +256,56 @@ CommentManager.prototype = {
 			},
 		});		
 	},
+	
+	UINewBroadcast: function(new_broadcast){
+		var track_submitter_picture_url = "https://graph.facebook.com/" + new_broadcast.track_submitter_key_name + "/picture?type=square";
+		var track_thumbnail = "http://i.ytimg.com/vi/" + new_broadcast.youtube_id + "/default.jpg";
+		
+		var mention = $("<p/>").append($("<a/>").attr("href", new_broadcast.track_submitter_url).html(new_broadcast.track_submitter_name))
+		if(this.station_client.station.key_name == new_broadcast.track_submitter_key_name){
+			if(new_broadcast.track_admin){
+				mention.append(" just broadcast a track")
+			}
+			else{
+				var station_url = "/" + this.station_client.station.shortname;
+				var station_name = this.station_client.station.name;
+				mention.append(" suggested a track to ").append($("<a/>").attr("href", station_url).html(station_name))
+			}
+		}
+		else{
+			var station_url = "/" + this.station_client.station.shortname;
+			var station_name = this.station_client.station.name;
+			mention.append(" is currently rebroadcast by ").append($("<a/>").attr("href", station_url).html(station_name))
+		}
+		
+		$("#comments-zone")
+			.prepend(
+				$("<div/>")
+					.addClass("comment")
+					.append($("<img/>").attr("src", track_submitter_picture_url).addClass("station"))
+					.append(
+						$("<div/>")
+							.addClass("content")
+							.append(mention)
+							.append(
+								$("<span/>")
+									.addClass("clip")
+									.append($("<img/>").attr("src", track_thumbnail))
+							)
+							.append(
+								$("<div/>")
+									.addClass("title")
+									.append(
+										$("<span/>")
+											.addClass("middle")
+											.html(new_broadcast.youtube_title)
+									)
+							)
+					)
+					.append($("<div/>").addClass("border"))
+					.append($("<div/>").addClass("time").html(PHB.convert(PHB.now())))
+			)
+		
+	},
 		
 }
