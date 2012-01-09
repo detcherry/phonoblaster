@@ -50,4 +50,3 @@ class ApiQueueHandler(BaseHandler):
 
 		self.response.out.write(json.dumps({ "response": response }))
 		
-		

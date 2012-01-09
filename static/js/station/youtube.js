@@ -31,6 +31,8 @@ YoutubeManager.prototype = {
 
 	},
 	
+	
+	
 }
 
 //Youtube PLAY & VOLUME & ERROR management
@@ -52,3 +54,29 @@ function onYouTubePlayerReady(playerId) {
 function onPlayerError(){	
 	PHB.log("Error: track not working");
 }
+
+$(function(){
+	
+	//Listen to volume events
+	VOLUME = true;
+	$("#volume a").click(function(){
+		if(VOLUME){
+			//turn it off
+			try{ytplayer.mute();}
+			catch(e){PHB.log(e);}
+			VOLUME = false;
+			$("#volume img#on").css("display","none");
+			$("#volume img#off").css("display","inline");
+		}
+		else{
+			//turn it on
+			try{ytplayer.unMute();}
+			catch(e){PHB.log(e);}
+			VOLUME = true;
+			$("#volume img#on").css("display","inline");
+			$("#volume img#off").css("display","none");			
+		}//*/
+		return false;
+	});
+	
+})

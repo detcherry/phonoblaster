@@ -51,7 +51,18 @@ TabManager.prototype = {
 	// Preview events listening
 	previewListen: function(){
 		var preview_selector = this.name + " a.preview"
-		$(preview_selector).fancybox();
+		$(preview_selector).fancybox({
+			beforeShow: function(){
+				try{ytplayer.mute();}
+				catch(e){PHB.log(e);}
+			},
+			afterClose: function(){
+				if(VOLUME){
+					try{ytplayer.unMute();}
+					catch(e){PHB.log(e);}
+				}
+			},
+		});
 	},
 	
 	// Queue/suggest events listening

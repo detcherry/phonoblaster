@@ -75,7 +75,7 @@ QueueManager.prototype = {
 	// Once the track has been submitted, we display an error message or nothing
 	postCallback: function(broadcast, btn, response){
 		if(!response){
-			that.UIRemove(broadcast)
+			this.UIRemove(broadcast)
 			PHB.error("New broadcast has not been published")
 		}
 		
