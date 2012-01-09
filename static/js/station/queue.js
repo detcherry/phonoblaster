@@ -15,10 +15,18 @@ function QueueManager(station_client){
 	this.queue = [];
 	this.youtube_manager = new YoutubeManager();
 	
-	this.get();
+	this.init();
 }
 
 QueueManager.prototype = {
+	
+	init: function(){
+		// GET the queue from the server
+		this.get();
+		
+		// Listen to delete broadcast events
+		this.deleteListen();
+	},
 	
 	room: function(){
 		var response = true;
@@ -33,7 +41,7 @@ QueueManager.prototype = {
 	},
 	
 	// Submit a track to the queue (Broadcast a track)
-	submit: function(btn, track){
+	postSubmit: function(btn, track){
 		var room = this.room()
 		if(room){			
 			var new_broadcast = this.prePostBuild(track);
@@ -217,7 +225,8 @@ QueueManager.prototype = {
 			timeout: 60000,
 			data: {
 				shortname: shortname,
-				broadcast: JSON.stringify(new_broadcast)
+				broadcast: JSON.stringify(new_broadcast),
+				method: "POST",
 			},
 			error: function(xhr, status, error) {
 				callback(false)
@@ -401,6 +410,7 @@ QueueManager.prototype = {
 		}, (duration - video_start)*1000);
 	},
 	
+	// On the upper left, update the number of circles that represents the broadcasts in the queue
 	UIUpdateRoom: function(){
 		var number_of_broadcasts = this.queue.length;
 		if(this.live_broadcast){
@@ -416,6 +426,109 @@ QueueManager.prototype = {
 			}
 		})
 		$("#queue-counter span").html(number_of_broadcasts)
+	},
+	
+	deleteListen: function(){
+		var that = this;
+		$(".track a.cross").live("click", function(){
+			var broadcast_to_delete_key_name = $(this).parent().attr("id");
+			
+			var broadcast_to_delete = null;
+			for(var i=0, c= that.queue.length; i<c; i++){
+				var broadcast = that.queue[i];
+				if(broadcast.broadcast_key_name == broadcast_to_delete_key_name){
+					broadcast_to_delete = broadcast;
+					break;
+				}
+			}
+			
+			that.deleteSubmit(broadcast_to_delete);
+			return false;
+		})
+		
+	},
+	
+	deleteSubmit: function(broadcast_to_delete){
+		//Hide the broadcast
+		this.UIHide(broadcast_to_delete);
+		
+		var that = this;
+		this.delete(broadcast_to_delete, function(response){
+			that.deleteCallback(broadcast_to_delete, response)
+		})
+	},
+	
+	delete: function(broadcast_to_delete, callback){	
+		var shortname = this.station_client.station.shortname
+		var that = this;
+
+		$.ajax({
+			url: that.url,
+			type: "POST", // I use the POST method because no request body can be sent with DELETE
+			dataType: that.datatype,
+			timeout: 60000,
+			data: {
+				shortname: shortname,
+				broadcast: JSON.stringify(broadcast_to_delete),
+				method: "DELETE"
+			},
+			error: function(xhr, status, error) {
+				callback(false);
+			},
+			success: function(json){
+				callback(json.response);
+			},
+		});
+	},
+	
+	deleteCallback: function(broadcast_to_delete, response){
+		if(response){
+			this.UIRemove(broadcast_to_delete);
+			PHB.log("Broadcast has been deleted from the server")
+		}
+		else{
+			this.UIUnHide(broadcast_to_delete);
+			PHB.error("Broadcast hasn't been deleted.")
+		}
+	},
+	
+	UIHide: function(broadcast_to_delete){
+		var re = RegExp("[.]","g");
+		var broadcast_selector = "#queue-tab #" + broadcast_to_delete.broadcast_key_name.replace(re, "\\.");
+		$(broadcast_selector).hide();
+	},
+	
+	UIUnHide: function(broadcast_to_delete){
+		var re = RegExp("[.]","g");
+		var broadcast_selector = "#queue-tab #" + broadcast_to_delete.broadcast_key_name.replace(re, "\\.");
+		$(broadcast_selector).show();
+	},
+	
+	// Incoming broadcast to remove received via PubNub
+	remove: function(broadcast_to_remove){
+		var new_queue = []
+		var that = this
+		for(var i=0, c =that.queue.length; i<c; i++){
+			var broadcast = that.queue[i];
+			if(broadcast.broadcast_key_name == broadcast_to_remove.broadcast_key_name){
+				// Expiration of broadcasts after the broadcast to remove should occur earlier
+				var offset = parseInt(broadcast.youtube_duration, 10);
+				
+				// Edit all the broadcasts after the broadcast to remove
+				for(j=i, d=that.queue.length; j<d; j++){
+					that.queue[j].broadcast_expired = parseInt(that.queue[j].broadcast_expired, 10) - offset;
+				}
+				
+				// Remove the targeted broadcast
+				that.queue.splice(i,1);
+				
+				// Remove the broadcast from the UI
+				that.UIRemove(broadcast_to_remove);
+				
+				break;
+			}
+		}
+		
 	},
 	
 }

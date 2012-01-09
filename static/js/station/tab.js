@@ -79,7 +79,7 @@ TabManager.prototype = {
 		else{
 			var process_manager = this.station_client.suggestion_manager;
 		}
-		process_manager.submit(btn, to_submit);
+		process_manager.postSubmit(btn, to_submit);
 	},
 	
 	// Build the div for the track

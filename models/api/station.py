@@ -281,3 +281,66 @@ class StationApi():
 			logging.info("Queue not empty")
 			last_broadcast = self.queue[-1]
 			return datetime.utcfromtimestamp(last_broadcast["broadcast_expired"])
+	
+	# Remove a broadcast from the queue
+	def remove_from_queue(self, extended_broadcast_to_remove):
+		extended_broadcast_to_delete = None
+		
+		# If the queue has at least 2 broadcasts (given that the first one cannot be removed)
+		if(len(self.queue) > 1):
+			
+			unchanged_extended_broadcasts = []
+			live_extended_broadcast = self.queue[0]
+			extended_broadcasts_to_edit = self.queue[:][1:] # Copy the array
+			
+			for i in range(len(self.queue[1:])): 
+				extended_broadcast = self.queue[1:][i]
+				if(extended_broadcast["broadcast_key_name"] != extended_broadcast_to_remove["broadcast_key_name"]):
+					# Broadcasts must be be featured in the unchanged list and be removed from the list to edit
+					unchanged_extended_broadcasts.append(extended_broadcast)
+					extended_broadcasts_to_edit.pop(0)
+				else:
+					# We have found the broadcast to remove, stop the loop
+					break;
+			
+			logging.info(extended_broadcasts_to_edit)
+			
+			# If broadcast to remove
+			if(len(extended_broadcasts_to_edit) > 0):
+				# Retrieve broadcasts to edit key names
+				extended_broadcasts_to_edit_key_names = []
+				for extended_broadcast in extended_broadcasts_to_edit:
+					extended_broadcasts_to_edit_key_names.append(extended_broadcast["broadcast_key_name"])
+				
+				# Retrieve broadcasts to edit datastore entities
+				broadcasts_to_edit = Broadcast.get_by_key_name(extended_broadcasts_to_edit_key_names)
+				
+				# The first broadcast to edit is the broadcast to delete
+				broadcast_to_delete = broadcasts_to_edit.pop(0)
+				extended_broadcast_to_delete = extended_broadcasts_to_edit.pop(0)
+				expiration_offset = timedelta(0, extended_broadcast_to_delete["youtube_duration"])
+				extended_expiration_offset = int(extended_broadcast_to_delete["youtube_duration"])
+				
+				broadcast_to_delete.delete()
+				logging.info("Broadcast deleted from datastore")
+				
+				# Edit broadcasts
+				broadcasts_edited = []
+				extended_broadcasts_edited = []
+				if(len(broadcasts_to_edit) > 0 and len(extended_broadcasts_to_edit) > 0):
+					for broadcast in broadcasts_to_edit:
+						broadcast.expired -= expiration_offset
+						broadcasts_edited.append(broadcast)
+					
+					for extended_broadcast in extended_broadcasts_to_edit:
+						extended_broadcast["broadcast_expired"] -= extended_expiration_offset
+						extended_broadcasts_edited.append(extended_broadcast)
+					
+					db.put(broadcasts_edited)
+					logging.info("Following broadcasts edited in datastore")
+					
+				self.queue = unchanged_extended_broadcasts + [live_extended_broadcast] + extended_broadcasts_edited
+				memcache.set(self._memcache_station_queue_id, self.queue)
+				logging.info("Queue updated in memcache")
+		
+		return extended_broadcast_to_delete

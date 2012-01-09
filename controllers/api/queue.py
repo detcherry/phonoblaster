@@ -21,20 +21,27 @@ class ApiQueueHandler(BaseHandler):
 	@login_required
 	def post(self):
 		shortname = self.request.get("shortname")
-		new_broadcast = json.loads(self.request.get("broadcast"))
+		broadcast = json.loads(self.request.get("broadcast"))
+		method = self.request.get("method")
+		
 		station_proxy = StationApi(shortname)
 		self.station = station_proxy.station
 		self.user = self.user_proxy.user
 		
 		extended_broadcast = None
 		if(self.user_proxy.is_admin_of(self.station.key().name())):
-			extended_broadcast = station_proxy.add_to_queue(new_broadcast, self.user, True)
+			if(method == "POST"):
+				extended_broadcast = station_proxy.add_to_queue(broadcast, self.user, True)
+				event = "new-broadcast"
+			else:
+				extended_broadcast = station_proxy.remove_from_queue(broadcast)
+				event = "broadcast-removed"
 			
 		response = False
 		if(extended_broadcast):
 			# Add a taskqueue to warn everyone
-			new_broadcast_data = {
-				"event": "new-broadcast",
+			broadcast_data = {
+				"event": event,
 				"content": extended_broadcast,
 			}
 
@@ -42,11 +49,13 @@ class ApiQueueHandler(BaseHandler):
 				url = "/taskqueue/multicast",
 				params = {
 					"station": config.VERSION + "-" + shortname,
-					"data": json.dumps(new_broadcast_data)
+					"data": json.dumps(broadcast_data)
 				}
 			)
 			task.add(queue_name="broadcasts-queue")
 			response = True
 
 		self.response.out.write(json.dumps({ "response": response }))
+		
+		
 		
