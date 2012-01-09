@@ -364,6 +364,7 @@ QueueManager.prototype = {
 				that.live_broadcast = null;
 				that.UILiveBroadcastRemove();
 			}
+			
 			that.UIUpdateRoom();
 			that.playNext();
 		}, time_out * 1000)
@@ -401,15 +402,20 @@ QueueManager.prototype = {
 	},
 	
 	UIUpdateRoom: function(){
-		var room = this.queue.length;
+		var number_of_broadcasts = this.queue.length;
 		if(this.live_broadcast){
-			room++
+			number_of_broadcasts++
 		}
+		
 		$("#queue-status .circle").each(function(index, element){
-			if(index < room){
+			if(index < number_of_broadcasts){
 				$(this).removeClass("grey").addClass("black")
 			}
+			else{
+				$(this).removeClass("black").addClass("grey")
+			}
 		})
+		$("#queue-counter span").html(number_of_broadcasts)
 	},
 	
 }
