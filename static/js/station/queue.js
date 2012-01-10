@@ -408,9 +408,6 @@ QueueManager.prototype = {
 			// Update the room in the UI
 			that.UIUpdateRoom();
 			
-			// Decrement the broadcasts counter
-			that.station_client.broadcasts_counter.decrement();
-			
 			// Get next broadcast and put it live
 			new_broadcast = that.queue.shift();
 			if(new_broadcast){
