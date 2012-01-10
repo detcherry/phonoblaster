@@ -186,31 +186,34 @@ QueueManager.prototype = {
 		else{
 			var mention = "Rebroadcast of"
 		}
-
-
-		callback(
+		
+		var broadcast_div = $("<div/>")
+			.addClass("track")
+			.attr("id", new_broadcast.broadcast_key_name)
+			.append($("<span/>").addClass("square").append($("<img/>").attr("src", track_thumbnail)))
+			.append(
+				$("<div/>")
+					.addClass("title")
+					.append($("<span/>").addClass("middle").html(new_broadcast.youtube_title))
+			)
+		
+		if(this.station_client.admin){
+			broadcast_div.append($("<a/>").attr("href","#").addClass("cross").html("X"))
+		}
+		
+		broadcast_div.append(
 			$("<div/>")
-				.addClass("track")
-				.attr("id", new_broadcast.broadcast_key_name)
-				.append($("<span/>").addClass("square").append($("<img/>").attr("src", track_thumbnail)))
+				.addClass("subtitle")
+				.append($("<div/>").addClass("duration").html(PHB.convertDuration(new_broadcast.youtube_duration)))
 				.append(
 					$("<div/>")
-						.addClass("title")
-						.append($("<span/>").addClass("middle").html(new_broadcast.youtube_title))
-				)
-				.append($("<a/>").attr("href","#").addClass("cross").html("X"))
-				.append(
-					$("<div/>")
-						.addClass("subtitle")
-						.append($("<div/>").addClass("duration").html(PHB.convertDuration(new_broadcast.youtube_duration)))
-						.append(
-							$("<div/>")
-								.addClass("submitter")
-								.append($("<img/>").attr("src", track_submitter_picture_url).addClass("station"))
-								.append($("<span/>").html(mention))
-						)
+						.addClass("submitter")
+						.append($("<img/>").attr("src", track_submitter_picture_url).addClass("station"))
+						.append($("<span/>").html(mention))
 				)
 		)
+		
+		callback(broadcast_div);
 	},
 	
 	// POST the new broadcast to the server
