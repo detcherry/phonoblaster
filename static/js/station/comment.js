@@ -147,7 +147,7 @@ CommentManager.prototype = {
 		// Build a comment key name
 		var channel_id = this.station_client.channel_id;
 		var created = PHB.now();
-		var comment_key_name = channel_id + ".comment." + created;
+		var comment_key_name = channel_id + ".comment." + created + Math.floor(Math.random()*1000).toString();
 		
 		if(this.station_client.admin){
 			var author_key_name = this.station_client.station.key_name;

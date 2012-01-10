@@ -13,14 +13,6 @@ class RootHandler(BaseHandler):
 					self._is_admin = True
 		return self._is_admin
 	
-	@property
-	def broadcasts_number(self):
-		return 0
-	
-	@property
-	def views_number(self):
-		return 0
-	
 	def render(self, template_path, template_values):
 		if template_values:
 			self._template_values = template_values
@@ -28,6 +20,6 @@ class RootHandler(BaseHandler):
 			self._template_values = {}
 		
 		self._template_values["station_proxy"] = self.station_proxy	
-		self._template_values["broadcasts_number"] = self.broadcasts_number
-		self._template_values["views_number"] = self.views_number
+		self._template_values["number_of_broadcasts"] = self.station_proxy.number_of_broadcasts
+		self._template_values["number_of_views"] = 0
 		super(RootHandler, self).render(template_path, self._template_values)

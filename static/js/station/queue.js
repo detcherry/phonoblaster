@@ -276,6 +276,9 @@ QueueManager.prototype = {
 		
 		// Update the room
 		this.UIUpdateRoom();
+		
+		// Increments broadcast counter
+		this.UIBroadcastsIncrement()
 	},
 	
 	UIAdd: function(new_broadcast, previous_broadcast){
@@ -303,20 +306,16 @@ QueueManager.prototype = {
 	},
 	
 	UIQueuePrepend: function(new_broadcast){
-		var ui_live_broadcast = this.UILiveBroadcast();
-		// Display the new broadcast in the queue only if it's not the current live broadcast!
-		if(ui_live_broadcast != new_broadcast.broadcast_key_name){
-			var tab_selector = this.name + " .tab-items:nth-child(2)";
+		var tab_selector = this.name + " .tab-items:nth-child(2)";
 
-			// Reset the tab in case it contained some init content
-			var init_selector = tab_selector + " .init";
-			$(init_selector).remove();
+		// Reset the tab in case it contained some init content
+		var init_selector = tab_selector + " .init";
+		$(init_selector).remove();
 
-			var that = this;
-			this.UIBuild(new_broadcast, function(new_broadcast_jquery_object){
-				$(tab_selector).prepend(new_broadcast_jquery_object);
-			})
-		}
+		var that = this;
+		this.UIBuild(new_broadcast, function(new_broadcast_jquery_object){
+			$(tab_selector).prepend(new_broadcast_jquery_object);
+		})
 	},
 	
 	UIRemove: function(broadcast){
@@ -350,15 +349,14 @@ QueueManager.prototype = {
 					that.add(new_broadcast);
 				})
 				
-				that.playNext();
-				
+				that.playNext();	
 			},
 		});
 	},
 	
 	playNext: function(){
 		this.live_broadcast = this.queue.shift();
-		var time_out = 2
+		var time_out = 1;
 		if(this.live_broadcast){		
 			var expired_at = parseInt(this.live_broadcast.broadcast_expired,10);
 			var duration = parseInt(this.live_broadcast.youtube_duration,10);
@@ -553,6 +551,18 @@ QueueManager.prototype = {
 			}
 		}
 		
+	},
+	
+	UIBroadcastsIncrement: function(){
+		var number_of_broadcasts = parseInt($("#broadcasts strong.number").html(), 10);
+		number_of_broadcasts++;
+		$("#broadcasts strong.number").html(number_of_broadcasts);
+	},
+	
+	UIBroadcastsDecrement: function(){
+		var number_of_broadcasts = parseInt($("#broadcasts strong.number").html(), 10);
+		number_of_broadcasts--;
+		$("#broadcasts strong.number").html(number_of_broadcasts);
 	},
 	
 }

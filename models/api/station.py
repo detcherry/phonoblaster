@@ -12,16 +12,20 @@ from calendar import timegm
 
 from google.appengine.ext import db
 from google.appengine.api import memcache
+from google.appengine.api.taskqueue import Task
 
 from models.db.station import Station
 from models.db.presence import Presence
 from models.db.comment import Comment
 from models.db.broadcast import Broadcast
 from models.db.track import Track
+from models.db.counter import Shard
 
 MEMCACHE_STATION_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".station."
 MEMCACHE_STATION_QUEUE_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".queue.station."
 MEMCACHE_STATION_PRESENCES_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".presences.station."
+COUNTER_OF_BROADCASTS_PREFIX = "station.broadcasts.counter."
+COUNTER_OF_VIEWS_PREFIX = "station.views.counter."
 
 class StationApi():
 	
@@ -30,6 +34,7 @@ class StationApi():
 		self._memcache_station_id = MEMCACHE_STATION_PREFIX + self._shortname
 		self._memcache_station_queue_id = MEMCACHE_STATION_QUEUE_PREFIX + self._shortname
 		self._memcache_station_presences_id = MEMCACHE_STATION_PRESENCES_PREFIX + self._shortname
+		self._counter_of_broadcasts_id = COUNTER_OF_BROADCASTS_PREFIX + self._shortname
 	
 	# Return the station
 	@property
@@ -264,7 +269,9 @@ class StationApi():
 					# Put extended broadcasts in memcache
 					self._queue.append(extended_broadcast)
 					memcache.set(self._memcache_station_queue_id, self._queue)
-					logging.info("Queue updated in memcache")			
+					logging.info("Queue updated in memcache")
+					
+					self.increment_broadcasts_counter()		
 					
 		return extended_broadcast
 	
@@ -340,5 +347,44 @@ class StationApi():
 				self.queue =  [live_extended_broadcast] + unchanged_extended_broadcasts + extended_broadcasts_edited
 				memcache.set(self._memcache_station_queue_id, self.queue)
 				logging.info("Queue updated in memcache")
+				
+				self.decrement_broadcasts_counter()
 		
 		return extended_broadcast_to_delete
+	
+	@property
+	def number_of_broadcasts(self):
+		if not hasattr(self, "_number_of_broadcasts"):
+			shard_name = self._counter_of_broadcasts_id
+			self._number_of_broadcasts = Shard.get_count(shard_name)
+		return self._number_of_broadcasts
+	
+	# Starts a task that will increment the number of broadcasts
+	def increment_broadcasts_counter(self):
+		task = Task(
+			url = "/taskqueue/counter",
+			params = {
+				"shard_name": self._counter_of_broadcasts_id,
+				"method": "increment",
+			}
+		)
+		task.add(queue_name = "counters-queue")
+	
+	# Starts a task that will decrement the number of broadcasts
+	def decrement_broadcasts_counter(self):
+		task = Task(
+			url = "/taskqueue/counter",
+			params = {
+				"shard_name": self._counter_of_broadcasts_id,
+				"method": "decrement"
+			}
+		)
+		task.add(queue_name = "counters-queue")
+		
+		
+		
+		
+		
+		
+		
+		
