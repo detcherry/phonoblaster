@@ -53,7 +53,7 @@ CommentManager.prototype = {
 		var that = this;
 		
 		var following_comments = [];
-		var previous_comments = this.comments;
+		var previous_comments = this.comments.slice(0);
 		var previous_comment = null;
 		
 		// If comments array empty, just add the new comment to the list

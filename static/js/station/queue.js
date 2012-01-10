@@ -102,7 +102,7 @@ QueueManager.prototype = {
 		var created = PHB.now();
 
 		new_broadcast = track;
-		new_broadcast["broadcast_key_name"] = channel_id + ".queued." + created;
+		new_broadcast["broadcast_key_name"] = channel_id + ".queued." + created + Math.floor(Math.random()*1000).toString();
 		new_broadcast["broadcast_expired"] = null;
 
 		return new_broadcast
@@ -131,7 +131,7 @@ QueueManager.prototype = {
 		var ui_live_broadcast = this.UILiveBroadcast();
 		// Display the new broadcast in the queue only if it's not the current live broadcast!
 		if(ui_live_broadcast != new_broadcast.broadcast_key_name){
-			var tab_selector = this.name + " .tab-items";
+			var tab_selector = this.name + " .tab-items:nth-child(2)";
 
 			// Reset the tab in case it contained some init content
 			var init_selector = tab_selector + " .init";
@@ -241,67 +241,85 @@ QueueManager.prototype = {
 	add: function(new_broadcast){
 		var that = this;
 		
-		var following_broadcasts = that.queue.slice(0); // Copy the queue
-		var previous_broadcasts = [];
-		var following_broadcast = null;
+		var previous_broadcasts = this.queue.slice(0);
+		var following_broadcasts = [];
+		var previous_broadcast = null;
 		
-		// If queue is empty, just add the new long broadcast to the queue
+		// If queue is empty, just add the new broadcast to the queue
 		if(this.queue.length == 0){
-			this.queue.push(new_broadcast)
+			this.queue.push(new_broadcast);
 		}
 		else{
 			// Browse the broadcasts list and insert the broadcast at the right place
 			for(var i=0, c=that.queue.length; i<c; i++){
-				var broadcast = that.queue[i];
+				var broadcast = that.queue.slice(0).reverse()[i]
 				
-				// The new broadcast expires after (OK)
-				if(broadcast.broadcast_expired < new_broadcast.broadcast_expired){
-					previous_broadcasts.push(following_broadcasts.shift());	
-				}
 				// The new broadcast expires before (NOT OK)
+				if(broadcast.broadcast_expired > new_broadcast.broadcast_expired){
+					following_broadcasts.push(previous_broadcasts.shift())
+				}
+				// The new broadcast expires after (OK)
 				else{
-					following_broadcast = broadcast;
+					previous_broadcast = broadcast;
+					previous_broadcasts.push(new_broadcast);
 					break;
 				}
 			}
-			previous_broadcasts.push(new_broadcast);
-			this.queue = previous_broadcasts.concat(following_broadcasts);
+			this.queue = previous_broadcasts.concat(following_broadcasts)
 		}
 		
 		// Insert new broadcast in the queue
-		this.UIAdd(new_broadcast, following_broadcast);
+		this.UIAdd(new_broadcast, previous_broadcast);
 		
 		// Update the room
 		this.UIUpdateRoom();
 	},
 	
-	UIAdd: function(new_broadcast, following_broadcast){
+	UIAdd: function(new_broadcast, previous_broadcast){
 		// If the broadcast was initially displayed, we remove it (honey badger style)
 		this.UIRemove(new_broadcast);
 		
-		if(following_broadcast){
-			// If there is a following broadcast, we insert the new broadcast just before
+		if(previous_broadcast){
+			// If there is a previous broadcast, we insert the new broadcast just after
 			var re = RegExp("[.]","g");
-			var following_broadcast_selector = "#queue-tab #" + following_broadcast.broacast_key_name.replace(re, "\\.");
-			this.UIInsert(new_broadcast, following_broadcast_selector)
+			var previous_broadcast_selector = "#queue-tab .tab-items #" + previous_broadcast.broadcast_key_name.replace(re, "\\.");
+			this.UIInsert(new_broadcast, previous_broadcast_selector)
 		}
 		else{
 			// Else, we have to append the broadcast at the bottom
-			this.UIQueueAppend(new_broadcast)
+			this.UIQueuePrepend(new_broadcast);
+		}
+		
+	},
+	
+	UIInsert: function(new_broadcast, previous_broadcast_selector){
+		this.UIBuild(new_broadcast, function(new_broadcast_jquery_object){
+			// Insert new comment div just before the previous comment div
+			new_broadcast_jquery_object.insertAfter(previous_broadcast_selector);
+		})
+	},
+	
+	UIQueuePrepend: function(new_broadcast){
+		var ui_live_broadcast = this.UILiveBroadcast();
+		// Display the new broadcast in the queue only if it's not the current live broadcast!
+		if(ui_live_broadcast != new_broadcast.broadcast_key_name){
+			var tab_selector = this.name + " .tab-items:nth-child(2)";
+
+			// Reset the tab in case it contained some init content
+			var init_selector = tab_selector + " .init";
+			$(init_selector).remove();
+
+			var that = this;
+			this.UIBuild(new_broadcast, function(new_broadcast_jquery_object){
+				$(tab_selector).prepend(new_broadcast_jquery_object);
+			})
 		}
 	},
 	
 	UIRemove: function(broadcast){
 		var re = RegExp("[.]","g");
-		var broadcast_selector = "#queue-tab #" + broadcast.broadcast_key_name.replace(re, "\\.");
+		var broadcast_selector = "#queue-tab .tab-items #" + broadcast.broadcast_key_name.replace(re, "\\.");
 		$(broadcast_selector).remove();
-	},
-	
-	UIInsert: function(new_broadcast, following_broadcast_selector){
-		this.UIBuild(new_broadcast, function(new_broadcast_jquery_object){
-			// Insert new comment div just before the previous comment div
-			new_broadcast_jquery_object.insertBefore(following_broadcast_selector);
-		})
 	},
 	
 	// Get all the broadcasts in the station queue
@@ -494,13 +512,13 @@ QueueManager.prototype = {
 	
 	UIHide: function(broadcast_to_delete){
 		var re = RegExp("[.]","g");
-		var broadcast_selector = "#queue-tab #" + broadcast_to_delete.broadcast_key_name.replace(re, "\\.");
+		var broadcast_selector = "#queue-tab .tab-items #" + broadcast_to_delete.broadcast_key_name.replace(re, "\\.");
 		$(broadcast_selector).hide();
 	},
 	
 	UIUnHide: function(broadcast_to_delete){
 		var re = RegExp("[.]","g");
-		var broadcast_selector = "#queue-tab #" + broadcast_to_delete.broadcast_key_name.replace(re, "\\.");
+		var broadcast_selector = "#queue-tab .tab-items #" + broadcast_to_delete.broadcast_key_name.replace(re, "\\.");
 		$(broadcast_selector).show();
 	},
 	
@@ -524,6 +542,9 @@ QueueManager.prototype = {
 				
 				// Remove the broadcast from the UI
 				that.UIRemove(broadcast_to_remove);
+				
+				// Update the room
+				that.UIUpdateRoom();
 				
 				break;
 			}

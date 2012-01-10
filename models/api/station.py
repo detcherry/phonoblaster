@@ -302,9 +302,7 @@ class StationApi():
 				else:
 					# We have found the broadcast to remove, stop the loop
 					break;
-			
-			logging.info(extended_broadcasts_to_edit)
-			
+						
 			# If broadcast to remove
 			if(len(extended_broadcasts_to_edit) > 0):
 				# Retrieve broadcasts to edit key names
@@ -339,7 +337,7 @@ class StationApi():
 					db.put(broadcasts_edited)
 					logging.info("Following broadcasts edited in datastore")
 					
-				self.queue = unchanged_extended_broadcasts + [live_extended_broadcast] + extended_broadcasts_edited
+				self.queue =  [live_extended_broadcast] + unchanged_extended_broadcasts + extended_broadcasts_edited
 				memcache.set(self._memcache_station_queue_id, self.queue)
 				logging.info("Queue updated in memcache")
 		
