@@ -102,7 +102,7 @@ QueueManager.prototype = {
 		var created = PHB.now();
 
 		new_broadcast = track;
-		new_broadcast["broadcast_key_name"] = channel_id + ".queued." + created + Math.floor(Math.random()*1000).toString();
+		new_broadcast["broadcast_key_name"] = channel_id + ".queued." + created + Math.floor(Math.random()*10).toString();
 		new_broadcast["broadcast_expired"] = null;
 
 		return new_broadcast
@@ -128,23 +128,20 @@ QueueManager.prototype = {
 	
 	// Append a broadcast to the queue tab
 	UIQueueAppend: function(new_broadcast){
-		var ui_live_broadcast = this.UILiveBroadcast();
 		// Display the new broadcast in the queue only if it's not the current live broadcast!
-		if(ui_live_broadcast != new_broadcast.broadcast_key_name){
-			var tab_selector = this.name + " .tab-items:nth-child(2)";
+		var tab_selector = this.name + " .tab-items:nth-child(2)";
 
-			// Reset the tab in case it contained some init content
-			var init_selector = tab_selector + " .init";
-			$(init_selector).remove();
+		// Reset the tab in case it contained some init content
+		var init_selector = tab_selector + " .init";
+		$(init_selector).remove();
 
-			var that = this;
-			this.UIBuild(new_broadcast, function(new_broadcast_jquery_object){
-				$(tab_selector).append(new_broadcast_jquery_object);
-			})
-		}
+		var that = this;
+		this.UIBuild(new_broadcast, function(new_broadcast_jquery_object){
+			$(tab_selector).append(new_broadcast_jquery_object);
+		})
 	},
 	
-	// Put broadcast at the bottom of the video
+	// Set the broadcast live in the UI
 	UILiveBroadcastSet: function(new_broadcast){
 		var track_thumbnail = "http://i.ytimg.com/vi/" + new_broadcast.youtube_id + "/default.jpg"
 		
@@ -239,8 +236,17 @@ QueueManager.prototype = {
 			},
 		});		
 	},
-	
-	// Incoming broadcast received via PUBNUB or Initialization
+
+	// New broadcast from PUBNUB
+	new: function(new_broadcast){
+		// Increment the broadcasts counter
+		this.station_client.broadcasts_counter.increment();
+		
+		// Add new broadcast to queue
+		this.add(new_broadcast);
+	},
+
+	// Controller for new broadcast (Modify the Queue, modify the UI)
 	add: function(new_broadcast){
 		var that = this;
 		
@@ -248,38 +254,42 @@ QueueManager.prototype = {
 		var following_broadcasts = [];
 		var previous_broadcast = null;
 		
-		// If queue is empty, just add the new broadcast to the queue
-		if(this.queue.length == 0){
-			this.queue.push(new_broadcast);
+		if(this.live_broadcast == null){
+			// Launch the video
+			that.live(new_broadcast);
 		}
 		else{
-			// Browse the broadcasts list and insert the broadcast at the right place
-			for(var i=0, c=that.queue.length; i<c; i++){
-				var broadcast = that.queue.slice(0).reverse()[i]
-				
-				// The new broadcast expires before (NOT OK)
-				if(broadcast.broadcast_expired > new_broadcast.broadcast_expired){
-					following_broadcasts.push(previous_broadcasts.shift())
-				}
-				// The new broadcast expires after (OK)
-				else{
-					previous_broadcast = broadcast;
-					previous_broadcasts.push(new_broadcast);
-					break;
-				}
+			// If queue is empty, just add the new broadcast to the queue
+			if(this.queue.length == 0){
+				this.queue.push(new_broadcast);
 			}
-			this.queue = previous_broadcasts.concat(following_broadcasts)
+			else{
+				// Browse the broadcasts list and insert the broadcast at the right place
+				for(var i=0, c=that.queue.length; i<c; i++){
+					var broadcast = that.queue.slice(0).reverse()[i]
+
+					// The new broadcast expires before (NOT OK)
+					if(broadcast.broadcast_expired > new_broadcast.broadcast_expired){
+						following_broadcasts.push(previous_broadcasts.shift())
+					}
+					// The new broadcast expires after (OK)
+					else{
+						previous_broadcast = broadcast;
+						previous_broadcasts.push(new_broadcast);
+						break;
+					}
+				}
+				this.queue = previous_broadcasts.concat(following_broadcasts)
+			}
+
+			// Insert new broadcast in the queue
+			this.UIAdd(new_broadcast, previous_broadcast);
 		}
-		
-		// Insert new broadcast in the queue
-		this.UIAdd(new_broadcast, previous_broadcast);
-		
+
 		// Update the room
 		this.UIUpdateRoom();
 		
-		// Increments broadcast counter
-		this.UIBroadcastsIncrement()
-	},
+	},		
 	
 	UIAdd: function(new_broadcast, previous_broadcast){
 		// If the broadcast was initially displayed, we remove it (honey badger style)
@@ -348,53 +358,64 @@ QueueManager.prototype = {
 					var new_broadcast = value;
 					that.add(new_broadcast);
 				})
-				
-				that.playNext();	
+								
 			},
 		});
 	},
 	
-	playNext: function(){
-		this.live_broadcast = this.queue.shift();
-		var time_out = 1;
-		if(this.live_broadcast){		
-			var expired_at = parseInt(this.live_broadcast.broadcast_expired,10);
-			var duration = parseInt(this.live_broadcast.youtube_duration,10);
+	// Put a broadcast live
+	live: function(new_broadcast){
+		this.live_broadcast = new_broadcast;
+		
+		var expired_at = parseInt(this.live_broadcast.broadcast_expired,10);
+		var duration = parseInt(this.live_broadcast.youtube_duration,10);
 
-			var time_out = expired_at - PHB.now();
-			var video_start = duration - time_out;
-			
-			// Check if the broadcast is not currently being played before initializing the youtube manager
-			var existing_ui_live_broadcast = this.UILiveBroadcast();
-			if(existing_ui_live_broadcast != this.live_broadcast.broadcast_key_name){
-				this.youtube_manager.init(this.live_broadcast.youtube_id, video_start);
-			}
-			
-			// Remove the display in the queue
-			this.UIRemove(this.live_broadcast);
-			
-			// Display the live broadcast in the UI
-			this.UILiveBroadcastSet(this.live_broadcast);
-			
-			// Display the progress of the video
-			this.UIProgress(video_start, duration);
-			
-			// Display the current broadcast in the comments zone
-			this.station_client.comment_manager.UINewBroadcast(this.live_broadcast);
+		var time_out = expired_at - PHB.now();
+		var video_start = duration - time_out;
+
+		// Check if the broadcast is not currently being played before initializing the youtube manager
+		var existing_ui_live_broadcast = this.UILiveBroadcast();
+		if(existing_ui_live_broadcast != this.live_broadcast.broadcast_key_name){
+			this.youtube_manager.init(this.live_broadcast.youtube_id, video_start);
 		}
+
+		// Remove the display in the queue
+		this.UIRemove(this.live_broadcast);
+		
+		// Display the live broadcast in the UI
+		this.UILiveBroadcastSet(this.live_broadcast);
+		
+		// Display the progress of the video
+		this.UIProgress(video_start, duration);
+		
+		// Display the current broadcast in the comments zone
+		this.station_client.comment_manager.UINewBroadcast(this.live_broadcast);
+		
+		// Program the launch of the next video
 		this.nextVideo(time_out);
 	},
 	
 	nextVideo: function(time_out){		
 		var that = this;
+		
 		setTimeout(function(){
-			if(that.live_broadcast){
-				that.live_broadcast = null;
-				that.UILiveBroadcastRemove();
-			}
+			// Reset live broadcast
+			that.live_broadcast = null;
 			
+			// Remove the broadcast from the live UI
+			that.UILiveBroadcastRemove();
+			
+			// Update the room in the UI
 			that.UIUpdateRoom();
-			that.playNext();
+			
+			// Decrement the broadcasts counter
+			that.station_client.broadcasts_counter.decrement();
+			
+			// Get next broadcast and put it live
+			new_broadcast = that.queue.shift();
+			if(new_broadcast){
+				that.live(new_broadcast)
+			}
 		}, time_out * 1000)
 	},
 	
@@ -461,7 +482,11 @@ QueueManager.prototype = {
 				}
 			}
 			
-			that.deleteSubmit(broadcast_to_delete);
+			// We check if the broadcast is in the queue (cause sometimes it has not been received from pubnub yet...)
+			if(broadcast_to_delete){
+				that.deleteSubmit(broadcast_to_delete);
+			}
+			
 			return false;
 		})
 		
@@ -523,7 +548,7 @@ QueueManager.prototype = {
 		$(broadcast_selector).show();
 	},
 	
-	// Incoming broadcast to remove received via PubNub
+	// Broadcast to remove from PubNub
 	remove: function(broadcast_to_remove){
 		var new_queue = []
 		var that = this
@@ -547,22 +572,13 @@ QueueManager.prototype = {
 				// Update the room
 				that.UIUpdateRoom();
 				
+				// Decrement the broadcasts counter
+				that.station_client.broadcasts_counter.decrement();
+				
 				break;
 			}
 		}
 		
-	},
-	
-	UIBroadcastsIncrement: function(){
-		var number_of_broadcasts = parseInt($("#broadcasts strong.number").html(), 10);
-		number_of_broadcasts++;
-		$("#broadcasts strong.number").html(number_of_broadcasts);
-	},
-	
-	UIBroadcastsDecrement: function(){
-		var number_of_broadcasts = parseInt($("#broadcasts strong.number").html(), 10);
-		number_of_broadcasts--;
-		$("#broadcasts strong.number").html(number_of_broadcasts);
 	},
 	
 }

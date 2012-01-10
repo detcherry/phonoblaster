@@ -5,6 +5,9 @@ function StationClient(user, admin, station){
 	this.channel_id = null;
 	this.time_delta = null;
 	
+	this.broadcasts_counter = new Counter("#broadcasts");
+	this.views_counter = new Counter("#views");
+	
 	this.presence_manager = null;
 	this.comment_manager = null;
 	this.status_manager = null;
@@ -110,12 +113,40 @@ StationClient.prototype = {
 		}
 		if(event == "new-broadcast"){
 			PHB.log("new-broadcast");
-			this.queue_manager.add(content);
+			this.queue_manager.new(content);
 		}
 		if(event == "broadcast-removed"){
 			PHB.log("broadcast-removed");
 			this.queue_manager.remove(content);
 		}
+	},
+	
+}
+
+// ---------------------------------------------------------------------------
+// BROADCASTS COUNTER
+// ---------------------------------------------------------------------------
+
+
+function Counter(selector){
+	this.selector = selector;
+	this.count = parseInt($(selector + " strong.number").html(), 10);
+}
+
+Counter.prototype = {
+	
+	increment: function(){
+		this.count++;
+		this.display()
+	},
+	
+	decrement: function(){
+		this.count--;
+		this.display()
+	},
+	
+	display: function(){
+		$(this.selector + " strong.number").html(this.count);
 	},
 	
 }
