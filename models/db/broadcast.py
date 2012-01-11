@@ -96,6 +96,7 @@ class Broadcast(db.Model):
 			"track_admin": extended_track["track_admin"],
 			"broadcast_key_name": broadcast.key().name(),
 			"broadcast_expired": timegm(broadcast.expired.utctimetuple()),	
+			"broadcast_created": timegm(broadcast.created.utctimetuple()),
 		}
 		
 		broadcast_station_key = Broadcast.station.get_value_for_datastore(broadcast)

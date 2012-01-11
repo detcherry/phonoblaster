@@ -104,6 +104,7 @@ QueueManager.prototype = {
 		new_broadcast = track;
 		new_broadcast["broadcast_key_name"] = channel_id + ".queued." + created + Math.floor(Math.random()*10).toString();
 		new_broadcast["broadcast_expired"] = null;
+		new_broadcast["broadcast_created"] = PHB.now();
 
 		return new_broadcast
 	},
@@ -389,7 +390,12 @@ QueueManager.prototype = {
 		this.UIProgress(video_start, duration);
 		
 		// Display the current broadcast in the comments zone
-		this.station_client.comment_manager.UINewBroadcast(this.live_broadcast);
+		var live_comment = {
+			"key_name": this.live_broadcast.broadcast_key_name,
+			"created": this.live_broadcast.broadcast_created,
+			"broadcast": this.live_broadcast,
+		}
+		this.station_client.comment_manager.add(live_comment)
 		
 		// Program the launch of the next video
 		this.nextVideo(time_out);

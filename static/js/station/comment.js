@@ -95,7 +95,7 @@ CommentManager.prototype = {
 		}
 		else{
 			// Else, we have to append the comment at the top
-			this.UIPrepend(new_comment)
+			this.UIAppend(new_comment);
 		}	
 	},
 	
@@ -147,7 +147,7 @@ CommentManager.prototype = {
 		// Build a comment key name
 		var channel_id = this.station_client.channel_id;
 		var created = PHB.now();
-		var comment_key_name = channel_id + ".comment." + created + Math.floor(Math.random()*1000).toString();
+		var comment_key_name = channel_id + ".comment." + created + Math.floor(Math.random()*10).toString();
 		
 		if(this.station_client.admin){
 			var author_key_name = this.station_client.station.key_name;
@@ -176,7 +176,18 @@ CommentManager.prototype = {
 		return local_comment;
 	},
 	
+	// Wrapper above UIBuildBroadcast and UIBuildComment
 	UIBuild: function(new_comment, callback){
+		if(new_comment.broadcast){
+			this.UIBuildBroadcast(new_comment.broadcast, callback);
+		}
+		else{
+			this.UIBuildComment(new_comment, callback);
+		}
+	},
+	
+	// Build the comment div
+	UIBuildComment: function(new_comment, callback){
 		var author_picture_url = "https://graph.facebook.com/"+ new_comment.author_key_name + "/picture?type=square";
 		var author_name = new_comment.author_name;
 		var author_url = new_comment.author_url;
@@ -188,32 +199,80 @@ CommentManager.prototype = {
 			$("<div/>")
 				.addClass("comment")					
 				.attr("id", comment_key_name)
-				.append(
-					$("<img/>")
-						.attr("src", author_picture_url)
-						.addClass("user")
-				)
+				.append($("<img/>").attr("src", author_picture_url).addClass("user"))
 				.append(
 					$("<div/>")
 						.addClass("content")
 						.append(
 							$("<p/>")
 								.append($("<a/>").attr("href", author_url).html(author_name))
-								.append(" ")
-								.append(comment_content)
+								.append(" " + comment_content)
 						)
 
 				)
 				.append($("<div/>").addClass("border"))
 				.append($("<div/>").addClass("time").html(comment_time))
 		)
+	},
+	
+	// Build the broadcast div to display in the comment zone
+	UIBuildBroadcast: function(new_broadcast, callback){
+		var track_submitter_picture_url = "https://graph.facebook.com/" + new_broadcast.track_submitter_key_name + "/picture?type=square";
+		var track_submitter_name = new_broadcast.track_submitter_name;
+		var track_submitter_url = new_broadcast.track_submitter_url;
+		var track_thumbnail = "http://i.ytimg.com/vi/" + new_broadcast.youtube_id + "/default.jpg";
+		var track_title = new_broadcast.youtube_title;
+		var broadcast_time = PHB.convert(parseInt(new_broadcast.broadcast_expired, 10) - parseInt(new_broadcast.youtube_duration,10))
 		
+		var mention = $("<p/>").append($("<a/>").attr("href", track_submitter_url).html(track_submitter_name))
+		if(this.station_client.station.key_name == new_broadcast.track_submitter_key_name){
+			if(new_broadcast.track_admin){
+				mention.append(" just broadcast a track")
+			}
+			else{
+				var station_url = "/" + this.station_client.station.shortname;
+				var station_name = this.station_client.station.name;
+				mention.append(" suggested a track to ").append($("<a/>").attr("href", station_url).html(station_name))
+			}
+		}
+		else{
+			var station_url = "/" + this.station_client.station.shortname;
+			var station_name = this.station_client.station.name;
+			mention.append(" is currently rebroadcast by ").append($("<a/>").attr("href", station_url).html(station_name))
+		}
+		
+		callback(
+			$("<div/>")
+				.addClass("comment")
+				.attr("id", new_broadcast.broadcast_key_name)
+				.append($("<img/>").attr("src", track_submitter_picture_url).addClass("station"))
+				.append(
+					$("<div/>")
+						.addClass("content")
+						.append(mention)
+						.append($("<span/>").addClass("clip").append($("<img/>").attr("src", track_thumbnail)))
+						.append(
+							$("<div/>")
+								.addClass("title")
+								.append($("<span/>").addClass("middle").html(track_title))
+						)
+				)
+				.append($("<div/>").addClass("border"))
+				.append($("<div/>").addClass("time").html(broadcast_time))
+		)
 	},
 	
 	UIPrepend: function(new_comment){
 		this.UIBuild(new_comment, function(new_comment_jquery_object){
 			// Append new comment div at the top of the comments zone
 			$("#comments-zone").prepend(new_comment_jquery_object)
+		})
+	},
+	
+	UIAppend: function(new_comment){
+		this.UIBuild(new_comment, function(new_comment_jquery_object){
+			// Append new comment div at the top of the comments zone
+			$("#comments-zone").append(new_comment_jquery_object)
 		})
 	},
 	
@@ -255,57 +314,6 @@ CommentManager.prototype = {
 				}
 			},
 		});		
-	},
-	
-	UINewBroadcast: function(new_broadcast){
-		var track_submitter_picture_url = "https://graph.facebook.com/" + new_broadcast.track_submitter_key_name + "/picture?type=square";
-		var track_thumbnail = "http://i.ytimg.com/vi/" + new_broadcast.youtube_id + "/default.jpg";
-		
-		var mention = $("<p/>").append($("<a/>").attr("href", new_broadcast.track_submitter_url).html(new_broadcast.track_submitter_name))
-		if(this.station_client.station.key_name == new_broadcast.track_submitter_key_name){
-			if(new_broadcast.track_admin){
-				mention.append(" just broadcast a track")
-			}
-			else{
-				var station_url = "/" + this.station_client.station.shortname;
-				var station_name = this.station_client.station.name;
-				mention.append(" suggested a track to ").append($("<a/>").attr("href", station_url).html(station_name))
-			}
-		}
-		else{
-			var station_url = "/" + this.station_client.station.shortname;
-			var station_name = this.station_client.station.name;
-			mention.append(" is currently rebroadcast by ").append($("<a/>").attr("href", station_url).html(station_name))
-		}
-		
-		$("#comments-zone")
-			.prepend(
-				$("<div/>")
-					.addClass("comment")
-					.append($("<img/>").attr("src", track_submitter_picture_url).addClass("station"))
-					.append(
-						$("<div/>")
-							.addClass("content")
-							.append(mention)
-							.append(
-								$("<span/>")
-									.addClass("clip")
-									.append($("<img/>").attr("src", track_thumbnail))
-							)
-							.append(
-								$("<div/>")
-									.addClass("title")
-									.append(
-										$("<span/>")
-											.addClass("middle")
-											.html(new_broadcast.youtube_title)
-									)
-							)
-					)
-					.append($("<div/>").addClass("border"))
-					.append($("<div/>").addClass("time").html(PHB.convert(PHB.now())))
-			)
-		
 	},
 		
 }
