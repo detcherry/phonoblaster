@@ -71,7 +71,12 @@ PresenceManager.prototype = {
 		});
 	},
 	
-	// Incoming presences
+	// Incoming presences received from PubNub
+	new: function(new_presence){
+		this.add(new_presence)
+	},
+	
+	// Add new presence to the list and 
 	add: function(new_presence){		
 		var duplicate = false;
 		

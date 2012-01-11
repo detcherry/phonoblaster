@@ -106,7 +106,7 @@ StationClient.prototype = {
 		
 		if(event == "new-presence"){
 			PHB.log("new-presence");
-			this.presence_manager.add(content);
+			this.presence_manager.new(content);
 		}
 		if(event == "presence-removed"){
 			PHB.log("presence-removed");
