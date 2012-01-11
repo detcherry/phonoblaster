@@ -76,10 +76,15 @@ body{
 	float:left;
 	margin-right:8px;
 	width:35px;
+	overflow:hidden;
 	font-weight:bold;
 	font-size:16px;
 	color:#333;
 	text-align:center;
+}
+
+#left-column #broadcasts strong, #left-column #views strong{
+	visibility:hidden;
 }
 
 /*-------- MIDDLE COLUMN -------*/

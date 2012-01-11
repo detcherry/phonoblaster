@@ -399,12 +399,15 @@ QueueManager.prototype = {
 		
 		// Program the launch of the next video
 		this.nextVideo(time_out);
+		
+		// Increment the number of views on the server
+		this.postView();
 	},
 	
 	nextVideo: function(time_out){		
 		var that = this;
 		
-		setTimeout(function(){
+		setTimeout(function(){			
 			// Reset live broadcast
 			that.live_broadcast = null;
 			
@@ -581,6 +584,27 @@ QueueManager.prototype = {
 				break;
 			}
 		}
+		
+	},
+	
+	postView: function(){
+		var shortname = this.station_client.station.shortname
+		
+		$.ajax({
+			url: "/api/views",
+			type: "POST", 
+			dataType: "json",
+			timeout: 60000,
+			data: {
+				shortname: shortname,
+			},
+			error: function(xhr, status, error) {
+				PHB.log('An error occurred: ' + error + '\nPlease retry.');
+			},
+			success: function(){
+				PHB.log("view added")
+			},
+		});
 		
 	},
 	

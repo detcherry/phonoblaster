@@ -21,5 +21,5 @@ class RootHandler(BaseHandler):
 		
 		self._template_values["station_proxy"] = self.station_proxy	
 		self._template_values["number_of_broadcasts"] = self.station_proxy.number_of_broadcasts
-		self._template_values["number_of_views"] = 0
+		self._template_values["number_of_views"] = self.station_proxy.number_of_views
 		super(RootHandler, self).render(template_path, self._template_values)

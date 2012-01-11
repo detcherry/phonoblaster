@@ -8,9 +8,13 @@ import gdata.alt.appengine
 from calendar import timegm
 
 from google.appengine.ext import db
+from google.appengine.api.taskqueue import Task
 
 from models.db.user import User
 from models.db.station import Station
+from models.db.counter import Shard
+
+COUNTER_OF_VIEWS_PREFIX = "track.views."
 
 class Track(db.Model):
 	youtube_id = db.StringProperty(required = True)
@@ -91,7 +95,26 @@ class Track(db.Model):
 					})
 		
 		return youtube_tracks	
+	
+	
+	@staticmethod
+	def number_of_views(track_id):
+		shard_name = COUNTER_OF_VIEWS_PREFIX + str(track_id)
+		count = Shard.get_count(shard_name)
+		return count
+	
+	@staticmethod
+	def increment_views_counter(track_id):
+		shard_name = COUNTER_OF_VIEWS_PREFIX + str(track_id)
 		
+		task = Task(
+			url = "/taskqueue/counter",
+			params = {
+				"shard_name": shard_name,
+				"method": "increment"
+			}
+		)
+		task.add(queue_name = "counters-queue")
 	
 	
 	

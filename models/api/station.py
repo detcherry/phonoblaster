@@ -35,6 +35,7 @@ class StationApi():
 		self._memcache_station_queue_id = MEMCACHE_STATION_QUEUE_PREFIX + self._shortname
 		self._memcache_station_presences_id = MEMCACHE_STATION_PRESENCES_PREFIX + self._shortname
 		self._counter_of_broadcasts_id = COUNTER_OF_BROADCASTS_PREFIX + self._shortname
+		self._counter_of_views_id = COUNTER_OF_VIEWS_PREFIX + self._shortname
 	
 	# Return the station
 	@property
@@ -380,7 +381,31 @@ class StationApi():
 			}
 		)
 		task.add(queue_name = "counters-queue")
+	
+	@property
+	def number_of_views(self):
+		if not hasattr(self, "_number_of_views"):
+			shard_name = self._counter_of_views_id
+			self._number_of_views = Shard.get_count(shard_name)
+		return self._number_of_views
+	
+	# Increment the views counter of the track which is live + station view counter
+	def increment_views_counter(self):
+		live_broadcast = self.queue[0]
+		track_id = int(live_broadcast["track_id"])
+			
+		# Increment the views counter of the track which is live
+		Track.increment_views_counter(track_id)
 		
+		# Increment the views counter of the station
+		task = Task(
+			url = "/taskqueue/counter",
+			params = {
+				"shard_name": self._counter_of_views_id,
+				"method": "increment"
+			}
+		)
+		task.add(queue_name = "counters-queue")
 		
 		
 		

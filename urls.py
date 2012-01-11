@@ -18,6 +18,7 @@ from controllers.station.broadcasts import StationBroadcastsHandler
 from controllers.api.queue import ApiQueueHandler
 from controllers.api.presences import ApiPresencesHandler
 from controllers.api.comments import ApiCommentsHandler
+from controllers.api.views import ApiViewsHandler
 from controllers.api.now import ApiNowHandler
 
 application = webapp.WSGIApplication(
@@ -30,6 +31,7 @@ application = webapp.WSGIApplication(
 		('/api/queue', ApiQueueHandler),
 		('/api/presences', ApiPresencesHandler),
 		('/api/comments', ApiCommentsHandler),
+		('/api/views', ApiViewsHandler),
 		('/api/now', ApiNowHandler),
 		('/.*', AllHandler),
 	],

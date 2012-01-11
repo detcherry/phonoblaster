@@ -164,27 +164,25 @@
 <script type="text/javascript" src="/static/js/station/station.js"></script>
 <script type="text/javascript">
 	/*--- Reset ---*/
-	var user = null;
-	var admin = false;
- 	var station = null;
+	USER = null;
+	ADMIN = false;
+ 	STATION = null;
 	/*--- User Initialization ---*/
 	{% if user_proxy %} 
-	user = {
+	USER = {
 		"key_name": "{{ user_proxy.user.key.name }}",
 		"name": "{{ user_proxy.user.first_name }} {{ user_proxy.user.last_name }}",
 	}
 	{% endif %}
 	/*--- Admin Initialization ---*/
 	{% if is_admin %} 
-	admin = true;
+	ADMIN = true;
 	{% endif %}
 	/*--- Station Initialization ---*/
-	station = {
+	STATION = {
 		"key_name": "{{ station_proxy.station.key.name }}",
 		"shortname": "{{ station_proxy.station.shortname }}",
 		"name": "{{ station_proxy.station.name}}",
 	}
-	/*--- Station Client Initialization ---*/
-	var station_client = new StationClient(user, admin, station);
 </script>
 {% endblock %}
