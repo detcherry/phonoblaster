@@ -109,7 +109,7 @@ StationClient.prototype = {
 		}
 		if(event == "new-comment"){
 			PHB.log("new-comment");
-			this.comment_manager.add(content);
+			this.comment_manager.new(content);
 		}
 		if(event == "new-broadcast"){
 			PHB.log("new-broadcast");

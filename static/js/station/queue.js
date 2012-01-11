@@ -102,7 +102,7 @@ QueueManager.prototype = {
 		var created = PHB.now();
 
 		new_broadcast = track;
-		new_broadcast["broadcast_key_name"] = channel_id + ".queued." + created + Math.floor(Math.random()*10).toString();
+		new_broadcast["broadcast_key_name"] = channel_id + ".queued." + created + Math.floor(Math.random()*100).toString();
 		new_broadcast["broadcast_expired"] = null;
 		new_broadcast["broadcast_created"] = PHB.now();
 

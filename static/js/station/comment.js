@@ -12,15 +12,15 @@ CommentManager.prototype = {
 	
 	init: function(){
 		
-		// Fetch latest comments (Messages in the last 3 minutes)
-		this.fetch();
+		// Get latest comments (Messages in the last 3 minutes)
+		this.get();
 		
 		// Listen to focus/ unfocus events
 		this.listen();
 		
 	},
 	
-	fetch: function(){
+	get: function(){
 		var that = this;	
 		var shortname = this.station_client.station.shortname;
 		// Fetch station comments
@@ -48,7 +48,12 @@ CommentManager.prototype = {
 		
 	},
 	
-	// Incoming comments received via PubNub or during Initialization
+	// Incoming comments from PubNub
+	new: function(new_comment){
+		this.add(new_comment);
+	},
+	
+	// Controllers for comments (Add comment to the list and in the UI)
 	add: function(new_comment){		
 		var that = this;
 		
@@ -83,6 +88,7 @@ CommentManager.prototype = {
 		this.UIAdd(new_comment, previous_comment);
 	},
 	
+	// Add comment to the UI
 	UIAdd: function(new_comment, previous_comment){
 		// If the comment was initially displayed, we don't care (honey badger style) and remove it
 		this.UIRemove(new_comment);
@@ -99,6 +105,7 @@ CommentManager.prototype = {
 		}	
 	},
 	
+	// Listen to comment events
 	listen: function(){
 		var that = this;
 		
@@ -125,7 +132,7 @@ CommentManager.prototype = {
 			
 			if(content.length > 0){	
 				// Build comment
-				var local_comment = that.localBuild(content);
+				var local_comment = that.prePostBuild(content);
 				
 				// Add comment to the top
 				that.UIPrepend(local_comment);
@@ -142,12 +149,13 @@ CommentManager.prototype = {
 		
 	},
 	
-	localBuild: function(content){
+	// Before posting comment to server, build something to display in the UI
+	prePostBuild: function(content){
 		
 		// Build a comment key name
 		var channel_id = this.station_client.channel_id;
 		var created = PHB.now();
-		var comment_key_name = channel_id + ".comment." + created + Math.floor(Math.random()*10).toString();
+		var comment_key_name = channel_id + ".comment." + created + Math.floor(Math.random()*100).toString();
 		
 		if(this.station_client.admin){
 			var author_key_name = this.station_client.station.key_name;
