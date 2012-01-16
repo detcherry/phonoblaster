@@ -72,7 +72,7 @@ class Broadcast(db.Model):
 			# Then retrieve users and format suggested broadcasts
 			users = db.get(user_keys)
 			for broadcast, extended_track, user in zip(suggested_broadcasts, suggested_extended_tracks, users):
-				extended_broadcast = Broadcast.get_extended_broadcast(broadcast, extended_track, None, user)
+				extended_broadcast = Broadcast.get_extended_broadcast(broadcast, extended_track, current_station, user)
 				extended_broadcasts.append(extended_broadcast)
 			
 			# Finally retrieve stations and format broadcasts from tracks favorited somewhere else
@@ -86,17 +86,17 @@ class Broadcast(db.Model):
 	@staticmethod
 	def get_extended_broadcast(broadcast, extended_track, station, user):
 		extended_broadcast = None
-		
+				
 		extended_broadcast = {
+			"key_name": broadcast.key().name(),
+			"created": timegm(broadcast.created.utctimetuple()),
+			"expired": timegm(broadcast.expired.utctimetuple()),	
 			"youtube_id": extended_track["youtube_id"],
 			"youtube_title": extended_track["youtube_title"],
 			"youtube_duration": extended_track["youtube_duration"],
 			"track_id": extended_track["track_id"],
 			"track_created": extended_track["track_created"],
 			"track_admin": extended_track["track_admin"],
-			"broadcast_key_name": broadcast.key().name(),
-			"broadcast_expired": timegm(broadcast.expired.utctimetuple()),	
-			"broadcast_created": timegm(broadcast.created.utctimetuple()),
 		}
 		
 		broadcast_station_key = Broadcast.station.get_value_for_datastore(broadcast)
@@ -106,16 +106,19 @@ class Broadcast(db.Model):
 				extended_broadcast["track_submitter_key_name"] = station.key().name()
 				extended_broadcast["track_submitter_name"] = station.name
 				extended_broadcast["track_submitter_url"] = "/" + station.shortname
+				extended_broadcast["type"] = "track"
 			# It's a suggested broadcast
 			else:
 				extended_broadcast["track_submitter_key_name"] = user.key().name()
 				extended_broadcast["track_submitter_name"] = user.first_name + " " + user.last_name
 				extended_broadcast["track_submitter_url"] = "/user/" + user.key().name()
+				extended_broadcast["type"] = "suggestion"
 		# It's a rebroadcast	
 		else:
 			extended_broadcast["track_submitter_key_name"] = station.key().name()
 			extended_broadcast["track_submitter_name"] = station.name
 			extended_broadcast["track_submitter_url"] = "/" + station.shortname
+			extended_broadcast["type"] = "favorite"
 
 		return extended_broadcast
 				

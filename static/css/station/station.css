@@ -255,3 +255,106 @@ input#comment{
 	width:285px;
 	border:none;
 }
+
+/*--------- SUGGESTION ---------*/
+
+#popup-suggestion{
+	display:none;
+	float:left;
+	width:440px;
+}
+
+#popup-suggestion .row{
+	margin:0px;
+	margin-top:8px;
+	margin-bottom:8px;
+}
+
+#popup-suggestion .left{
+	float:left;
+	margin-right:8px;
+	padding:8px;
+	width:50px;
+	text-align:right;
+}
+
+#popup-suggestion .right{
+	float:left;
+	padding:8px;
+	width:350px;
+}
+
+#popup-suggestion .title{
+	float:left;
+	padding-left:16px;
+	height:68px;
+	width:212px;
+}
+
+#popup-suggestion .title span{
+	height:68px;
+}
+
+#popup-suggestion form{
+	margin-bottom:0px;
+}
+
+#popup-suggestion textarea{
+	width:334px;
+}
+
+#popup-suggestion .warning{
+	display:none;
+	float:right;
+	padding:7px;
+	text-align:right;
+	color:#C43C35;
+}
+
+.suggestion{
+	padding:8px;
+	border-bottom:1px solid #DDD;
+}
+
+.suggestion img.submitter{
+	display:block;
+	float:left;
+	margin-right:8px;
+	height:26px;
+	width:26px;
+}
+
+.suggestion .content{
+	width:244px;
+	margin-bottom:8px;	
+}
+
+.suggestion .content p{
+	width:100%;
+	font-size:11px;
+	line-height:15px;
+	overflow:hidden;
+}
+
+.suggestion .content p a{
+	font-weight:bold;
+	color:#0084B4;
+}
+
+.suggestion .content p a:hover{
+	color:#0084B4;
+}
+
+#right-column .suggestion .item{
+	padding:0px;
+	border:none;
+	margin-left:34px;
+}
+
+#right-column .suggestion .item .title{
+	width:152px;
+}
+
+#right-column .suggestion .item .subtitle{
+	width:156px;
+}

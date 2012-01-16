@@ -18,12 +18,23 @@ class ApiCommentsHandler(BaseHandler):
 		shortname = self.request.get("shortname")
 		station_proxy = StationApi(shortname)
 		self.station = station_proxy.station
-		self.response.out.write(json.dumps(self.comments))
+		
+		q = Comment.all()
+		q.filter("station", self.station.key())
+		q.filter("created >", datetime.utcnow() - timedelta(0,180))
+		q.order("created")
+		comments = q.fetch(50) # Arbitrary number
+		
+		extended_comments = Comment.get_extended_comments(comments, self.station)
+		
+		self.response.out.write(json.dumps(extended_comments))
 
 	@login_required
 	def post(self):
-		key_name = self.request.get("key_name")
-		content = self.request.get("content")
+		#key_name = self.request.get("key_name")
+		#content = self.request.get("content")
+		comment = json.loads(self.request.get("content"))
+		logging.info(comment);
 		shortname = self.request.get("shortname")
 		
 		# Check if the user is an admin
@@ -38,8 +49,8 @@ class ApiCommentsHandler(BaseHandler):
 		
 		# Put the new comment to the datastore
 		new_comment = Comment(
-			key_name = key_name,
-			content = content,
+			key_name = comment["key_name"],
+			message = comment["message"],
 			station = self.station.key(),
 			user = self.user.key(),
 			admin = admin
@@ -66,16 +77,3 @@ class ApiCommentsHandler(BaseHandler):
 		)
 		task.add(queue_name="comments-queue")
 		self.response.out.write(json.dumps({ "response": True }))
-	
-	# Returns the latest comments (from the last 3 minutes)
-	@property
-	def comments(self):
-		if not hasattr(self, "_comments"):
-			q = Comment.all()
-			q.filter("station", self.station.key())
-			q.filter("created >", datetime.utcnow() - timedelta(0,180))
-			q.order("created")
-			comments = q.fetch(50) # Arbitrary number
-
-			self._comments = Comment.get_extended_comments(comments, self.station)
-		return self._comments

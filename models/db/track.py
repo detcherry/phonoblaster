@@ -19,8 +19,8 @@ COUNTER_OF_VIEWS_PREFIX = "track.views."
 class Track(db.Model):
 	youtube_id = db.StringProperty(required = True)
 	admin = db.BooleanProperty(default = False, required = True)
-	user = db.ReferenceProperty(User, required = True, collection_name = "trackUser")
 	station = db.ReferenceProperty(Station, required = True, collection_name = "trackStation")
+	user = db.ReferenceProperty(User, required = True, collection_name = "trackUser")
 	created = db.DateTimeProperty(auto_now_add = True)
 
 	@staticmethod
@@ -48,6 +48,52 @@ class Track(db.Model):
 					extended_tracks.append(None)
 		
 		return extended_tracks
+
+	@staticmethod
+	def get_or_insert_by_youtube_id(youtube_id, station, user, admin):
+		track = None
+		extended_track = None
+		youtube_track = None
+		
+		if(youtube_id):
+			# We check if the track has not been submitted by the same user
+			q = Track.all()
+			q.filter("youtube_id", youtube_id)
+			q.filter("user", user.key())
+			track = q.get()
+			
+			if(track):
+				logging.info("Track on Phonoblaster")
+				extended_track = Track.get_extended_tracks([track])[0]
+
+			# It's the first time the track is submitted by the user
+			else:
+				logging.info("Track not on Phonoblaster")
+				youtube_track = Track.get_youtube_tracks([youtube_id])[0]
+			
+				# If track on Youtube, save the track on Phonoblaster, generate the extended track
+				if(youtube_track):
+					logging.info("Track on Youtube")
+					track = Track(
+						youtube_id = youtube_id,
+						station = station,
+						user = user,
+						admin = admin,
+					)
+					track.put()
+					logging.info("New track put in the datastore.")
+				
+					extended_track = {
+						"track_id": track.key().id(),
+						"track_created": timegm(track.created.utctimetuple()),
+						"track_admin": track.admin,
+						"youtube_id": youtube_track["id"],
+						"youtube_title": youtube_track["title"],
+						"youtube_duration": youtube_track["duration"],
+					}
+		
+		return (track, extended_track)
+
 
 	@staticmethod
 	def get_youtube_tracks(youtube_ids):

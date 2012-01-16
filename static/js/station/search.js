@@ -2,24 +2,29 @@
 // SEARCH MANAGER
 // ---------------------------------------------------------------------------
 
-SearchManager.prototype = new TabManager();
+///*
+SearchManager.prototype = new ScrollTabManager();
 SearchManager.prototype.constructor = SearchManager;
 
 function SearchManager(station_client){
-	TabManager.call(this, station_client);
-		
-	// Overwrites the parent offset attributes
-	this.name = "#search-tab";
+	ScrollTabManager.call(this, station_client);
+	
+	// Settings 
 	this.url = "https://gdata.youtube.com/feeds/api/videos"
 	this.offset = 1;
-	this.datatype = "jsonp";
-	this.limit_offset = 100;
+	this.data_type = "jsonp";
+	
+	// UI Settings
+	this.name = "#search-tab";
+	this.selector = this.name + " .tab-items";
 	
 	// Additional attribute
 	this.search_content = null;
 	
-	// Additional methods
-	this.standardListen();
+	// Init methods
+	this.previewListen();
+	this.scrollListen();
+	this.processListen();
 	this.inputListen();
 }
 
@@ -55,6 +60,7 @@ SearchManager.prototype.inputListen = function(){
 	// Trigger get each time something is typed
 	$("input#search").keyup(function(){
 		that.offset = 1;
+		that.scrolling_on = true;
 		that.search_content = $(this).val()
 		
 		// Only trigger searches that have more than 1 character
@@ -74,20 +80,10 @@ SearchManager.prototype.inputListen = function(){
 	
 }
 
-// Specific to the search
-SearchManager.prototype.empty = function(callback){
-	this.tracklist = [];
-	
-	var jquery_selector = this.name + " .tab-items"
-	$(jquery_selector).empty();
-	
-	callback();
-}
-
 // Overwrites the get data method
 SearchManager.prototype.getData = function(){
 	var that = this;
-	get_data = {
+	data = {
 		"q": that.search_content,
 		"start-index": that.offset,
 		"max-results": 20,
@@ -95,7 +91,7 @@ SearchManager.prototype.getData = function(){
 		"v": 2,
 		"alt": "jsonc",
 	}	
-	return get_data
+	return data
 }
 
 // Overwrites the scrollListen method because Youtube search makes it specific
@@ -103,18 +99,17 @@ SearchManager.prototype.scrollListen = function(){
 	var that = this;
 	
 	// Infinite scrolling events handler
-	var tab_selector = this.name;
-	$(tab_selector).scroll(function(){	
+	$(that.name).scroll(function(){	
 		var items = $(this).find(".tab-items");
 		var height = items.height();
 		var scroll_height = $(this).scrollTop();
 		var height_left = height - scroll_height;
 		
-		if(height_left < 400 && !that.load && that.offset < that.limit_offset){
-			that.offset = that.tracklist.length + 1; // Here it's specific to Youtube
+		if(height_left < 400 && !that.load && that.scrolling_on){
+			that.offset = that.items.length + 1; // Here it's specific to Youtube			
 			that.load = true;
-			that.showLoader();
-			that.get(true);
+			that.UIShowLoader();
+			that.get();
 		}
 	})
 }
@@ -122,131 +117,134 @@ SearchManager.prototype.scrollListen = function(){
 // Overwrites the get method because Youtube search makes it specific
 SearchManager.prototype.get = function(scrolling){
 	var that = this;
+	var data = this.getData()
+	
 	$.ajax({
 		url: that.url,
 		dataType: that.datatype,
 		timeout: 60000,
-		data: that.getData(),
+		data: data,
 		error: function(xhr, status, error) {
 			PHB.log('An error occurred: ' + error + '\nPlease retry.');
 		},
 		success: function(json){
 			var items = json.data.items; // Here it's specific to Youtube
 			
-			// First get
-			if(!scrolling){
-				// Empty the tab items zone before displaying everything
-				that.empty(function(){
+			// Content exists on the server
+			if(items && items.length > 0){
+				// First GET
+				if(!that.load){
+					// Empty the tab items zone before displaying everything
+					that.empty(function(){
+						that.getCallback(items); 
+					})
+				}
+				// Scrolling GET
+				else{
 					that.getCallback(items); 
-				})
+					that.emptyScrolling();
+				}
 			}
-			// Scrolling get
 			else{
-				that.getCallback(items); 
-			}			
+				that.removeScrolling();
+			}
 		},
 	})
 }
 
-// Overwrites the getCallback method because Youtube search makes it specific
-SearchManager.prototype.getCallback = function(items){
-	var that = this;
-	if(items){
-		$.each(items, function(i) {
-			var item = items[i];
-			var new_track = {
-				"youtube_id": item.id, // Here it's specific to Youtube
-				"youtube_title": item.title, // Here it's specific to Youtube
-				"youtube_duration": item.duration, // Here it's specific to Youtube
-				"track_id": null,
-				"track_created": null,
-			}
-			
-			// The condition below is specific to Youtube search because the track has not been posted to Phonoblaster yet
-			if(that.station_client.admin){
-				new_track["track_admin"] = true;
-				new_track["track_submitter_key_name"] = that.station_client.station.key_name;
-				new_track["track_submitter_name"] = that.station_client.station.name;
-				new_track["track_submitter_url"] = "/" + that.station_client.station.shortname;
-			}
-			else{
-				new_track["track_admin"] = false;
-				new_track["track_submitter_key_name"] = that.station_client.user.key_name;
-				new_track["track_submitter_name"] = that.station_client.user.name;
-				new_track["track_submitter_url"] = "/user/" + that.station_client.user.key_name;
-			}
-			
-			that.tracklist.push(new_track);
-			that.UIAppend(new_track);
-		});				
+// Specific to Youtube
+SearchManager.prototype.serverToLocalItem = function(raw_item){
+	var new_track = {
+		"type": "track",
+		"youtube_id": raw_item.id, // Here it's specific to Youtube
+		"youtube_title": raw_item.title, // Here it's specific to Youtube
+		"youtube_duration": raw_item.duration, // Here it's specific to Youtube
+		"track_id": null,
+		"track_created": null,
 	}
 	
-	that.load = false;
-	that.removeLoader();
-	that.appendLoader();
-}
-
-// Overwrites the UIBuild method because Youtube search makes it specific
-SearchManager.prototype.UIBuild = function(new_track, callback){
-	var preview_url = "http://www.youtube.com/embed/" + new_track.youtube_id + "?autoplay=1"
-	var track_thumbnail = "http://i.ytimg.com/vi/" + new_track.youtube_id + "/default.jpg"
-	
-	var default_action = "Suggest"
+	// The condition below is specific to Youtube search because the track has not been posted to Phonoblaster yet
 	if(this.station_client.admin){
-		default_action = "Queue"
+		new_track["track_admin"] = true;
+		new_track["track_submitter_key_name"] = this.station_client.station.key_name;
+		new_track["track_submitter_name"] = this.station_client.station.name;
+		new_track["track_submitter_url"] = "/" + this.station_client.station.shortname;
+	}
+	else{
+		new_track["track_admin"] = false;
+		new_track["track_submitter_key_name"] = this.station_client.user.key_name;
+		new_track["track_submitter_name"] = this.station_client.user.name;
+		new_track["track_submitter_url"] = "/user/" + this.station_client.user.key_name;
 	}
 	
-	callback(
-		$("<div/>")
-			.addClass("track")
-			.attr("id", new_track.youtube_id) // Here it's specific to Youtube (in other tabs, it's the new_track.track_id)
-			.append($("<span/>").addClass("square").append($("<img/>").attr("src", track_thumbnail)))
-			.append(
-				$("<div/>")
-					.addClass("title")
-					.append($("<span/>").addClass("middle").html(new_track.youtube_title))
-			)
-			.append(
-				$("<div/>")
-					.addClass("subtitle")
-					.append($("<div/>").addClass("duration").html(PHB.convertDuration(new_track.youtube_duration)))
-					.append(
-						$("<div/>")
-							.addClass("process-actions")
-							.append($("<a/>").addClass("btn").html(default_action))
-							.append($("<a/>").addClass("preview").addClass("fancybox.iframe").attr("href",preview_url))
-					)
-			)
-	)	
+	var item = {
+		id: new_track.youtube_id,
+		created: null,
+		content: new_track,
+	}
+	return item
 }
 
-// Overwrites the processListen method because Youtube search makes it specific
-SearchManager.prototype.processListen = function(){
+// Specific to Youtube
+SearchManager.prototype.UIBuild = function(item){
+	var id = item.id;
+	var content = item.content;
+
+	var youtube_id = content.youtube_id;
+	var youtube_title = content.youtube_title;
+	var youtube_duration = PHB.convertDuration(content.youtube_duration)
+	var youtube_thumbnail = "http://i.ytimg.com/vi/" + youtube_id + "/default.jpg";
+	var preview = "http://www.youtube.com/embed/" + youtube_id + "?autoplay=1"
 	
-	var that = this;
+	var process_action = "Suggest"
+	if(this.station_client.admin){
+		process_action = "Queue"
+	}
 	
-	var process_selector = this.name + " .process-actions a.btn"
-	$(process_selector).live("click", function(){			
-		var btn = $(this);
-		var track_div = btn.parent().parent().parent();
-		var track_id = track_div.attr("id");
-		
-		// Find the track information in the tab tracklist
-		var track_to_submit = null;
-		for(var i=0, c= that.tracklist.length; i<c; i++){
-			var track = that.tracklist[i];
-			if(track.youtube_id == track_id){ // Here it's specific to Youtube search
-				to_submit = track;
-				break;
-			}
-		}
-		
-		that.process(btn, to_submit);
-		return false;			
-	})
+	var div = $("<div/>").addClass("item").attr("id",id)
+	
+	div.append(
+		$("<span/>")
+			.addClass("square")
+			.append(
+				$("<img/>")
+					.attr("src", youtube_thumbnail)
+			)
+		)
+		.append(
+			$("<div/>")
+				.addClass("title")
+				.append(
+					$("<span/>")
+						.addClass("middle")
+						.html(youtube_title)
+				)
+		)
+		.append(
+			$("<div/>")
+				.addClass("subtitle")
+				.append(
+					$("<div/>")
+						.addClass("duration")
+						.html(youtube_duration)
+				)
+				.append(
+					$("<div/>")
+						.addClass("process-actions")
+						.append(
+							$("<a/>")
+								.addClass("btn")
+								.attr("name",id)
+								.html(process_action)
+						)
+						.append(
+							$("<a/>")
+								.addClass("preview")
+								.addClass("fancybox.iframe")
+								.attr("href",preview)
+						)
+				)
+		)
+				
+	return div;
 }
-
-
-
-
-

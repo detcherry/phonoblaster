@@ -124,6 +124,10 @@ StationClient.prototype = {
 			PHB.log("broadcast-removed");
 			this.queue_manager.remove(content);
 		}
+		if(event == "new-suggestion"){
+			PHB.log("new-suggestion");
+			this.suggestion_manager.new(content);
+		}
 	},
 	
 }

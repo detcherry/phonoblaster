@@ -6,10 +6,10 @@ from models.db.user import User
 from models.db.station import Station
 
 class Comment(db.Model):
+	message = db.StringProperty(default ="", required = True)
 	user = db.ReferenceProperty(User, required = True, collection_name = "commentUser")
 	admin = db.BooleanProperty(default = False, required = True)
 	station = db.ReferenceProperty(Station, required = True, collection_name = "commentStation")
-	content = db.StringProperty(default ="", required = True)
 	created = db.DateTimeProperty(auto_now_add = True)
 	
 	# Format comments into extended comments
@@ -54,7 +54,7 @@ class Comment(db.Model):
 		if(user):
 			extended_comment = {
 				"key_name": comment.key().name(),
-				"content": comment.content,
+				"message": comment.message,
 				"created": timegm(comment.created.utctimetuple()),
 				"author_key_name": user.key().name(),
 				"author_name": user.first_name + " " + user.last_name,
@@ -65,7 +65,7 @@ class Comment(db.Model):
 		else:
 			extended_comment = {
 				"key_name": comment.key().name(),
-				"content": comment.content,
+				"message": comment.message,
 				"created": timegm(comment.created.utctimetuple()),
 				"author_key_name": station.key().name(),
 				"author_name": station.name,

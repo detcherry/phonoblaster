@@ -92,7 +92,7 @@ StationCreationManager.prototype = {
 	displayPopup: function(){		
 		// Display fancy box
 		$.fancybox($("#popup-contribution"), {
-			topRatio: 0.6,
+			topRatio: 0.4,
 			closeBtn: false,
 		});
 		

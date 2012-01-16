@@ -53,7 +53,8 @@
 			<div class="title">
 				<span class="middle">No track is being broadcast</span>
 			</div>
-			<div class="key_name"></div>
+			<div class="id"></div>
+			<!-- <div class="key_name"></div> -->
 		</div>
 	</div>
 	<div id="live-comments">
@@ -78,7 +79,6 @@
 {% endblock %}
 
 {% block right-column %}
-<!--<div class="fixed">-->
 	<div id="station-status" class="fixed">
 		{% if station_proxy.on_air %}
 			<span class="btn danger">On air</span>
@@ -101,14 +101,15 @@
 			<div id="queue-counter"><span>0</span>/10</div>
 		</div>
 	</div>
-<!--</div>-->
 	<ul id="tabs" class="fixed">
 		<li><a href="#queue-tab" class="current">Queue</a></li>
-		{% if is_admin %}
 		<li style="width:86px;"><a href="#suggestions-tab" style="width:72px">Suggestions</a></li>
-		<li style="width:80px;"><a href="#favorites-tab" style="width:66px">Favorites</a></li>	
-		<li><a href="#library-tab">Library</a></li>
+		{% if is_admin %}
+		<li style="width:80px;"><a href="#favorites-tab" style="width:66px">Favorites</a></li>
+		{% else %}
+		<!-- A user non admin cannot suggest his tracks favorited from another station -->
 		{% endif %}
+		<li><a href="#library-tab">Library</a></li>
 	</ul>
 	<div id="tab-content-wrap">
 		<div id="queue-tab" class="tab-content">
@@ -128,6 +129,33 @@
 		<div id="suggestions-tab" class="tab-content">
 			<div class="tab-items">
 				<div class="init">No suggestion</div>
+			</div>
+			<!-- Suggestion popup not displayed in the tab -->
+			<div id="popup-suggestion">
+				<div class="row" id="suggestion-recipient">
+					<div class="left">To</div>
+					<div class="right">{{ station_proxy.station.name }}</div>
+				</div>
+				<div class="row" id="suggestion-track">
+					<div class="left">Track</div>
+					<div class="right">
+						<span class="clip"><!-- No image yet --></span>
+						<div class="title"><span class="middle"><!-- No title yet --></span></div>
+					</div>
+				</div>
+				<form action="#" method="post">
+					<div class="row" id="suggestion-message">
+						<div class="left">Message</div>
+						<div class="right">
+							<input type="text" id="youtube-id" name="youtube-id" style="display:none;">
+							<textarea></textarea>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<input type="submit" class="btn primary" value="Suggest!"/>
+						<div class="warning">A message must have 10+ characters.</div>
+					</div>
+				</form>
 			</div>
 		</div>
 		<div id="favorites-tab" class="tab-content">
@@ -153,8 +181,8 @@
 <script type="text/javascript" src="/static/js/library/json2.js"></script>
 <script type="text/javascript" src="/static/js/library/tab.js"></script>
 <script type="text/javascript" src="/static/js/station/presence.js"></script>
-<script type="text/javascript" src="/static/js/station/comment.js"></script>
 <script type="text/javascript" src="/static/js/station/tab.js"></script>
+<script type="text/javascript" src="/static/js/station/comment.js"></script>
 <script type="text/javascript" src="/static/js/station/search.js"></script>
 <script type="text/javascript" src="/static/js/station/status.js"></script>
 <script type="text/javascript" src="/static/js/station/swfobject.js"></script>

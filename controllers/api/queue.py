@@ -1,4 +1,5 @@
 import logging
+import re
 from django.utils import simplejson as json
 
 from google.appengine.api.taskqueue import Task
@@ -21,8 +22,7 @@ class ApiQueueHandler(BaseHandler):
 	@login_required
 	def post(self):
 		shortname = self.request.get("shortname")
-		broadcast = json.loads(self.request.get("broadcast"))
-		method = self.request.get("method")
+		broadcast = json.loads(self.request.get("content"))
 		
 		station_proxy = StationApi(shortname)
 		self.station = station_proxy.station
@@ -30,18 +30,13 @@ class ApiQueueHandler(BaseHandler):
 		
 		extended_broadcast = None
 		if(self.user_proxy.is_admin_of(self.station.key().name())):
-			if(method == "POST"):
-				extended_broadcast = station_proxy.add_to_queue(broadcast, self.user, True)
-				event = "new-broadcast"
-			else:
-				extended_broadcast = station_proxy.remove_from_queue(broadcast)
-				event = "broadcast-removed"
+			extended_broadcast = station_proxy.add_to_queue(broadcast, self.user, True)
 			
 		response = False
 		if(extended_broadcast):
 			# Add a taskqueue to warn everyone
 			broadcast_data = {
-				"event": event,
+				"event": "new-broadcast",
 				"content": extended_broadcast,
 			}
 
@@ -57,5 +52,36 @@ class ApiQueueHandler(BaseHandler):
 
 		self.response.out.write(json.dumps({ "response": response }))
 		
+
+class ApiQueueDeleteHandler(BaseHandler):
+	
+	@login_required
+	def delete(self, key_name):
+		m = re.match(r"(\w+).(\w+).(\w+).(\w+)", key_name)
+		shortname = m.group(1)
 		
+		station_proxy = StationApi(shortname)
+		self.station = station_proxy.station
+		
+		response = False
+		if(self.user_proxy.is_admin_of(self.station.key().name())):
+			response = station_proxy.remove_from_queue(key_name)
+		
+		if(response):
+			# Add a taskqueue to warn everyone
+			broadcast_data = {
+				"event": "broadcast-removed",
+				"content": key_name,
+			}
+
+			task = Task(
+				url = "/taskqueue/multicast",
+				params = {
+					"station": config.VERSION + "-" + shortname,
+					"data": json.dumps(broadcast_data)
+				}
+			)
+			task.add(queue_name="broadcasts-queue")
+
+		self.response.out.write(json.dumps({ "response": response }))
 		

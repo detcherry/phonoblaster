@@ -203,7 +203,7 @@ div#volume{
 	height:30px;
 }
 
-#live-broadcast .key_name{
+#live-broadcast .id{
 	display:none;
 }
 
@@ -376,7 +376,7 @@ div#volume{
 	margin-top:-8px;
 }
 
-.tab-items{
+#right-column .tab-items{
 	width:294px;
 	min-height:500px;
 	background:white;
@@ -387,13 +387,13 @@ div#volume{
 	padding:8px;
 }
 
-#right-column .track{
+#right-column .item{
 	padding:8px;
 	font-size:11px;
 	border-bottom: 1px solid #DDD;
 }
 
-#right-column .track .square{	
+#right-column .item .square{	
 	display:block;
 	float:left;
 	position:relative;
@@ -403,26 +403,26 @@ div#volume{
 	margin-right:8px;
 }
 
-#right-column .track .square img{
+#right-column .item .square img{
 	height:90px;
 	position:absolute;
 	top:-11px;
 	left:-20px;
 }
 
-#right-column .track .title{
+#right-column .item .title{
 	padding-right:4px;
 	width:176px;
 	height:46px;
 	overflow:hidden;
 }
 
-#right-column .track .title span{
+#right-column .item .title span{
 	height:46px;
 	line-height:15px;
 }
 
-#right-column .track a.cross{
+#right-column .item a.cross{
 	display:block;
 	float:left;
 	height:12px;
@@ -430,44 +430,43 @@ div#volume{
 	color:#B3B3B3;
 }
 
-#right-column .track a.cross:hover{
+#right-column .item a.cross:hover{
 	text-decoration:none;
 	color:#404040;
 }
 
-#right-column .track .subtitle{
+#right-column .item .subtitle{
 	height:22px;
 	width:180px;
 }
 
-#right-column .track .duration{
+#right-column .item .duration{
 	padding-top:2px;
 }
 
-#right-column .track .submitter{
+#right-column .item .submitter{
 	float:right;
 }
 
-#right-column .track .submitter img{
+#right-column .item .submitter img{
 	display:block;
 	float:right;
 	margin-left:8px;
 	height:22px;
 }
 
-#right-column .track .submitter span{
+#right-column .item .submitter span{
 	display:block;
 	float:right;
 	padding-top:2px;
 	color:#B3B3B3;
 }
 
-#right-column .track .process-actions{
+#right-column .item .process-actions{
 	float:right;
 }
 
-
-#right-column .track a.preview{
+#right-column .item a.preview{
 	display:block;
 	float:right;
 	margin-right:8px;
@@ -477,7 +476,7 @@ div#volume{
 	background-position: -73px 1px;
 }
 
-#right-column .track a.btn{
+#right-column .item a.btn{
 	display:block;
 	float:right;
 	padding:4px 13px 5px;
@@ -491,7 +490,6 @@ div#volume{
 	background: url("/static/images/loader.gif") no-repeat;
 	background-position: center center;
 }
-
 
 
 

@@ -11,6 +11,7 @@ class HomeHandler(BaseHandler):
 		if(self.user_proxy):
 			user_contributions = self.user_proxy.contributions
 			
+			user_stations = None
 			if user_contributions:
 				logging.info("User is admin of at least one page")
 				user_page_ids = []

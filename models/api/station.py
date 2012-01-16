@@ -21,6 +21,8 @@ from models.db.broadcast import Broadcast
 from models.db.track import Track
 from models.db.counter import Shard
 
+from models.api.user import UserApi
+
 MEMCACHE_STATION_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".station."
 MEMCACHE_STATION_QUEUE_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".queue.station."
 MEMCACHE_STATION_PRESENCES_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".presences.station."
@@ -177,7 +179,8 @@ class StationApi():
 				datetime_now = timegm(datetime.utcnow().utctimetuple())
 				
 				for broadcast in self._queue:
-					if(broadcast["broadcast_expired"] > datetime_now):
+					#if(broadcast["broadcast_expired"] > datetime_now):
+					if(broadcast["expired"] > datetime_now):
 						cleaned_up_queue.append(broadcast)
 				
 				# We only update the memcache if some cleaning up was necessary
@@ -211,52 +214,18 @@ class StationApi():
 						extended_track = Track.get_extended_tracks([track])[0]
 
 				else:
-					youtube_track = None
-					
+					# If obviously not, look for it though, save it otherwise and get extended track from Youtube
 					if(broadcast["youtube_id"]):
-						# We check if the track has not been submitted by the same user
-						q = Track.all()
-						q.filter("youtube_id", broadcast["youtube_id"])
-						q.filter("user", user.key())
-						track = q.get()
-						
-						if(track):
-							logging.info("Track on Phonoblaster")
-							extended_track = Track.get_extended_tracks([track])[0]
-
-						# It's the first time the track is submitted by the user
-						else:
-							logging.info("Track not on Phonoblaster")
-							youtube_track = Track.get_youtube_tracks([broadcast["youtube_id"]])[0]
-						
-							# If track on Youtube, save the track on Phonoblaster, generate the extended track
-							if(youtube_track):
-								logging.info("Track on Youtube")
-								track = Track(
-									youtube_id = broadcast["youtube_id"],
-									user = user,
-									station = self.station,
-									admin = admin,
-								)
-								track.put()
-								logging.info("New track put in the datastore.")
-							
-								extended_track = {
-									"track_id": track.key().id(),
-									"track_created": timegm(track.created.utctimetuple()),
-									"track_admin": track.admin,
-									"youtube_id": youtube_track["id"],
-									"youtube_title": youtube_track["title"],
-									"youtube_duration": youtube_track["duration"],
-								}
-				
+						track, extended_track = Track.get_or_insert_by_youtube_id(broadcast["youtube_id"], self.station, user, admin)
+					
 				if(track and extended_track):
 					
 					# Get the queue expiration time
 					queue_expiration_time = self.expiration_time()
 					
 					new_broadcast = Broadcast(
-						key_name = broadcast["broadcast_key_name"],
+						#key_name = broadcast["broadcast_key_name"],
+						key_name = broadcast["key_name"],
 						admin = admin,
 						track = track.key(),
 						station = self.station.key(),
@@ -265,8 +234,25 @@ class StationApi():
 					new_broadcast.put()
 					logging.info("New broadcast put in datastore")
 					
-					extended_broadcast = Broadcast.get_extended_broadcast(new_broadcast, extended_track, self.station, user)						
-					
+					# Look for the correct submitter
+					station_key = Track.station.get_value_for_datastore(track)					
+					if(station_key == self.station.key()):
+						# It's a regular broadcast
+						if(track.admin):
+							extended_broadcast = Broadcast.get_extended_broadcast(new_broadcast, extended_track, self.station, None)	
+						# It's a suggested broadcast
+						else:
+							user_key = Track.user.get_value_for_datastore(track)
+							if(user_key != user.key()):
+								track_user = db.get(user_key)
+							else:
+								track_user = user
+							extended_broadcast = Broadcast.get_extended_broadcast(new_broadcast, extended_track, self.station, track_user)
+					# It's a favorited broadcast
+					else:
+						track_station = db.get(station_key)
+						extended_broadcast = Broadcast.get_extended_broadcast(new_broadcast, extended_track, track_station, None)						
+										
 					# Put extended broadcasts in memcache
 					self._queue.append(extended_broadcast)
 					memcache.set(self._memcache_station_queue_id, self._queue)
@@ -288,11 +274,12 @@ class StationApi():
 		else:
 			logging.info("Queue not empty")
 			last_broadcast = self.queue[-1]
-			return datetime.utcfromtimestamp(last_broadcast["broadcast_expired"])
+			#return datetime.utcfromtimestamp(last_broadcast["broadcast_expired"])
+			return datetime.utcfromtimestamp(last_broadcast["expired"])
 	
 	# Remove a broadcast from the queue
-	def remove_from_queue(self, extended_broadcast_to_remove):
-		extended_broadcast_to_delete = None
+	def remove_from_queue(self, key_name):
+		response = False
 		
 		# If the queue has at least 2 broadcasts (given that the first one cannot be removed)
 		if(len(self.queue) > 1):
@@ -303,7 +290,7 @@ class StationApi():
 			
 			for i in range(len(self.queue[1:])): 
 				extended_broadcast = self.queue[1:][i]
-				if(extended_broadcast["broadcast_key_name"] != extended_broadcast_to_remove["broadcast_key_name"]):
+				if(extended_broadcast["key_name"] != key_name):
 					# Broadcasts must be be featured in the unchanged list and be removed from the list to edit
 					unchanged_extended_broadcasts.append(extended_broadcast)
 					extended_broadcasts_to_edit.pop(0)
@@ -316,7 +303,7 @@ class StationApi():
 				# Retrieve broadcasts to edit key names
 				extended_broadcasts_to_edit_key_names = []
 				for extended_broadcast in extended_broadcasts_to_edit:
-					extended_broadcasts_to_edit_key_names.append(extended_broadcast["broadcast_key_name"])
+					extended_broadcasts_to_edit_key_names.append(extended_broadcast["key_name"])
 				
 				# Retrieve broadcasts to edit datastore entities
 				broadcasts_to_edit = Broadcast.get_by_key_name(extended_broadcasts_to_edit_key_names)
@@ -339,7 +326,7 @@ class StationApi():
 						broadcasts_edited.append(broadcast)
 					
 					for extended_broadcast in extended_broadcasts_to_edit:
-						extended_broadcast["broadcast_expired"] -= extended_expiration_offset
+						extended_broadcast["expired"] -= extended_expiration_offset
 						extended_broadcasts_edited.append(extended_broadcast)
 					
 					db.put(broadcasts_edited)
@@ -350,8 +337,10 @@ class StationApi():
 				logging.info("Queue updated in memcache")
 				
 				self.decrement_broadcasts_counter()
+				
+				response = True
 		
-		return extended_broadcast_to_delete
+		return response
 	
 	@property
 	def number_of_broadcasts(self):
