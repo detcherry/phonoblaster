@@ -23,7 +23,7 @@ class ApiCommentsHandler(BaseHandler):
 		q.filter("station", self.station.key())
 		q.filter("created >", datetime.utcnow() - timedelta(0,180))
 		q.order("created")
-		comments = q.fetch(50) # Arbitrary number
+		comments = q.fetch(20) # Arbitrary number
 		
 		extended_comments = Comment.get_extended_comments(comments, self.station)
 		
@@ -31,10 +31,7 @@ class ApiCommentsHandler(BaseHandler):
 
 	@login_required
 	def post(self):
-		#key_name = self.request.get("key_name")
-		#content = self.request.get("content")
 		comment = json.loads(self.request.get("content"))
-		logging.info(comment);
 		shortname = self.request.get("shortname")
 		
 		# Check if the user is an admin

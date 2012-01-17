@@ -274,7 +274,6 @@ class StationApi():
 		else:
 			logging.info("Queue not empty")
 			last_broadcast = self.queue[-1]
-			#return datetime.utcfromtimestamp(last_broadcast["broadcast_expired"])
 			return datetime.utcfromtimestamp(last_broadcast["expired"])
 	
 	# Remove a broadcast from the queue

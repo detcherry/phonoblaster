@@ -187,10 +187,6 @@ div#volume{
 	padding-bottom:4px;
 }
 
-#live-broadcast .fb-like{
-	padding-top:2px;
-}
-
 #live-broadcast .title{
 	padding:8px;
 	padding-top:4px;
@@ -205,6 +201,30 @@ div#volume{
 
 #live-broadcast .id{
 	display:none;
+}
+
+#store-track{
+	height:25px;
+}
+
+#favorite-track a.fav{
+	display:block;
+	height:23px;
+	width:23px;
+	background:url("/static/images/phonoblaster-sprits.png");
+	background-position: -98px 0px;
+}
+
+#favorite-track a.fav:hover{
+	background-position: -121px 0px;
+}
+
+#favorite-track a.unfav{
+	display:block;
+	height:23px;
+	width:23px;
+	background:url("/static/images/phonoblaster-sprits.png");
+	background-position: -145px 0px;
 }
 
 /*------- RIGHT COLUMN --------*/

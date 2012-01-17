@@ -15,9 +15,13 @@ function StationClient(user, admin, station){
 	
 	this.presence_manager = null;
 	this.comment_manager = null;
-	this.status_manager = null;
-	this.search_manager = null;
+	this.suggestion_manager = null;
 	this.queue_manager = null;
+	this.search_manager = null;
+	this.favorite_manager = null;
+	this.library_manager = null;
+	this.status_manager = null;
+	
 	this.presence();
 }
 
@@ -91,9 +95,10 @@ StationClient.prototype = {
 		PHB.time(function(){
 			that.comment_manager = new CommentManager(that);
 			that.queue_manager = new QueueManager(that);
-
 			that.suggestion_manager = new SuggestionManager(that);
 			that.search_manager = new SearchManager(that);
+			
+			that.favorite_manager = new FavoriteManager(that);				
 			that.status_manager = new StatusManager(that);
 		})
 	},

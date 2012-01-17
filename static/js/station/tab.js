@@ -88,29 +88,22 @@ TabManager.prototype = {
 		callback();
 	},
 	
-	getCallback: function(items){
+	getCallback: function(items_from_server){
 		var that = this;
 			
 		// Add each item to the manager
-		$.each(items, function(index, value){
+		$.each(items_from_server, function(index, value){
 			that.add(value);
 		})
 	},
 	
 	// Transform raw item into a formatted item
-	serverToLocalItem: function(content){
-		var item = {
-			id: content.key_name,
-			created: content.created,
-			content: content
-		}
-		return item
-	},
+	serverToLocalItem: function(content){},
 	
 	// Add item to the list and display it in the UI
-	add: function(raw_item){
+	add: function(item_from_server){
 		var that = this;
-		var new_item = this.serverToLocalItem(raw_item)
+		var new_item = this.serverToLocalItem(item_from_server)
 		
 		this.addToItems(new_item, function(previous_item){
 			that.UIAdd(new_item, previous_item);
@@ -288,6 +281,14 @@ function ScrollTabManager(station_client){
 	this.scrolling_on = true;
 }
 
+ScrollTabManager.prototype.getData = function(){
+	var offset = this.offset;
+	var data = {
+		offset: offset,
+	}
+	return data
+}
+
 ScrollTabManager.prototype.get = function(){
 	
 	var that = this;	
@@ -303,19 +304,21 @@ ScrollTabManager.prototype.get = function(){
 		error: function(xhr, status, error) {
 			PHB.log('An error occurred: ' + error + '\nPlease retry.');
 		},
-		success: function(json){	
+		success: function(json){
+			var items_from_server = json;
+			
 			// Content exists on the server
-			if(items.length > 0){
+			if(items_from_server.length > 0){
 				// First GET
 				if(!that.load){
 					// Empty the tab items zone before displaying everything
 					that.empty(function(){
-						that.getCallback(items); 
+						that.getCallback(items_from_server); 
 					})
 				}
 				// Scrolling GET
 				else{
-					that.getCallback(items); 
+					that.getCallback(items_from_server); 
 					that.emptyScrolling();
 				}
 			}
@@ -328,9 +331,48 @@ ScrollTabManager.prototype.get = function(){
 	
 }
 
+ScrollTabManager.prototype.serverToLocalItem = function(content){
+	var item = {
+		id: content.track_id,
+		created: content.created,
+		content: content,
+	}
+	return item;
+}
+
 ScrollTabManager.prototype.addToItems = function(new_item, callback){
 	this.items.push(new_item);
 	callback(null);
+}
+
+ScrollTabManager.prototype.scrollListen = function(){
+	var that = this;
+
+	$(window).scroll(function(){
+		
+		var active_tab = $("a.current").attr("href")
+		
+		var tab_active = false;
+		if(that.name == active_tab){
+			tab_active = true;
+		}
+		
+		if(tab_active){
+			var height = $(this).height();
+			var scroll_height = $(this).scrollTop();
+			var document_height = $(document).height();
+			var scroll_bottom = document_height - height - scroll_height;
+			
+			if(scroll_bottom < 400 && !that.load && that.scrolling_on){
+				var last_item = that.items[that.items.length -1];
+				that.offset = last_item.created;
+				that.load = true;
+				that.UIShowLoader();
+				that.get();
+			}
+		}
+	})
+
 }
 
 ScrollTabManager.prototype.emptyScrolling = function(){
@@ -341,6 +383,7 @@ ScrollTabManager.prototype.emptyScrolling = function(){
 
 ScrollTabManager.prototype.removeScrolling = function(){
 	this.scrolling_on = false;
+	this.UIRemoveLoader();
 }
 
 ScrollTabManager.prototype.UIAdd = function(new_item, previous_item){
@@ -396,6 +439,15 @@ RealtimeTabManager.prototype.get = function(){
 			}
 		},
 	});
+}
+
+RealtimeTabManager.prototype.serverToLocalItem = function(content){
+	var item = {
+		id: content.key_name,
+		created: content.created,
+		content: content
+	}
+	return item
 }
 
 RealtimeTabManager.prototype.addToItems = function(new_item, callback){

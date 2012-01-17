@@ -20,6 +20,12 @@ indexes:
   - name: station
   - name: created
 
+- kind: Favorite
+  properties:
+  - name: user
+  - name: created
+    direction: desc
+
 - kind: Presence
   properties:
   - name: connected

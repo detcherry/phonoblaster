@@ -2,7 +2,6 @@
 // SEARCH MANAGER
 // ---------------------------------------------------------------------------
 
-///*
 SearchManager.prototype = new ScrollTabManager();
 SearchManager.prototype.constructor = SearchManager;
 

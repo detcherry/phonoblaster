@@ -40,7 +40,8 @@ class Suggestion(db.Model):
 				if(extended_track):
 					extended_suggestion = Suggestion.get_extended_suggestion(suggestion, extended_track, user)
 					extended_suggestions.append(extended_suggestion)
-			
+		
+		logging.info("Extended suggestions generated")
 		return extended_suggestions
 		
 		

@@ -3,18 +3,21 @@ import os
 
 from google.appengine.ext import db
 from google.appengine.api import memcache
+from google.appengine.api.taskqueue import Task
 
 from controllers import facebook
 from models.db.user import User
 
 MEMCACHE_USER_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".user."
 MEMCACHE_USER_CONTRIBUTIONS_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".contributions.user."
+COUNTER_OF_FAVORITES = "user.favorites.counter."
 
 class UserApi:
 	def __init__(self, facebook_id):
 		self._facebook_id = str(facebook_id)
 		self._memcache_facebook_id = MEMCACHE_USER_PREFIX + self._facebook_id
 		self._memcache_user_contributions_id = MEMCACHE_USER_CONTRIBUTIONS_PREFIX + self._facebook_id
+		self._counter_of_favorites_id = COUNTER_OF_FAVORITES + self._facebook_id
 	
 	# Return the user
 	@property
@@ -98,8 +101,32 @@ class UserApi:
 				return True
 		return False
 	
+	@property
+	def number_of_favorites(self):
+		if not hasattr(self, "_number_of_favorites"):
+			shard_name = self._counter_of_favorites_id
+			self._number_of_favorites = Shard.get_count(shard_name)
+		return self._number_of_favorites
 	
+	def increment_favorites_counter(self):
+		task = Task(
+			url = "/taskqueue/counter",
+			params = {
+				"shard_name": self._counter_of_favorites_id,
+				"method": "increment"
+			}
+		)
+		task.add(queue_name = "counters-queue")
 
+	def decrement_favorites_counter(self):
+		task = Task(
+			url = "/taskqueue/counter",
+			params = {
+				"shard_name": self._counter_of_favorites_id,
+				"method": "decrement"
+			}
+		)
+		task.add(queue_name = "counters-queue")		
 		
 		
 		

@@ -156,24 +156,23 @@ CommentManager.prototype.UIBuild = function(item){
 		var station_url = "/" + this.station_client.station.shortname;
 		var station_picture = "https://graph.facebook.com/" + this.station_client.station.key_name + "/picture?type=square";
 		
-		var mention = $("<p/>").append($("<a/>").attr("href", station_url).html(station_name))
+		var mention = $("<p/>").append($("<a/>").attr("href", track_submitter_url ).html(track_submitter_name))
 		
 		if(type == "track"){
 			// Regular broadcast
-			mention
-				.append(" just broadcast a track")
+			mention.append(" just broadcast a track")
 		}
 		if(type == "suggestion"){
 			// Suggestion
 			mention
-				.append(" just broadcast a track suggested by ")
-				.append($("<a/>").attr("href", track_submitter_url).html(track_submitter_name))
+				.append(" suggestion was broadcast by ")
+				.append($("<a/>").attr("href", station_url).html(station_name))
 		}
 		if(type == "favorite"){
 			// Rebroadcast
 			mention
-				.append(" just broadcast a track favorited from ")
-				.append($("<a/>").attr("href", track_submitter_url).html(track_submitter_name))
+				.append(" track was rebroadcast by ")
+				.append($("<a/>").attr("href", station_url).html(station_name))
 		}
 		
 		var div = $("<div/>").addClass("comment").attr("id", id)

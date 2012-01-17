@@ -20,7 +20,7 @@ class ApiSuggestionsHandler(BaseHandler):
 		q = Suggestion.all()
 		q.filter("station", station)
 		q.order("created")
-		suggestions = q.fetch(40)
+		suggestions = q.fetch(20) # Arbitrary number
 		
 		extended_suggestions = Suggestion.get_extended_suggestions(suggestions)
 		self.response.out.write(json.dumps(extended_suggestions))

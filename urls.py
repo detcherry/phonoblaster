@@ -18,6 +18,8 @@ from controllers.station.broadcasts import StationBroadcastsHandler
 from controllers.api.queue import ApiQueueHandler
 from controllers.api.queue import ApiQueueDeleteHandler
 from controllers.api.suggestions import ApiSuggestionsHandler
+from controllers.api.favorites import ApiFavoritesHandler
+from controllers.api.favorites import ApiFavoritesDeleteHandler
 from controllers.api.presences import ApiPresencesHandler
 from controllers.api.comments import ApiCommentsHandler
 from controllers.api.views import ApiViewsHandler
@@ -33,6 +35,8 @@ application = webapp.WSGIApplication(
 		('/api/queue', ApiQueueHandler),
 		('/api/queue/([\w.]+)', ApiQueueDeleteHandler),
 		('/api/suggestions', ApiSuggestionsHandler),
+		('/api/favorites', ApiFavoritesHandler),
+		('/api/favorites/(\w+)', ApiFavoritesDeleteHandler),
 		('/api/presences', ApiPresencesHandler),
 		('/api/comments', ApiCommentsHandler),
 		('/api/views', ApiViewsHandler),

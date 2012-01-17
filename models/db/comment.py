@@ -1,3 +1,4 @@
+import logging
 from calendar import timegm
 
 from google.appengine.ext import db
@@ -37,12 +38,14 @@ class Comment(db.Model):
 			# For regular comments, we need to fetch the user
 			user_keys = [Comment.user.get_value_for_datastore(c) for c in regular_comments]
 			users = db.get(user_keys)
+			logging.info("Users retrieved from datastore")
 			
 			# Then we format the regular comments
 			for comment, user in zip(regular_comments, users):
 				extended_comment = Comment.get_extended_comment(comment, None, user)
 				extended_comments.append(extended_comment)
-
+		
+		logging.info("Extended comments generated")
 		return extended_comments
 	
 	# Format a comment and a user into an extended comment entitity

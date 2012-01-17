@@ -115,7 +115,7 @@ QueueManager.prototype.UIBuild = function(item){
 		mention = "Suggested by"
 	}
 	if(type == "favorite"){
-		mention = "Favorited from"
+		mention = "Rebroadcast of"
 	}
 	
 	var div = $("<div/>").addClass("item").attr("id", id)
@@ -427,12 +427,14 @@ QueueManager.prototype.UILive = function(){
 
 // Set the live item in the UI
 QueueManager.prototype.UILiveSet = function(item){
+	this.UILiveRemove();
+	
 	var id = item.id;
 	var content = item.content;
 	var type = content.type;
 	
 	var youtube_title = content.youtube_title;
-	var youtube_duration = content.youtube_duration;
+	var youtube_duration = PHB.convertDuration(content.youtube_duration);
 	var youtube_thumbnail = "http://i.ytimg.com/vi/" + content.youtube_id + "/default.jpg";
 	
 	var track_submitter_name = content.track_submitter_name;
@@ -447,6 +449,21 @@ QueueManager.prototype.UILiveSet = function(item){
 	
 	// Put the item id in the div
 	$("#live-broadcast .id").html(id);
+	
+	if(content.track_id){
+		if(this.station_client.user){
+			// Favorite button
+			$("#store-track")
+				.append(
+					$("<div/>")
+						.attr("id", "favorite-track")
+						.append($("<a/>").attr("href", "#").addClass("fav"))
+				)
+		}
+		else{
+			// Facebook Like Button
+		}
+	}
 }
 
 QueueManager.prototype.UILiveRemove = function(){
@@ -456,8 +473,12 @@ QueueManager.prototype.UILiveRemove = function(){
 	// Remove title
 	$("#live-broadcast span.middle").html("No track is being broadcast");
 	
-	// Remove the braodcast key_name in the div
+	// Remove the broadcast key_name in the div
 	$("#live-broadcast .id").empty();
+	
+	// Remove the store icon
+	$("#store-track").empty();
+	
 }
 
 // -------------------------------- NEW --------------------------------------
