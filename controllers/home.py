@@ -9,6 +9,7 @@ class HomeHandler(BaseHandler):
 		template_values = {}
 		
 		if(self.user_proxy):
+			number_of_favorites = self.user_proxy.number_of_favorites
 			user_contributions = self.user_proxy.contributions
 			
 			user_stations = None
@@ -29,6 +30,7 @@ class HomeHandler(BaseHandler):
 			template_values = {
 				"user_stations": user_stations,
 				"user_contributions": user_contributions,
+				"number_of_favorites": number_of_favorites,
 			}
 			
 		self.render("home.html", template_values)

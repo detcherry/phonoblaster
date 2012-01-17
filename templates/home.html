@@ -17,7 +17,11 @@
 			<img src="https://graph.facebook.com/{{ user_proxy.user.key.name }}/picture" class="thumbnail"/>
 			<div class="user-information">
 				<p><strong>{{ user_proxy.user.first_name }} {{ user_proxy.user.last_name }}</strong></p>
-				<p class="stats"><a href="/user/{{ user_proxy.user.key.name }}/favorites"><strong>0</strong> Favorites</a></p>
+				<p class="stats">
+					<a href="/user/{{ user_proxy.user.key.name }}/favorites">
+						<strong>{{ number_of_favorites }}</strong> Favorites
+					</a>
+				</p>
 			</div>
 		</div>
 		<div id="home-right">

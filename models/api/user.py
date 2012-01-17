@@ -7,6 +7,7 @@ from google.appengine.api.taskqueue import Task
 
 from controllers import facebook
 from models.db.user import User
+from models.db.counter import Shard
 
 MEMCACHE_USER_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".user."
 MEMCACHE_USER_CONTRIBUTIONS_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".contributions.user."
