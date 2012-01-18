@@ -20,7 +20,7 @@ function SuggestionManager(station_client){
 	this.suggestion_on = true;
 	
 	// Init methods
-	this.get();
+	//this.get();
 	this.previewListen();
 	this.processListen();
 }

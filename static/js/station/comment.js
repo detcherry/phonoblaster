@@ -16,7 +16,7 @@ function CommentManager(station_client){
 	this.selector = "#comments-zone"
 	
 	// Init methods
-	this.get();
+	//this.get();
 	this.inputListen();
 }
 

@@ -62,7 +62,8 @@ class ApiCommentsHandler(BaseHandler):
 		
 		# Add a taskqueue to warn everyone
 		new_comment_data = {
-			"event": "new-comment",
+			"entity": "comment",
+			"event": "new",
 			"content": extended_comment,
 		}
 		task = Task(

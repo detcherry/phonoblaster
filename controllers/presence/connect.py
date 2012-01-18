@@ -23,7 +23,8 @@ class PresenceConnectHandler(webapp.RequestHandler):
 		
 		# Add a taskqueue to warn everyone
 		new_presence_data = {
-			"event": "new-presence",
+			"entity": "presence",
+			"event": "new",
 			"content": extended_presence,
 		}
 		task = Task(

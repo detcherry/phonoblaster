@@ -23,7 +23,8 @@ class PresenceDisconnectHandler(webapp.RequestHandler):
 
 		# Add a taskqueue to warn everyone
 		presence_removed_data = {
-			"event": "presence-removed",
+			"entity": "presence",
+			"event": "remove",
 			"content": extended_presence,
 		}
 		task = Task(

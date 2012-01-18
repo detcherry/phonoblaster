@@ -80,7 +80,7 @@ StationClient.prototype = {
 	            that.dispatch(message);
 	        },
 	        connect: function(){
-				// Fetch all the content: presences, comments, queue
+				// Fetch all the content: presences, comments, suggestions, queue
 				that.fetch();
 	        }
 		})
@@ -88,51 +88,77 @@ StationClient.prototype = {
 	
 	// Fetch presences, comments and queue after connection to pubnub + init all the tabs
 	fetch: function(){
-		this.presence_manager = new PresenceManager(this);
+		this.presence_manager = new PresenceManager(this); // Fetching
 		
-		// Once time has been initialized, fetch everything
+		// Once time has been initialized, initialize everything else
 		var that = this;
+		var pubnub_channel = PHB.version + "-" + this.station.shortname
+		
 		PHB.time(function(){
-			that.comment_manager = new CommentManager(that);
-			that.queue_manager = new QueueManager(that);
-			that.suggestion_manager = new SuggestionManager(that);
-			that.search_manager = new SearchManager(that);
+			that.queue_manager = new QueueManager(that); // Fetching
+			that.search_manager = new SearchManager(that); // No Fetching
 			
-			that.favorite_manager = new FavoriteManager(that);				
+			that.comment_manager = new CommentManager(that); // Pubnub Fetching
+			that.suggestion_manager = new SuggestionManager(that); // Pubnub Fetching
+			
+			// Fetch latest comments and suggestions via PUBNUB
+			PUBNUB.history({
+					channel: pubnub_channel,
+					limit: 100,
+				},
+				function(messages){
+					$.each(messages, function(index, value){
+						var message = JSON.parse(value);
+						var entity = message.entity;
+						var event = message.event;
+						var content = message.content;
+						
+						if(entity == "comment"){
+							// Event is "new"
+							that.comment_manager.add(content);
+						}
+						
+						if(entity == "suggestion"){
+							// Event is "new"
+							that.suggestion_manager.add(content);
+						}
+					})
+				}
+			)	
+			
+			that.favorite_manager = new FavoriteManager(that); // Lazy Fetching			
 			that.status_manager = new StatusManager(that);
 		})
 	},
 	
-	// Dispatch incoming messages according to their content
+	// Dispatch incoming messages according to their content	
 	dispatch: function(data){
 		var message = JSON.parse(data);
+		var entity = message.entity;
 		var event = message.event;
 		var content = message.content;
 		
-		if(event == "new-presence"){
-			PHB.log("new-presence");
-			this.presence_manager.new(content);
+		var manager = null;
+		if(entity == "presence"){
+			manager = this.presence_manager;
 		}
-		if(event == "presence-removed"){
-			PHB.log("presence-removed");
-			this.presence_manager.remove(content);
+		if(entity == "broadcast"){
+			manager = this.queue_manager;
 		}
-		if(event == "new-comment"){
-			PHB.log("new-comment");
-			this.comment_manager.new(content);
+		if(entity == "comment"){
+			manager = this.comment_manager;
 		}
-		if(event == "new-broadcast"){
-			PHB.log("new-broadcast");
-			this.queue_manager.new(content);
+		if(entity == "suggestion"){
+			manager = this.suggestion_manager;
 		}
-		if(event == "broadcast-removed"){
-			PHB.log("broadcast-removed");
-			this.queue_manager.remove(content);
+		
+		if(event == "new"){
+			manager.new(content);
 		}
-		if(event == "new-suggestion"){
-			PHB.log("new-suggestion");
-			this.suggestion_manager.new(content);
+		else{
+			manager.remove(content);
 		}
+		
 	},
 	
 }

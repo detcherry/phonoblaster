@@ -80,7 +80,8 @@ class ApiSuggestionsHandler(BaseHandler):
 		if(extended_suggestion):
 			# Add a taskqueue to warn everyone
 			suggestion_data = {
-				"event": "new-suggestion",
+				"entity": "suggestion",
+				"event": "new",
 				"content": extended_suggestion,
 			}
 

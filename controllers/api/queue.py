@@ -36,7 +36,8 @@ class ApiQueueHandler(BaseHandler):
 		if(extended_broadcast):
 			# Add a taskqueue to warn everyone
 			broadcast_data = {
-				"event": "new-broadcast",
+				"entity": "broadcast",
+				"event": "new",
 				"content": extended_broadcast,
 			}
 
@@ -68,9 +69,9 @@ class ApiQueueDeleteHandler(BaseHandler):
 			response = station_proxy.remove_from_queue(key_name)
 		
 		if(response):
-			# Add a taskqueue to warn everyone
 			broadcast_data = {
-				"event": "broadcast-removed",
+				"entity": "broadcast",
+				"event": "remove",
 				"content": key_name,
 			}
 
