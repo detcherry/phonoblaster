@@ -224,9 +224,7 @@ class StationApi():
 					queue_expiration_time = self.expiration_time()
 					
 					new_broadcast = Broadcast(
-						#key_name = broadcast["broadcast_key_name"],
 						key_name = broadcast["key_name"],
-						admin = admin,
 						track = track.key(),
 						station = self.station.key(),
 						expired = queue_expiration_time + timedelta(0, extended_track["youtube_duration"]),

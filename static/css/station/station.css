@@ -311,57 +311,7 @@ input#comment{
 	color:#C43C35;
 }
 
-/* --------- SUGGESTION ITEM ---------*/
-
-.suggestion{
-	padding:8px;
-	border-bottom:1px solid #DDD;
-}
-
-.suggestion img.submitter{
-	display:block;
-	float:left;
-	margin-right:8px;
-	height:26px;
-	width:26px;
-}
-
-.suggestion .content{
-	width:244px;
-	margin-bottom:8px;	
-}
-
-.suggestion .content p{
-	width:100%;
-	font-size:11px;
-	line-height:15px;
-	overflow:hidden;
-}
-
-.suggestion .content p a{
-	font-weight:bold;
-	color:#0084B4;
-}
-
-.suggestion .content p a:hover{
-	color:#0084B4;
-}
-
-#right-column .suggestion .item{
-	padding:0px;
-	border:none;
-	margin-left:34px;
-}
-
-#right-column .suggestion .item .title{
-	width:152px;
-}
-
-#right-column .suggestion .item .subtitle{
-	width:156px;
-}
-
-/* -------- WRAPPER ITEM -------- */
+/* -------- WRAPPER ITEM (SUGGESTIONS & FAVORITES)-------- */
 
 .wrapper-item{
 	padding:8px;
@@ -411,3 +361,12 @@ input#comment{
 	width:156px;
 }
 
+/* ---------- LIBRARY ----------- */
+
+#right-column #library-tab .item .square{
+	width:90px;
+}
+
+#right-column #library-tab .item .square img {
+	left:-15px;
+}

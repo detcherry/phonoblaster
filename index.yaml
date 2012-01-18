@@ -43,3 +43,9 @@ indexes:
   - name: station
   - name: user
   - name: created
+
+- kind: Track
+  properties:
+  - name: user
+  - name: created
+    direction: desc

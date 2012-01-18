@@ -281,6 +281,29 @@ function ScrollTabManager(station_client){
 	this.scrolling_on = true;
 }
 
+// Lazy fetching
+ScrollTabManager.prototype.getListen = function(){
+	var that = this;
+	
+	$("#tabs a").click(function(){
+		if(that.items.length == 0){
+			that.offset = PHB.now();
+
+			var active_tab_name = $("a.current").attr("href")
+			var tab_active = false;
+			if(that.name == active_tab_name){
+				tab_active = true;
+			}
+
+			if(tab_active){
+				that.UIReset();
+				that.UIAppendLoader();
+				that.get();
+			}
+		}		
+	})	
+}
+
 ScrollTabManager.prototype.getData = function(){
 	var offset = this.offset;
 	var data = {
@@ -303,6 +326,7 @@ ScrollTabManager.prototype.get = function(){
 		data: data,
 		error: function(xhr, status, error) {
 			PHB.log('An error occurred: ' + error + '\nPlease retry.');
+			that.removeScrolling();
 		},
 		success: function(json){
 			var items_from_server = json;
@@ -343,6 +367,69 @@ ScrollTabManager.prototype.serverToLocalItem = function(content){
 ScrollTabManager.prototype.addToItems = function(new_item, callback){
 	this.items.push(new_item);
 	callback(null);
+}
+
+ScrollTabManager.prototype.UIBuild = function(item){
+	var id = item.id;
+	var content = item.content;
+
+	var youtube_id = content.youtube_id;
+	var youtube_title = content.youtube_title;
+	var youtube_duration = PHB.convertDuration(content.youtube_duration)
+	var youtube_thumbnail = "http://i.ytimg.com/vi/" + youtube_id + "/default.jpg";
+	var preview = "http://www.youtube.com/embed/" + youtube_id + "?autoplay=1"
+	
+	var process_action = "Suggest"
+	if(this.station_client.admin){
+		process_action = "Queue"
+	}
+	
+	var div = $("<div/>").addClass("item").attr("id",id)
+	
+	div.append(
+		$("<span/>")
+			.addClass("square")
+			.append(
+				$("<img/>")
+					.attr("src", youtube_thumbnail)
+			)
+		)
+		.append(
+			$("<div/>")
+				.addClass("title")
+				.append(
+					$("<span/>")
+						.addClass("middle")
+						.html(youtube_title)
+				)
+		)
+		.append(
+			$("<div/>")
+				.addClass("subtitle")
+				.append(
+					$("<div/>")
+						.addClass("duration")
+						.html(youtube_duration)
+				)
+				.append(
+					$("<div/>")
+						.addClass("process-actions")
+						.append(
+							$("<a/>")
+								.addClass("btn")
+								.attr("name",id)
+								.html(process_action)
+						)
+						.append(
+							$("<a/>")
+								.addClass("preview")
+								.addClass("fancybox.iframe")
+								.attr("href",preview)
+						)
+				)
+		)
+				
+	return div;
 }
 
 ScrollTabManager.prototype.scrollListen = function(){

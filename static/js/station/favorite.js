@@ -29,29 +29,6 @@ function FavoriteManager(station_client){
 	}
 }
 
-// Lazy fetching
-FavoriteManager.prototype.getListen = function(){
-	var that = this;
-	
-	$("#tabs a").click(function(){
-		if(that.items.length == 0){
-			that.offset = PHB.now();
-
-			var active_tab_name = $("a.current").attr("href")
-			var tab_active = false;
-			if(that.name == active_tab_name){
-				tab_active = true;
-			}
-
-			if(tab_active){
-				that.UIReset();
-				that.UIAppendLoader();
-				that.get();
-			}
-		}		
-	})	
-}
-
 FavoriteManager.prototype.postListen = function(){
 	var that = this;
 	

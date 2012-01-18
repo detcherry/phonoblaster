@@ -11,11 +11,13 @@ from google.appengine.api.taskqueue import Task
 from controllers import facebook
 from models.db.user import User
 from models.db.favorite import Favorite
+from models.db.track import Track
 from models.db.counter import Shard
 
 MEMCACHE_USER_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".user."
 MEMCACHE_USER_CONTRIBUTIONS_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".contributions.user."
 MEMCACHE_USER_FAVORITES_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".favorites.user."
+MEMCACHE_USER_LIBRARY_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".library.user."
 COUNTER_OF_FAVORITES = "user.favorites.counter."
 
 class UserApi:
@@ -24,6 +26,7 @@ class UserApi:
 		self._memcache_facebook_id = MEMCACHE_USER_PREFIX + self._facebook_id
 		self._memcache_user_contributions_id = MEMCACHE_USER_CONTRIBUTIONS_PREFIX + self._facebook_id
 		self._memcache_user_favorites_id = MEMCACHE_USER_FAVORITES_PREFIX + self._facebook_id
+		self._memcache_user_library_id = MEMCACHE_USER_LIBRARY_PREFIX + self._facebook_id
 		self._counter_of_favorites_id = COUNTER_OF_FAVORITES + self._facebook_id
 	
 	# Return the user
@@ -117,11 +120,7 @@ class UserApi:
 			if self._favorites is None:				
 				logging.info("Favorites not in memcache")
 				
-				q = Favorite.all()
-				q.filter("user", self.user.key())
-				q.filter("created <", datetime.utcnow())
-				q.order("-created")
-				favorites = q.fetch(step) 
+				favorites = self.request_favorites(step, datetime.utcnow())
 				logging.info("Favorites retrieved from datastore")
 				
 				extended_favorites = Favorite.get_extended_favorites(favorites)
@@ -134,8 +133,45 @@ class UserApi:
 				logging.info("Favorites already in memcache")
 
 		return self._favorites
+
 	
-	
+	def get_favorites(self, offset):
+		step = 10
+		extended_favorites = []
+
+		for f in self.favorites:
+			if(f["created"] < timegm(offset.utctimetuple())):
+				extended_favorites.append(f)
+
+			# If favorites has reached the limit of a "fetching step", stop the loop
+			if len(extended_favorites) == step:
+				break
+
+		# If favorites length is 0, request the datastore
+		if(len(extended_favorites) == 0):
+			favorites = self.request_favorites(step, offset)
+			logging.info("Favorites retrieved from datastore")
+			extended_favorites = Favorite.get_extended_favorites(favorites)
+
+			# Add, if any, additional results to memcache
+			if(len(extended_favorites) > 0):
+				self.favorites += extended_favorites
+				memcache.set(self._memcache_user_favorites_id, self.favorites)
+				logging.info("New extended favorites put in memcache")
+
+		return extended_favorites
+
+
+	def request_favorites(self, step, offset):
+		q = Favorite.all()
+		q.filter("user", self.user.key())
+		q.filter("created <", offset)
+		q.order("-created")
+		favorites = q.fetch(step)
+		
+		return favorites
+		
+
 	def add_to_favorites(self, track, extended_track, station):
 		# Check if the favorite hasn't been stored yet
 		q = Favorite.all()
@@ -187,38 +223,69 @@ class UserApi:
 			
 			memcache.set(self._memcache_user_favorites_id, self.favorites)
 			logging.info("Favorites updated in memcache")
-					
-	
-	def get_favorites(self, offset):
-		step = 10
-		extended_favorites = []
-		
-		for f in self.favorites:
-			if(f["created"] < timegm(offset.utctimetuple())):
-				extended_favorites.append(f)
 
-			# If favorites has reached the limit of a "fetching step", stop the loop
-			if len(extended_favorites) == step:
+
+	@property
+	def library(self):
+		step = 10
+		
+		if not hasattr(self, "_library"):
+			self._library = memcache.get(self._memcache_user_library_id)
+			if self._library is None:				
+				logging.info("Library tracks not in memcache")
+				
+				tracks = self.request_library(step, datetime.utcnow())
+				logging.info("Library tracks retrieved from datastore")
+				
+				extended_tracks = Track.get_extended_tracks(tracks)
+				self._library = extended_tracks
+				
+				memcache.set(self._memcache_user_library_id, self._library)
+				logging.info("Extended library tracks put in memcache")
+			
+			else:
+				logging.info("Library tracks already in memcache")
+
+		return self._library
+
+		
+	def get_library(self, offset):
+		step = 10
+		extended_tracks = []
+		
+		for t in self.library:
+			if(t["track_created"] < timegm(offset.utctimetuple())):
+				extended_tracks.append(t)
+
+			# If tracks has reached the limit of a "fetching step", stop the loop
+			if len(extended_tracks) == step:
 				break
 				
-		# If favorites length is inferior to the size we want, request the datastore
-		if(len(extended_favorites) == 0):
-			q = Favorite.all()
-			q.filter("user", self.user.key())
-			q.filter("created <", offset)
-			q.order("-created")
-			favorites = q.fetch(step)
-			extended_favorites = Favorite.get_extended_favorites(favorites)
+		# If library length is 0, request the datastore
+		if(len(extended_tracks) == 0):
+			tracks = self.request_library(step, offset)
+			logging.info("Library tracks retrieved from datastore")
+			extended_tracks = Track.get_extended_tracks(tracks)
 		
 			# Add, if any, additional results to memcache
-			if(len(extended_favorites) > 0):
-				self.favorites += extended_favorites
-				memcache.set(self._memcache_user_favorites_id, self.favorites)
-				logging.info("New extended favorites put in memcache")
+			if(len(extended_tracks) > 0):
+				self.library += extended_tracks
+				memcache.set(self._memcache_user_library_id, self.library)
+				logging.info("New extended library tracks put in memcache")
 				
-		return extended_favorites
+		return extended_tracks
 
 	
+	def request_library(self, step, offset):	
+		q = Track.all()
+		q.filter("user", self.user.key())
+		q.filter("created <", offset)
+		q.order("-created")
+		tracks = q.fetch(step)
+		
+		return tracks
+
+		
 	@property
 	def number_of_favorites(self):
 		if not hasattr(self, "_number_of_favorites"):

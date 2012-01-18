@@ -168,7 +168,7 @@ RealtimeTabManager.prototype.UIBuild = function(item){
 	var youtube_thumbnail = "http://i.ytimg.com/vi/" + content.youtube_id + "/default.jpg";
 	var preview = "http://www.youtube.com/embed/" + content.youtube_id + "?autoplay=1"
 	
-	var div = $("<div/>").addClass("suggestion").attr("id", id)
+	var div = $("<div/>").addClass("wrapper-item").attr("id", id)
 	
 	div.append(
 		$("<img/>")

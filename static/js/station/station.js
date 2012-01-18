@@ -126,7 +126,8 @@ StationClient.prototype = {
 				}
 			)	
 			
-			that.favorite_manager = new FavoriteManager(that); // Lazy Fetching			
+			that.favorite_manager = new FavoriteManager(that); // Lazy Fetching		
+			that.library_manager = new LibraryManager(that); // Lazy fetching	
 			that.status_manager = new StatusManager(that);
 		})
 	},

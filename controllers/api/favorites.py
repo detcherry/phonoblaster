@@ -6,7 +6,6 @@ from controllers import config
 from controllers.base import BaseHandler
 from controllers.base import login_required
 
-from models.db.favorite import Favorite
 from models.db.track import Track
 
 from models.api.station import StationApi
