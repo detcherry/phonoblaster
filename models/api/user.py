@@ -1,16 +1,21 @@
 import logging
 import os
 
+from datetime import datetime
+from calendar import timegm
+
 from google.appengine.ext import db
 from google.appengine.api import memcache
 from google.appengine.api.taskqueue import Task
 
 from controllers import facebook
 from models.db.user import User
+from models.db.favorite import Favorite
 from models.db.counter import Shard
 
 MEMCACHE_USER_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".user."
 MEMCACHE_USER_CONTRIBUTIONS_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".contributions.user."
+MEMCACHE_USER_FAVORITES_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".favorites.user."
 COUNTER_OF_FAVORITES = "user.favorites.counter."
 
 class UserApi:
@@ -18,6 +23,7 @@ class UserApi:
 		self._facebook_id = str(facebook_id)
 		self._memcache_facebook_id = MEMCACHE_USER_PREFIX + self._facebook_id
 		self._memcache_user_contributions_id = MEMCACHE_USER_CONTRIBUTIONS_PREFIX + self._facebook_id
+		self._memcache_user_favorites_id = MEMCACHE_USER_FAVORITES_PREFIX + self._facebook_id
 		self._counter_of_favorites_id = COUNTER_OF_FAVORITES + self._facebook_id
 	
 	# Return the user
@@ -103,6 +109,63 @@ class UserApi:
 		return False
 	
 	@property
+	def favorites(self):
+		step = 20
+		
+		if not hasattr(self, "_favorites"):
+			self._favorites = memcache.get(self._memcache_user_favorites_id)
+			if self._favorites is None:
+				logging.info("Favorites not in memcache")
+				
+				q = Favorite.all()
+				q.filter("user", self.user.key())
+				q.filter("created <", datetime.utcnow())
+				q.order("-created")
+				favorites = q.fetch(step) # Arbitrary number
+				logging.info("Favorites retrieved from datastore")
+				
+				extended_favorites = Favorite.get_extended_favorites(favorites)
+				self._favorites = extended_favorites
+				
+				memcache.set(self._memcache_user_favorites_id, self._favorites)
+				logging.info("Extended favorites put in memcache")
+			
+			else:
+				logging.info("Favorites already in memcache")
+
+		return self._favorites
+	
+	def get_favorites(self, offset):
+		step = 20
+		extended_favorites = []
+		
+		for f in self.favorites:
+			if(f["created"] < timegm(offset.utctimetuple())):
+				extended_favorites.append(f)
+
+			# If favorites has reached the limit of a "fetching step", stop the loop
+			if len(extended_favorites) == step:
+				break
+		
+		# If favorites length is inferior to the size we want, request the datastore
+		if(len(extended_favorites) < step):
+			q = Favorite.all()
+			q.filter("user", self.user.key())
+			q.filter("created <", offset)
+			q.order("-created")
+			favorites = q.fetch(step)
+			extended_favorites = Favorite.get_extended_favorites(favorites)
+		
+			# Add, if any, additional results to memcache
+			if(len(extended_favorites) > 0):
+				self.favorites += extended_favorites
+				memcache.set(self._memcache_user_favorites_id, self.favorites)
+				logging.info("New extended favorites put in memcache")
+				
+		return extended_favorites
+
+	
+	@property
 	def number_of_favorites(self):
 		if not hasattr(self, "_number_of_favorites"):
 			shard_name = self._counter_of_favorites_id
@@ -110,26 +173,20 @@ class UserApi:
 		return self._number_of_favorites
 	
 	def increment_favorites_counter(self):
+		self.add_task("increment")
+
+	def decrement_favorites_counter(self):
+		self.add_task("decrement")		
+		
+	def add_task(self, method):
 		task = Task(
 			url = "/taskqueue/counter",
 			params = {
 				"shard_name": self._counter_of_favorites_id,
-				"method": "increment"
+				"method": method,
 			}
 		)
 		task.add(queue_name = "counters-queue")
-
-	def decrement_favorites_counter(self):
-		task = Task(
-			url = "/taskqueue/counter",
-			params = {
-				"shard_name": self._counter_of_favorites_id,
-				"method": "decrement"
-			}
-		)
-		task.add(queue_name = "counters-queue")		
-		
-		
 		
 		
 		

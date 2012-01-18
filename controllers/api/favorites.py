@@ -13,15 +13,7 @@ class ApiFavoritesHandler(BaseHandler):
 	@login_required
 	def get(self):
 		offset = datetime.utcfromtimestamp(int(self.request.get("offset")))
-		self.user = self.user_proxy.user
-		
-		q = Favorite.all()
-		q.filter("user", self.user.key())
-		q.filter("created <", offset)
-		q.order("-created")
-		favorites = q.fetch(2) # Arbitrary number
-		
-		extended_favorites = Favorite.get_extended_favorites(favorites)
+		extended_favorites = self.user_proxy.get_favorites(offset)
 		self.response.out.write(json.dumps(extended_favorites))
 	
 	@login_required
