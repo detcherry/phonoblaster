@@ -66,7 +66,7 @@ SearchManager.prototype.inputListen = function(){
 		if(that.search_content.length > 1){
 			$("#search-overlay").show();
 			$("#search-tab").show();
-			that.get(false);
+			that.get();
 		}
 	})
 	

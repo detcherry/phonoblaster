@@ -516,7 +516,6 @@ QueueManager.prototype.remove = function(id){
 			break;
 		}
 	}
-	
 }
 
 QueueManager.prototype.removeEvent = function(){

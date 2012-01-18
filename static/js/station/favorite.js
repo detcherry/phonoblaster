@@ -22,11 +22,33 @@ function FavoriteManager(station_client){
 	this.deleteListen();
 	
 	if(this.station_client.admin){
-		this.get();
+		this.getListen();
 		this.previewListen();
 		this.processListen();
 		this.scrollListen();
 	}
+}
+
+// Lazy fetching
+FavoriteManager.prototype.getListen = function(){
+	var that = this;
+	
+	$("#tabs a").click(function(){
+		
+		var active_tab_name = $("a.current").attr("href")
+		
+		var tab_active = false;
+		if(that.name == active_tab_name){
+			tab_active = true;
+		}
+		
+		if(tab_active){
+			that.UIReset();
+			that.UIAppendLoader();
+			that.get();
+		}
+		
+	})	
 }
 
 FavoriteManager.prototype.postListen = function(){

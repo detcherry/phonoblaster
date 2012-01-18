@@ -350,10 +350,10 @@ ScrollTabManager.prototype.scrollListen = function(){
 
 	$(window).scroll(function(){
 		
-		var active_tab = $("a.current").attr("href")
+		var active_tab_name = $("a.current").attr("href")
 		
 		var tab_active = false;
-		if(that.name == active_tab){
+		if(that.name == active_tab_name){
 			tab_active = true;
 		}
 		
