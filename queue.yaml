@@ -14,3 +14,5 @@ queue:
 - name: suggestions-queue
   rate: 500/s
   bucket_size: 100
+- name: status-queue
+  rate: 500/s

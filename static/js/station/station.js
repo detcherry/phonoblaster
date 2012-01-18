@@ -139,6 +139,8 @@ StationClient.prototype = {
 		var event = message.event;
 		var content = message.content;
 		
+		PHB.log(entity + " " + event)
+		
 		var manager = null;
 		if(entity == "presence"){
 			manager = this.presence_manager;
@@ -151,6 +153,9 @@ StationClient.prototype = {
 		}
 		if(entity == "suggestion"){
 			manager = this.suggestion_manager;
+		}
+		if(entity == "status"){
+			manager = this.status_manager;
 		}
 		
 		if(event == "new"){

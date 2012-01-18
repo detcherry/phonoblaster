@@ -464,6 +464,8 @@ QueueManager.prototype.UILiveSet = function(item){
 			// Facebook Like Button
 		}
 	}
+	
+	$("#station-status span.btn").addClass("danger").html("On air")
 }
 
 QueueManager.prototype.UILiveRemove = function(){
@@ -479,6 +481,7 @@ QueueManager.prototype.UILiveRemove = function(){
 	// Remove the store icon
 	$("#store-track").empty();
 	
+	$("#station-status span.btn").removeClass("danger").html("Off air")
 }
 
 // -------------------------------- NEW --------------------------------------
