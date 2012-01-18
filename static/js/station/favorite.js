@@ -11,7 +11,6 @@ function FavoriteManager(station_client){
 	// Settings
 	this.url = "api/favorites";
 	this.data_type = "json";
-	this.offset = PHB.now();
 	
 	// UI Settings
 	this.name = "#favorites-tab";	
@@ -20,7 +19,8 @@ function FavoriteManager(station_client){
 	// Init methods
 	this.postListen();
 	this.deleteListen();
-	
+
+	// Methods only if tab displayed
 	if(this.station_client.admin){
 		this.getListen();
 		this.previewListen();
@@ -34,20 +34,21 @@ FavoriteManager.prototype.getListen = function(){
 	var that = this;
 	
 	$("#tabs a").click(function(){
-		
-		var active_tab_name = $("a.current").attr("href")
-		
-		var tab_active = false;
-		if(that.name == active_tab_name){
-			tab_active = true;
-		}
-		
-		if(tab_active){
-			that.UIReset();
-			that.UIAppendLoader();
-			that.get();
-		}
-		
+		if(that.items.length == 0){
+			that.offset = PHB.now();
+
+			var active_tab_name = $("a.current").attr("href")
+			var tab_active = false;
+			if(that.name == active_tab_name){
+				tab_active = true;
+			}
+
+			if(tab_active){
+				that.UIReset();
+				that.UIAppendLoader();
+				that.get();
+			}
+		}		
 	})	
 }
 

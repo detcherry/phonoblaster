@@ -9,6 +9,8 @@ from controllers.base import login_required
 from models.db.favorite import Favorite
 from models.db.track import Track
 
+from models.api.station import StationApi
+
 class ApiFavoritesHandler(BaseHandler):
 	@login_required
 	def get(self):
@@ -19,62 +21,38 @@ class ApiFavoritesHandler(BaseHandler):
 	@login_required
 	def post(self):
 		content = json.loads(self.request.get("content"))
-		self.user = self.user_proxy.user
+		shortname = self.request.get("shortname")
+		station_proxy = StationApi(shortname)
+		station = station_proxy.station
 		
 		response = False;
 		if(content["track_id"]):
 			track = Track.get_by_id(int(content["track_id"]))
 			
+			# Check if the track exists on Phonoblaster
 			if(track):
-				# Check if the favorite hasn't been stored yet
-				q = Favorite.all()
-				q.filter("user", self.user.key())
-				q.filter("track", track.key())
-				existing_favorite = q.get()
 				
-				if(existing_favorite):
-					logging.info("Track already favorited by this user")
-				else:	
-					favorite = Favorite(
-						track = track.key(),
-						user = self.user.key(),
-					)
-					favorite.put()
-					logging.info("Favorite saved into datastore")
-			
-					self.user_proxy.increment_favorites_counter()
-					logging.info("Favorite counter incremented")
-			
-				response = True
+				# Check if the track exists on Youtube
+				extended_track = Track.get_extended_tracks([track])[0]
+				
+				if(extended_track):
+					self.user_proxy.add_to_favorites(track, extended_track, station)
+					response = True;
 		
 		self.response.out.write(json.dumps({ "response": response }))
-
+					
 
 class ApiFavoritesDeleteHandler(BaseHandler):
 	
 	@login_required
 	def delete(self, id):
-		self.user = self.user_proxy.user
 		track = Track.get_by_id(int(id))
 		
 		response = False
 		if(track):
-			q = Favorite.all()
-			q.filter("user", self.user.key())
-			q.filter("track", track.key()) 
-			favorite = q.get()
-			
-			if favorite is None:
-				logging.info("This track has never been favorited by this user")
-			else:
-				favorite.delete()
-				logging.info("Favorite deleted from datastore")
-				
-				self.user_proxy.decrement_favorites_counter()
-				logging.info("Favorite counter decremented")
-			
+			self.user_proxy.delete_from_favorites(track) 
 			response = True
-		
+			
 		self.response.out.write(json.dumps({ "response": response }))
 				
 		
