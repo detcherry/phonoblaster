@@ -1,13 +1,12 @@
 <!DOCTYPE HTML>
 <html xmlns:fb="http://www.facebook.com/2008/fbml">
-	<head>
+	<head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# phb_local: http://ogp.me/ns/fb/{{ version }}#">
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 		<!-- Page Meta Tags -->
 		{% block meta %}
 	    <title>Phonoblaster</title>
 		<meta name="description" content="Broadcast your music! Create your station, play your favorite music and let the world listen to it!">
 		{% endblock %}
-		<!-- Facebook Open Graph Tags -->
 		{% block facebook %}
 			{% include "og.html" %}
 		{% endblock %}

@@ -5,6 +5,10 @@
 	<meta name="description" content="Listen now to {{ station_proxy.station.name }} music stream on Phonoblaster.">
 {% endblock %}
 
+{% block facebook %}
+	{% include "station/og.html" %}
+{% endblock %}
+
 {% block style %}
 	<link type="text/css" rel="stylesheet" href="/static/css/station/station.css" />
 {% endblock %}
