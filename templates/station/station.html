@@ -82,10 +82,10 @@
 	<div id="station-status" class="fixed">
 		{% if station_proxy.on_air %}
 			<span class="btn danger">On air</span>
-			<p><span class="middle"><strong>{{ station_proxy.station.name }}</strong> is <em>on air</em></span></p>
+			<p><span class="middle"><strong>{{ station_proxy.station.name }}</strong> is <em>connected</em></span></p>
 		{% else %}
 			<span class="btn">Off air</span>
-			<p><span class="middle"><strong>{{ station_proxy.station.name }}</strong> is <em>off air</em></span></p>
+			<p><span class="middle"><strong>{{ station_proxy.station.name }}</strong> is <em>not connected</em></span></p>
 		{% endif %}
 		<div id="queue-status">
 			<span class="grey circle"></span>
