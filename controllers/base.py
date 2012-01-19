@@ -2,6 +2,7 @@ import os.path
 import logging
 import traceback
 import sys
+import urllib
 
 from controllers import config
 from controllers import facebook
