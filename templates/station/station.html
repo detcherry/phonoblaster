@@ -108,12 +108,14 @@
 	<ul id="tabs" class="fixed">
 		<li><a href="#queue-tab" class="current">Queue</a></li>
 		<li style="width:86px;"><a href="#suggestions-tab" style="width:72px">Suggestions</a></li>
-		{% if is_admin %}
-		<li style="width:80px;"><a href="#favorites-tab" style="width:66px">Favorites</a></li>
-		{% else %}
-		<!-- A user non admin cannot suggest his tracks favorited from another station -->
-		{% endif %}
-		<li><a href="#library-tab">Library</a></li>
+		{% if user_proxy %}
+			{% if is_admin %}
+			<li style="width:80px;"><a href="#favorites-tab" style="width:66px">Favorites</a></li>
+			{% else %}
+			<!-- A user non admin cannot suggest his tracks favorited from another station -->
+			{% endif %}
+			<li><a href="#library-tab">Library</a></li>
+		{% endif%}
 	</ul>
 	<div id="tab-content-wrap">
 		<div id="queue-tab" class="tab-content">
