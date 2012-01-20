@@ -1,0 +1,1 @@
+# Necessary to configure correctly Django Templates
