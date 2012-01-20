@@ -6,7 +6,17 @@
 {% endblock %}
 
 {% block facebook %}
-	{% include "station/og.html" %}
+	<!-- Station Open Graph Tags -->
+	<meta property="fb:app_id" content="{{ facebook_app_id }}"/>
+	<meta property="og:type" content="{{ version }}:station"/> 
+	<meta property="og:url" content="{{ site_url }}/{{ station_proxy.station.shortname }}"/> 
+	<meta property="og:title" content="{{ station_proxy.station.name }}"/> 
+	<meta property="og:description" content="Listen to {{ station_proxy.station.name }} station on Phonoblaster."/>
+	<meta property="og:image"  content="https://graph.facebook.com/{{ station_proxy.station.key.name }}/picture?type=large"/> 
+	<meta property="og:site_name" content="Phonoblaster"/>
+	<meta property="og:video:type" content="text/html"/>
+	<meta property="og:video" content="{{ site_url }}/{{ station_proxy.station.shortname }}"/>
+	<meta property="{{ version }}:page" content="{{ station_proxy.station.link }}"/>
 {% endblock %}
 
 {% block style %}
@@ -24,6 +34,9 @@
 		<div id="admins-rows"></div>
 		<div id="friends-rows"></div>
 		<div id="authenticated-rows"></div>
+	</div>
+	<div class="row" id="sharethelove">
+		<span class="btn">Share the love</span>
 	</div>
 {% endblock %}
 
@@ -197,6 +210,7 @@
 <script type="text/javascript" src="/static/js/station/status.js"></script>
 <script type="text/javascript" src="/static/js/station/favorite.js"></script>
 <script type="text/javascript" src="/static/js/station/library.js"></script>
+<script type="text/javascript" src="/static/js/station/viral.js"></script>
 <script type="text/javascript" src="/static/js/station/station.js"></script>
 <script type="text/javascript">
 	/*--- Reset ---*/
