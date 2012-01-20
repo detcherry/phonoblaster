@@ -18,7 +18,7 @@ class StationHandler(RootHandler):
 			#	}
 			#	self.render("station/station.html", template_values)
 			template_values = {
-					"is_admin": self.is_admin,
+				"is_admin": self.is_admin,
 			}
 			self.render("station/station.html", template_values)
 		else:

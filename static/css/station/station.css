@@ -3,7 +3,7 @@
 /* -------- LEFT COLUMN ----------- */
 
 #presence-rows{
-	height:160px;
+	max-height:160px;
 	overflow:hidden;
 }
 
@@ -37,10 +37,6 @@
 	width:81px;
 	height:20px;
 	overflow:hidden;
-}
-
-#presence-rows .btn{
-	margin-left:23px;
 }
 
 /*-------- PRESENCE POPUP --------*/
