@@ -21,6 +21,7 @@ function StationClient(user, admin, station){
 	this.favorite_manager = null;
 	this.library_manager = null;
 	this.status_manager = null;
+	this.viral_manager = null;
 	
 	this.presence();
 }
@@ -129,6 +130,7 @@ StationClient.prototype = {
 			that.favorite_manager = new FavoriteManager(that); // Lazy Fetching		
 			that.library_manager = new LibraryManager(that); // Lazy fetching	
 			that.status_manager = new StatusManager(that);
+			that.viral_manager = new ViralManager(that);
 		})
 	},
 	

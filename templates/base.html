@@ -8,7 +8,14 @@
 		<meta name="description" content="Broadcast your music! Create your station, play your favorite music and let the world listen to it!">
 		{% endblock %}
 		{% block facebook %}
-			{% include "og.html" %}
+			<!-- General Open Graph Tags -->
+			<meta property="fb:app_id" content="{{ facebook_app_id }}"/>
+			<meta property="og:title" content="Phonoblaster" />
+			<meta property="og:type" content="website" />
+			<meta property="og:url" content="{{ site_url }}" />
+			<meta property="og:image" content="{{ site_url }}/static/images/icon.png" />
+			<meta property="og:description" content="Broadcast your music! Create your station, play your favorite music and let the world listen to it. A social music revolution."/>
+			<meta property="og:site_name" content="Phonoblaster"/>
 		{% endblock %}
 		<!-- Standard stylesheet -->
 		<link rel="shortcut icon" href="/static/images/favicon.ico" type="image/x-icon" />
@@ -36,10 +43,11 @@
 			{% include "footer.html" %}
 		{% endblock %}
 		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.0/jquery.min.js"></script>
-		<script type="text/javascript" src="static/plugins/fancybox/source/jquery.fancybox.pack.js"></script>
+		<script type="text/javascript" src="/static/plugins/fancybox/source/jquery.fancybox.pack.js"></script>
 		<script type="text/javascript">
 			FACEBOOK_APP_ID = "{{ facebook_app_id }}";
 			VERSION = "{{ version }}";
+			SITE_URL = "{{ site_url }}";
 		</script>
 		<script type="text/javascript" src="/static/js/phb.js"></script>
 		<script type="text/javascript" src="/static/js/library/facebook.js"></script>
@@ -49,7 +57,7 @@
 		<script type="text/javascript" src="http://platform.twitter.com/widgets.js"></script>
 		<!-- Facebook -->
 		<div id="fb-root"></div>
-		 <script type="text/javascript">
+		<script type="text/javascript">
 	      	window.fbAsyncInit = function() {
 		        FB.init({
 					appId: '{{ facebook_app_id }}',

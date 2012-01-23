@@ -2,7 +2,7 @@
 
 {% block meta %}
 	<title>{{ station_proxy.station.name }}</title>
-	<meta name="description" content="Listen now to {{ station_proxy.station.name }} music stream on Phonoblaster.">
+	<meta name="description" content="Listen now to {{ station_proxy.station.name }} station on Phonoblaster.">
 {% endblock %}
 
 {% block facebook %}
@@ -11,8 +11,8 @@
 	<meta property="og:type" content="{{ version }}:station"/> 
 	<meta property="og:url" content="{{ site_url }}/{{ station_proxy.station.shortname }}"/> 
 	<meta property="og:title" content="{{ station_proxy.station.name }}"/> 
-	<meta property="og:description" content="Listen to {{ station_proxy.station.name }} station on Phonoblaster."/>
-	<meta property="og:image"  content="https://graph.facebook.com/{{ station_proxy.station.key.name }}/picture?type=large"/> 
+	<meta property="og:description" content="Listen now to {{ station_proxy.station.name }} station on Phonoblaster."/>
+	<meta property="og:image"  content="https://graph.facebook.com/{{ station_proxy.station.key.name }}/picture?type=square"/> 
 	<meta property="og:site_name" content="Phonoblaster"/>
 	<meta property="og:video:type" content="text/html"/>
 	<meta property="og:video" content="{{ site_url }}/{{ station_proxy.station.shortname }}"/>
@@ -35,9 +35,31 @@
 		<div id="friends-rows"></div>
 		<div id="authenticated-rows"></div>
 	</div>
-	<div class="row" id="sharethelove">
-		<span class="btn">Share the love</span>
+	<div class="row" id="bring-people">
+		<span class="btn primary">{% if is_admin %}Bring your fans!{% else %}Bring friends!{% endif %}</span>
 	</div>
+	{% if user_proxy %}
+	<!-- Bring people (friends of fans) popup -->
+	<div id="popup-bring-people">
+		<h2>Share on Your Wall</h2>
+		<form action="#" method="post">
+			{% if is_admin %}
+			<img class="thumbnail" src="https://graph.facebook.com/{{ station_proxy.station.key.name }}/picture?type=square"/>
+			{% else %}
+			<img class="thumbnail" src="https://graph.facebook.com/{{ user_proxy.user.key.name }}/picture?type=square"/>
+			{% endif %}
+			<textarea></textarea>
+			<img class="station" src="https://graph.facebook.com/{{ station_proxy.station.key.name }}/picture?type=square"/>
+			<div class="facebook-link">
+				<span class="link">{{ station_proxy.station.name }}</span>
+				<span class="description">Listen now to {{ station_proxy.station.name }} station on Phonoblaster.</span>
+			</div>
+			<div class="modal-footer">
+				<input type="submit" class="btn primary" value="Share!"/>
+			</div>
+		</form>
+	</div>
+	{% endif %}
 {% endblock %}
 
 {% block middle-column %}

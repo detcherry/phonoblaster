@@ -28,7 +28,6 @@ SuggestionManager.prototype.postSubmit = function(btn, item){
 	
 	if(this.suggestion_on){
 		// Suggestion authorized
-				
 		var content = item.content
 		var youtube_title = content.youtube_title
 		var youtube_thumbnail = "http://i.ytimg.com/vi/" + content.youtube_id + "/default.jpg"

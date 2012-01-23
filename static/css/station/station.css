@@ -39,6 +39,11 @@
 	overflow:hidden;
 }
 
+#bring-people .btn{
+	width:94px;
+	text-align:center;
+}
+
 /*-------- PRESENCE POPUP --------*/
 
 #presence-popup h2{
@@ -365,4 +370,75 @@ input#comment{
 
 #right-column #library-tab .item .square img {
 	left:-15px;
+}
+
+/* ------- BRING PEOPLE POPUP -------*/
+
+#popup-bring-people{
+	display:none;
+	float:left;
+	width:440px;
+}
+
+#popup-bring-people h2{
+	padding:16px;
+	padding-left:24px;
+	text-align:left;
+	border-bottom:1px solid #DDD;
+}
+
+#popup-bring-people form{
+	margin-top:16px;
+	margin-bottom:0px;
+	float:left;
+}
+
+#popup-bring-people img.thumbnail{
+	display:block;
+	float:left;
+	margin-left:24px;
+	margin-right:8px;
+	height:37px;
+}
+
+#popup-bring-people textarea{
+	display:block;
+	width:324px;
+	height:37px;
+}
+
+#popup-bring-people img.station{
+	display:block;
+	float:left;
+	height:50px;
+	margin:8px;
+	margin-left:88px;
+	margin-bottom:24px;
+}
+
+#popup-bring-people .facebook-link{
+	float:left;
+	width:268px;
+	margin-top:8px;
+	font-family:'Lucida Grande';
+	font-size:11px;
+}
+
+#popup-bring-people .facebook-link span{
+	display:block;
+	padding:4px;
+}
+
+#popup-bring-people .facebook-link span.link{
+	color:#3B5998;
+	font-weight:bold;
+}
+
+#popup-bring-people .facebook-link span.description{
+	color: #999;
+}
+
+#popup-bring-people .modal-footer{
+	float:left;
+	width:410px;
 }
