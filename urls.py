@@ -11,6 +11,7 @@ from controllers.all import AllHandler
 from controllers.station.create import StationCreateHandler
 from controllers.station.check import StationCheckHandler
 from controllers.station.station import StationHandler
+from controllers.station.picture import StationPictureHandler
 from controllers.station.broadcasts import StationBroadcastsHandler
 from controllers.station.track import StationTrackHandler
 from controllers.api.queue import ApiQueueHandler
@@ -31,6 +32,7 @@ application = webapp.WSGIApplication(
 		('/station/create', StationCreateHandler),
 		('/station/check', StationCheckHandler),
 		('/(\w+)', StationHandler),
+		('/(\w+)/picture', StationPictureHandler),
 		('/(\w+)/broadcasts', StationBroadcastsHandler),
 		('/(\w+)/track/([0-9]+)', StationTrackHandler),
 		('/api/queue', ApiQueueHandler),

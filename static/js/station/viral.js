@@ -31,9 +31,10 @@ ViralManager.prototype = {
 			
 			var message = $("#popup-bring-people textarea").val();
 			var link = SITE_URL + "/" + that.station_client.station.shortname;
+			var picture = SITE_URL + "/" + that.station_client.station.shortname + "/picture";
 			var btn = $("#bring-people .btn");
 			
-			that.bringPeopleSubmit(message, link, function(response){
+			that.bringPeopleSubmit(message, link, picture, function(response){
 				that.bringPeopleCallback(btn, response);
 			});
 		});
@@ -57,7 +58,6 @@ ViralManager.prototype = {
 				popup_content = "♬ Listening live to " + station + " station on Phonoblaster w/ " + people_listening + " other people. ♬"
 			}
 			$("#popup-bring-people textarea").val(popup_content);
-			
 		}
 		
 		// Display fancy box
@@ -66,14 +66,14 @@ ViralManager.prototype = {
 		});		
 	},
 	
-	bringPeopleSubmit: function(message, link, callback){
+	bringPeopleSubmit: function(message, link, picture, callback){
 		var that = this;
 		if(this.station_client.admin){
 			var page_id = that.station_client.station.key_name;
-			FACEBOOK.putPageWallPost(page_id, message, link, callback)
+			FACEBOOK.putPageWallPost(page_id, message, link, picture, callback)
 		}
 		else{
-			FACEBOOK.putWallPost(message, link, callback);
+			FACEBOOK.putWallPost(message, link, picture, callback);
 		}
 		
 		// Remove fancy box
@@ -82,11 +82,19 @@ ViralManager.prototype = {
 	
 	bringPeopleCallback: function(btn, response){
 		var initial_content = btn.html();
-	
-		btn.removeClass("primary").addClass("success").html("Post sent")
-		setTimeout(function(){
-			btn.removeClass("success").addClass("primary").html(initial_content);
-		}, 2000)
+	    
+		if(response){
+			btn.removeClass("primary").addClass("success").html("Post sent")
+			setTimeout(function(){
+				btn.removeClass("success").addClass("primary").html(initial_content);
+			}, 2000)
+		}
+		else{
+			btn.removeClass("primary").addClass("danger").html("Error. Try again.")
+			setTimeout(function(){
+				btn.removeClass("success").addClass("primary").html(initial_content);
+			}, 2000)
+		}
 		
 	},
 	
