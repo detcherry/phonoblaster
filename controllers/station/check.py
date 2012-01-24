@@ -1,4 +1,5 @@
 import logging
+import django_setup
 from django.utils import simplejson
 
 from controllers.base import BaseHandler

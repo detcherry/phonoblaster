@@ -1,5 +1,6 @@
 import logging
 from datetime import datetime
+import django_setup
 from django.utils import simplejson as json
 
 from controllers import config

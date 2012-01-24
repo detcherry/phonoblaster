@@ -1,5 +1,6 @@
 import logging
 import re
+import django_setup
 from django.utils import simplejson as json
 
 from google.appengine.ext import webapp

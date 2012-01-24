@@ -2,6 +2,7 @@ import logging
 from random import randrange
 from calendar import timegm
 from time import gmtime
+import django_setup
 from django.utils import simplejson as json
 
 from google.appengine.api import channel

@@ -1,6 +1,7 @@
 import logging
 from datetime import datetime
 from datetime import timedelta
+import django_setup
 from django.utils import simplejson as json
 
 from google.appengine.api.taskqueue import Task

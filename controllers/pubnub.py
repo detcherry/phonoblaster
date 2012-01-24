@@ -16,7 +16,8 @@ import urllib2
 try:
     import json
 except ImportError:
-    from django.utils import simplejson as json
+	import django_setup
+	from django.utils import simplejson as json
 
 from google.appengine.api import urlfetch
 

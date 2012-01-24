@@ -33,6 +33,7 @@ except ImportError:
         _parse_json = lambda s: simplejson.loads(s)
     except ImportError:
         # For Google AppEngine
+        import django_setup
         from django.utils import simplejson
         _parse_json = lambda s: simplejson.loads(s)
 

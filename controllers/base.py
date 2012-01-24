@@ -7,9 +7,9 @@ import urllib
 from controllers import config
 from controllers import facebook
 
-from django.utils import simplejson
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp import template
+from django.utils import simplejson as json
 
 from models.api.user import UserApi
 
@@ -93,4 +93,4 @@ class BaseHandler(webapp.RequestHandler):
 			path = os.path.join(os.path.dirname(__file__), "../templates/error.html")
 			self.response.out.write(template.render(path, None))
 		else:
-			self.response.out.write(simplejson.dumps({"error":"An error occurred."}))
+			self.response.out.write(json.dumps({"error":"An error occurred."}))
