@@ -20,13 +20,15 @@ function FavoriteManager(station_client){
 	this.postListen();
 	this.deleteListen();
 
+	// REMOVE THE COMMENTS BELOW ONCE FAVORITE TAB DISPLAYED
 	// Methods only if tab displayed
-	if(this.station_client.admin){
-		this.getListen();
-		this.previewListen();
-		this.processListen();
-		this.scrollListen();
+	/*if(this.station_client.admin){
+	//	this.getListen();
+	//	this.previewListen();
+	//	this.processListen();
+	//	this.scrollListen();
 	}
+	*/
 }
 
 FavoriteManager.prototype.postListen = function(){
