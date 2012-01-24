@@ -120,7 +120,7 @@ SearchManager.prototype.get = function(scrolling){
 	
 	$.ajax({
 		url: that.url,
-		dataType: that.datatype,
+		dataType: that.data_type,
 		timeout: 60000,
 		data: data,
 		error: function(xhr, status, error) {
