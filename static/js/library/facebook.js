@@ -1,10 +1,11 @@
 $(function(){
-	var app_id = PHB.facebook_app_id;
-	FACEBOOK = new Facebook(app_id);
+	FACEBOOK = new Facebook();
 })
 
-function Facebook(app_id){
-	this.app_id = app_id
+function Facebook(){
+	this.app_id = FACEBOOK_APP_ID;
+	this.version = VERSION;
+	this.site_url = SITE_URL;
 }
 
 Facebook.prototype = {
@@ -117,7 +118,6 @@ Facebook.prototype = {
 	putComment: function(post_id, message, callback){
 		var url = "/" + post_id + "/comments"
 		FB.api(url, "post", { message: message }, function(response){
-			PHB.log(response)
 			if(response.id){
 				callback(true)
 			}
@@ -134,7 +134,6 @@ Facebook.prototype = {
 			function(page_token){
 				var url = "/" + post_id + "/comments"
 				FB.api(url, "post", { access_token: page_token, message: message }, function(response){
-					PHB.log(response)
 					if(response.id){
 						callback(true)
 					}
@@ -145,5 +144,17 @@ Facebook.prototype = {
 			}
 		)
 	},
+	
+	putAction: function(action, obj, extra, expires_in){
+		var url = "/me/" + this.version + ":" + action;		
+		var instance = $.extend(obj, extra)
 		
+		var date = new Date(PHB.now()*1000);
+		instance["start_time"] = date.toUTCString();
+		instance["expires_in"] = parseInt(expires_in,10);
+		
+		FB.api(url, "post", instance, function(response){
+			PHB.log(response);
+		})
+	},	
 }

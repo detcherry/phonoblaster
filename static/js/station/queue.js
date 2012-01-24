@@ -213,6 +213,9 @@ QueueManager.prototype.live = function(new_item){
 	
 	// Increment the number of views on the server
 	this.postView();
+	
+	// Post action to FACEBOOK
+	this.postAction();
 }
 
 QueueManager.prototype.nextVideo = function(time_out){
@@ -298,6 +301,28 @@ QueueManager.prototype.UIProgress = function(video_start, duration){
 	}, (duration - video_start)*1000);
 	
 }
+
+QueueManager.prototype.postAction = function(){
+	if(this.station_client.user){
+		var track_url = PHB.site_url + "/track/" + this.live_item.content.track_id;
+		var station_url = PHB.site_url + "/" + this.station_client.station.shortname;
+		var obj = { "track": track_url };
+		var extra = { "station": station_url };
+		var expires_in = this.live_item.content.youtube_duration;
+		
+		if(this.station_client.admin){
+			// BROADCAST action
+			var action = "broadcast";	
+		}
+		else{
+			// LISTEN action
+			var action = "listen";
+		}
+		
+		FACEBOOK.putAction(action, obj, extra, expires_in);
+	}
+}
+
 
 //----------------------------- QUEUE STATUS -------------------------------
 
