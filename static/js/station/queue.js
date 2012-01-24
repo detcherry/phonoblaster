@@ -208,11 +208,6 @@ QueueManager.prototype.live = function(new_item){
 	// Display the progress of the video
 	this.UIProgress(video_start, duration);
 	
-	// Display the current broadcast in the comments zone
-	var fake_comment = this.live_item.content;
-	fake_comment.created = now;
-	this.station_client.comment_manager.add(fake_comment)
-	
 	// Program the launch of the next video
 	this.nextVideo(time_out);
 	
@@ -236,6 +231,11 @@ QueueManager.prototype.nextVideo = function(time_out){
 }
 
 QueueManager.prototype.liveOver = function(){
+	// Display past broadcast in the comments zone
+	var fake_comment = this.live_item.content;
+	fake_comment.created = PHB.now();
+	this.station_client.comment_manager.add(fake_comment)
+	
 	// Reset live item
 	this.live_item = null;
 	
