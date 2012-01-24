@@ -79,7 +79,6 @@ Facebook.prototype = {
 			function(page_token){
 				var url = "/"+ page_id + "/feed"
 				FB.api(url, "post",{ access_token: page_token, message: message, link: link, picture: picture }, function(response){
-					PHB.log(response);
 					if(response.id){
 						callback(true);
 					}
@@ -94,7 +93,6 @@ Facebook.prototype = {
 	putWallPost: function(message, link, picture, callback){
 		var url = "/me/feed"
 		FB.api(url, "post", { message: message, link: link, picture: picture }, function(response){
-			PHB.log(response);
 			if(response.id){
 				callback(true);
 			}
@@ -102,6 +100,50 @@ Facebook.prototype = {
 				callback(false);
 			}
 		})
+	},
+	
+	retrievePageWallPosts: function(page_id, callback){
+		var url = "/"+ page_id + "/feed";
+		FB.api(url, function(response){
+			if(response.data){
+				callback(response.data);
+			}
+			else{
+				callback([]);
+			}
+		})
+	},
+	
+	putComment: function(post_id, message, callback){
+		var url = "/" + post_id + "/comments"
+		FB.api(url, "post", { message: message }, function(response){
+			PHB.log(response)
+			if(response.id){
+				callback(true)
+			}
+			else{
+				callback(false)
+			}
+		})
+	},
+	
+	putPageComment: function(page_id, post_id, message, callback){
+		var that = this;
+		this.retrievePageToken(
+			page_id,
+			function(page_token){
+				var url = "/" + post_id + "/comments"
+				FB.api(url, "post", { access_token: page_token, message: message }, function(response){
+					PHB.log(response)
+					if(response.id){
+						callback(true)
+					}
+					else{
+						callback(false)
+					}
+				})
+			}
+		)
 	},
 		
 }

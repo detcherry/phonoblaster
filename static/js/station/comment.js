@@ -40,6 +40,18 @@ CommentManager.prototype.inputListen = function(){
 		}
 	})
 	
+	// Listen to sync/ unsync comments with Facebook events
+	$("span#fb-sync").click(function(){
+		var sync = $(this).attr("class")
+		if(sync == "active"){
+			new_sync = "inactive"
+		}
+		else{
+			new_sync = "active"
+		}
+		$(this).removeClass(sync).addClass(new_sync);
+	})
+	
 	// Listen to submit events in the comment form
 	$("form#comment").submit(function(){
 		var message = $("input[id='comment']").val();
@@ -59,6 +71,13 @@ CommentManager.prototype.inputListen = function(){
 			that.post(new_item, function(response){
 				that.postCallback(new_item, response);
 			});
+			
+			// POST comment to Facebook
+			var sync = $("span#fb-sync").attr("class")
+			if(sync == "active"){
+				that.facebook(message);
+			}
+
 		}
 		
 		return false;
@@ -209,3 +228,36 @@ CommentManager.prototype.UIBuild = function(item){
 	
 	return div
 }
+
+CommentManager.prototype.facebook = function(message){
+	var that = this;
+	var page_id = this.station_client.station.key_name;
+	
+	// Retrieve the latest station wall posts
+ 	FACEBOOK.retrievePageWallPosts(page_id, function(posts){
+	
+		var station_url = SITE_URL + "/" + that.station_client.station.shortname;
+		$.each(posts, function(index, post){
+			var comment_sent = false;
+			// Pick up the last one with url = station url
+			if(post.link == station_url && !comment_sent){
+				var post_id = post.id;
+				var comment_sent = true;
+
+				// Add comment
+				if(that.station_client.station.admin){
+					FACEBOOK.putPageComment(page_id, post_id, message, function(response){})
+				}
+				else{
+					FACEBOOK.putComment(post_id, message, function(response){})
+				}
+			}
+		})
+		
+	})
+	
+	
+}
+
+
+

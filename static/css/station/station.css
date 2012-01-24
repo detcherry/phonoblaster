@@ -135,8 +135,27 @@
 input#comment{
 	display:block;
 	float:left;
-	width:386px;
+	width:354px;
 	margin-right:4px;
+}
+
+span#fb-sync{
+	cursor:pointer;
+	display:block;
+	float:left;
+	height:28px;
+	width:28px;
+	margin-right:4px;
+}
+
+span#fb-sync.active{
+	background:url("/static/images/phonoblaster-sprits.png");
+	background-position:-5px -28px;
+}
+
+span#fb-sync.inactive{
+	background:url("/static/images/phonoblaster-sprits.png");
+	background-position:-41px -28px;
 }
 
 #comments-zone{
