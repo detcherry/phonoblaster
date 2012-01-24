@@ -238,11 +238,9 @@ CommentManager.prototype.facebook = function(message){
 	
 		var station_url = SITE_URL + "/" + that.station_client.station.shortname;
 		$.each(posts, function(index, post){
-			var comment_sent = false;
 			// Pick up the last one with url = station url
-			if(post.link == station_url && !comment_sent){
+			if(post.link == station_url){
 				var post_id = post.id;
-				var comment_sent = true;
 
 				// Add comment
 				if(that.station_client.station.admin){
@@ -251,6 +249,8 @@ CommentManager.prototype.facebook = function(message){
 				else{
 					FACEBOOK.putComment(post_id, message, function(response){})
 				}
+				
+				return false
 			}
 		})
 		
