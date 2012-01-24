@@ -11,7 +11,7 @@ from controllers.station.check import StationCheckHandler
 from controllers.station.station import StationHandler
 from controllers.station.picture import StationPictureHandler
 from controllers.station.broadcasts import StationBroadcastsHandler
-from controllers.station.track import StationTrackHandler
+from controllers.station.track import TrackHandler
 from controllers.api.queue import ApiQueueHandler
 from controllers.api.queue import ApiQueueDeleteHandler
 from controllers.api.suggestions import ApiSuggestionsHandler
@@ -32,7 +32,7 @@ application = webapp.WSGIApplication(
 		('/(\w+)', StationHandler),
 		('/(\w+)/picture', StationPictureHandler),
 		('/(\w+)/broadcasts', StationBroadcastsHandler),
-		('/(\w+)/track/([0-9]+)', StationTrackHandler),
+		('/track/([0-9]+)', TrackHandler),
 		('/api/queue', ApiQueueHandler),
 		('/api/queue/([\w.]+)', ApiQueueDeleteHandler),
 		('/api/suggestions', ApiSuggestionsHandler),
