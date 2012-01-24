@@ -126,12 +126,15 @@ SuggestionManager.prototype.postListen = function(btn, item){
 			// POST request to the server
 			that.post(new_item, function(response){
 				that.postCallback(new_item, response);
-			})				
+			})	
+			
+			// POST action to facebook
+			that.postAction(new_item);
 		}
 	})
 },
 
-RealtimeTabManager.prototype.UISuccess = function(btn){
+SuggestionManager.prototype.UISuccess = function(btn){
 	btn.addClass("success")
 	btn.html("Suggested")
 	
@@ -141,7 +144,7 @@ RealtimeTabManager.prototype.UISuccess = function(btn){
 	}, 2000)
 }
 
-RealtimeTabManager.prototype.UIFail = function(btn){
+SuggestionManager.prototype.UIFail = function(btn){
 	btn.addClass("danger")
 	btn.html("Wait")
 	
@@ -151,7 +154,7 @@ RealtimeTabManager.prototype.UIFail = function(btn){
 	}, 2000)
 }
 
-RealtimeTabManager.prototype.UIBuild = function(item){	
+SuggestionManager.prototype.UIBuild = function(item){	
 	var id = item.id;
 	var content = item.content;
 	var created = PHB.convert(item.created);
@@ -237,4 +240,18 @@ RealtimeTabManager.prototype.UIBuild = function(item){
 	}
 	
 	return div;
+}
+
+SuggestionManager.prototype.postAction = function(new_item){
+	var track_id = new_item.content.track_id
+
+	if(track_id){
+		var track_url = PHB.site_url + "/track/" + track_id;
+		var station_url = PHB.site_url + "/" + this.station_client.station.shortname;
+		var obj = { "track": track_url };
+		var extra = { "station": station_url };
+		var expires_in = 0;
+		var action = "suggest";	
+		FACEBOOK.putAction(action, obj, extra, expires_in);
+	}
 }
