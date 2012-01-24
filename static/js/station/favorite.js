@@ -40,14 +40,29 @@ FavoriteManager.prototype.postListen = function(){
 		// Change icon
 		$(this).removeClass("fav").addClass("unfav");
 		
+		// POST new favorite to server
 		that.post(new_item, function(response){
 			that.postCallback(new_item, response)
 		})
+		
+		// Post action to FACEBOOK
+		that.postAction();
 		
 		$(this).blur();
 		return false;
 	})
 }
+
+FavoriteManager.prototype.postAction = function(){
+	var track_url = PHB.site_url + "/track/" + this.station_client.queue_manager.live_item.content.track_id;
+	var station_url = PHB.site_url + "/" + this.station_client.station.shortname;
+	var obj = { "track": track_url };
+	var extra = { "station": station_url };
+	var expires_in = 0;
+	var action = "favorite";	
+	FACEBOOK.putAction(action, obj, extra, expires_in);
+}
+
 
 FavoriteManager.prototype.postCallback = function(new_item, response){
 	if(!response){
