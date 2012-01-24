@@ -6,6 +6,7 @@ $(function(){
 function PhB(){
 	this.facebook_app_id = FACEBOOK_APP_ID;
 	this.version = VERSION;
+	this.site_url = SITE_URL;
 	this.time_delta = null;
 }
 PhB.prototype = {
@@ -36,7 +37,7 @@ PhB.prototype = {
 	},
 	
 	now: function(){
-		var now = Date.parse(new Date())/1000 - this.time_delta
+		var now = Date.parse(new Date())/1000 - this.time_delta;
 		return now;
 	},
 	

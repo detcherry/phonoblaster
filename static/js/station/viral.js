@@ -30,8 +30,8 @@ ViralManager.prototype = {
 			event.preventDefault();
 			
 			var message = $("#popup-bring-people textarea").val();
-			var link = SITE_URL + "/" + that.station_client.station.shortname;
-			var picture = SITE_URL + "/" + that.station_client.station.shortname + "/picture";
+			var link = PHB.site_url + "/" + that.station_client.station.shortname;
+			var picture = PHB.site_url + "/" + that.station_client.station.shortname + "/picture";
 			var btn = $("#bring-people .btn");
 			
 			that.bringPeopleSubmit(message, link, picture, function(response){

@@ -236,7 +236,7 @@ CommentManager.prototype.facebook = function(message){
 	// Retrieve the latest station wall posts
  	FACEBOOK.retrievePageWallPosts(page_id, function(posts){
 	
-		var station_url = SITE_URL + "/" + that.station_client.station.shortname;
+		var station_url = PHB.site_url + "/" + that.station_client.station.shortname;
 		$.each(posts, function(index, post){
 			// Pick up the last one with url = station url
 			if(post.link == station_url){
