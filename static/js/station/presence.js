@@ -145,6 +145,8 @@ PresenceManager.prototype = {
 					.append(
 						$("<a/>")
 							.attr("href", listener_url)
+							.addClass("tuto") // Twipsy
+							.attr("data-original-title", listener_name) // Twipsy
 							.append($("<img/>").attr("src", listener_picture_url))
 							.append(
 								$("<div/>")
