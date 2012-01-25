@@ -129,6 +129,12 @@ body{
 	margin-bottom:-5px;
 }
 
+/* Necessary for Firefox */
+#player-wrapper{
+	height:287px;
+	width:510px;
+}
+
 #youtube-player{
 	height:287px;
 	width:510px;
