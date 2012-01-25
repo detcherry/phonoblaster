@@ -104,7 +104,7 @@ Facebook.prototype = {
 	},
 	
 	retrievePageWallPosts: function(page_id, callback){
-		var url = "/"+ page_id + "/feed";
+		var url = "/"+ page_id + "/posts";
 		FB.api(url, function(response){
 			if(response.data){
 				callback(response.data);
