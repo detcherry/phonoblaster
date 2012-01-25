@@ -28,6 +28,11 @@ function QueueManager(station_client){
 
 //--------------------------------- GET -----------------------------------
 
+QueueManager.prototype.UINoData = function(){
+	$("#player-wrapper").empty();
+	$("#player-wrapper").append($("<div/>").attr("id","no-live").html("No live track."));
+}
+
 QueueManager.prototype.add = function(content){
 	var that = this;
 	var new_item = this.serverToLocalItem(content);

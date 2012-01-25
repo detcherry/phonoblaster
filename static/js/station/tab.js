@@ -90,7 +90,7 @@ TabManager.prototype = {
 	
 	getCallback: function(items_from_server){
 		var that = this;
-			
+		
 		// Add each item to the manager
 		$.each(items_from_server, function(index, value){
 			that.add(value);
@@ -524,9 +524,15 @@ RealtimeTabManager.prototype.get = function(){
 					that.getCallback(json);
 				})
 			}
+			else{
+				that.UINoData();
+			}
 		},
 	});
 }
+
+// Remove any loading and display no data message
+RealtimeTabManager.prototype.UINoData = function(){}
 
 RealtimeTabManager.prototype.serverToLocalItem = function(content){
 	var item = {

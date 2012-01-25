@@ -18,7 +18,9 @@ YoutubeManager.prototype = {
 			PHB.log("Player already loaded");
 		}
 		// Player not loaded yet
-		catch(e){			
+		catch(e){
+			this.empty();
+					
 			PHB.log("Player not loaded yet")
 			var params = { 
 				allowScriptAccess: "always",
@@ -28,10 +30,12 @@ YoutubeManager.prototype = {
 			var videoURL = "http://www.youtube.com/apiplayer?version=3&enablejsapi=1&playerapiid=player1"
 			swfobject.embedSWF(videoURL, "youtube-player", "510", "287", "8", null, null, params, atts);
 		}
-
 	},
 	
-	
+	empty: function(){
+		$("#player-wrapper").empty();
+		$("#player-wrapper").append($("<div/>").attr("id","youtube-player"));
+	},
 	
 }
 
