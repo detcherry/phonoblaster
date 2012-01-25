@@ -164,6 +164,8 @@ QueueManager.prototype.UIBuild = function(item){
 						$("<img/>")
 							.attr("src", track_submitter_picture)
 							.addClass("station")
+							.addClass("tuto")
+							.attr("data-original-title", track_submitter_name)
 					)
 					.append(
 						$("<span/>")
