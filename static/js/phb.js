@@ -8,7 +8,9 @@ function PhB(){
 	this.version = VERSION;
 	this.site_url = SITE_URL;
 	this.time_delta = null;
+	this.twipsy();
 }
+
 PhB.prototype = {
 	// Workaround for Firefox 3.6 and older versions
 	log: function(content){
@@ -87,6 +89,14 @@ PhB.prototype = {
 		}
 		var displayed_duration = minutes.toString() + ":" + seconds;
 		return displayed_duration;
+	},
+	
+	twipsy: function(){
+		$(".tuto").twipsy({
+			live: "true",
+			offset: 3,
+			placement: "below",
+		})
 	},
 	
 }

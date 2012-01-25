@@ -33,6 +33,9 @@ SearchManager.prototype.inputListen = function(){
 	
 	// Clear the input if it contains default values
 	$("input#search").focus(function(){	
+		// Hide Twipsy
+		$(this).twipsy("hide");
+		
 		var default_content = "Suggest a track"	
 		if(that.station_client.admin){
 			var default_content = "Add a track"
@@ -58,6 +61,9 @@ SearchManager.prototype.inputListen = function(){
 	
 	// Trigger get each time something is typed
 	$("input#search").keyup(function(){
+		// Hide Twipsy
+		$(this).twipsy("hide");
+		
 		that.offset = 1;
 		that.scrolling_on = true;
 		that.search_content = $(this).val()

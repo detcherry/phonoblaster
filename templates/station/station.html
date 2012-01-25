@@ -36,7 +36,9 @@
 		<div id="authenticated-rows"></div>
 	</div>
 	<div class="row" id="bring-people">
-		<span class="btn primary">{% if is_admin %}Bring your fans!{% else %}Bring friends!{% endif %}</span>
+		<span class="btn primary tuto" data-original-title="Share this on Facebook!">
+			{% if is_admin %}Bring your fans!{% else %}Bring friends!{% endif %}
+		</span>
 	</div>
 	{% if user_proxy %}
 	<!-- Bring people (friends of fans) popup -->
@@ -100,16 +102,16 @@
 		<div id="comment-box">
 			{% if user_proxy %}
 				{% if is_admin %}
-				<img src="http://graph.facebook.com/{{ station_proxy.station.key.name }}/picture?type=square">
+				<img class="tuto" data-original-title="{{ station_proxy.station.name }}" src="http://graph.facebook.com/{{ station_proxy.station.key.name }}/picture?type=square">
 				{% else %}
-				<img src="http://graph.facebook.com/{{ user_proxy.user.key.name }}/picture?type=square">
+				<img class="tuto" data-original-title="{{ user_proxy.user.name }}" src="http://graph.facebook.com/{{ user_proxy.user.key.name }}/picture?type=square">
 				{% endif %}
 			{% else %}
 			<img src="/static/images/unknown-listener.png">
 			{% endif %}
 			<form method="post" action="" id="comment">
 				<input type="text" name="comment" id="comment" value="Comment..." autocomplete="off"/>
-				<span id="fb-sync" class="active"></span>
+				<span id="fb-sync" class="active tuto" data-original-title="Comment on Facebook: ON"></span>
 				<input type="submit" value="Comment" class="submit"/>
 			</form>
 		</div>
@@ -138,17 +140,17 @@
 			<span class="grey circle"></span>
 			<span class="grey circle"></span>
 			<span class="grey circle"></span>
-			<div id="queue-counter"><span>0</span>/10</div>
+			<div id="queue-counter" class="tuto" data-original-title="Number of tracks in the queue or live. Max: 10 tracks at the same time"><span>0</span>/10</div>
 		</div>
 	</div>
 	<ul id="tabs" class="fixed">
-		<li>
+		<li class="tuto" data-original-title="Tracks soon LIVE!">
 			<a href="#queue-tab" class="current" id="queue-header">
 				Queue
 				<span class="round"></span>
 			</a>
 		</li>
-		<li style="width:96px;">
+		<li style="width:96px;" class="tuto" data-original-title="Tracks suggested by listeners to the broadcaster">
 			<a href="#suggestions-tab" id="suggestions-header" style="width:84px">
 				Suggestions
 				<span class="round"></span>
@@ -161,14 +163,16 @@
 			{% else %}
 			<!-- A user non admin cannot suggest his tracks favorited from another station -->
 			{% endif %}
-			<li><a href="#library-tab">Library</a></li>
+			<li class="tuto" data-original-title="Tracks you recently broadcast.">
+				<a href="#library-tab">Library</a>
+			</li>
 		{% endif%}
 	</ul>
 	<div id="tab-content-wrap">
 		<div id="queue-tab" class="tab-content">
 			<div id="queue-header" class="fixed">
 				<span id="search-icon"></span>
-				<input type="text" value="{% if is_admin %}Add a track{% else %}Suggest a track{% endif %}" id="search" autocomplete="off"/>
+				<input type="text" value="{% if is_admin %}Add a track{% else %}Suggest a track{% endif %}" id="search" autocomplete="off" class="tuto" data-original-title="Search and add tracks from Youtube (soon: Soundcloud)"/>
 				<div id="search-overlay"></div>
 				<div id="search-tab">
 					<div class="tab-items">
