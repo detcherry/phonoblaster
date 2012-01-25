@@ -27,11 +27,10 @@ class ApiQueueHandler(BaseHandler):
 		
 		station_proxy = StationApi(shortname)
 		self.station = station_proxy.station
-		self.user = self.user_proxy.user
 		
 		extended_broadcast = None
 		if(self.user_proxy.is_admin_of(self.station.key().name())):
-			extended_broadcast = station_proxy.add_to_queue(broadcast, self.user, True)
+			extended_broadcast = station_proxy.add_to_queue(broadcast, self.user_proxy)
 			
 		response = False
 		if(extended_broadcast):

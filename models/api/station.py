@@ -194,7 +194,8 @@ class StationApi():
 		return self._queue		
 	
 	# Add a new braodcast to the queue
-	def add_to_queue(self, broadcast, user, admin):
+	def add_to_queue(self, broadcast, user_proxy):
+		user = user_proxy.user
 		extended_broadcast = None
 		if broadcast:
 			room = self.room()
@@ -216,7 +217,7 @@ class StationApi():
 				else:
 					# If obviously not, look for it though, save it otherwise and get extended track from Youtube
 					if(broadcast["youtube_id"]):
-						track, extended_track = Track.get_or_insert_by_youtube_id(broadcast["youtube_id"], self.station, user, admin)
+						track, extended_track = Track.get_or_insert_by_youtube_id(broadcast["youtube_id"], self.station, user, True)
 					
 				if(track and extended_track):
 					
@@ -256,7 +257,10 @@ class StationApi():
 					memcache.set(self._memcache_station_queue_id, self._queue)
 					logging.info("Queue updated in memcache")
 					
-					self.increment_broadcasts_counter()		
+					self.increment_broadcasts_counter()	
+					
+					# Add new broadcast to the user library
+					user_proxy.add_to_library(extended_track)	
 					
 		return extended_broadcast
 	
