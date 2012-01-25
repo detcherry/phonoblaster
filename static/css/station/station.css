@@ -241,6 +241,23 @@ span#fb-sync.inactive{
 	line-height: 10px;
 }
 
+/* --------- ALERT ------------*/
+
+span.round{
+	display: none;
+	float: right;
+	margin-top:-4px;
+	height: 8px;
+	width: 8px;
+	background:#c43c35;
+	-webkit-border-radius:4px;
+	-moz-border-radius:4px;
+	border-radius:4px;
+	background-image: -webkit-linear-gradient(top, #ee5f5b, #c43c35);
+	background-image: -o-linear-gradient(top, #ee5f5b, #c43c35);
+	background-image: linear-gradient(top, #ee5f5b, #c43c35);
+}
+
 /*---------- SEARCH -----------*/
 
 #queue-header span#search-icon{

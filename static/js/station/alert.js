@@ -13,11 +13,13 @@ $(function(){
 })
 
 
-function AlertManager(station_client, title, li){
+function AlertManager(station_client, title, a){
 	this.init = station_client.station.name;
 	this.title = title;
-	this.li = li;
+	this.a = a;
 	this.current = null;
+	
+	this.listen();
 }
 
 AlertManager.prototype = {
@@ -40,10 +42,7 @@ AlertManager.prototype = {
 			this.current = new_alert;
 		}
 		
-		// Remove alert if focus on page
-		$(window).focus(function(){
-			that.clear();
-		})
+		this.show();
 	},
 	
 	clear: function(){
@@ -53,5 +52,35 @@ AlertManager.prototype = {
 		}
 		this.current = null;
 		document.title = this.init;
+	},
+	
+	listen: function(){
+		var that = this;
+		
+		// Remove alert if focus on page
+		$(window).focus(function(){
+			that.clear();
+		})
+		
+		var selector = this.a
+		$(selector).click(function(){
+			that.hide();
+		})
+	},
+	
+	show: function(){
+		var link_selector = this.a
+		$(link_selector).css("color", "#c43c35");
+		
+		var round_selector = this.a + " span.round"
+		$(round_selector).show();
+	},
+	
+	hide: function(){
+		var link_selector = this.a
+		$(link_selector).css("color", "grey");
+				
+		var round_selector = this.a + " span.round"
+		$(round_selector).hide();
 	},
 }

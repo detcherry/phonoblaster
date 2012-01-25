@@ -142,8 +142,18 @@
 		</div>
 	</div>
 	<ul id="tabs" class="fixed">
-		<li><a href="#queue-tab" class="current">Queue</a></li>
-		<li style="width:86px;"><a href="#suggestions-tab" style="width:72px">Suggestions</a></li>
+		<li>
+			<a href="#queue-tab" class="current" id="queue-header">
+				Queue
+				<span class="round"></span>
+			</a>
+		</li>
+		<li style="width:96px;">
+			<a href="#suggestions-tab" id="suggestions-header" style="width:84px">
+				Suggestions
+				<span class="round"></span>
+			</a>
+		</li>
 		{% if user_proxy %}
 			{% if is_admin %}
 			<!-- Favorite tab is not displayed during first launch -->

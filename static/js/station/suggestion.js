@@ -18,7 +18,7 @@ function SuggestionManager(station_client){
 	
 	// Additional attributes
 	this.suggestion_on = true;
-	this.alert_manager = new AlertManager(station_client, "New suggestion!", null);
+	this.alert_manager = new AlertManager(station_client, "New suggestion!", "#suggestions-header");
 	
 	// Init methods
 	this.previewListen();

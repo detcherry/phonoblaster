@@ -19,7 +19,7 @@ function QueueManager(station_client){
 	// Additional attributes
 	this.live_item = null;
 	this.youtube_manager = new YoutubeManager();
-	this.alert_manager = new AlertManager(station_client, "New broadcast!", null);
+	this.alert_manager = new AlertManager(station_client, "New broadcast!", "#queue-header");
 	
 	// Init Methods
 	this.get();
