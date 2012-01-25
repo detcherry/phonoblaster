@@ -146,15 +146,20 @@ Facebook.prototype = {
 	},
 	
 	putAction: function(action, obj, extra, expires_in){
-		var url = "/me/" + this.version + ":" + action;		
-		var instance = $.extend(obj, extra)
 		
-		var date = new Date(PHB.now()*1000);
-		instance["start_time"] = date.toUTCString();
-		instance["expires_in"] = parseInt(expires_in,10);
-		
-		FB.api(url, "post", instance, function(response){
-			PHB.log(response);
-		})
+		// Publishing actions does not work on local server
+		if(this.version != "phb_local"){
+			var url = "/me/" + this.version + ":" + action;		
+			var instance = $.extend(obj, extra)
+
+			var date = new Date(PHB.now()*1000);
+			instance["start_time"] = date.toUTCString();
+			instance["expires_in"] = parseInt(expires_in,10);
+
+			FB.api(url, "post", instance, function(response){
+				PHB.log(response);
+			})
+		}
+
 	},	
 }
