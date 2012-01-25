@@ -217,7 +217,8 @@ class StationApi():
 				else:
 					# If obviously not, look for it though, save it otherwise and get extended track from Youtube
 					if(broadcast["youtube_id"]):
-						track, extended_track = Track.get_or_insert_by_youtube_id(broadcast["youtube_id"], self.station, user, True)
+						#track, extended_track = Track.get_or_insert_by_youtube_id(broadcast["youtube_id"], self.station, user, True)
+						track, extended_track = Track.get_or_insert_by_youtube_id(broadcast["youtube_id"], self.station, user_proxy, True)
 					
 				if(track and extended_track):
 					
@@ -257,10 +258,7 @@ class StationApi():
 					memcache.set(self._memcache_station_queue_id, self._queue)
 					logging.info("Queue updated in memcache")
 					
-					self.increment_broadcasts_counter()	
-					
-					# Add new broadcast to the user library
-					user_proxy.add_to_library(extended_track)	
+					self.increment_broadcasts_counter()		
 					
 		return extended_broadcast
 	

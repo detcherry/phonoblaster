@@ -62,7 +62,7 @@ class ApiSuggestionsHandler(BaseHandler):
 				else:
 					# If obviously not, look for it though, save it otherwise and get extended track from Youtube
 					if(suggestion["youtube_id"]):
-						track, extended_track = Track.get_or_insert_by_youtube_id(suggestion["youtube_id"], station, user, admin)
+						track, extended_track = Track.get_or_insert_by_youtube_id(suggestion["youtube_id"], station, self.user_proxy, admin)
 		
 				if(track and extended_track):
 					suggestion = Suggestion(

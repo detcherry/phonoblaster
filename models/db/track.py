@@ -50,7 +50,8 @@ class Track(db.Model):
 		return extended_tracks
 
 	@staticmethod
-	def get_or_insert_by_youtube_id(youtube_id, station, user, admin):
+	def get_or_insert_by_youtube_id(youtube_id, station, user_proxy, admin):
+		user = user_proxy.user
 		track = None
 		extended_track = None
 		youtube_track = None
@@ -91,6 +92,9 @@ class Track(db.Model):
 						"youtube_title": youtube_track["title"],
 						"youtube_duration": youtube_track["duration"],
 					}
+					
+					# Add new broadcast to the user library
+					user_proxy.add_to_library(extended_track)
 		
 		return (track, extended_track)
 
