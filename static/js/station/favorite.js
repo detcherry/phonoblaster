@@ -119,6 +119,8 @@ FavoriteManager.prototype.UIBuild = function(item){
 		$("<img/>")
 			.addClass("submitter")
 			.attr("src", track_submitter_picture)
+			.addClass("tuto")
+			.attr("data-original-title", track_submitter_name)
 	)
 	.append(
 		$("<div/>")
