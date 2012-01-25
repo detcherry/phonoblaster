@@ -16,8 +16,9 @@ function SuggestionManager(station_client){
 	this.name = "#suggestions-tab";
 	this.selector = this.name + " .tab-items";
 	
-	// Additional attribute
+	// Additional attributes
 	this.suggestion_on = true;
+	this.alert_manager = new AlertManager(station_client, "New suggestion!", null);
 	
 	// Init methods
 	this.previewListen();
@@ -254,4 +255,11 @@ SuggestionManager.prototype.postAction = function(new_item){
 		var action = "suggest";	
 		FACEBOOK.putAction(action, obj, extra, expires_in);
 	}
+}
+
+// -------------------------------- NEW --------------------------------------
+
+SuggestionManager.prototype.newEvent = function(){
+	// Alert
+	this.alert_manager.alert();
 }

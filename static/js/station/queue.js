@@ -19,6 +19,7 @@ function QueueManager(station_client){
 	// Additional attributes
 	this.live_item = null;
 	this.youtube_manager = new YoutubeManager();
+	this.alert_manager = new AlertManager(station_client, "New broadcast!", null);
 	
 	// Init Methods
 	this.get();
@@ -514,6 +515,9 @@ QueueManager.prototype.UILiveRemove = function(){
 QueueManager.prototype.newEvent = function(){
 	// Increment the broadcasts counter
 	this.station_client.broadcasts_counter.increment();
+	
+	// Alert
+	this.alert_manager.alert();
 }
 
 //------------------------------- REMOVE -------------------------------------
