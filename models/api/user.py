@@ -134,7 +134,7 @@ class UserApi:
 
 		return self._favorites
 
-	
+	# Get the latest favorites
 	def get_favorites(self, offset):
 		step = 10
 		extended_favorites = []
@@ -161,7 +161,7 @@ class UserApi:
 
 		return extended_favorites
 
-
+	
 	def request_favorites(self, step, offset):
 		q = Favorite.all()
 		q.filter("user", self.user.key())

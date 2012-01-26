@@ -1,13 +1,10 @@
-import logging
 from datetime import datetime
+
 import django_setup
 from django.utils import simplejson as json
 
-from controllers import config
 from controllers.base import BaseHandler
 from controllers.base import login_required
-
-from models.db.track import Track
 
 class ApiLibraryHandler(BaseHandler):
 	@login_required
