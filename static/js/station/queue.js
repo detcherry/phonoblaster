@@ -223,7 +223,8 @@ QueueManager.prototype.live = function(new_item){
 	this.postView();
 	
 	// Post action to FACEBOOK
-	this.postAction();
+	//this.postAction();
+	this.postAction(this.live_item);
 }
 
 QueueManager.prototype.nextVideo = function(time_out){
@@ -310,13 +311,20 @@ QueueManager.prototype.UIProgress = function(video_start, duration){
 	
 }
 
-QueueManager.prototype.postAction = function(){
+//QueueManager.prototype.postAction = function(){
+QueueManager.prototype.postAction = function(item){
 	if(this.station_client.user){
-		var track_url = PHB.site_url + "/track/" + this.live_item.content.track_id;
+		//var track_url = PHB.site_url + "/track/" + this.live_item.content.track_id;
+		var track_url = PHB.site_url + "/track/" + item.content.track_id;
 		var station_url = PHB.site_url + "/" + this.station_client.station.shortname;
-		var obj = { "track": track_url };
-		var extra = { "station": station_url };
-		var expires_in = this.live_item.content.youtube_duration;
+		
+		//var obj = { "track": track_url };
+		//var extra = { "station": station_url };
+		//var expires_in = this.live_item.content.youtube_duration;
+		
+		var obj = { "station": station_url};
+		var extra = { "track": track_url };
+		var expires_in = item.content.youtube_duration;
 		
 		if(this.station_client.admin){
 			// BROADCAST action
