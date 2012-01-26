@@ -46,20 +46,22 @@ FavoriteManager.prototype.postListen = function(){
 		})
 		
 		// Post action to FACEBOOK
-		that.postAction();
+		that.postAction(new_item);
 		
 		$(this).blur();
 		return false;
 	})
 }
 
-FavoriteManager.prototype.postAction = function(){
-	var track_url = PHB.site_url + "/track/" + this.station_client.queue_manager.live_item.content.track_id;
+FavoriteManager.prototype.postAction = function(item){
+	var track_url = PHB.site_url + "/track/" + item.content.track_id;
 	var station_url = PHB.site_url + "/" + this.station_client.station.shortname;
+	
 	var obj = { "track": track_url };
 	var extra = { "station": station_url };
 	var expires_in = 0;
 	var action = "favorite";	
+	
 	FACEBOOK.putAction(action, obj, extra, expires_in);
 }
 

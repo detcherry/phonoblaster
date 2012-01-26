@@ -248,6 +248,7 @@ SuggestionManager.prototype.UIBuild = function(item){
 SuggestionManager.prototype.postAction = function(new_item){
 	var track_id = new_item.content.track_id
 
+	// Necessary to have a track id (that means tracks from the listener library)
 	if(track_id){
 		var track_url = PHB.site_url + "/track/" + track_id;
 		var station_url = PHB.site_url + "/" + this.station_client.station.shortname;
