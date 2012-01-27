@@ -25,14 +25,79 @@ RecommandationManager.prototype.dispatch = function(){
 	var number_of_broadcasts = this.station_client.broadcasts_counter.count;
 	if(number_of_broadcasts == 0){		
 		// Call Facebook API to know which tracks the user has posted on his wall
-		
-		
-		
+		var that = this;
+		FACEBOOK.retrieveWallLinks(function(items){
+			that.filterFacebook(items);
+		})
 	}
 	else{		
 		// Call history API to get the latest tracks broacast in the station
 		this.get();
 	}
+}
+
+RecommandationManager.prototype.filterFacebook = function(items){
+	var youtube_ids = []
+	$.each(items, function(i, item){
+		var re = RegExp("http://www.youtube.com/watch\\?v=([\\w_]+)","g")
+		var m = re.exec(item.link)		
+		if(m!= null){
+			youtube_ids.push(m[1])
+		}
+	})
+	
+	this.filterYoutube(youtube_ids)
+}
+
+RecommandationManager.prototype.filterYoutube = function(youtube_ids){
+	var url = "https://gdata.youtube.com/feeds/api/videos"
+	var data_type = "jsonp";
+	var q = youtube_ids.join("|");	
+ 	var data = {
+		"q": q,
+		"format": 5,
+		"v": 2,
+		"alt": "jsonc",
+	}
+	
+	var that = this;
+	$.ajax({
+		url: url,
+		dataType: data_type,
+		timeout: 60000,
+		data: data,
+		error: function(xhr, status, error) {
+			PHB.log('An error occurred: ' + error + '\nPlease retry.');
+		},
+		success: function(json){			
+			var items = json.data.items; 
+			if(items && items.length > 0){
+				// Update recommandation popup and display it
+				$("#popup-recommandation h3 strong").html("Facebook")
+				$.fancybox($("#popup-recommandation"), {
+					topRatio: 0.4,
+					modal: true,
+				});
+				
+				// Remove volume
+				$("#volume a").trigger("click");
+				
+				// Filter music videos only
+				var music_videos = [];
+				$.each(items, function(i, item){
+					if(item.category == "Music"){
+						music_videos.push(item)
+					}
+				})
+				
+				// Add and display music videos
+				that.empty(function(){
+					that.getCallback(music_videos);
+				})
+			}
+		},
+	})
+	
 }
 
 // Collect the data necessary to GET items from the server
@@ -91,26 +156,42 @@ RecommandationManager.prototype.closeListen = function(){
 }
 
 RecommandationManager.prototype.serverToLocalItem = function(content){
-	content["type"] = "track";
-	content["track_admin"] = true;
-	content["track_submitter_key_name"] = this.station_client.station.key_name;
-	content["track_submitter_name"] = this.station_client.station.name;
-	content["track_submitter_url"] = "/" + this.station_client.station.shortname;
+	PHB.log(content);
 	
 	// Tracks fetched from Phonoblaster
 	if(content.track_id){
+		new_track = content;
+		new_track["type"] = "track";
+		new_track["track_admin"] = true;
+		new_track["track_submitter_key_name"] = this.station_client.station.key_name;
+		new_track["track_submitter_name"] = this.station_client.station.name;
+		new_track["track_submitter_url"] = "/" + this.station_client.station.shortname;
+	
 		var item = {
-			id: content.track_id,
-			created: content.created,
-			content: content,
+			id: new_track.track_id,
+			created: new_track.created,
+			content: new_track,
 		}
 	}
 	// Tracks fetched from Facebook + Youtube
 	else{
+		new_track = {
+			"type": "track",
+			"youtube_id": content.id, 
+			"youtube_title": content.title, 
+			"youtube_duration": content.duration,
+			"track_id": null,
+			"track_created": null,
+			"track_admin": true,
+			"track_submitter_key_name": this.station_client.station.key_name,
+			"track_submitter_name": this.station_client.station.name,
+			"track_submitter_url": "/" + this.station_client.station.shortname,
+		};
+		
 		var item = {
-			id: content.youtube_id,
-			created: null,
-			content: content,
+			id: new_track.youtube_id,
+			created: new_track.created,
+			content: new_track,
 		}
 	}
 	

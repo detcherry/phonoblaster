@@ -88,7 +88,7 @@ SearchManager.prototype.inputListen = function(){
 // Overwrites the get data method
 SearchManager.prototype.getData = function(){
 	var that = this;
-	data = {
+	var data = {
 		"q": that.search_content,
 		"start-index": that.offset,
 		"max-results": 20,
