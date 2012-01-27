@@ -136,13 +136,12 @@
 
 #popup-contribution{
 	display:none;
-	width:498px;
-	height:291px;
+	width:500px;
+	height:273px;
 	padding-top:18px;
 	-webkit-border-radius:4px;
 	-moz-border-radius:4px;
 	border-radius:4px;
-	border:1px solid #CCC;
 }
 
 #popup-contribution div, #popup-contribution h3{
@@ -244,8 +243,7 @@
 #popup-contribution .modal-footer{
 	clear:left;
 	float:left;
-	width:100%;
-	width:94%;
+	width:470px;
 	margin-top:30px;
 	-webkit-border-radius:0px 0px 4px 4px;
 	-moz-border-radius:0px 0px 4px 4px;

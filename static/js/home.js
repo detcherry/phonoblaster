@@ -93,11 +93,8 @@ StationCreationManager.prototype = {
 		// Display fancy box
 		$.fancybox($("#popup-contribution"), {
 			topRatio: 0.4,
-			closeBtn: false,
+			modal: true,
 		});
-		
-		// Unbinds click on the overlay so that people don't go away!
-		$("#fancybox-overlay").unbind("click");
 	},
 	
 	listen: function(){
