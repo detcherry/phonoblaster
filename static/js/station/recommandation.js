@@ -25,6 +25,9 @@ RecommandationManager.prototype.dispatch = function(){
 	var number_of_broadcasts = this.station_client.broadcasts_counter.count;
 	if(number_of_broadcasts == 0){		
 		// Call Facebook API to know which tracks the user has posted on his wall
+		
+		
+		
 	}
 	else{		
 		// Call history API to get the latest tracks broacast in the station
