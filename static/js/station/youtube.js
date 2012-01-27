@@ -56,7 +56,7 @@ function onYouTubePlayerReady(playerId) {
 }
 
 function onPlayerError(){	
-	PHB.log("Error: track not working");
+	PHB.log("Error: Youtube Track not working");
 }
 
 $(function(){
