@@ -258,7 +258,66 @@ span.round{
 	background-image: linear-gradient(top, #ee5f5b, #c43c35);
 }
 
-/*---------- SEARCH -----------*/
+/* ------ RECOMMANDATION ------ */
+
+#popup-recommandation{
+	display:none;
+	float:left;
+	width:820px;
+	height:420px;
+}
+
+#popup-recommandation h2{
+	padding:16px;
+	padding-left:24px;
+	text-align:left;
+	border-bottom:1px solid #DDD;
+}
+
+#popup-recommandation h3{
+	padding: 16px;
+	padding-left: 24px;
+	font-weight: normal;
+	font-size: 13px;
+	color: grey;
+}
+
+#popup-recommandation img.loader{
+	margin-left:390px;
+	margin-top:120px;	
+}
+
+#popup-recommandation div{
+	float:left;
+}
+
+#popup-recommandation #recommandations-zone{
+	height:258px;
+	overflow-y:auto;
+}
+
+#popup-recommandation .item{
+	width:250px;
+	border-bottom:none;
+}
+
+#popup-recommandation .item .title{
+	width:158px;
+}
+
+#popup-recommandation .item .subtitle{
+	width:158px;
+}
+
+#popup-recommandation .process-actions{
+	float:right;
+}
+
+#popup-recommandation .modal-footer{
+	width:790px;
+}
+
+/* --------- SEARCH ----------- */
 
 #queue-header span#search-icon{
 	width:18px;

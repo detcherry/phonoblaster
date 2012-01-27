@@ -28,9 +28,13 @@ function QueueManager(station_client){
 
 //--------------------------------- GET -----------------------------------
 
-QueueManager.prototype.UINoData = function(){
+QueueManager.prototype.noData = function(){
+	// UI modifications
 	$("#player-wrapper").empty();
 	$("#player-wrapper").append($("<div/>").attr("id","no-live").html("No live track."));
+	
+	// Open the recommandation manager
+	this.recommandation_manager = new RecommandationManager(this.station_client)
 }
 
 QueueManager.prototype.add = function(content){

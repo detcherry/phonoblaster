@@ -26,6 +26,7 @@ from models.api.user import UserApi
 MEMCACHE_STATION_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".station."
 MEMCACHE_STATION_QUEUE_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".queue.station."
 MEMCACHE_STATION_PRESENCES_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".presences.station."
+MEMCACHE_STATION_HISTORY_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".history.station."
 COUNTER_OF_BROADCASTS_PREFIX = "station.broadcasts.counter."
 COUNTER_OF_VIEWS_PREFIX = "station.views.counter."
 
@@ -36,6 +37,7 @@ class StationApi():
 		self._memcache_station_id = MEMCACHE_STATION_PREFIX + self._shortname
 		self._memcache_station_queue_id = MEMCACHE_STATION_QUEUE_PREFIX + self._shortname
 		self._memcache_station_presences_id = MEMCACHE_STATION_PRESENCES_PREFIX + self._shortname
+		self._memcache_station_history_id = MEMCACHE_STATION_HISTORY_PREFIX + self._shortname
 		self._counter_of_broadcasts_id = COUNTER_OF_BROADCASTS_PREFIX + self._shortname
 		self._counter_of_views_id = COUNTER_OF_VIEWS_PREFIX + self._shortname
 	
@@ -395,9 +397,68 @@ class StationApi():
 		)
 		task.add(queue_name = "counters-queue")
 		
+	@property
+	def history(self):
+		step = 10
+		if not hasattr(self, "_history"):
+			self._history =  memcache.get(self._memcache_station_history_id)
+			if self._history is None:				
+				logging.info("History not in memcache")
+				
+				tracks = self.request_history(step, datetime.utcnow())
+				logging.info("History tracks retrieved from datastore")
+				
+				extended_tracks = Track.get_extended_tracks(tracks)
+				self._history = extended_tracks
+				
+				memcache.set(self._memcache_station_history_id, self._history)
+				logging.info("Extended history tracks put in memcache")
+			else:
+				logging.info("History already in memcache")
+				
+		return self._history
+				
+	
+	def get_history(self, offset):
+		step = 10
+		extended_tracks = []
+
+		for t in self.history:
+			if(t["track_created"] < timegm(offset.utctimetuple())):
+				extended_tracks.append(t)
+			
+			# If tracks has reached the limit of a "fetching step", stop the loop
+			if len(extended_tracks) == step:
+				break
 		
+		# If history length is 0, request the datastore
+		if(len(extended_tracks) == 0):
+			tracks = self.request_history(step, offset)
+			logging.info("History tracks retrieved from datastore")
+			extended_tracks = Track.get_extended_tracks(tracks)
+			
+			# Add, if any, additional results to memcache
+			if(len(extended_tracks) > 0):
+				self.history += extended_tracks
+				memcache.set(self._memcache_station_history_id, self.history)
+				logging.info("New extended history tracks put in memcache")
+
+		return extended_tracks;
+	
+	
+	def request_history(self, step, offset):
+		q = Track.all()
+		q.filter("station", self.station.key())
+		q.filter("created <", offset)
+		q.order("-created")
+		tracks = q.fetch(step)
 		
+		return tracks
 		
+	def add_to_history(self, extended_track):
+		new_history = [extended_track] + self.history
+		memcache.set(self._memcache_station_history_id, new_history)
+		logging.info("New extended history track put in memcache")	
 		
 		
 		

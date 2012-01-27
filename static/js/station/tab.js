@@ -525,14 +525,14 @@ RealtimeTabManager.prototype.get = function(){
 				})
 			}
 			else{
-				that.UINoData();
+				that.noData();
 			}
 		},
 	});
 }
 
-// Remove any loading and display no data message
-RealtimeTabManager.prototype.UINoData = function(){}
+// Callback when no data has been found on the server
+RealtimeTabManager.prototype.noData = function(){}
 
 RealtimeTabManager.prototype.serverToLocalItem = function(content){
 	var item = {

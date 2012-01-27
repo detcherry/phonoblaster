@@ -145,7 +145,7 @@
 		</div>
 	</div>
 	<ul id="tabs" class="fixed">
-		<li class="tuto" data-original-title="Tracks soon LIVE!">
+		<li class="tuto" data-original-title="Tracks soon on the air!">
 			<a href="#queue-tab" class="current" id="queue-header">
 				Queue
 				<span class="round"></span>
@@ -182,6 +182,169 @@
 			</div>
 			<div class="tab-items">
 				<div class="init">No track in the station queue</div>
+			</div>
+			<!-- Recommandation popup not displayed in the tab -->
+			<div id="popup-recommandation">
+				<h2>Broadcast now!</h2>
+				<h3>Put the tracks you recently posted on <strong></strong> in the queue!</h3>
+				<div id="recommandations-zone">
+					<img src="/static/images/loader.gif" class="loader">
+				</div>
+				<div class="modal-footer">
+					<a class="btn primary">Go to station</a>
+				</div>
+				<!--
+				<div id="items">
+					<div class="item">
+						<span class="square">
+							<img src="http://i.ytimg.com/vi/6okxuiiHx2w/default.jpg"/>
+						</span>
+						<div class="title">
+							<span class="middle">Breakbot - Baby I'm yours</span>
+						</div>
+						<div class="subtitle">
+							<div class="duration">2:40</div>
+							<div class="process-actions">
+								<a class="btn">Broadcast</a>
+							</div>
+						</div>
+					</div>
+					<div class="item">
+						<span class="square">
+							<img src="http://i.ytimg.com/vi/6okxuiiHx2w/default.jpg"/>
+						</span>
+						<div class="title">
+							<span class="middle">Breakbot - Baby I'm yours</span>
+						</div>
+						<div class="subtitle">
+							<div class="duration">2:40</div>
+							<div class="process-actions">
+								<a class="btn">Broadcast</a>
+							</div>
+						</div>
+					</div>
+				
+					<div class="item">
+						<span class="square">
+							<img src="http://i.ytimg.com/vi/6okxuiiHx2w/default.jpg"/>
+						</span>
+						<div class="title">
+							<span class="middle">Breakbot - Baby I'm yours</span>
+						</div>
+						<div class="subtitle">
+							<div class="duration">2:40</div>
+							<div class="process-actions">
+								<a class="btn">Broadcast</a>
+							</div>
+						</div>
+					</div>
+				
+					<div class="item">
+						<span class="square">
+							<img src="http://i.ytimg.com/vi/6okxuiiHx2w/default.jpg"/>
+						</span>
+						<div class="title">
+							<span class="middle">Breakbot - Baby I'm yours</span>
+						</div>
+						<div class="subtitle">
+							<div class="duration">2:40</div>
+							<div class="process-actions">
+								<a class="btn">Broadcast</a>
+							</div>
+						</div>
+					</div>
+				
+					<div class="item">
+						<span class="square">
+							<img src="http://i.ytimg.com/vi/6okxuiiHx2w/default.jpg"/>
+						</span>
+						<div class="title">
+							<span class="middle">Breakbot - Baby I'm yours</span>
+						</div>
+						<div class="subtitle">
+							<div class="duration">2:40</div>
+							<div class="process-actions">
+								<a class="btn">Broadcast</a>
+							</div>
+						</div>
+					</div>
+				
+					<div class="item">
+						<span class="square">
+							<img src="http://i.ytimg.com/vi/6okxuiiHx2w/default.jpg"/>
+						</span>
+						<div class="title">
+							<span class="middle">Breakbot - Baby I'm yours</span>
+						</div>
+						<div class="subtitle">
+							<div class="duration">2:40</div>
+							<div class="process-actions">
+								<a class="btn">Broadcast</a>
+							</div>
+						</div>
+					</div>
+					<div class="item">
+						<span class="square">
+							<img src="http://i.ytimg.com/vi/6okxuiiHx2w/default.jpg"/>
+						</span>
+						<div class="title">
+							<span class="middle">Breakbot - Baby I'm yours</span>
+						</div>
+						<div class="subtitle">
+							<div class="duration">2:40</div>
+							<div class="process-actions">
+								<a class="btn">Broadcast</a>
+							</div>
+						</div>
+					</div>
+				
+					<div class="item">
+						<span class="square">
+							<img src="http://i.ytimg.com/vi/6okxuiiHx2w/default.jpg"/>
+						</span>
+						<div class="title">
+							<span class="middle">Breakbot - Baby I'm yours</span>
+						</div>
+						<div class="subtitle">
+							<div class="duration">2:40</div>
+							<div class="process-actions">
+								<a class="btn">Broadcast</a>
+							</div>
+						</div>
+					</div>
+					<div class="item">
+						<span class="square">
+							<img src="http://i.ytimg.com/vi/6okxuiiHx2w/default.jpg"/>
+						</span>
+						<div class="title">
+							<span class="middle">Breakbot - Baby I'm yours</span>
+						</div>
+						<div class="subtitle">
+							<div class="duration">2:40</div>
+							<div class="process-actions">
+								<a class="btn">Broadcast</a>
+							</div>
+						</div>
+					</div>
+					<div class="item">
+						<span class="square">
+							<img src="http://i.ytimg.com/vi/6okxuiiHx2w/default.jpg"/>
+						</span>
+						<div class="title">
+							<span class="middle">Breakbot - Baby I'm yours</span>
+						</div>
+						<div class="subtitle">
+							<div class="duration">2:40</div>
+							<div class="process-actions">
+								<a class="btn">Broadcast</a>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<a class="btn primary">Go to station</a>
+				</div>
+				-->
 			</div>
 		</div>
 		<div id="suggestions-tab" class="tab-content">
@@ -244,6 +407,7 @@
 <script type="text/javascript" src="/static/js/station/swfobject.js"></script>
 <script type="text/javascript" src="/static/js/station/youtube.js"></script>
 <script type="text/javascript" src="/static/js/station/alert.js"></script>
+<script type="text/javascript" src="/static/js/station/recommandation.js"></script>
 <script type="text/javascript" src="/static/js/station/queue.js"></script>
 <script type="text/javascript" src="/static/js/station/suggestion.js"></script>
 <script type="text/javascript" src="/static/js/station/search.js"></script>

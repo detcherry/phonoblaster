@@ -115,6 +115,18 @@ Facebook.prototype = {
 		})
 	},
 	
+	retrieveWallLinks: function(callback){
+		var url = "/me/links?limit=50"
+		FB.api(url, function(response){
+			if(response.data){
+				callback(response.data);
+			}
+			else{
+				callback([]);
+			}
+		})
+	},
+	
 	putComment: function(post_id, message, callback){
 		var url = "/" + post_id + "/comments"
 		FB.api(url, "post", { message: message }, function(response){
