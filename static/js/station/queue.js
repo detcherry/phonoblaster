@@ -33,8 +33,10 @@ QueueManager.prototype.noData = function(){
 	$("#player-wrapper").empty();
 	$("#player-wrapper").append($("<div/>").attr("id","no-live").html("No live track."));
 	
-	// Open the recommandation manager
-	this.recommandation_manager = new RecommandationManager(this.station_client)
+	if(this.station_client.admin){
+		// Open the recommandation manager
+		this.recommandation_manager = new RecommandationManager(this.station_client)
+	}
 }
 
 QueueManager.prototype.add = function(content){
