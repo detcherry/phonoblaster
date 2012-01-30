@@ -26,6 +26,7 @@ from models.api.user import UserApi
 MEMCACHE_STATION_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".station."
 MEMCACHE_STATION_QUEUE_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".queue.station."
 MEMCACHE_STATION_PRESENCES_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".presences.station."
+MEMCACHE_STATION_BROADCASTS_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".broadcasts.station."
 MEMCACHE_STATION_HISTORY_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".history.station."
 COUNTER_OF_BROADCASTS_PREFIX = "station.broadcasts.counter."
 COUNTER_OF_VIEWS_PREFIX = "station.views.counter."
@@ -37,6 +38,7 @@ class StationApi():
 		self._memcache_station_id = MEMCACHE_STATION_PREFIX + self._shortname
 		self._memcache_station_queue_id = MEMCACHE_STATION_QUEUE_PREFIX + self._shortname
 		self._memcache_station_presences_id = MEMCACHE_STATION_PRESENCES_PREFIX + self._shortname
+		self._memcache_station_broadcasts_id = MEMCACHE_STATION_BROADCASTS_PREFIX + self._shortname
 		self._memcache_station_history_id = MEMCACHE_STATION_HISTORY_PREFIX + self._shortname
 		self._counter_of_broadcasts_id = COUNTER_OF_BROADCASTS_PREFIX + self._shortname
 		self._counter_of_views_id = COUNTER_OF_VIEWS_PREFIX + self._shortname
@@ -265,8 +267,8 @@ class StationApi():
 					
 					self.increment_broadcasts_counter()
 					
-					# Add extended track to the station history
-					self.add_to_history(extended_track)
+					# Add extended broadcasts to the past broadcasts
+					self.add_to_broadcasts(extended_broadcast)
 					
 		return extended_broadcast
 	
@@ -402,67 +404,66 @@ class StationApi():
 			}
 		)
 		task.add(queue_name = "counters-queue")
-		
+	
 	@property
-	def history(self):
+	def broadcasts(self):
 		step = 10
-		if not hasattr(self, "_history"):
-			self._history =  memcache.get(self._memcache_station_history_id)
-			if self._history is None:				
-				logging.info("History not in memcache")
-				
-				tracks = self.request_history(step, datetime.utcnow())
-				logging.info("History tracks retrieved from datastore")
-				
-				extended_tracks = Track.get_extended_tracks(tracks)
-				self._history = extended_tracks
-				
-				memcache.set(self._memcache_station_history_id, self._history)
-				logging.info("Extended history tracks put in memcache")
+		if not hasattr(self, "_broadcasts"):
+			self._broadcasts =  memcache.get(self._memcache_station_broadcasts_id)
+			if self._broadcasts is None:				
+				logging.info("Past broadcasts not in memcache")
+
+				broadcasts = self.request_broadcasts(step, datetime.utcnow())
+				logging.info("Past broadcasts retrieved from datastore")
+
+				extended_broadcasts = Broadcast.get_extended_broadcasts(broadcasts, self.station)
+				self._broadcasts = extended_tracks
+
+				memcache.set(self._memcache_station_broadcasts_id, self._broadcasts)
+				logging.info("Extended past broadcasts put in memcache")
 			else:
-				logging.info("History already in memcache")
-				
-		return self._history
-	
-	def get_history(self, offset):
-		step = 10
-		extended_tracks = []
+				logging.info("Past broadcasts already in memcache")
 
-		for t in self.history:
-			if(t["track_created"] < timegm(offset.utctimetuple())):
-				extended_tracks.append(t)
-			
-			# If tracks has reached the limit of a "fetching step", stop the loop
-			if len(extended_tracks) == step:
-				break
-		
-		# If history length is 0, request the datastore
-		if(len(extended_tracks) == 0):
-			tracks = self.request_history(step, offset)
-			logging.info("History tracks retrieved from datastore")
-			extended_tracks = Track.get_extended_tracks(tracks)
-			
-			# Add, if any, additional results to memcache
-			if(len(extended_tracks) > 0):
-				self.history += extended_tracks
-				memcache.set(self._memcache_station_history_id, self.history)
-				logging.info("New extended history tracks put in memcache")
-
-		return extended_tracks;
+		return self._broadcasts
 	
-	def request_history(self, step, offset):
-		q = Track.all()
+	def request_broadcasts(self, step, offset):
+		q = Broadcast.all()
 		q.filter("station", self.station.key())
-		q.filter("admin", True)
 		q.filter("created <", offset)
 		q.order("-created")
-		tracks = q.fetch(step)
+		broadcasts = q.fetch(step)
 		
-		return tracks
-		
-	def add_to_history(self, extended_track):
-		existing_history = memcache.get(self._memcache_station_history_id)
-		if existing_history is not None:
-			new_history = [extended_track] + existing_history
-			memcache.set(self._memcache_station_history_id, new_history)
-			logging.info("New extended history track put in memcache")
+		return broadcasts
+	
+	def get_broadcasts(self, offset):
+		step = 10
+		extended_broadcasts = []
+
+		for b in self.broadcasts:
+			if(b["created"] < timegm(offset.utctimetuple())):
+				extended_tracks.append(b)
+
+			# If list has reached the limit of a "fetching step", stop the loop
+			if len(extended_broadcasts) == step:
+				break
+
+		# If past broadcasts length is 0, request the datastore
+		if(len(extended_broadcasts) == 0):
+			broadcasts = self.request_broadcasts(step, offset)
+			logging.info("Past broadcasts retrieved from datastore")
+			extended_broadcasts = Broadcast.get_extended_broadcasts(broadcasts, self.station)
+
+			# Add, if any, additional results to memcache
+			if(len(extended_broadcasts) > 0):
+				self.broadcasts += extended_broadcasts
+				memcache.set(self._memcache_station_broadcasts_id, self.broadcasts)
+				logging.info("New extended past broadcasts put in memcache")
+
+		return extended_broadcasts
+
+	def add_to_broadcasts(self, extended_broadcast):
+		existing_broadcasts = memcache.get(self._memcache_station_broadcasts_id)
+		if existing_broadcasts is not None:
+			new_broadcast = [extended_broadcast] + existing_broadcasts
+			memcache.set(self._memcache_station_broadcasts_id, new_broadcast)
+			logging.info("New extended past broadcasts put in memcache")
