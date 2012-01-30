@@ -120,12 +120,14 @@ body{
 	padding-top:1px;
 }
 
-#live-video{
+/* --------- VIDEO -------*/
+
+#video{
 	height:315px;
 	width:510px;
 }
 
-#live-video object{
+#video object{
 	margin-bottom:-5px;
 }
 
@@ -149,6 +151,8 @@ body{
 	height:287px;
 	width:510px;
 }
+
+/*------ VIDEO SETTINGS ------*/
 
 #video-settings{
 	width:500px;
@@ -179,6 +183,8 @@ div#volume{
 	height:18px;
 	width:18px;
 }
+
+/*------- VIDEO DETAILS -----*/
 
 #live-broadcast{
 	padding:4px;
