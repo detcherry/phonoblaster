@@ -273,7 +273,6 @@ class UserApi:
 				logging.info("New extended library tracks put in memcache")
 				
 		return extended_tracks
-
 	
 	def request_library(self, step, offset):	
 		q = Track.all()
@@ -284,12 +283,12 @@ class UserApi:
 		
 		return tracks
 
-
 	def add_to_library(self, extended_track):
-		new_library = [extended_track] + self.library
-		memcache.set(self._memcache_user_library_id, new_library)
-		logging.info("New extended library track put in memcache")
-		
+		existing_library = memcache.get(self._memcache_user_library_id)
+		if existing_library is not None:
+			new_library = [extended_track] + existing_library
+			memcache.set(self._memcache_user_library_id, new_library)
+			logging.info("New extended library track put in memcache")
 	
 	@property
 	def number_of_favorites(self):
