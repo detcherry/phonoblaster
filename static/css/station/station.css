@@ -263,7 +263,7 @@ span.round{
 #popup-recommandation{
 	display:none;
 	float:left;
-	width:820px;
+	width:800px;
 	height:420px;
 }
 
@@ -283,7 +283,7 @@ span.round{
 }
 
 #popup-recommandation img.loader{
-	margin-left:390px;
+	margin-left:370px;
 	margin-top:120px;	
 }
 
@@ -314,7 +314,7 @@ span.round{
 }
 
 #popup-recommandation .modal-footer{
-	width:790px;
+	width:770px;
 }
 
 /* --------- SEARCH ----------- */
