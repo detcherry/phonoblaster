@@ -444,7 +444,7 @@ div#volume{
 	float:left;
 	position:relative;
 	height:68px;
-	width:80px;
+	width:90px;
 	overflow:hidden;
 	margin-right:8px;
 }
@@ -453,12 +453,12 @@ div#volume{
 	height:90px;
 	position:absolute;
 	top:-11px;
-	left:-20px;
+	left:-15px;	
 }
 
 .item .title{
 	padding-right:4px;
-	width:176px;
+	width:166px;
 	height:46px;
 	overflow:hidden;
 }
