@@ -61,7 +61,7 @@ CommentManager.prototype.inputListen = function(){
 	$("form#comment").submit(function(){
 		var message = $("input[id='comment']").val();
 		
-		if(message.length > 0){	
+		if(message.length > 0 && message != "Comment..."){	
 			// Build comment
 			var new_item = that.prePostBuild(message);
 			var div = that.UIBuild(new_item);
