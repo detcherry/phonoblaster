@@ -105,7 +105,7 @@
 				{% if is_admin %}
 				<img class="tuto" data-original-title="{{ station_proxy.station.name }}" src="http://graph.facebook.com/{{ station_proxy.station.key.name }}/picture?type=square">
 				{% else %}
-				<img class="tuto" data-original-title="{{ user_proxy.user.name }}" src="http://graph.facebook.com/{{ user_proxy.user.key.name }}/picture?type=square">
+				<img class="tuto" data-original-title="{{ user_proxy.user.first_name }} {{ user_proxy.user.last_name }}" src="http://graph.facebook.com/{{ user_proxy.user.key.name }}/picture?type=square">
 				{% endif %}
 			{% else %}
 			<img src="/static/images/unknown-listener.png">
@@ -164,7 +164,7 @@
 			{% else %}
 			<!-- A user non admin cannot suggest his tracks favorited from another station -->
 			{% endif %}
-			<li class="tuto" data-original-title="Tracks you recently broadcast or suggest.">
+			<li class="tuto" data-original-title="Tracks you recently broadcast or suggested.">
 				<a href="#library-tab">Library</a>
 			</li>
 		{% endif%}
@@ -193,158 +193,6 @@
 				<div class="modal-footer">
 					<a class="btn primary">Go to station</a>
 				</div>
-				<!--
-				<div id="items">
-					<div class="item">
-						<span class="square">
-							<img src="http://i.ytimg.com/vi/6okxuiiHx2w/default.jpg"/>
-						</span>
-						<div class="title">
-							<span class="middle">Breakbot - Baby I'm yours</span>
-						</div>
-						<div class="subtitle">
-							<div class="duration">2:40</div>
-							<div class="process-actions">
-								<a class="btn">Broadcast</a>
-							</div>
-						</div>
-					</div>
-					<div class="item">
-						<span class="square">
-							<img src="http://i.ytimg.com/vi/6okxuiiHx2w/default.jpg"/>
-						</span>
-						<div class="title">
-							<span class="middle">Breakbot - Baby I'm yours</span>
-						</div>
-						<div class="subtitle">
-							<div class="duration">2:40</div>
-							<div class="process-actions">
-								<a class="btn">Broadcast</a>
-							</div>
-						</div>
-					</div>
-				
-					<div class="item">
-						<span class="square">
-							<img src="http://i.ytimg.com/vi/6okxuiiHx2w/default.jpg"/>
-						</span>
-						<div class="title">
-							<span class="middle">Breakbot - Baby I'm yours</span>
-						</div>
-						<div class="subtitle">
-							<div class="duration">2:40</div>
-							<div class="process-actions">
-								<a class="btn">Broadcast</a>
-							</div>
-						</div>
-					</div>
-				
-					<div class="item">
-						<span class="square">
-							<img src="http://i.ytimg.com/vi/6okxuiiHx2w/default.jpg"/>
-						</span>
-						<div class="title">
-							<span class="middle">Breakbot - Baby I'm yours</span>
-						</div>
-						<div class="subtitle">
-							<div class="duration">2:40</div>
-							<div class="process-actions">
-								<a class="btn">Broadcast</a>
-							</div>
-						</div>
-					</div>
-				
-					<div class="item">
-						<span class="square">
-							<img src="http://i.ytimg.com/vi/6okxuiiHx2w/default.jpg"/>
-						</span>
-						<div class="title">
-							<span class="middle">Breakbot - Baby I'm yours</span>
-						</div>
-						<div class="subtitle">
-							<div class="duration">2:40</div>
-							<div class="process-actions">
-								<a class="btn">Broadcast</a>
-							</div>
-						</div>
-					</div>
-				
-					<div class="item">
-						<span class="square">
-							<img src="http://i.ytimg.com/vi/6okxuiiHx2w/default.jpg"/>
-						</span>
-						<div class="title">
-							<span class="middle">Breakbot - Baby I'm yours</span>
-						</div>
-						<div class="subtitle">
-							<div class="duration">2:40</div>
-							<div class="process-actions">
-								<a class="btn">Broadcast</a>
-							</div>
-						</div>
-					</div>
-					<div class="item">
-						<span class="square">
-							<img src="http://i.ytimg.com/vi/6okxuiiHx2w/default.jpg"/>
-						</span>
-						<div class="title">
-							<span class="middle">Breakbot - Baby I'm yours</span>
-						</div>
-						<div class="subtitle">
-							<div class="duration">2:40</div>
-							<div class="process-actions">
-								<a class="btn">Broadcast</a>
-							</div>
-						</div>
-					</div>
-				
-					<div class="item">
-						<span class="square">
-							<img src="http://i.ytimg.com/vi/6okxuiiHx2w/default.jpg"/>
-						</span>
-						<div class="title">
-							<span class="middle">Breakbot - Baby I'm yours</span>
-						</div>
-						<div class="subtitle">
-							<div class="duration">2:40</div>
-							<div class="process-actions">
-								<a class="btn">Broadcast</a>
-							</div>
-						</div>
-					</div>
-					<div class="item">
-						<span class="square">
-							<img src="http://i.ytimg.com/vi/6okxuiiHx2w/default.jpg"/>
-						</span>
-						<div class="title">
-							<span class="middle">Breakbot - Baby I'm yours</span>
-						</div>
-						<div class="subtitle">
-							<div class="duration">2:40</div>
-							<div class="process-actions">
-								<a class="btn">Broadcast</a>
-							</div>
-						</div>
-					</div>
-					<div class="item">
-						<span class="square">
-							<img src="http://i.ytimg.com/vi/6okxuiiHx2w/default.jpg"/>
-						</span>
-						<div class="title">
-							<span class="middle">Breakbot - Baby I'm yours</span>
-						</div>
-						<div class="subtitle">
-							<div class="duration">2:40</div>
-							<div class="process-actions">
-								<a class="btn">Broadcast</a>
-							</div>
-						</div>
-					</div>
-				</div>
-				<div class="modal-footer">
-					<a class="btn primary">Go to station</a>
-				</div>
-				-->
 			</div>
 		</div>
 		<div id="suggestions-tab" class="tab-content">
