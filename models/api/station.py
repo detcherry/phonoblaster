@@ -208,6 +208,7 @@ class StationApi():
 				
 				track = None
 				extended_track = None
+				
 				if(broadcast["track_id"]):
 					track = Track.get_by_id(int(broadcast["track_id"]))
 
@@ -219,7 +220,6 @@ class StationApi():
 				else:
 					# If obviously not, look for it though, save it otherwise and get extended track from Youtube
 					if(broadcast["youtube_id"]):
-						#track, extended_track = Track.get_or_insert_by_youtube_id(broadcast["youtube_id"], self.station, user, True)
 						track, extended_track = Track.get_or_insert_by_youtube_id(broadcast["youtube_id"], self.station, user_proxy, True)
 					
 				if(track and extended_track):
@@ -260,7 +260,10 @@ class StationApi():
 					memcache.set(self._memcache_station_queue_id, self._queue)
 					logging.info("Queue updated in memcache")
 					
-					self.increment_broadcasts_counter()		
+					self.increment_broadcasts_counter()
+					
+					# Add extended track to the station history
+					self.add_to_history(extended_track)
 					
 		return extended_broadcast
 	
@@ -417,7 +420,6 @@ class StationApi():
 				logging.info("History already in memcache")
 				
 		return self._history
-				
 	
 	def get_history(self, offset):
 		step = 10
@@ -445,7 +447,6 @@ class StationApi():
 
 		return extended_tracks;
 	
-	
 	def request_history(self, step, offset):
 		q = Track.all()
 		q.filter("station", self.station.key())
@@ -456,9 +457,8 @@ class StationApi():
 		return tracks
 		
 	def add_to_history(self, extended_track):
-		new_history = [extended_track] + self.history
-		memcache.set(self._memcache_station_history_id, new_history)
-		logging.info("New extended history track put in memcache")	
-		
-		
-		
+		existing_history = memcache.get(self._memcache_station_history_id)
+		if existing_history is not None:
+			new_history = [extended_track] + existing_history
+			memcache.set(self._memcache_station_history_id, new_history)
+			logging.info("New extended history track put in memcache")
