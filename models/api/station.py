@@ -60,9 +60,12 @@ class StationApi():
 		return self._station
 	
 	# Check if station is on air
-	@property
 	def on_air(self):
-		return False
+		on_air = False
+		if(len(self.queue) > 0):
+			on_air = True
+		
+		return on_air
 	
 	# Return the list of users connected to a station
 	@property
@@ -450,6 +453,7 @@ class StationApi():
 	def request_history(self, step, offset):
 		q = Track.all()
 		q.filter("station", self.station.key())
+		q.filter("admin", True)
 		q.filter("created <", offset)
 		q.order("-created")
 		tracks = q.fetch(step)
