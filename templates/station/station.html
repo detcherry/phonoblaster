@@ -123,13 +123,12 @@
 
 {% block right-column %}
 	<div id="station-status" class="fixed">
-		{% if station_proxy.on_air %}
-			<span class="btn danger">On air</span>
-			<p><span class="middle"><strong>{{ station_proxy.station.name }}</strong> is <em>connected</em></span></p>
-		{% else %}
-			<span class="btn">Off air</span>
-			<p><span class="middle"><strong>{{ station_proxy.station.name }}</strong> is <em>not connected</em></span></p>
-		{% endif %}
+		<span class="btn">Off air</span>
+		<p>
+			<span class="middle">
+				<strong>{{ station_proxy.station.name }}</strong> is <em>not connected</em>
+			</span>
+		</p>
 		<div id="queue-status">
 			<span class="grey circle"></span>
 			<span class="grey circle"></span>
@@ -263,7 +262,8 @@
 <script type="text/javascript" src="/static/js/station/favorite.js"></script>
 <script type="text/javascript" src="/static/js/station/library.js"></script>
 <script type="text/javascript" src="/static/js/station/viral.js"></script>
-<script type="text/javascript" src="/static/js/station/station.js"></script>
+<script type="text/javascript" src="/static/js/station/counter.js"></script>
+<script type="text/javascript" src="/static/js/station/on.js"></script>
 <script type="text/javascript">
 	/*--- Reset ---*/
 	USER = null;
