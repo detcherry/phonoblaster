@@ -9,7 +9,7 @@ function RecommandationManager(station_client){
 	ScrollTabManager.call(this, station_client);
 	
 	// Settings
-	this.url = "/api/library"
+	this.url = "api/recommandations"
 	this.data_type = "json"
 	
 	// UI Settings

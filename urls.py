@@ -15,6 +15,7 @@ from controllers.api.suggestions import ApiSuggestionsHandler
 from controllers.api.favorites import ApiFavoritesHandler
 from controllers.api.favorites import ApiFavoritesDeleteHandler
 from controllers.api.library import ApiLibraryHandler
+from controllers.api.recommandations import ApiRecommandationsHandler
 from controllers.api.broadcasts import ApiBroadcastsHandler
 from controllers.api.presences import ApiPresencesHandler
 from controllers.api.comments import ApiCommentsHandler
@@ -37,6 +38,7 @@ application = webapp.WSGIApplication(
 		('/api/favorites', ApiFavoritesHandler),
 		('/api/favorites/(\w+)', ApiFavoritesDeleteHandler),
 		('/api/library', ApiLibraryHandler),
+		('/api/recommandations', ApiRecommandationsHandler),
 		('/api/broadcasts', ApiBroadcastsHandler),
 		('/api/presences', ApiPresencesHandler),
 		('/api/comments', ApiCommentsHandler),

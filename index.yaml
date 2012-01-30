@@ -46,6 +46,13 @@ indexes:
 
 - kind: Track
   properties:
+  - name: admin
+  - name: station
+  - name: created
+    direction: desc
+
+- kind: Track
+  properties:
   - name: station
   - name: created
     direction: desc
