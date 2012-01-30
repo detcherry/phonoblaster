@@ -232,12 +232,16 @@ SuggestionManager.prototype.UIBuild = function(item){
 						.addClass("btn")
 						.attr("name", id)
 						.html("Queue")
+						.addClass("tuto")
+						.attr("data-original-title", "Add this track to the queue")
 				)
 				.append(
 					$("<a/>")
 						.addClass("preview")
 						.addClass("fancybox.iframe")
 						.attr("href", preview)
+						.addClass("tuto")
+						.attr("data-original-title", "Preview track")
 				)
 		)
 	}

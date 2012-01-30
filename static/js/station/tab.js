@@ -380,8 +380,10 @@ ScrollTabManager.prototype.UIBuild = function(item){
 	var preview = "http://www.youtube.com/embed/" + youtube_id + "?autoplay=1"
 	
 	var process_action = "Suggest"
+	var process_info = "Suggest this track to the broadcaster"
 	if(this.station_client.admin){
 		process_action = "Queue"
+		process_info = "Add this track to the queue"
 	}
 	
 	var div = $("<div/>").addClass("item").attr("id",id)
@@ -419,12 +421,16 @@ ScrollTabManager.prototype.UIBuild = function(item){
 								.addClass("btn")
 								.attr("name",id)
 								.html(process_action)
+								.addClass("tuto")
+								.attr("data-original-title", process_info)
 						)
 						.append(
 							$("<a/>")
 								.addClass("preview")
 								.addClass("fancybox.iframe")
 								.attr("href",preview)
+								.addClass("tuto")
+								.attr("data-original-title", "Preview track")
 						)
 				)
 		)
