@@ -155,9 +155,7 @@ RecommandationManager.prototype.closeListen = function(){
 	})
 }
 
-RecommandationManager.prototype.serverToLocalItem = function(content){
-	PHB.log(content);
-	
+RecommandationManager.prototype.serverToLocalItem = function(content){	
 	// Tracks fetched from Phonoblaster
 	if(content.track_id){
 		new_track = content;
