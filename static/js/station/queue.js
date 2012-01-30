@@ -461,7 +461,7 @@ QueueManager.prototype.UIFail = function(btn){
 
 // Returns the current live item 
 QueueManager.prototype.UILive = function(){
-	var item_id = $("#live-broadcast .id").html();
+	var item_id = $("#video-details .id").html();
 	return item_id;
 }
 
@@ -482,13 +482,13 @@ QueueManager.prototype.UILiveSet = function(item){
 	var track_submitter_picture = "https://graph.facebook.com/" + content.track_submitter_key_name + "/picture?type=square";
 	
 	// Display the image
-	$("#live-broadcast span.clip").append($("<img/>").attr("src", youtube_thumbnail));
+	$("#video-details span.clip").append($("<img/>").attr("src", youtube_thumbnail));
 	
 	// Display the title
-	$("#live-broadcast span.middle").html(youtube_title);
+	$("#video-details span.middle").html(youtube_title);
 	
 	// Put the item id in the div
-	$("#live-broadcast .id").html(id);
+	$("#video-details .id").html(id);
 	
 	if(content.track_id){
 		if(this.station_client.user){
@@ -510,13 +510,13 @@ QueueManager.prototype.UILiveSet = function(item){
 
 QueueManager.prototype.UILiveRemove = function(){
 	// Remove image
-	$("#live-broadcast span.clip").empty();
+	$("#video-details span.clip").empty();
 	
 	// Remove title
-	$("#live-broadcast span.middle").html("No track is being broadcast");
+	$("#video-details span.middle").html("No track is being broadcast");
 	
 	// Remove the broadcast key_name in the div
-	$("#live-broadcast .id").empty();
+	$("#video-details .id").empty();
 	
 	// Remove the store icon
 	$("#store-track").empty();

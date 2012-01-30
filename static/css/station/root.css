@@ -186,7 +186,7 @@ div#volume{
 
 /*------- VIDEO DETAILS -----*/
 
-#live-broadcast{
+#video-details{
 	padding:4px;
 	width:500px;
 	height:64px;
@@ -194,22 +194,22 @@ div#volume{
 	border-top:none;
 }
 
-#live-broadcast .clip{
+#video-details .clip{
 	height:64px;
 	width:118px;
 }
 
-#live-broadcast .clip img{
+#video-details .clip img{
 	height:88px;
 }
 
-#live-broadcast h3{
+#video-details h3{
 	padding:8px;
 	padding-top:4px;
 	padding-bottom:4px;
 }
 
-#live-broadcast .title{
+#video-details .title{
 	padding:8px;
 	padding-top:4px;
 	width:362px;
@@ -217,11 +217,11 @@ div#volume{
 	overflow:hidden;
 }
 
-#live-broadcast .title span{
+#video-details .title span{
 	height:30px;
 }
 
-#live-broadcast .id{
+#video-details .id{
 	display:none;
 }
 
