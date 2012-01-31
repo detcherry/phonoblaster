@@ -25,6 +25,7 @@ indexes:
   properties:
   - name: station
   - name: created
+    direction: desc
 
 - kind: Favorite
   properties:
@@ -36,11 +37,6 @@ indexes:
   properties:
   - name: connected
   - name: ended
-  - name: station
-  - name: created
-
-- kind: Suggestion
-  properties:
   - name: station
   - name: created
 

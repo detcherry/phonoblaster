@@ -249,6 +249,147 @@ div#volume{
 	background-position: -145px 0px;
 }
 
+/*-------- COMMENTS ---------*/
+
+#comments{
+	width:508px;
+	border:1px solid #DDD;
+	border-top:none;	
+}
+
+#comment-box{
+	width:500px;
+	padding:4px;
+	height:28px;
+	border-bottom: 1px solid #ddd;
+}
+
+#comment-box img{
+	display:block;
+	float:left;
+	margin-right:4px;
+	height:26px;
+	width:26px;
+	border: 1px solid #ddd;
+}
+
+#comment-box form{
+	display:block;
+	float:left;
+	width:468px;
+	margin:0px;
+}
+
+input#comment{
+	display:block;
+	float:left;
+	width:354px;
+	margin-right:4px;
+}
+
+span#fb-sync{
+	cursor:pointer;
+	display:block;
+	float:left;
+	height:28px;
+	width:28px;
+	margin-right:4px;
+}
+
+span#fb-sync.active{
+	background:url("/static/images/phonoblaster-sprits.png");
+	background-position:-5px -28px;
+}
+
+span#fb-sync.inactive{
+	background:url("/static/images/phonoblaster-sprits.png");
+	background-position:-41px -28px;
+}
+
+#comments-zone{
+	padding-bottom:8px;
+	min-height:400px;
+	width:100%;
+	background:white;
+}
+
+.comment{
+	margin-top:-4px;
+	padding:4px;
+	padding-bottom:0px;
+	width:502px;	
+}
+
+.comment:first-child{
+	margin-top:0px;
+}
+
+.comment img.user, .comment img.station{
+	display:block;
+	float:left;
+	margin-right:8px;
+	height:25px;
+	border: 1px solid #ddd;
+}
+
+.comment .content{
+	min-height:27px;
+	width:462px;
+}
+
+.comment .content p{
+	width:100%;
+	line-height:15px;
+	font-size:11px;
+	overflow:hidden;
+}
+
+.comment .content p a{
+	font-weight:bold;
+	color:#0084B4;
+}
+
+.comment .content p a:hover{
+	color:#0084B4;
+}
+
+.comment .content span.clip{
+	margin-top:4px;
+	margin-bottom:4px;
+	margin-right:8px;
+	height:52px;
+	width:96px;
+}
+
+.comment .content span.clip img{
+	height:72px;
+}
+
+.comment .title{
+	height:52px;
+	width:358px;
+	font-size:11px;
+}
+
+.comment .title span{
+	height:52px;
+}
+
+.comment .border{
+	margin-right:8px;
+	width:456px;
+	height:4px;
+	border-bottom:1px solid #CCC;
+}
+
+.comment .time{
+	margin-top:-1px;
+	color:#CCC;
+	font-size:11px;
+	line-height: 10px;
+}
+
+
 /*------- RIGHT COLUMN --------*/
 
 #right-column{

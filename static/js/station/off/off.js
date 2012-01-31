@@ -11,4 +11,5 @@ function StationClient(user, admin, station){
 	this.views_counter = new Counter("#views");
 	
 	this.broadcast_manager = new BroadcastManager(this);
+	this.comment_manager = new CommentManager(this);
 }

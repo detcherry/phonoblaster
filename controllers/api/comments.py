@@ -22,9 +22,9 @@ class ApiCommentsHandler(BaseHandler):
 		
 		q = Comment.all()
 		q.filter("station", self.station.key())
-		q.filter("created >", datetime.utcnow() - timedelta(0,180))
-		q.order("created")
-		comments = q.fetch(20) # Arbitrary number
+		q.filter("created <", datetime.utcnow())
+		q.order("-created")
+		comments = q.fetch(50) # Arbitrary number
 		
 		extended_comments = Comment.get_extended_comments(comments, self.station)
 		
