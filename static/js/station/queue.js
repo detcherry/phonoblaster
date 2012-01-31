@@ -240,7 +240,7 @@ QueueManager.prototype.nextVideo = function(time_out){
 		that.liveOver();
 		
 		// Get next item and put it live
-		new_item = that.items.shift();
+		var new_item = that.items.shift();
 		if(new_item){
 			that.live(new_item)
 		}
