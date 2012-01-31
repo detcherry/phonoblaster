@@ -1,5 +1,3 @@
-import logging
-
 from controllers.station.root import RootHandler
 
 from models.api.station import StationApi

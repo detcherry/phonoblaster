@@ -1,71 +1,108 @@
 {% extends "station/root.html" %}
 
 {% block meta %}
-	<title>French Siliconnection Broadcasts</title>
-	<meta name="description" content="Past broadcasts of French Siliconnection on Phonoblaster.">
+	<title>{{ station_proxy.station.name }} Broadcasts</title>
+	<meta name="description" content="Past broadcasts of {{ station_proxy.station.name }} on Phonoblaster.">
+{% endblock %}
+
+{% block facebook %}
+	<!-- Station Open Graph Tags -->
+	<meta property="fb:app_id" content="{{ facebook_app_id }}"/>
+	<meta property="og:type" content="{{ version }}:station"/> 
+	<meta property="og:url" content="{{ site_url }}/{{ station_proxy.station.shortname }}"/> 
+	<meta property="og:title" content="{{ station_proxy.station.name }}"/> 
+	<meta property="og:description" content="Listen now to {{ station_proxy.station.name }} on Phonoblaster. Like us here: {{ station_proxy.station.link }}"/>
+	<meta property="og:image"  content="https://graph.facebook.com/{{ station_proxy.station.key.name }}/picture?type=large"/> 
+	<meta property="og:site_name" content="Phonoblaster"/>
+	<meta property="og:video:type" content="text/html"/>
+	<meta property="og:video" content="{{ site_url }}/{{ station_proxy.station.shortname }}"/>
+	<meta property="{{ version }}:page" content="{{ station_proxy.station.link }}"/>
 {% endblock %}
 
 {% block style %}
-	<link type="text/css" rel="stylesheet" href="/static/css/station/station.css" />
+	<link type="text/css" rel="stylesheet" href="/static/css/station/broadcasts.css" />
 {% endblock %}
 
 
 {% block middle-column %}
-<div class="fixed">
-	<div id="station-title">
-		<h2>French Siliconnection</h2>
-		<div class="fb-like" data-href="http://facebook.com/frenchsiliconnection" data-send="false" data-layout="button_count"  data-show-faces="false"></div>
-	</div>
-	<div id="live-video">
-		<div id="youtube-player"></div>
-		<div id="video-settings">
-			<div id="counter-left">0:30</div>
-			<div id="progression-bar"></div>
-			<div id="counter-right">-2:00</div>
-			<div id="volume"><img src="/static/images/unmuted.png"/></div>
+	<div class="fixed">
+		<div id="station-title">
+			<h2>{{ station_proxy.station.name }}</h2>
+			<div class="fb-like" data-href="{{ station_proxy.station.link }}" data-send="false" data-layout="button_count"  data-show-faces="false"></div>
+		</div>
+		<div id="video">
+			<div id="player-wrapper">
+				<img src="/static/images/loader.gif"/>
+				<!-- <div id="youtube-player"></div> -->
+			</div>
+		</div>
+		<div id="video-details">
+			<span class="clip"><!-- No image --></span>
+			<div class="above-title">
+				<h3>Current track</h3>
+			</div>
+			<div class="title">
+				<span class="middle">No track is being played</span>
+			</div>
 		</div>
 	</div>
-	<div id="current-track">
-		<span class="clip">
-			<img src="http://i2.ytimg.com/vi/IS_WabpOf0Q/default.jpg">
-		</span>
-		<div class="above-title">
-			<h3>Current track</h3>
-			<div class="fb-like" data-href="http://facebook.com/frenchsiliconnection" data-send="false" data-layout="button_count"  data-show-faces="false"></div>
-		</div>
-		<div class="title">
-			<span class="middle">Teams vs Star Slinger - Close to me</span>
-		</div>
-	</div>
-</div>
 {% endblock %}
 
+{% block right-column %}
+	<div id="station-status" class="fixed">
+		<span class="btn">Off air</span>
+		<p>
+			<span class="middle">
+				<strong>{{ station_proxy.station.name }}</strong> is <em>not connected</em>
+			</span>
+		</p>
+	</div>
+	<ul id="tabs" class="fixed">
+		<li class="tuto" data-original-title="Past tracks broadcast by {{ station_proxy.station.name }}" style="width:90px">
+			<a href="#broadcasts-tab" class="current" id="broadcasts-header" style="width:76px">Broadcasts</a>
+		</li>
+	</ul>
+	<div id="tab-content-wrap">
+		<div id="broadcasts-tab" class="tab-content">
+			<div class="fixed">
+			</div>
+			<div class="tab-items">
+				<div class="init">No past broadcast.</div>
+			</div>
+		</div>
+	</div>
+{% endblock %}
+
+
 {% block script %}
-<script>
-$(function(){
-	loadPlayer();
-});
-
-// This function is automatically called by the player once it loads
-function onYouTubePlayerReady(playerId) {
-	ytplayer = document.getElementById("ytPlayer");
-	//Load an initial video into the player
-	ytplayer.cueVideoById("IS_WabpOf0Q");
-}
-
-function loadPlayer() {
-	// Lets Flash from another domain call JavaScript
-	var params = { 
-		allowScriptAccess: "always",
-		wmode: "transparent"
-	};
-	// The element id of the Flash embed
-	var atts = { id: "ytPlayer" };
-	// All of the magic handled by SWFObject (http://code.google.com/p/swfobject/)
-	var video_url = "http://www.youtube.com/apiplayer?version=3&enablejsapi=1&playerapiid=player1"
-	swfobject.embedSWF(video_url, "youtube-player", "510", "287", "9", null, null, params, atts);
-}
-
-</script>
+<script type="text/javascript" src="/static/js/library/tab.js"></script>
 <script type="text/javascript" src="/static/js/station/swfobject.js"></script>
+<script type="text/javascript" src="/static/js/station/embedded.js"></script>
+<script type="text/javascript" src="/static/js/station/tab.js"></script>
+<script type="text/javascript" src="/static/js/station/counter.js"></script>
+<script type="text/javascript" src="/static/js/station/broadcast.js"></script>
+<script type="text/javascript" src="/static/js/station/off.js"></script>
+<script type="text/javascript">
+	//--- Reset ---
+	USER = null;
+	ADMIN = false;
+	STATION = null;
+	//--- User Initialization ---
+	{% if user_proxy %} 
+	USER = {
+		"key_name": "{{ user_proxy.user.key.name }}",
+		"name": "{{ user_proxy.user.first_name }} {{ user_proxy.user.last_name }}",
+	}
+	{% endif %}
+	//--- Admin Initialization ---
+	{% if is_admin %} 
+	ADMIN = true;
+	{% endif %}
+	//--- Station Initialization ---
+	STATION = {
+		"key_name": "{{ station_proxy.station.key.name }}",
+		"shortname": "{{ station_proxy.station.shortname }}",
+		"name": "{{ station_proxy.station.name}}",
+	}
+</script>
 {% endblock %}

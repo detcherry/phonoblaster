@@ -13,6 +13,12 @@ indexes:
 - kind: Broadcast
   properties:
   - name: station
+  - name: created
+    direction: desc
+
+- kind: Broadcast
+  properties:
+  - name: station
   - name: expired
 
 - kind: Comment

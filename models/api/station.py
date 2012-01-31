@@ -417,7 +417,7 @@ class StationApi():
 				logging.info("Past broadcasts retrieved from datastore")
 
 				extended_broadcasts = Broadcast.get_extended_broadcasts(broadcasts, self.station)
-				self._broadcasts = extended_tracks
+				self._broadcasts = extended_broadcasts
 
 				memcache.set(self._memcache_station_broadcasts_id, self._broadcasts)
 				logging.info("Extended past broadcasts put in memcache")
@@ -441,7 +441,7 @@ class StationApi():
 
 		for b in self.broadcasts:
 			if(b["created"] < timegm(offset.utctimetuple())):
-				extended_tracks.append(b)
+				extended_broadcasts.append(b)
 
 			# If list has reached the limit of a "fetching step", stop the loop
 			if len(extended_broadcasts) == step:

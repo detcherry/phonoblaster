@@ -1,0 +1,42 @@
+@import url("root.css");
+
+/* ----- A FEW CORRECTIONS ------*/
+
+#video-details{
+	border-top:1px solid #DDD;
+}
+
+#station-status{
+	height:40px;
+}
+
+#right-column ul{
+	margin-top:-66px;
+}
+
+#right-column .tab-content .fixed {
+	margin-top:-37px;
+	height:0px;
+}
+
+.tab-items{
+	margin-top:-21px;
+}
+
+/*----- BROADCASTS TAB ------*/
+
+.item{
+	cursor:pointer;
+}
+
+.item:hover{
+	background-color: #F6F6F6;
+}
+
+.item.active{
+	background-color: #E6E6E6;
+}
+
+.item.active:hover{
+	background-color: #E6E6E6;
+}

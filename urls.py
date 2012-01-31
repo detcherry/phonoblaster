@@ -25,13 +25,6 @@ from controllers.api.now import ApiNowHandler
 
 application = webapp.WSGIApplication(
 	[
-		('/', HomeHandler),
-		('/station/create', StationCreateHandler),
-		('/station/check', StationCheckHandler),
-		('/(\w+)', StationHandler),
-		('/(\w+)/picture', StationPictureHandler),
-		('/(\w+)/broadcasts', StationBroadcastsHandler),
-		('/track/([0-9]+)', TrackHandler),
 		('/api/queue', ApiQueueHandler),
 		('/api/queue/([\w.]+)', ApiQueueDeleteHandler),
 		('/api/suggestions', ApiSuggestionsHandler),
@@ -45,6 +38,13 @@ application = webapp.WSGIApplication(
 		('/api/status', ApiStatusHandler),
 		('/api/views', ApiViewsHandler),
 		('/api/now', ApiNowHandler),
+		('/', HomeHandler),
+		('/station/create', StationCreateHandler),
+		('/station/check', StationCheckHandler),
+		('/(\w+)', StationHandler),
+		('/(\w+)/picture', StationPictureHandler),
+		('/(\w+)/broadcasts', StationBroadcastsHandler),
+		('/track/([0-9]+)', TrackHandler),
 		('/.*', AllHandler),
 	],
     debug=True

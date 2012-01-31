@@ -349,11 +349,14 @@ ScrollTabManager.prototype.get = function(){
 			else{
 				// There is no result on the server. Remove the possibility of scrolling
 				that.removeScrolling();
+				that.noData();
 			}
 		},
 	});	
 	
 }
+
+ScrollTabManager.prototype.noData = function(){}
 
 ScrollTabManager.prototype.serverToLocalItem = function(content){
 	var item = {
