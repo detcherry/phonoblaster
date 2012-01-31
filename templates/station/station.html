@@ -99,7 +99,7 @@
 			<div class="id"></div>
 		</div>
 	</div>
-	<div id="live-comments">
+	<div id="comments">
 		<div id="comment-box">
 			{% if user_proxy %}
 				{% if is_admin %}
@@ -248,22 +248,24 @@
 <!-- Station -->
 <script type="text/javascript" src="/static/js/library/json2.js"></script>
 <script type="text/javascript" src="/static/js/library/tab.js"></script>
-<script type="text/javascript" src="/static/js/station/presence.js"></script>
+
 <script type="text/javascript" src="/static/js/station/tab.js"></script>
-<script type="text/javascript" src="/static/js/station/comment.js"></script>
 <script type="text/javascript" src="/static/js/station/swfobject.js"></script>
-<script type="text/javascript" src="/static/js/station/chromeless.js"></script>
-<script type="text/javascript" src="/static/js/station/alert.js"></script>
-<script type="text/javascript" src="/static/js/station/recommandation.js"></script>
-<script type="text/javascript" src="/static/js/station/queue.js"></script>
-<script type="text/javascript" src="/static/js/station/suggestion.js"></script>
-<script type="text/javascript" src="/static/js/station/search.js"></script>
-<script type="text/javascript" src="/static/js/station/status.js"></script>
 <script type="text/javascript" src="/static/js/station/favorite.js"></script>
-<script type="text/javascript" src="/static/js/station/library.js"></script>
-<script type="text/javascript" src="/static/js/station/viral.js"></script>
 <script type="text/javascript" src="/static/js/station/counter.js"></script>
-<script type="text/javascript" src="/static/js/station/on.js"></script>
+
+<script type="text/javascript" src="/static/js/station/on/presence.js"></script>
+<script type="text/javascript" src="/static/js/station/on/comment.js"></script>
+<script type="text/javascript" src="/static/js/station/on/chromeless.js"></script>
+<script type="text/javascript" src="/static/js/station/on/alert.js"></script>
+<script type="text/javascript" src="/static/js/station/on/recommandation.js"></script>
+<script type="text/javascript" src="/static/js/station/on/queue.js"></script>
+<script type="text/javascript" src="/static/js/station/on/suggestion.js"></script>
+<script type="text/javascript" src="/static/js/station/on/search.js"></script>
+<script type="text/javascript" src="/static/js/station/on/status.js"></script>
+<script type="text/javascript" src="/static/js/station/on/library.js"></script>
+<script type="text/javascript" src="/static/js/station/on/viral.js"></script>
+<script type="text/javascript" src="/static/js/station/on/on.js"></script>
 <script type="text/javascript">
 	/*--- Reset ---*/
 	USER = null;
