@@ -88,9 +88,6 @@ BroadcastManager.prototype.UIBuild = function(item){
 	var track_submitter_picture = "https://graph.facebook.com/" + content.track_submitter_key_name + "/picture?type=square";	
 	
 	var mention = null;
-	if(type == "track"){
-		mention = "Added by"
-	}
 	if(type == "suggestion"){
 		mention = "Suggested by"
 	}
@@ -125,22 +122,27 @@ BroadcastManager.prototype.UIBuild = function(item){
 					.addClass("duration")
 					.html(youtube_duration)
 			)
-			.append(
-				$("<div/>")
-					.addClass("submitter")
-					.append(
-						$("<img/>")
-							.attr("src", track_submitter_picture)
-							.addClass("station")
-							.addClass("tuto")
-							.attr("data-original-title", track_submitter_name)
-					)
-					.append(
-						$("<span/>")
-							.html(mention)
-					)
-			)
 	)
+	
+	if(mention){
+		var subtitle = div.find(".subtitle");
+		subtitle.append(
+				$("<div/>")
+				.addClass("submitter")
+				.append(
+					$("<img/>")
+						.attr("src", track_submitter_picture)
+						.addClass("station")
+						.addClass("tuto")
+						.attr("data-original-title", track_submitter_name)
+				)
+				.append(
+					$("<span/>")
+						.html(mention)
+				)
+		)
+
+	}
 	
 	return div
 }
