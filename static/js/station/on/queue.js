@@ -513,7 +513,13 @@ QueueManager.prototype.UILiveSet = function(item){
 	
 	if(content.track_id && this.station_client.user){
 		// Favorite button
-		$("#favorite-track").append($("<a/>").attr("href", "#").addClass("fav"))
+		$("#favorite-track").append(
+			$("<a/>")
+				.attr("href", "#")
+				.addClass("fav")
+				.addClass("tuto") // Twipsy
+				.attr("data-original-title", "Favorite this track") // Twipsy
+		)
 	}
 	
 	$("#station-status span.btn").addClass("danger").html("On air")

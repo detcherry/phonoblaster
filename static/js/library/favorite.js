@@ -6,8 +6,8 @@ function FavoriteSDK(track_manager){
 	this.url = "/api/favorites";
 	this.track_manager = track_manager;
 	
-	this.postListen()
-	this.deleteListen()
+	this.postListen();
+	this.deleteListen();
 }
 
 FavoriteSDK.prototype = {
@@ -21,7 +21,7 @@ FavoriteSDK.prototype = {
 
 			// Change icon
 			var btn = $(this)
-			btn.removeClass("fav").addClass("unfav");
+			that.toggle(btn)
 
 			// POST new favorite to server
 			that.post(new_item, function(response){
@@ -34,6 +34,15 @@ FavoriteSDK.prototype = {
 			$(this).blur();
 			return false;
 		})
+	},
+	
+	toggle: function(btn){
+		if(btn.hasClass("fav")){
+			btn.removeClass("fav").addClass("unfav").addClass("tuto").attr("data-original-title", "Unfavorite this track")
+		}
+		else{
+			btn.removeClass("unfav").addClass("fav").addClass("tuto").attr("data-original-title", "Favorite this track")
+		}
 	},
 	
 	// Build data to POST
@@ -69,7 +78,7 @@ FavoriteSDK.prototype = {
 	
 	postCallback: function(btn, response){
 		if(!response){
-			btn.removeClass("unfav").addClass("fav");
+			this.toggle(btn);
 			PHB.error("Favorite has not been stored")
 		}
 	},
@@ -95,7 +104,7 @@ FavoriteSDK.prototype = {
 
 			// Change icon
 			var btn = $(this)
-			btn.removeClass("unfav").addClass("fav");
+			that.toggle(btn)
 
 			that.delete(item, function(response){
 				that.deleteCallback(btn, response)

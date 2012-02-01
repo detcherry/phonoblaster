@@ -268,7 +268,13 @@ BroadcastManager.prototype.UILiveSet = function(item){
 	
 	// Display the favorite icon
 	if(content.track_id && this.station_client.user){
-		$("#favorite-track").append($("<a/>").attr("href", "#").addClass("fav"))
+		$("#favorite-track").append(
+			$("<a/>")
+				.attr("href", "#")
+				.addClass("fav")
+				.addClass("tuto") // Twipsy
+				.attr("data-original-title", "Favorite this track") // Twipsy
+		)
 	}
 }
 
