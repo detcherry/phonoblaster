@@ -435,12 +435,12 @@ class StationApi():
 		
 		return broadcasts
 	
-	def get_broadcasts(self, offset):
+	def get_broadcasts(self, offset):		
 		step = 10
 		extended_broadcasts = []
 
 		for b in self.broadcasts:
-			if(b["expired"] < timegm(offset.utctimetuple())):
+			if(b["created"] < timegm(offset.utctimetuple())):
 				extended_broadcasts.append(b)
 
 			# If list has reached the limit of a "fetching step", stop the loop
