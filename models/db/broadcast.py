@@ -16,6 +16,7 @@ class Broadcast(db.Model):
 	@staticmethod
 	def get_extended_broadcasts(broadcasts, current_station):
 		extended_broadcasts = []
+		ordered_extended_broadcasts = []
 		
 		if(broadcasts):
 			track_keys = []
@@ -80,8 +81,17 @@ class Broadcast(db.Model):
 			for broadcast, extended_track, station in zip(favorited_broadcasts, favorited_extended_tracks, stations):
 				extended_broadcast = Broadcast.get_extended_broadcast(broadcast, extended_track, station, None)
 				extended_broadcasts.append(extended_broadcast)
-		
-		return extended_broadcasts
+			
+			# Order the broadcasts that have been built from different sources (same order as the Datastore entities)
+			for b in broadcasts:
+				key_name = b.key().name()
+				for e in extended_broadcasts:
+					if(e["key_name"] == key_name):
+						ordered_extended_broadcasts.append(e)
+						break
+			
+		#return extended_broadcasts
+		return ordered_extended_broadcasts
 
 	@staticmethod
 	def get_extended_broadcast(broadcast, extended_track, station, user):
