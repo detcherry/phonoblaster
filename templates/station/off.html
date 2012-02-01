@@ -103,10 +103,6 @@
 		"name": "{{ user_proxy.user.first_name }} {{ user_proxy.user.last_name }}",
 	}
 	{% endif %}
-	//--- Admin Initialization ---
-	{% if is_admin %} 
-	ADMIN = true;
-	{% endif %}
 	//--- Station Initialization ---
 	STATION = {
 		"key_name": "{{ station_proxy.station.key.name }}",

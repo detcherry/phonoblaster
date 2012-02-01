@@ -14,12 +14,12 @@ class StationHandler(RootHandler):
 			
 			# If station not on air and user not admin, redirect to the broadcasts page
 			if(not admin and not on_air):
-				self.render("station/broadcasts.html", None)
+				self.render("station/off.html", None)
 			else:
 				template_values = {
 					"is_admin": self.is_admin,
 				}
-				self.render("station/station.html", template_values)
+				self.render("station/on.html", template_values)
 
 		else:
 			self.render("station/404.html", None)
