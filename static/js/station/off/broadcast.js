@@ -184,7 +184,7 @@ BroadcastManager.prototype.nextVideo = function(time_out){
 				if(!this.items[i+2] && this.scrolling_on){
 					
 					// Fake a scrolling event
-					var last_item = this.items[that.items.length -1];
+					var last_item = this.items[this.items.length -1];
 					this.offset = last_item.created;
 					this.load = true;
 					this.get();
