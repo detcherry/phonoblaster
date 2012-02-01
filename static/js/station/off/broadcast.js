@@ -240,7 +240,10 @@ BroadcastManager.prototype.UILiveSet = function(item){
 	// Display the title
 	$("#video-details span.middle").html(youtube_title);
 	
-	// No favorite yet
+	// Display the favorite icon
+	if(content.track_id && this.station_client.user){
+		$("#favorite-track").append($("<a/>").attr("href", "#").addClass("fav"))
+	}
 }
 
 BroadcastManager.prototype.UILiveRemove = function(){
@@ -250,8 +253,8 @@ BroadcastManager.prototype.UILiveRemove = function(){
 	// Remove title
 	$("#video-details span.middle").html("No track is being played");
 	
-	// Remove the store icon
-	$("#store-track").empty();
+	// Remove favorite icon
+	$("#favorite-track").empty();
 }
 
 BroadcastManager.prototype.UIActive = function(id){
