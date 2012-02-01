@@ -491,6 +491,26 @@ QueueManager.prototype.UILiveSet = function(item){
 	// Put the item id in the div
 	$("#video-details .id").html(id);
 	
+	var mention = null;
+	if(type == "suggestion"){
+		mention = "Suggested by"
+	}
+	if(type == "favorite"){
+		mention = "Rebroadcast of"
+	}
+	
+	if(mention){
+		// Display the submitter
+		$("#video-details .submitter")
+			.append(
+				$("<img/>")
+					.attr("src", track_submitter_picture)
+					.addClass("tuto") // Twipsy
+					.attr("data-original-title", track_submitter_name)
+			)
+			.append($("<span/>").html(mention))
+	}
+	
 	if(content.track_id && this.station_client.user){
 		// Favorite button
 		$("#favorite-track").append($("<a/>").attr("href", "#").addClass("fav"))
@@ -509,8 +529,11 @@ QueueManager.prototype.UILiveRemove = function(){
 	// Remove the broadcast key_name in the div
 	$("#video-details .id").empty();
 	
-	// Remove the store icon
+	// Remove the favorite icon
 	$("#favorite-track").empty();
+	
+	// Remove the submitter
+	$("#video-details .submitter").empty();
 	
 	$("#station-status span.btn").removeClass("danger").html("Off air")
 }
