@@ -20,7 +20,7 @@
 {% endblock %}
 
 {% block style %}
-	<link type="text/css" rel="stylesheet" href="/static/css/station/broadcasts.css" />
+	<link type="text/css" rel="stylesheet" href="/static/css/station/off.css" />
 {% endblock %}
 
 
@@ -63,6 +63,8 @@
 			</span>
 		</p>
 	</div>
+	<div id="popup-onair">
+	</div>
 	<ul id="tabs" class="fixed">
 		<li class="tuto" data-original-title="Past tracks broadcast by {{ station_proxy.station.name }}" style="width:90px">
 			<a href="#broadcasts-tab" class="current" id="broadcasts-header" style="width:76px">Broadcasts</a>
@@ -91,6 +93,7 @@
 <script type="text/javascript" src="/static/js/station/off/embedded.js"></script>
 <script type="text/javascript" src="/static/js/station/off/broadcast.js"></script>
 <script type="text/javascript" src="/static/js/station/off/comment.js"></script>
+<script type="text/javascript" src="/static/js/station/off/air.js"></script>
 <script type="text/javascript" src="/static/js/station/off/off.js"></script>
 <script type="text/javascript">
 	//--- Reset ---
