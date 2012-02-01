@@ -15,10 +15,6 @@ function FavoriteManager(station_client){
 	// UI Settings
 	this.name = "#favorites-tab";	
 	this.selector = this.name + " .tab-items"
-	
-	// Init methods
-	this.postListen();
-	this.deleteListen();
 
 	// REMOVE THE COMMENTS BELOW ONCE FAVORITE TAB DISPLAYED
 	// Methods only if tab displayed
@@ -29,77 +25,6 @@ function FavoriteManager(station_client){
 	//	this.scrollListen();
 	}
 	*/
-}
-
-FavoriteManager.prototype.postListen = function(){
-	var that = this;
-	
-	$("a.fav").live("click", function(){
-		var new_item = that.station_client.queue_manager.live_item;
-		
-		// Change icon
-		$(this).removeClass("fav").addClass("unfav");
-		
-		// POST new favorite to server
-		that.post(new_item, function(response){
-			that.postCallback(new_item, response)
-		})
-		
-		// Post action to FACEBOOK
-		that.postAction(new_item);
-		
-		$(this).blur();
-		return false;
-	})
-}
-
-FavoriteManager.prototype.postAction = function(item){
-	var track_url = PHB.site_url + "/track/" + item.content.track_id;
-	var station_url = PHB.site_url + "/" + this.station_client.station.shortname;
-	
-	var obj = { "track": track_url };
-	var extra = { "station": station_url };
-	var expires_in = 0;
-	var action = "favorite";	
-	
-	FACEBOOK.putAction(action, obj, extra, expires_in);
-}
-
-
-FavoriteManager.prototype.postCallback = function(new_item, response){
-	if(!response){
-		$("a.unfav").removeClass("unfav").addClass("fav");
-		PHB.error("Favorite has not been stored.")
-	}
-}
-
-FavoriteManager.prototype.deleteListen = function(){
-	var that = this;
-	
-	$("a.unfav").live("click", function(){
-		// Clone live item
-		var item = $.extend(true, {}, that.station_client.queue_manager.live_item);
-		
-		// Change the Broadcast item into a Track item 
-		item.id = item.content.track_id
-		
-		// Change icon
-		$(this).removeClass("unfav").addClass("fav");
-		
-		that.delete(item, function(response){
-			that.deleteCallback(item, response)
-		})
-		
-		$(this).blur();
-		return false;
-	})
-}
-
-FavoriteManager.prototype.deleteCallback = function(item, response){
-	if(!response){
-		$("a.fav").removeClass("fav").addClass("unfav");
-		PHB.error("Favorite has not been deleted.")
-	}
 }
 
 FavoriteManager.prototype.UIBuild = function(item){
