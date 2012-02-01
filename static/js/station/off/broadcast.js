@@ -236,11 +236,35 @@ BroadcastManager.prototype.UILiveSet = function(item){
 	var youtube_title = content.youtube_title;
 	var youtube_thumbnail = "http://i.ytimg.com/vi/" + content.youtube_id + "/default.jpg";
 	
+	var track_submitter_name = content.track_submitter_name;
+	var track_submitter_url = content.track_submitter_url;
+	var track_submitter_picture = "https://graph.facebook.com/" + content.track_submitter_key_name + "/picture?type=square";
+	
 	// Display the image
 	$("#video-details span.clip").append($("<img/>").attr("src", youtube_thumbnail));
 	
 	// Display the title
 	$("#video-details span.middle").html(youtube_title);
+	
+	var mention = null;
+	if(type == "suggestion"){
+		mention = "Suggested by"
+	}
+	if(type == "favorite"){
+		mention = "Rebroadcast of"
+	}
+	
+	if(mention){
+		// Display the submitter
+		$("#video-details .submitter")
+			.append(
+				$("<img/>")
+					.attr("src", track_submitter_picture)
+					.addClass("tuto") // Twipsy
+					.attr("data-original-title", track_submitter_name)
+			)
+			.append($("<span/>").html(mention))
+	}
 	
 	// Display the favorite icon
 	if(content.track_id && this.station_client.user){
@@ -257,6 +281,9 @@ BroadcastManager.prototype.UILiveRemove = function(){
 	
 	// Remove favorite icon
 	$("#favorite-track").empty();
+	
+	// Remove the submitter
+	$("#video-details .submitter").empty();
 }
 
 BroadcastManager.prototype.UIActive = function(id){

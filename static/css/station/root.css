@@ -225,6 +225,26 @@ div#volume{
 	display:none;
 }
 
+#video-details .submitter{
+	float:right;
+	font-size:11px;
+	width:100px;
+}
+
+#video-details .submitter span{
+	display:block;
+	float:right;
+	padding-top:2px;
+	color:#B3B3B3;
+	padding-right:6px;
+}
+
+#video-details .submitter img{
+	height:22px;
+	display:block;
+	float:right;
+}
+
 #favorite-track{
 	height:25px;
 }
