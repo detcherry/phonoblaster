@@ -12,6 +12,7 @@ function StationClient(user, admin, station){
 	
 	this.broadcast_manager = new BroadcastManager(this);
 	this.comment_manager = new CommentManager(this);
+	this.air_manager = new AirManager(this);
 	
 	this.favorite_sdk = new FavoriteSDK(this.broadcast_manager);
 }

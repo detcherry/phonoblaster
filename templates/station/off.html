@@ -64,6 +64,21 @@
 		</p>
 	</div>
 	<div id="popup-onair">
+		<h2>{{ station_proxy.station.name }} is now LIVE!</h2>
+		<img src="https://graph.facebook.com/{{ station_proxy.station.key.name }}/picture?type=large" class="thumbnail"/>
+		<h3>Now broadcasting:</h3>
+		<span class="clip">
+			<!-- No image -->
+			<!-- <img src="http://i.ytimg.com/vi/dNzVbeITiQE/default.jpg"/> -->
+		</span>
+		<div class="title">
+			<span class="middle">
+				<!-- Teams vs Star Slinger - The Yes Strut (Official Video) -->
+			</span>
+		</div>
+		<div class="modal-footer">
+			<a href="/{{ station_proxy.station.shortname }}" class="btn primary">Check it out!</a>
+		</div>
 	</div>
 	<ul id="tabs" class="fixed">
 		<li class="tuto" data-original-title="Past tracks broadcast by {{ station_proxy.station.name }}" style="width:90px">

@@ -23,7 +23,7 @@
 	margin-top:-21px;
 }
 
-/*----- BROADCASTS TAB ------*/
+/*------ BROADCASTS TAB ------*/
 
 .item{
 	cursor:pointer;
@@ -39,4 +39,60 @@
 
 .item.active:hover{
 	background-color: #E6E6E6;
+}
+
+/*--------- ON AIR ----------*/
+
+#popup-onair{
+	display:none;
+	float:left;
+	width:500px;
+	height:282px;
+}
+
+#popup-onair h2{
+	padding:16px;
+	padding-left:24px;
+	margin-bottom:16px;
+	text-align:left;
+	border-bottom:1px solid #DDD;
+}
+
+#popup-onair div{
+	float:left;
+}
+
+#popup-onair img.thumbnail{
+	display:block;
+	float:left;
+	margin-left:24px;
+	max-height: 130px;
+	max-width: 96px;
+}
+
+#popup-onair h3{
+	float:left;
+	padding:16px;
+	width:336px;
+	font-weight:normal;
+	font-size:13px;
+}
+
+#popup-onair span.clip{
+	margin-left:16px;
+}
+
+#popup-onair .title{
+	width:200px;
+	margin-left:16px;
+	height:68px;
+}
+
+#popup-onair .title span{
+	height:68px;
+}
+
+#popup-onair .modal-footer{
+	margin-top:16px;
+	width:470px;
 }

@@ -21,6 +21,7 @@ from controllers.api.presences import ApiPresencesHandler
 from controllers.api.comments import ApiCommentsHandler
 from controllers.api.views import ApiViewsHandler
 from controllers.api.status import ApiStatusHandler
+from controllers.api.air import ApiAirHandler
 from controllers.api.now import ApiNowHandler
 
 application = webapp.WSGIApplication(
@@ -36,6 +37,7 @@ application = webapp.WSGIApplication(
 		('/api/presences', ApiPresencesHandler),
 		('/api/comments', ApiCommentsHandler),
 		('/api/status', ApiStatusHandler),
+		('/api/air', ApiAirHandler),
 		('/api/views', ApiViewsHandler),
 		('/api/now', ApiNowHandler),
 		('/', HomeHandler),
