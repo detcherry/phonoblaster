@@ -16,6 +16,7 @@ function RecommandationManager(station_client){
 	this.selector = "#recommandations-zone"
 	
 	// Init Method
+	this.dispatch();
 	this.processListen();
 	this.closeListen();
 }

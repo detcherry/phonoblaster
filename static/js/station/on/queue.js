@@ -20,6 +20,7 @@ function QueueManager(station_client){
 	this.live_item = null;
 	this.youtube_manager = new YoutubeManager();
 	this.alert_manager = new AlertManager(station_client, "New broadcast!", "#queue-header");
+	this.recommandation_manager = null;
 	
 	// Init Methods
 	this.get();
@@ -36,7 +37,6 @@ QueueManager.prototype.noData = function(){
 	if(this.station_client.admin){
 		// Open the recommandation manager
 		this.recommandation_manager = new RecommandationManager(this.station_client)
-		this.recommandation_manager.dispatch();
 	}
 }
 
@@ -247,8 +247,14 @@ QueueManager.prototype.nextVideo = function(time_out){
 			that.live(new_item)
 		}
 		else{
+			// If user admin, display recommandations to broadcast
 			if(that.station_client.admin){
-				that.recommandation_manager.dispatch();
+				if(that.recommandation_manager){
+					that.recommandation_manager.dispatch();
+				}
+				else{
+					that.recommandation_manager = new RecommandationManager(that.station_client)
+				}
 			}
 		}	
 		
