@@ -36,6 +36,7 @@ QueueManager.prototype.noData = function(){
 	if(this.station_client.admin){
 		// Open the recommandation manager
 		this.recommandation_manager = new RecommandationManager(this.station_client)
+		this.recommandation_manager.dispatch();
 	}
 }
 
@@ -245,6 +246,12 @@ QueueManager.prototype.nextVideo = function(time_out){
 		if(new_item){
 			that.live(new_item)
 		}
+		else{
+			if(that.station_client.admin){
+				that.recommandation_manager.dispatch();
+			}
+		}	
+		
 	}, time_out * 1000)
 }
 

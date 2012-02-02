@@ -16,7 +16,6 @@ function RecommandationManager(station_client){
 	this.selector = "#recommandations-zone"
 	
 	// Init Method
-	this.dispatch()
 	this.processListen();
 	this.closeListen();
 }
@@ -74,10 +73,7 @@ RecommandationManager.prototype.filterYoutube = function(youtube_ids){
 			if(items && items.length > 0){
 				// Update recommandation popup and display it
 				$("#popup-recommandation h3 strong").html("Facebook")
-				$.fancybox($("#popup-recommandation"), {
-					topRatio: 0.4,
-					modal: true,
-				});
+				that.displayPopup();
 				
 				// Remove volume
 				$("#volume a").trigger("click");
@@ -129,10 +125,7 @@ RecommandationManager.prototype.get = function(){
 			if(json.length > 0){
 				// Update recommandation popup and display it
 				$("#popup-recommandation h3 strong").html("Phonoblaster")
-				$.fancybox($("#popup-recommandation"), {
-					topRatio: 0.4,
-					modal: true,
-				});
+				that.displayPopup();
 				
 				// Remove volume
 				$("#volume a").trigger("click");
@@ -143,6 +136,13 @@ RecommandationManager.prototype.get = function(){
 			}
 		},
 	});	
+}
+
+RecommandationManager.prototype.displayPopup = function(){
+	$.fancybox($("#popup-recommandation"), {
+		topRatio: 0.4,
+		modal: true,
+	});
 }
 
 RecommandationManager.prototype.closeListen = function(){
