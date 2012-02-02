@@ -16,10 +16,7 @@ class StationHandler(RootHandler):
 			if(not admin and not on_air):
 				self.render("station/off.html", None)
 			else:
-				template_values = {
-					"is_admin": self.is_admin,
-				}
-				self.render("station/on.html", template_values)
+				self.render("station/on.html", None)
 
 		else:
 			self.render("station/404.html", None)

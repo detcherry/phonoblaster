@@ -14,5 +14,7 @@ function StationClient(user, admin, station){
 	this.comment_manager = new CommentManager(this);
 	this.air_manager = new AirManager(this);
 	
+	this.comment_manager.get(); // Force comments to be fetched
+	
 	this.favorite_sdk = new FavoriteSDK(this.broadcast_manager);
 }
