@@ -51,14 +51,18 @@ ViralManager.prototype = {
 			
 			// If user is station admin (focus on content)
 			if(this.station_client.admin){
-				popup_content = "♬ Performing live on Phonoblaster. Come now and enjoy: " + title +"! ♬";
+				popup_content = "♬ Broadcasting live on Phonoblaster. Come now and enjoy: " + title +"! ♬";
 			}
 			// If user is basic listener (focus on social)
 			else{
 				popup_content = "♬ Listening live to " + station + " on Phonoblaster w/ " + people_listening + " other people. ♬"
 			}
-			$("#popup-bring-people textarea").val(popup_content);
 		}
+		else{
+			popup_content = ""	
+		}
+		
+		$("#popup-bring-people textarea").val(popup_content);
 		
 		// Display fancy box
 		$.fancybox($("#popup-bring-people"), {

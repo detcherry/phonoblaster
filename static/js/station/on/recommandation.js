@@ -147,12 +147,20 @@ RecommandationManager.prototype.displayPopup = function(){
 }
 
 RecommandationManager.prototype.closeListen = function(){
+	var that = this
 	$("#popup-recommandation a.primary").click(function(){
 		// Close popup
 		$.fancybox.close(true);
 		
 		// Put volume back
 		$("#volume a").trigger("click");
+		
+		if(that.station_client.queue_manager.UILive()){
+			// Popup to bring people delayed after 1 sec
+			setTimeout(function(){
+				$("#bring-people .btn").trigger("click");
+			}, 5000)
+		}
 	})
 }
 
