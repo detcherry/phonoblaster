@@ -9,7 +9,6 @@ from controllers.base import login_required
 from models.api.station import StationApi
 
 class ApiRecommandationsHandler(BaseHandler):
-	@login_required
 	def get(self):
 		shortname = self.request.get("shortname")
 		station_proxy = StationApi(shortname)

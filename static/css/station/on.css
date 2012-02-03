@@ -400,3 +400,60 @@ span.round{
 	float:left;
 	width:410px;
 }
+
+/*--------- OFF AIR ----------*/
+
+#popup-offair{
+	display:none;
+	float:left;
+	width:500px;
+	height:421px;
+}
+
+#popup-offair h2{
+	padding:16px;
+	padding-left:24px;
+	margin-bottom:16px;
+	text-align:left;
+	border-bottom:1px solid #DDD;
+}
+
+#popup-offair div{
+	float:left;
+}
+
+#popup-offair img.thumbnail{
+	display:block;
+	float:left;
+	margin-left:24px;
+	max-height: 130px;
+	max-width: 96px;
+}
+
+#popup-offair h3{
+	float:left;
+	padding:16px;
+	width:336px;
+	font-weight:normal;
+	font-size:13px;
+}
+
+#popup-offair #broadcasts{
+	margin-left: 16px;
+	width:336px;
+}
+
+#popup-offair span.clip{
+	margin-right: 8px;
+	margin-bottom: 8px;
+	width:100px;
+}
+
+#popup-offair span.clip img{
+	left:-11px;
+}
+
+#popup-offair .modal-footer{
+	margin-top:16px;
+	width:470px;
+}

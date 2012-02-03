@@ -246,6 +246,7 @@ QueueManager.prototype.nextVideo = function(time_out){
 		if(new_item){
 			that.live(new_item)
 		}
+		// If no next item
 		else{
 			// If user admin, display recommandations to broadcast
 			if(that.station_client.admin){
@@ -255,6 +256,10 @@ QueueManager.prototype.nextVideo = function(time_out){
 				else{
 					that.recommandation_manager = new RecommandationManager(that.station_client)
 				}
+			}
+			// Redirect to offline mode
+			else{
+				that.air_manager = new AirManager(that.station_client)
 			}
 		}	
 		

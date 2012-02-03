@@ -125,6 +125,15 @@
 			<div id="queue-counter" class="tuto" data-original-title="Number of tracks in the queue or live. Max: 10 tracks at the same time"><span>0</span>/10</div>
 		</div>
 	</div>
+	<div id="popup-offair">
+		<h2>{{ station_proxy.station.name }} is now OFF AIR!</h2>
+		<img src="https://graph.facebook.com/{{ station_proxy.station.key.name }}/picture?type=large" class="thumbnail"/>
+		<h3>But you can still check out my latest broadcasts</h3>
+		<div id="broadcasts"></div>
+		<div class="modal-footer">
+			<a href="/{{ station_proxy.station.shortname }}" class="btn primary">Check it out!</a>
+		</div>
+	</div>
 	<ul id="tabs" class="fixed">
 		<li class="tuto" data-original-title="Tracks soon on the air!">
 			<a href="#queue-tab" class="current" id="queue-header">
@@ -247,6 +256,7 @@
 <script type="text/javascript" src="/static/js/station/on/status.js"></script>
 <script type="text/javascript" src="/static/js/station/on/library.js"></script>
 <script type="text/javascript" src="/static/js/station/on/viral.js"></script>
+<script type="text/javascript" src="/static/js/station/on/air.js"></script>
 <script type="text/javascript" src="/static/js/station/on/on.js"></script>
 <script type="text/javascript">
 	/*--- Reset ---*/
