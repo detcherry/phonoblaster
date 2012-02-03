@@ -51,7 +51,7 @@ ViralManager.prototype = {
 			
 			// If user is station admin (focus on content)
 			if(this.station_client.admin){
-				popup_content = "♬ Broadcasting live on Phonoblaster. Come now and enjoy: " + title +"! ♬";
+				popup_content = "♬ Live broadcasting on Phonoblaster. Come now and enjoy: " + title +"! ♬";
 			}
 			// If user is basic listener (focus on social)
 			else{
