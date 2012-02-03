@@ -24,7 +24,7 @@
 	{% if user_proxy %}
 	<!-- Bring people (friends of fans) popup -->
 	<div id="popup-bring-people">
-		<h2>Share on Your Wall</h2>
+		{% if is_admin %}<h2>Share on {{ station_proxy.station.name }} Wall</h2>{% else %}<h2>Share on your Wall</h2>{% endif %}
 		<form action="#" method="post">
 			{% if is_admin %}
 			<img class="thumbnail" src="https://graph.facebook.com/{{ station_proxy.station.key.name }}/picture?type=square"/>
