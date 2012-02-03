@@ -54,7 +54,7 @@ AirManager.prototype = {
 		if(json.response){
 			this.air = true;
 			
-			// Display on air &  station as connected
+			// Display on air & station as connected
 			$("#station-status span.btn").addClass("danger").html("On air")
 			$("#station-status em").html("connected");
 			
