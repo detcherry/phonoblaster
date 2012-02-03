@@ -2,7 +2,7 @@
 
 {% block meta %}
 	<title>{{ broadcast.youtube_title }}</title>
-	<meta name="description" content="Broadcast on {{ station_proxy.station.name }} via Phonoblaster.">
+	<meta name="description" content="Broadcast on {{ station_proxy.station.name }}">
 {% endblock %}
 
 {% block facebook %}
@@ -11,7 +11,7 @@
 	<meta property="og:type" content="{{ version }}:live"/> 
 	<meta property="og:url" content="{{ site_url }}/broadcast/{{ broadcast.key_name }}"/> 
 	<meta property="og:title" content="{{ broadcast.youtube_title }}"/> 
-	<meta property="og:description" content="Broadcast on {{ station_proxy.station.name}} via Phonoblaster"/>
+	<meta property="og:description" content="Broadcast on {{ station_proxy.station.name}}"/>
 	<meta property="og:image"  content="http://i.ytimg.com/vi/{{ broadcast.youtube_id }}/hqdefault.jpg"/> 
 	<meta property="og:site_name" content="Phonoblaster"/>
 	<meta property="og:video:type" content="text/html"/>
