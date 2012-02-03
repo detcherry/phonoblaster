@@ -8,6 +8,7 @@ from controllers.station.check import StationCheckHandler
 from controllers.station.station import StationHandler
 from controllers.station.picture import StationPictureHandler
 from controllers.station.broadcasts import StationBroadcastsHandler
+from controllers.station.broadcast import BroadcastHandler
 from controllers.station.track import TrackHandler
 from controllers.api.queue import ApiQueueHandler
 from controllers.api.queue import ApiQueueDeleteHandler
@@ -46,6 +47,7 @@ application = webapp.WSGIApplication(
 		('/(\w+)', StationHandler),
 		('/(\w+)/picture', StationPictureHandler),
 		('/(\w+)/broadcasts', StationBroadcastsHandler),
+		('/broadcast/([\w.]+)', BroadcastHandler),
 		('/track/([0-9]+)', TrackHandler),
 		('/.*', AllHandler),
 	],

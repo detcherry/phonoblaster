@@ -330,22 +330,21 @@ QueueManager.prototype.UIProgress = function(video_start, duration){
 	
 }
 
-QueueManager.prototype.postAction = function(item){
+QueueManager.prototype.postAction = function(item){	
 	if(this.station_client.user){
-		var track_url = PHB.site_url + "/track/" + item.content.track_id;
-		var station_url = PHB.site_url + "/" + this.station_client.station.shortname;
+		var broadcast_url = PHB.site_url + "/broadcast/" + item.id;
 		
-		var obj = { "station": station_url};
-		var extra = { "track": track_url };
+		var obj = { "live": broadcast_url };
+		var extra = {};
 		var expires_in = item.content.youtube_duration;
 		
 		if(this.station_client.admin){
 			// BROADCAST action
-			var action = "broadcast";	
+			var action = "broadcast";
 		}
 		else{
-			// LISTEN action
-			var action = "listen";
+			// ATTEND action
+			var action = "attend";
 		}
 		
 		FACEBOOK.putAction(action, obj, extra, expires_in);

@@ -1,0 +1,24 @@
+{% extends "station/root.html" %}
+
+{% block meta %}
+	<title>{{ broadcast.youtube_title }}</title>
+	<meta name="description" content="Broadcast on {{ station_proxy.station.name }} via Phonoblaster.">
+{% endblock %}
+
+{% block facebook %}
+	<!-- Broadcast Open Graph Tags -->
+	<meta property="fb:app_id" content="{{ facebook_app_id }}"/>
+	<meta property="og:type" content="{{ version }}:live"/> 
+	<meta property="og:url" content="{{ site_url }}/broadcast/{{ broadcast.key_name }}"/> 
+	<meta property="og:title" content="{{ broadcast.youtube_title }}"/> 
+	<meta property="og:description" content="Broadcast on {{ station_proxy.station.name}} via Phonoblaster"/>
+	<meta property="og:image"  content="http://i.ytimg.com/vi/{{ broadcast.youtube_id }}/hqdefault.jpg"/> 
+	<meta property="og:site_name" content="Phonoblaster"/>
+	<meta property="og:video:type" content="text/html"/>
+	<meta property="og:video" content="{{ site_url }}/broadcast/{{ broadcast.key_name }}"/>
+	<meta property="{{ version }}:station" content="{{ site_url }}/{{ station_proxy.station.shortname }}"/>
+{% endblock %}
+
+{% block style %}
+	<link type="text/css" rel="stylesheet" href="/static/css/station/broadcast.css" />
+{% endblock %}
