@@ -11,8 +11,8 @@ html{
 }
 
 .container{
-	padding:10px;
-	width:500px;
+	padding:5px;
+	width:510px;
 	height:100%;
 }
 
@@ -40,18 +40,16 @@ div#error{
 	width:300px;
 }
 
-
-
 /* ------ FOOTER ------ */
 
 #bottom-bar img{
 	height:30px;
-	margin-left:145px;
+	margin-left:155px;
 	margin-top:10px;
 	margin-bottom:5px;
 }
 
 #bottom-bar p{
-	margin-left:170px;
+	margin-left:180px;
 	color:#F6F6F6;
 }
