@@ -54,6 +54,7 @@
 		<script type="text/javascript" src="/static/js/library/facebook.js"></script>
 		{% block script %}
 		{% endblock %}
+		{% block front %}
 		<!-- Facebook -->
 		<div id="fb-root"></div>
 		<script type="text/javascript">
@@ -86,7 +87,6 @@
 				document.getElementById('fb-root').appendChild(e);
 			}());
 		</script>
-		{% block website %}
 		<!-- Twitter -->
 		<script type="text/javascript" src="http://platform.twitter.com/widgets.js"></script>
 		<!-- Google Analytics -->
