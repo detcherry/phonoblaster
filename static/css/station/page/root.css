@@ -18,6 +18,45 @@ html{
 	height:100%;
 }
 
+#station-title h2{
+	margin-top:3px;
+}
+
+#station-title .btn{
+	display:block;
+	float:left;
+	margin-left:10px;
+	cursor:auto;
+}
+
+/* ----- PRESENCES ------ */
+
+div#presences{
+	float:right;
+	padding:4px;
+}
+
+#presences strong.number{
+	font-size:16px;
+}
+
+/* ------- ITEMS ------- */
+
+#main div.tab-items{
+	min-height:20px;
+	width:508px;
+	background:white;
+	border:1px solid #DDD;
+	border-top:none;
+	margin-bottom:5px;
+}
+
+/* ----- COMMENTS ------ */
+
+#comments{
+	border-top:1px solid #DDD;
+}
+
 /* ------- ERROR ------- */
 
 div#error{

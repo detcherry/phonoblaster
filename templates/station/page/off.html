@@ -8,6 +8,11 @@
 {% block main %}
 <div id="station-title">
 	<h2>{{ station_proxy.station.name }}</h2>
+	<span class="btn">Off air</span>
+	<a class="btn primary" href="{{ site_url }}" target="_blank">More tracks here</a>
+	<div id="presences">
+		<strong class="number">0</strong> people listening
+	</div>
 </div>
 <div id="video">
 	<div id="player-wrapper">
@@ -24,6 +29,10 @@
 	<div class="submitter"></div>
 	<div class="title">
 		<span class="middle">No track is being played</span>
+	</div>
+</div>
+<div id="broadcasts-tab">
+	<div class="tab-items">
 	</div>
 </div>
 <div id="comments">
