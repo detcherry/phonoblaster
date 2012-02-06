@@ -1,5 +1,29 @@
 {% extends "station/page/root.html" %}
 
+{% block style %}
+	<link type="text/css" rel="stylesheet" href="/static/css/station/page/off.css">
+{% endblock %}
+
+
 {% block main %}
-off
+<div id="station-title">
+	<h2>{{ station_proxy.station.name }}</h2>
+</div>
+<div id="video">
+	<div id="player-wrapper">
+		<img src="/static/images/loader.gif"/>
+		<!-- <div id="youtube-player"></div> -->
+	</div>
+</div>
+<div id="video-details">
+	<span class="clip"><!-- No image --></span>
+	<div class="above-title">
+		<h3>Current track</h3>
+		<div id="favorite-track"></div>
+	</div>
+	<div class="submitter"></div>
+	<div class="title">
+		<span class="middle">No track is being played</span>
+	</div>
+</div>
 {% endblock %}

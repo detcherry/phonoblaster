@@ -1,7 +1,9 @@
+@import url("../root.css");
+
 /* ------ OVERWRITES ------ */
 
 html{
-	overflow-y:auto;
+	overflow-y:visible;
 }
 
 #main{
@@ -42,14 +44,22 @@ div#error{
 
 /* ------ FOOTER ------ */
 
+#bottom-bar{
+	height:100px;
+}
+
+#bottom-bar .container{
+	padding:0px;
+}
+
 #bottom-bar img{
 	height:30px;
-	margin-left:155px;
+	margin-left:160px;
 	margin-top:10px;
 	margin-bottom:5px;
 }
 
 #bottom-bar p{
-	margin-left:180px;
+	margin-left:185px;
 	color:#F6F6F6;
 }

@@ -1,0 +1,7 @@
+@import url("root.css");
+
+/* ------ A FEW CORRECTIONS ---- */
+
+#video-details{
+	border-top:1px solid #DDD;
+}
