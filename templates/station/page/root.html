@@ -1,45 +1,23 @@
-<!DOCTYPE HTML>
-<html>
-	<head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# {{ version }}: http://ogp.me/ns/fb/{{ version }}#">
-		<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-		
-		{% if station_proxy %}
-		<!-- Station Meta Tags -->
-		<title>{{ station_proxy.name }}</title>
-		<meta name="description" content="Listen now to {{ station_proxy.station.name }} station on Phonoblaster!">
-		<!-- Station Open Graph Tags -->
-		<meta property="fb:app_id" content="{{ facebook_app_id }}"/>
-		<meta property="og:type" content="{{ version }}:station"/> 
-		<meta property="og:url" content="{{ site_url }}/{{ station_proxy.station.shortname }}"/> 
-		<meta property="og:title" content="{{ station_proxy.station.name }}"/> 
-		<meta property="og:description" content="Listen now to {{ station_proxy.station.name }} on Phonoblaster."/>
-		<meta property="og:image"  content="https://graph.facebook.com/{{ station_proxy.station.key.name }}/picture?type=large"/> 
-		<meta property="og:site_name" content="Phonoblaster"/>
-		<meta property="og:video:type" content="text/html"/>
-		<meta property="og:video" content="{{ site_url }}/{{ station_proxy.station.shortname }}"/>
-		<meta property="{{ version }}:page" content="{{ station_proxy.station.link }}"/>
-		{% endif %}
-		
-		<!-- Bootstrap stylesheet -->
-		<link type="text/css" rel="stylesheet" href="/static/plugins/bootstrap/bootstrap.min.css">
-		<!-- Standard stylesheet -->
-		<link rel="shortcut icon" href="/static/images/favicon.ico" type="image/x-icon" />
-		<link type="text/css" rel="stylesheet" href="/static/css/base.css">
-		<!-- Page stylesheet -->
-		<link type="text/css" rel="stylesheet" href="/static/css/station/page.css">
-	</head>
-	<body>
-		<div id="main">
-			<div class="container">
-			{% block main %}
-			{% endblock %}
-			</div>
-		</div>
-		<div id="bottom-bar">
-			<div class="container">
-				<a href="/" target="_blank"><img src="/static/images/phonoblaster.png"></a>
-				<p>Broadcast your music!</p>
-			</div>
-		</div>
-	</body>
-</html>
+{% extends "station/root.html" %}
+
+{% block style %}
+	<link type="text/css" rel="stylesheet" href="/static/css/station/page.css">
+{% endblock %}
+
+{% block header %}
+{% endblock %}
+
+{% block main %}
+{% endblock %}
+
+{% block footer %}
+<div id="bottom-bar">
+	<div class="container">
+		<a href="/" target="_blank"><img src="/static/images/phonoblaster.png"></a>
+		<p>Broadcast your music!</p>
+	</div>
+</div>
+{% endblock %}
+
+{% block website %}
+{% endblock %}
