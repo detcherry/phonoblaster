@@ -22,6 +22,10 @@ html{
 	margin-top:3px;
 }
 
+#station-title a{
+	text-decoration:none;
+}
+
 #station-title .btn{
 	display:block;
 	float:left;
@@ -43,12 +47,11 @@ div#presences{
 /* ------- ITEMS ------- */
 
 #main div.tab-items{
-	min-height:20px;
+	min-height:400px;
 	width:508px;
 	background:white;
 	border:1px solid #DDD;
 	border-top:none;
-	margin-bottom:5px;
 }
 
 /* ----- COMMENTS ------ */
