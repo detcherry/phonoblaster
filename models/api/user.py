@@ -51,10 +51,10 @@ class UserApi:
 	def put_user(self, facebook_id, facebook_access_token, first_name, last_name, email):
 		user = User(
 			key_name = str(facebook_id),
-			facebook_access_token = str(facebook_access_token),
-			first_name = str(first_name),
-			last_name = str(last_name),
-			email = str(email),
+			facebook_access_token = facebook_access_token,
+			first_name = first_name,
+			last_name = last_name,
+			email = email,
 		)
 		user.put()
 		logging.info("User put in datastore")
