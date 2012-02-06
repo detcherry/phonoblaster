@@ -54,6 +54,38 @@ div#presences{
 	border-top:none;
 }
 
+.item{
+	padding:5px;
+}
+
+.item .square{
+	height:40px;
+	width:80px;
+}
+
+.item .square img{
+	top:-30px;
+	left:-18px;
+}
+
+.item .title{
+	padding-right:50px;
+	width:180px;
+	height:40px;
+}
+
+.item .title span{
+	height:40px;
+}
+
+.item .subtitle{
+	margin-top:10px;
+}
+
+#main .item div.duration{
+	float:right;
+}
+
 /* ----- COMMENTS ------ */
 
 #comments{

@@ -9,9 +9,6 @@
 <div id="station-title">
 	<a href="{{ site_url }}/{{ station_proxy.station.shortname }}" target="_blank"><h2>{{ station_proxy.station.name }}</h2></a>
 	<span class="btn">Off air</span>
-	<div id="presences">
-		<strong class="number">0</strong> people listening
-	</div>
 </div>
 <div id="video">
 	<div id="player-wrapper">
@@ -37,4 +34,37 @@
 {% endblock %}
 
 {% block script %}
+<script type="text/javascript" src="/static/js/library/favorite.js"></script>
+
+<script type="text/javascript" src="/static/js/station/swfobject.js"></script>
+<script type="text/javascript" src="/static/js/station/tab.js"></script>
+
+<script type="text/javascript" src="/static/js/station/off/embedded.js"></script>
+<script type="text/javascript" src="/static/js/station/off/broadcast.js"></script>
+<script type="text/javascript" src="/static/js/station/off/off.js"></script>
+<script type="text/javascript">
+	//--- Reset ---
+	USER = null;
+	ADMIN = false;
+	STATION = null;
+	WEBSITE = false;
+	//--- User Initialization ---
+	{% if user_proxy %} 
+	USER = {
+		"key_name": "{{ user_proxy.user.key.name }}",
+		"name": "{{ user_proxy.user.first_name }} {{ user_proxy.user.last_name }}",
+	}
+	{% endif %}
+	/*--- Admin Initialization ---*/
+	{% if is_admin %} 
+	ADMIN = true;
+	{% endif %}
+	//--- Station Initialization ---
+	STATION = {
+		"key_name": "{{ station_proxy.station.key.name }}",
+		"shortname": "{{ station_proxy.station.shortname }}",
+		"name": "{{ station_proxy.station.name}}",
+	}
+</script>
+
 {% endblock %}

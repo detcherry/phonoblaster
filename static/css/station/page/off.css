@@ -5,3 +5,21 @@
 #video-details{
 	border-top:1px solid #DDD;
 }
+
+/*------ BROADCASTS TAB ------*/
+
+.item{
+	cursor:pointer;
+}
+
+.item:hover{
+	background-color: #F6F6F6;
+}
+
+.item.active{
+	background-color: #E6E6E6;
+}
+
+.item.active:hover{
+	background-color: #E6E6E6;
+}
