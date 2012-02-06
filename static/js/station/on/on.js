@@ -75,7 +75,7 @@ StationClient.prototype = {
 		PUBNUB.subscribe({
 	        channel: pubnub_channel,      
 	        error: function(){
-				alert("Connection Lost. Will auto-reconnect when Online.");
+				PHB.log("Connection Lost. Will auto-reconnect when Online.");
 			},
 	        callback: function(message) {
 	            that.dispatch(message);
