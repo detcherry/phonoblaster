@@ -6,11 +6,20 @@ from models.api.station import StationApi
 from models.db.station import Station
 
 class StationPageHandler(RootHandler):
+	# GET request when reloading iFrame App (login or logout events)
+	def get(self):
+		page_id = self.request.get("id")
+		self.process(page_id)
+		
+	# POST request when Facebook initializes page content
 	def post(self):		
 		signed_request = self.request.get("signed_request")
 		data = parse_signed_request(signed_request, config.FACEBOOK_APP_SECRET)		
 		page_id = data["page"]["id"]
 			
+		self.process(page_id)
+			
+	def process(self, page_id):
 		station = Station.get_by_key_name(page_id)
 
 		if(station):
@@ -24,4 +33,3 @@ class StationPageHandler(RootHandler):
 					
 		else:
 			self.render("station/page/404.html", None)
-	

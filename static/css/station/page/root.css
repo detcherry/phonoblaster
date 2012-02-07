@@ -33,10 +33,55 @@ html{
 	cursor:auto;
 }
 
+/* ----- COMMENTS ------ */
+
+#comments{
+	margin-top:5px;
+	width:273px;
+	border-top:1px solid #DDD;
+}
+
+#comment-box{
+	display:block;
+	float:left;
+	width:263px;
+	padding:5px;
+	border-bottom: 1px solid #DDD;
+}
+
+#comment-box form{
+	width:231px;
+}
+
+input#comment{
+	width:189px;
+}
+
+span#fb-sync{
+	margin-right:0px;
+}
+
+#comments-zone{
+	min-height:500px;
+	padding-bottom:5px;
+}
+
+.comment{
+	width:265px;
+}
+
+.comment .content{
+	width:230px;
+}
+
+.comment .border{
+	width:228px;
+}
+
 /* ------- ITEMS ------- */
 
 #main div.tab-items{
-	min-height:400px;
+	height:450px;
 	width:508px;
 	background:white;
 	border:1px solid #DDD;
@@ -47,6 +92,31 @@ html{
 	padding:5px;
 }
 
+.item .square {
+	height:34px;
+	width:60px;
+}
+
+.item .square img {
+	top:-28px;
+	left:-20px;
+}
+
+.item .title {
+	padding-right:0px;
+	width:150px;
+	height:34px;
+}
+
+.item .title span {
+	height:34px;
+}
+
+.item .subtitle{
+	display:none;
+}
+
+/*
 .item .square{
 	height:40px;
 	width:80px;
@@ -56,6 +126,7 @@ html{
 	top:-30px;
 	left:-18px;
 }
+
 
 .item .title{
 	padding-right:50px;
@@ -74,6 +145,8 @@ html{
 #main .item div.duration{
 	float:right;
 }
+*/
+
 
 /* ------- ERROR ------- */
 

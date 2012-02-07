@@ -8,6 +8,28 @@
 
 /*------ BROADCASTS TAB ------*/
 
+div#broadcasts-tab{
+	margin-top:5px;
+	width:230px;
+	float:right;
+}
+
+#broadcasts-tab div.tab-items{
+	width:228px;
+	border-top:1px solid #DDD;
+}
+
+#broadcasts-tab a:hover{
+	color:#404040;
+}
+
+#broadcasts-tab h3{
+	padding:10px;
+	font-size:14px;
+	padding-bottom:11px;
+	padding-left:6px;
+}
+
 .item{
 	cursor:pointer;
 }
