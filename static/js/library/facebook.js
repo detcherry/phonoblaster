@@ -5,17 +5,18 @@ $(function(){
 function Facebook(){
 	this.app_id = FACEBOOK_APP_ID;
 	this.version = VERSION;
-	this.site_url = SITE_URL;
+	this.scope = 'email,publish_actions,read_stream,publish_stream,manage_pages'
 }
 
 Facebook.prototype = {
 	
 	login: function(){
+		var that = this;
 		FB.login(function(response){
 			if(response.authResponse){
 				window.location.reload();
 			}
-		 },{scope: 'email, publish_actions, read_stream, publish_stream, manage_pages'});
+		},{scope: that.scope});
 	},
 	
 	logout: function(){
