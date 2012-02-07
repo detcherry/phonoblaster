@@ -1,1 +1,28 @@
 @import url("root.css");
+
+/* ----- PRESENCES ------ */
+
+div#presences{
+	float:right;
+	padding:4px;
+}
+
+#presences strong.number{
+	font-size:16px;
+}
+
+/* ------- QUEUE -------- */
+
+#queue-tab{
+	margin-top:0px;
+}
+
+#queue-tab .tab-items{
+	margin-top:0px;
+}
+
+#search-tab{
+	display:none;
+}
+
+

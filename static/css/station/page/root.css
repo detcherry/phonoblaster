@@ -33,17 +33,6 @@ html{
 	cursor:auto;
 }
 
-/* ----- PRESENCES ------ */
-
-div#presences{
-	float:right;
-	padding:4px;
-}
-
-#presences strong.number{
-	font-size:16px;
-}
-
 /* ------- ITEMS ------- */
 
 #main div.tab-items{
@@ -84,12 +73,6 @@ div#presences{
 
 #main .item div.duration{
 	float:right;
-}
-
-/* ----- COMMENTS ------ */
-
-#comments{
-	border-top:1px solid #DDD;
 }
 
 /* ------- ERROR ------- */

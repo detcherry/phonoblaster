@@ -1,5 +1,85 @@
 {% extends "station/page/root.html" %}
 
+{% block style %}
+	<link type="text/css" rel="stylesheet" href="/static/css/station/page/on.css">
+{% endblock %}
+
+
 {% block main %}
-on
+<div id="station-title">
+	<a href="{{ site_url }}/{{ station_proxy.station.shortname }}" target="_blank"><h2>{{ station_proxy.station.name }}</h2></a>
+	<span class="btn danger">On air</span>
+	<div id="presences">
+		<strong class="number">0</strong> people listening
+	</div>
+</div>
+<div id="video">
+	<div id="player-wrapper">
+		<img src="/static/images/loader.gif"/>
+		<!-- <div id="youtube-player"></div> -->
+	</div>
+	<div id="video-settings">
+		<div id="counter-left">0:00</div>
+		<div id="progression-bar"><div id="filler"></div></div>
+		<div id="counter-right">0:00</div>
+		<div id="volume">
+			<a href="#">
+				<img src="/static/images/unmuted.png" id="on"/>
+				<img src="/static/images/muted.png" id="off" style="display:none;"/>
+			</a>
+		</div>
+	</div>
+</div>
+<div id="video-details">
+	<span class="clip"><!-- No image --></span>
+	<div class="above-title">
+		<h3>Current track</h3>
+		<div id="favorite-track"></div>
+	</div>
+	<div class="submitter"></div>
+	<div class="title">
+		<span class="middle">No track is being played</span>
+	</div>
+</div>
+<div id="queue-tab">
+	<div id="search-tab">
+		<div class="tab-items"></div>
+	</div>
+	<div class="tab-items">
+	</div>
+</div>
+{% endblock %}
+
+{% block script %}
+<!-- Pubnub -->
+<div sub-key="sub-aa6b101e-24e9-11e1-ab04-3b69d50a7fd4" ssl="off" origin="pubsub.pubnub.com" id="pubnub"></div>
+<script src="http://cdn.pubnub.com/pubnub-3.1.min.js"></script>
+<!-- App Engine -->
+<script type="text/javascript" src="/_ah/channel/jsapi"></script>
+<!-- Station -->
+<script type="text/javascript" src="/static/js/library/json2.js"></script>
+<script type="text/javascript" src="/static/js/library/favorite.js"></script>
+
+<script type="text/javascript" src="/static/js/station/swfobject.js"></script>
+<script type="text/javascript" src="/static/js/station/tab.js"></script>
+<script type="text/javascript" src="/static/js/station/comment.js"></script>
+<script type="text/javascript" src="/static/js/station/counter.js"></script>
+
+<script type="text/javascript" src="/static/js/station/on/presence.js"></script>
+<script type="text/javascript" src="/static/js/station/on/chromeless.js"></script>
+<script type="text/javascript" src="/static/js/station/on/alert.js"></script>
+
+<script type="text/javascript" src="/static/js/station/on/queue.js"></script>
+<script type="text/javascript" src="/static/js/station/page/on.js"></script>
+<script type="text/javascript">
+	/*--- Reset ---*/
+	USER = null;
+	ADMIN = false;
+	/*--- Station Initialization ---*/
+	STATION = {
+		"key_name": "{{ station_proxy.station.key.name }}",
+		"shortname": "{{ station_proxy.station.shortname }}",
+		"name": "{{ station_proxy.station.name}}",
+	}
+</script>
 {% endblock %}
