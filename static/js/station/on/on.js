@@ -4,30 +4,34 @@ $(function(){
 
 
 function StationClient(user, admin, station){
-	this.user = user;
-	this.admin = admin;
-	this.station = station;
-	this.channel_id = null;
-	
-	this.broadcasts_counter = new Counter("#broadcasts");
-	this.views_counter = new Counter("#views");
-	
-	this.presence_manager = null;
-	this.comment_manager = null;
-	this.suggestion_manager = null;
-	this.queue_manager = null;
-	this.search_manager = null;
-	this.library_manager = null;
-	this.status_manager = null;
-	this.viral_manager = null;
-	
-	this.favorite_sdk = null;
-	
-	this.presence();
+	this.init(user, admin, station);
 }
 
 StationClient.prototype = {
 	
+	init: function(user, admin, station){
+		this.user = user;
+		this.admin = admin;
+		this.station = station;
+		this.channel_id = null;
+
+		this.broadcasts_counter = new Counter("#broadcasts");
+		this.views_counter = new Counter("#views");
+
+		this.presence_manager = null;
+		this.comment_manager = null;
+		this.suggestion_manager = null;
+		this.queue_manager = null;
+		this.search_manager = null;
+		this.library_manager = null;
+		this.status_manager = null;
+		this.viral_manager = null;
+
+		this.favorite_sdk = null;
+
+		this.presence();
+	},
+
 	// Add a new presence: request Client ID and Token from Google App Engine
 	presence: function(){
 		var that = this;
