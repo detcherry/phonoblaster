@@ -18,6 +18,8 @@ html{
 	height:100%;
 }
 
+/* ---- STATION TITLE ----*/
+
 #station-title h2{
 	margin-top:3px;
 }
@@ -33,10 +35,47 @@ html{
 	cursor:auto;
 }
 
+/* ----- VIDEO DETAILS ----*/
+
+#video-details{
+	height:53px;
+}
+
+#video-details .clip{
+	margin-right:3px;
+	height:53px;
+	width:94px;
+}
+
+#video-details .clip img{
+	top:-18px;
+	left:-13px;
+}
+
+#video-details h3{
+	padding:5px;
+	padding-bottom:2px;
+}
+
+#video-details .title{
+	padding:5px;
+	padding-top:7px;
+	height:16px;
+	width:393px;
+}
+
+#video-details .title span{
+	height:16px;
+}
+
+
+
+
 /* ----- COMMENTS ------ */
 
 #comments{
 	margin-top:5px;
+	margin-right:5px;
 	width:273px;
 	border-top:1px solid #DDD;
 }
@@ -110,6 +149,7 @@ span#fb-sync{
 
 .item .title span {
 	height:34px;
+	line-height:16px;
 }
 
 .item .subtitle{
