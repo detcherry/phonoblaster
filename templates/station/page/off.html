@@ -26,7 +26,29 @@
 		<span class="middle">No track is being played</span>
 	</div>
 </div>
+<div id="comments">
+	<div id="comment-box">
+		{% if user_proxy %}
+			{% if is_admin %}
+			<img class="tuto" data-original-title="{{ station_proxy.station.name }}" src="http://graph.facebook.com/{{ station_proxy.station.key.name }}/picture?type=square">
+			{% else %}
+			<img class="tuto" data-original-title="{{ user_proxy.user.first_name }} {{ user_proxy.user.last_name }}" src="http://graph.facebook.com/{{ user_proxy.user.key.name }}/picture?type=square">
+			{% endif %}
+		{% else %}
+		<img src="/static/images/unknown-listener.png">
+		{% endif %}
+		<form method="post" action="" id="comment">
+			<input type="text" name="comment" id="comment" value="Comment..." autocomplete="off"/>
+			<span id="fb-sync" class="active tuto" data-original-title="Comment on Facebook: ON"></span>
+		</form>
+	</div>
+	<div id="comments-zone">
+	</div>
+</div>
 <div id="broadcasts-tab">
+	<a href="{{ site_url }}/{{ station_proxy.station.shortname }}" target="_blank">
+		<h3>More broadcasts...</h3>
+	</a>
 	<div class="tab-items">
 	</div>
 </div>
@@ -37,10 +59,12 @@
 
 <script type="text/javascript" src="/static/js/station/swfobject.js"></script>
 <script type="text/javascript" src="/static/js/station/tab.js"></script>
+<script type="text/javascript" src="/static/js/station/comment.js"></script>
 
 <script type="text/javascript" src="/static/js/station/off/embedded.js"></script>
 <script type="text/javascript" src="/static/js/station/off/broadcast.js"></script>
 
+<script type="text/javascript" src="/static/js/station/page/page.js"></script>
 <script type="text/javascript" src="/static/js/station/page/off.js"></script>
 <script type="text/javascript">
 	//--- Reset ---
@@ -65,5 +89,4 @@
 		"name": "{{ station_proxy.station.name}}",
 	}
 </script>
-
 {% endblock %}
