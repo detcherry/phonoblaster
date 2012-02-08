@@ -2,13 +2,74 @@ $(function(){
 	STATION_CLIENT = new StationClient(USER, ADMIN, STATION)
 })
 
+// ---------------------------------------------------------------------------
+// SPECIFIC OVERWRITING FUNCTIONS FOR IFRAME APP - "ON" MODE
+// ---------------------------------------------------------------------------
+
+// ----------------- QUEUE ------------------
+
+// No search tab in the queue tab => different selector
+QueueManager.prototype.selector = QueueManager.prototype.name + " .tab-items";
+
+// No recommandations displayed
+QueueManager.prototype.noData = function(){
+	// UI modifications
+	$("#player-wrapper").empty();
+	$("#player-wrapper").append($("<div/>").attr("id","no-live").html("No live track."));
+}
+
+// No recommandations or switch to off air mode displayed
+QueueManager.prototype.nextVideo = function(time_out){
+	var that = this;
+	
+	setTimeout(function(){			
+		// Live is over
+		that.liveOver();
+		
+		// Get next item and put it live
+		var new_item = that.items.shift();
+		if(new_item){
+			that.live(new_item)
+		}
+		else{
+			// Switch to off air mode popup
+		}		
+	}, time_out * 1000)
+}
+
+// No alert manager + no broadcast counter incremented
+QueueManager.prototype.newEvent = function(){}
+
+// No broadcast counter decremented + No UI room update
+QueueManager.prototype.removeEvent = function(){}
+
+// Useless functions
+QueueManager.prototype.updateRoom = function(){}
+QueueManager.prototype.UIRoom = function(){}
+QueueManager.prototype.UIIncrementRoom = function(){}
+QueueManager.prototype.UIDecrementRoom = function(){}
+QueueManager.prototype.UISetRoom = function(new_room){}
+
+// ----------- SWITCH TO OFF AIR ------------
+
+function AirManager(station_client){}
+
+// ------------- ALERT MANAGER --------------
+
+function AlertManager(station_client, title, a){}
+
+
+// ---------------------------------------------------------------------------
+// STATION CLIENT
+// ---------------------------------------------------------------------------
+
+
 function StationClient(user, admin, station){
 	this.user = user;
 	this.admin = admin;
 	this.station = station;
 	this.channel_id = null;
 	
-	this.broadcasts_counter = new Counter("#broadcasts");
 	this.presence_manager = null;
 	this.queue_manager = null;
 	
@@ -102,7 +163,7 @@ StationClient.prototype = {
 		var event = message.event;
 		var content = message.content;
 		
-		PHB.log(entity + " " + event)
+		PHB.log(entity + " " + event);
 		
 		var manager = null;
 		if(entity == "presence"){
@@ -123,11 +184,6 @@ StationClient.prototype = {
 		
 	},
 	
-}
-
-// Over writes AirManager class
-function AirManager(station_client){
-	this.station_client = station_client
 }
 
 

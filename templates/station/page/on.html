@@ -41,10 +41,11 @@
 		<span class="middle">No track is being played</span>
 	</div>
 </div>
+
 <div id="queue-tab">
-	<div id="search-tab">
-		<div class="tab-items"></div>
-	</div>
+	<a href="{{ site_url }}/{{ station_proxy.station.shortname }}" target="_blank">
+		<h3>Suggest a track!</h3>
+	</a>
 	<div class="tab-items">
 	</div>
 </div>
@@ -63,11 +64,9 @@
 <script type="text/javascript" src="/static/js/station/swfobject.js"></script>
 <script type="text/javascript" src="/static/js/station/tab.js"></script>
 <script type="text/javascript" src="/static/js/station/comment.js"></script>
-<script type="text/javascript" src="/static/js/station/counter.js"></script>
 
 <script type="text/javascript" src="/static/js/station/on/presence.js"></script>
 <script type="text/javascript" src="/static/js/station/on/chromeless.js"></script>
-<script type="text/javascript" src="/static/js/station/on/alert.js"></script>
 
 <script type="text/javascript" src="/static/js/station/on/queue.js"></script>
 <script type="text/javascript" src="/static/js/station/page/on.js"></script>

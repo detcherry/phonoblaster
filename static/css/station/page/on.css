@@ -11,18 +11,33 @@ div#presences{
 	font-size:16px;
 }
 
-/* ------- QUEUE -------- */
+/* ------- QUEUE TAB -------- */
 
 #queue-tab{
-	margin-top:0px;
+	margin-top:5px;
+	width:230px;
 }
 
-#queue-tab .tab-items{
+#queue-tab div.tab-items{
 	margin-top:0px;
+	width:228px;
+	border-top:1px solid #DDD;
 }
 
-#search-tab{
+#queue-tab a:hover{
+	color:#404040;
+}
+
+#queue-tab h3{
+	padding:10px;
+	font-size:14px;
+	padding-bottom:11px;
+	padding-left:6px;
+}
+
+.item .cross{
 	display:none;
 }
+
 
 
