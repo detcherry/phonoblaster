@@ -21,7 +21,8 @@ html{
 /* ---- STATION TITLE ----*/
 
 #station-title h2{
-	margin-top:3px;
+	margin-top:5px;
+	margin-left:5px;
 }
 
 #station-title a{
@@ -33,6 +34,13 @@ html{
 	float:left;
 	margin-left:10px;
 	cursor:auto;
+}
+
+#station-status{
+	margin-top:0px;
+	padding-top:0px;
+	width:auto;
+	height:32px;
 }
 
 /* ----- VIDEO DETAILS ----*/
