@@ -146,8 +146,6 @@ CommentManager.prototype.UIBuild = function(item){
 			$("<img/>")
 				.attr("src", author_picture_url)
 				.addClass("user")
-				.addClass("tuto") // Twipsy
-				.attr("data-original-title", author_name) // Twipsy
 			)
 			.append(
 				$("<div/>")
@@ -206,8 +204,6 @@ CommentManager.prototype.UIBuild = function(item){
 			$("<img/>")
 				.attr("src", track_submitter_picture)
 				.addClass("station")
-				.addClass("tuto") // Twipsy
-				.attr("data-original-title", track_submitter_name) // Twipsy
 			)
 			.append(
 				$("<div/>")
