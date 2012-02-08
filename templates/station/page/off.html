@@ -6,7 +6,7 @@
 
 {% block main %}
 <div id="station-title">
-	<a href="{{ site_url }}/{{ station_proxy.station.shortname }}" target="_blank"><h2>{{ station_proxy.station.name }}</h2></a>
+	<a href="{{ site_url }}/{{ station_proxy.station.shortname }}" target="_top"><h2>{{ station_proxy.station.name }}</h2></a>
 	<div id="station-status"><span class="btn">Off air</span></div>
 </div>
 <div id="video">
@@ -48,7 +48,7 @@
 <div id="broadcasts-tab">
 	<div class="tab-items">
 	</div>
-	<a href="{{ site_url }}/{{ station_proxy.station.shortname }}" target="_blank" class="btn tuto" data-original-title="More tracks from {{ station_proxy.station.name }} on Phonoblaster">
+	<a href="{{ site_url }}/{{ station_proxy.station.shortname }}" target="_top" class="btn tuto" data-original-title="More tracks from {{ station_proxy.station.name }} on Phonoblaster">
 		<h3>More broadcasts...</h3>
 	</a>
 </div>

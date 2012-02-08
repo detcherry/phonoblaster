@@ -2,7 +2,7 @@
 // OVERWRITES FUNCTIONS (SPECIFIC TO THE IFRAME APP)
 // ---------------------------------------------------------------------------
 
-// ------------ Login ------------
+// ------------ Facebook ------------
 
 // Necessary to grab the page id before reloading the iFrame
 Facebook.prototype.login = function(){
@@ -22,6 +22,23 @@ Facebook.prototype.login = function(){
 	},{scope: that.scope});
 
 }
+
+Facebook.prototype.loginAndRedirect = function(){
+	
+	var that = this;
+	FB.login(function(response){
+		if(response.authResponse){
+			
+			// Open the new URL in the main window
+			var shortname = STATION_CLIENT.station.shortname;
+			var url = PHB.site_url + "/" + shortname;
+			window.open(url, "_top");			
+			
+		}
+	})
+	
+}
+
 
 // ----------- Comment -----------
 
@@ -53,7 +70,7 @@ CommentManager.prototype.UIBuild = function(item){
 					.addClass("content")
 					.append(
 						$("<p/>")
-							.append($("<a/>").attr("href", author_url).attr("target", "_blank").html(author_name))
+							.append($("<a/>").attr("href", author_url).attr("target", "_top").html(author_name))
 							.append(" " + message)
 					)
 			)
@@ -80,7 +97,7 @@ CommentManager.prototype.UIBuild = function(item){
 		var station_url = "/" + this.station_client.station.shortname;
 		var station_picture = "https://graph.facebook.com/" + this.station_client.station.key_name + "/picture?type=square";
 		
-		var mention = $("<p/>").append($("<a/>").attr("href", track_submitter_url ).attr("target", "_blank").html(track_submitter_name))
+		var mention = $("<p/>").append($("<a/>").attr("href", track_submitter_url ).attr("target", "_top").html(track_submitter_name))
 		
 		if(type == "track"){
 			// Regular broadcast
@@ -90,13 +107,13 @@ CommentManager.prototype.UIBuild = function(item){
 			// Suggestion
 			mention
 				.append(" suggestion was broadcast by ")
-				.append($("<a/>").attr("href", station_url).attr("target", "_blank").html(station_name))
+				.append($("<a/>").attr("href", station_url).attr("target", "_top").html(station_name))
 		}
 		if(type == "favorite"){
 			// Rebroadcast
 			mention
 				.append(" track was rebroadcast by ")
-				.append($("<a/>").attr("href", station_url).attr("target", "_blank").html(station_name))
+				.append($("<a/>").attr("href", station_url).attr("target", "_top").html(station_name))
 		}
 		
 		var div = $("<div/>").addClass("comment").attr("id", id)

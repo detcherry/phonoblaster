@@ -7,7 +7,7 @@
 
 {% block main %}
 <div id="station-title">
-	<a href="{{ site_url }}/{{ station_proxy.station.shortname }}" target="_blank"><h2>{{ station_proxy.station.name }}</h2></a>
+	<a href="{{ site_url }}/{{ station_proxy.station.shortname }}" target="_top"><h2>{{ station_proxy.station.name }}</h2></a>
 	<div id="station-status"><span class="btn">Off air</span></div>
 	<div id="presences">
 		<strong class="number">0</strong> people listening
@@ -64,7 +64,7 @@
 	<div class="tab-items">
 	</div>
 	{% if not is_admin %}
-	<a href="{{ site_url }}/{{ station_proxy.station.shortname }}" target="_blank" class="btn tuto" data-original-title="Suggest the next track {{ station_proxy.station.name }} will broadcast!">
+	<a href="{{ site_url }}/{{ station_proxy.station.shortname }}" target="_top" class="btn tuto" data-original-title="Suggest the next track {{ station_proxy.station.name }} will broadcast!">
 		<h3>Suggest a track!</h3>
 	</a>
 	{% endif %}

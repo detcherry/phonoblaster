@@ -1,3 +1,12 @@
+$(function(){
+	
+	$("#queue-tab a.btn").click(function(){
+		FACEBOOK.loginAndRedirect();
+		return false;
+	})
+	
+})
+
 // ---------------------------------------------------------------------------
 // SPECIFIC OVERWRITING FUNCTIONS FOR IFRAME APP - "ON" MODE
 // ---------------------------------------------------------------------------
