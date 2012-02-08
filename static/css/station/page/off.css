@@ -8,10 +8,9 @@
 
 /*------ BROADCASTS TAB ------*/
 
-div#broadcasts-tab{
+#broadcasts-tab{
 	margin-top:5px;
 	width:230px;
-	float:right;
 }
 
 #broadcasts-tab div.tab-items{
