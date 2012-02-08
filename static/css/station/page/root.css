@@ -49,12 +49,18 @@ html{
 
 #video-details .clip img{
 	top:-18px;
-	left:-13px;
+	left:-10px;
 }
 
 #video-details h3{
 	padding:5px;
 	padding-bottom:2px;
+	padding-right:8px;
+}
+
+#favorite-track{
+	height:23px;
+	padding-top:2px;
 }
 
 #video-details .title{
@@ -114,6 +120,28 @@ span#fb-sync{
 	width:228px;
 }
 
+.comment .content span.clip{
+	height:34px;
+	width:60px;
+}
+
+.comment .content span.clip img{
+	top:-28px;
+	left:-17px;
+}
+
+#main .comment div.title{
+	margin-top:4px;
+	margin-bottom:4px;
+	height:34px;
+	width:160px;
+}
+
+.comment .title span{
+	height:34px;
+}
+
+
 /* ------- ITEMS ------- */
 
 #main div.tab-items{
@@ -135,7 +163,7 @@ span#fb-sync{
 
 .item .square img {
 	top:-28px;
-	left:-20px;
+	left:-32px;
 }
 
 .item .title {
@@ -152,38 +180,6 @@ span#fb-sync{
 .item .subtitle{
 	display:none;
 }
-
-/*
-.item .square{
-	height:40px;
-	width:80px;
-}
-
-.item .square img{
-	top:-30px;
-	left:-18px;
-}
-
-
-.item .title{
-	padding-right:50px;
-	width:180px;
-	height:40px;
-}
-
-.item .title span{
-	height:40px;
-}
-
-.item .subtitle{
-	margin-top:10px;
-}
-
-#main .item div.duration{
-	float:right;
-}
-*/
-
 
 /* ------- ERROR ------- */
 
