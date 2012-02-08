@@ -6,6 +6,12 @@ QueueManager.prototype = new RealtimeTabManager();
 QueueManager.prototype.constructor = QueueManager;
 
 function QueueManager(station_client){
+	this.init(station_client);
+}
+
+//-------------------------------- INIT -----------------------------------
+
+QueueManager.prototype.init = function(station_client){
 	RealtimeTabManager.call(this, station_client);
 	
 	// Settings

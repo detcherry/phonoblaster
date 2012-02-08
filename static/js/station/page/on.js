@@ -8,8 +8,25 @@ $(function(){
 
 // ----------------- QUEUE ------------------
 
-// No search tab in the queue tab => different selector
-QueueManager.prototype.selector = QueueManager.prototype.name + " .tab-items";
+// New constructor
+QueueManager.prototype.init = function(station_client){
+	RealtimeTabManager.call(this, station_client);
+	
+	// Settings
+	this.url = "/api/queue"
+	this.data_type = "json"
+	
+	// UI Settings
+	this.name = "#queue-tab";
+	this.selector = this.name + " .tab-items";
+	
+	// Additional attributes
+	this.live_item = null;
+	this.youtube_manager = new YoutubeManager();
+	
+	// Init Methods
+	this.get();
+}
 
 // No recommandations displayed
 QueueManager.prototype.noData = function(){
@@ -53,11 +70,6 @@ QueueManager.prototype.UISetRoom = function(new_room){}
 // ----------- SWITCH TO OFF AIR ------------
 
 function AirManager(station_client){}
-
-// ------------- ALERT MANAGER --------------
-
-function AlertManager(station_client, title, a){}
-
 
 // ---------------------------------------------------------------------------
 // STATION CLIENT
