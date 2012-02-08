@@ -18,15 +18,13 @@
 	border-top:1px solid #DDD;
 }
 
-#broadcasts-tab a:hover{
-	color:#404040;
+#broadcasts-tab a.btn{
+	margin-top:5px;
 }
 
-#broadcasts-tab h3{
-	padding:10px;
-	font-size:14px;
-	padding-bottom:11px;
-	padding-left:6px;
+#broadcasts-tab a.btn h3{
+	width:200px;
+	text-align:center;
 }
 
 .item{

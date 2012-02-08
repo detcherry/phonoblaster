@@ -24,15 +24,13 @@ div#presences{
 	border-top:1px solid #DDD;
 }
 
-#queue-tab a:hover{
-	color:#404040;
+#queue-tab a.btn{
+	margin-top:5px;
 }
 
-#queue-tab h3{
-	padding:10px;
-	font-size:14px;
-	padding-bottom:11px;
-	padding-left:6px;
+#queue-tab a.btn h3{
+	width:200px;
+	text-align:center;
 }
 
 .item .cross{
