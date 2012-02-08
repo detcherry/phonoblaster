@@ -30,9 +30,9 @@
 	<div id="comment-box">
 		{% if user_proxy %}
 			{% if is_admin %}
-			<img class="tuto" data-original-title="{{ station_proxy.station.name }}" src="http://graph.facebook.com/{{ station_proxy.station.key.name }}/picture?type=square">
+			<img src="http://graph.facebook.com/{{ station_proxy.station.key.name }}/picture?type=square">
 			{% else %}
-			<img class="tuto" data-original-title="{{ user_proxy.user.first_name }} {{ user_proxy.user.last_name }}" src="http://graph.facebook.com/{{ user_proxy.user.key.name }}/picture?type=square">
+			<img src="http://graph.facebook.com/{{ user_proxy.user.key.name }}/picture?type=square">
 			{% endif %}
 		{% else %}
 		<img src="/static/images/unknown-listener.png">
