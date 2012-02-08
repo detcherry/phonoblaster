@@ -29,6 +29,8 @@ div#presences{
 }
 
 #queue-tab a.btn h3{
+	padding-top: 12px;
+	padding-bottom: 12px;
 	width:200px;
 	text-align:center;
 }
