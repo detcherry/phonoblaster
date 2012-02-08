@@ -64,7 +64,7 @@
 	<div class="tab-items">
 	</div>
 	{% if not is_admin %}
-	<a href="{{ site_url }}/{{ station_proxy.station.shortname }}" target="_blank" class="btn">
+	<a href="{{ site_url }}/{{ station_proxy.station.shortname }}" target="_blank" class="btn tuto" data-original-title="Suggest the next track {{ station_proxy.station.name }} broadcasts!">
 		<h3>Suggest a track!</h3>
 	</a>
 	{% endif %}
