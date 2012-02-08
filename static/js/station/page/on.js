@@ -149,9 +149,10 @@ StationClient.prototype = {
 		
 		PHB.time(function(){
 			that.queue_manager = new QueueManager(that); // Fetching
-			
-			that.comment_manager = new CommentManager(that); // No Fetching (useless class)
 			that.favorite_sdk = new FavoriteSDK(that.queue_manager)
+			
+			that.comment_manager = new CommentManager(that);
+			that.comment_manager.get(); // Fetching
 			
 		})
 	},
