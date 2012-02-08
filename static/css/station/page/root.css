@@ -98,7 +98,7 @@ span#fb-sync{
 }
 
 #comments-zone{
-	min-height:500px;
+	min-height:450px;
 	padding-bottom:5px;
 }
 
@@ -117,7 +117,7 @@ span#fb-sync{
 /* ------- ITEMS ------- */
 
 #main div.tab-items{
-	height:450px;
+	min-height:250px;
 	width:508px;
 	background:white;
 	border:1px solid #DDD;
