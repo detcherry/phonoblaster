@@ -169,6 +169,7 @@ BroadcastManager.prototype.live = function(new_item){
 	this.UIActive(id)
 	
 	// No Post action to FACEBOOK yet
+	this.postAction(this.live_item);
 }
 
 BroadcastManager.prototype.nextVideo = function(time_out){
@@ -221,6 +222,19 @@ BroadcastManager.prototype.liveListen = function(){
 		
 		that.live(next_item);
 	})
+}
+
+BroadcastManager.prototype.postAction = function(item){
+	if(this.station_client.user){
+		var broadcast_url = PHB.site_url + "/broadcast/" + item.id;
+		var obj = { "live": broadcast_url };
+		var extra = {};
+		var expires_in = item.content.youtube_duration;
+		
+		var action = "replay";
+		
+		FACEBOOK.putAction(action, obj, extra, expires_in);
+	}
 }
 
 // ----------------------------- UI --------------------------------
