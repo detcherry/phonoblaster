@@ -265,8 +265,6 @@ class StationApi():
 					
 					self.increment_broadcasts_counter()
 					
-					# Add extended broadcasts to the past broadcasts
-					# self.add_to_broadcasts(extended_broadcast)
 					
 		return extended_broadcast
 	

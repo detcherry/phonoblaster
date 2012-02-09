@@ -14,7 +14,6 @@ class ApiBroadcastsHandler(BaseHandler):
 		
 		if(station_proxy.station):
 			offset = datetime.utcfromtimestamp(int(self.request.get("offset")))
-			#extended_broadcasts = station_proxy.get_broadcasts(offset)
 			extended_broadcasts = station_proxy.get_broadcasts(offset)
 		
 		self.response.out.write(json.dumps(extended_broadcasts))
