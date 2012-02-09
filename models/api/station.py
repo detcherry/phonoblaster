@@ -27,7 +27,6 @@ MEMCACHE_STATION_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".station."
 MEMCACHE_STATION_QUEUE_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".queue.station."
 MEMCACHE_STATION_PRESENCES_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".presences.station."
 MEMCACHE_STATION_BROADCASTS_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".broadcasts.station."
-MEMCACHE_STATION_HISTORY_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".history.station."
 COUNTER_OF_BROADCASTS_PREFIX = "station.broadcasts.counter."
 COUNTER_OF_VIEWS_PREFIX = "station.views.counter."
 
@@ -39,7 +38,6 @@ class StationApi():
 		self._memcache_station_queue_id = MEMCACHE_STATION_QUEUE_PREFIX + self._shortname
 		self._memcache_station_presences_id = MEMCACHE_STATION_PRESENCES_PREFIX + self._shortname
 		self._memcache_station_broadcasts_id = MEMCACHE_STATION_BROADCASTS_PREFIX + self._shortname
-		self._memcache_station_history_id = MEMCACHE_STATION_HISTORY_PREFIX + self._shortname
 		self._counter_of_broadcasts_id = COUNTER_OF_BROADCASTS_PREFIX + self._shortname
 		self._counter_of_views_id = COUNTER_OF_VIEWS_PREFIX + self._shortname
 	
@@ -268,7 +266,7 @@ class StationApi():
 					self.increment_broadcasts_counter()
 					
 					# Add extended broadcasts to the past broadcasts
-					self.add_to_broadcasts(extended_broadcast)
+					# self.add_to_broadcasts(extended_broadcast)
 					
 		return extended_broadcast
 	
@@ -405,68 +403,36 @@ class StationApi():
 		)
 		task.add(queue_name = "counters-queue")
 	
-	@property
-	def broadcasts(self):
-		step = 10
-		if not hasattr(self, "_broadcasts"):
-			self._broadcasts =  memcache.get(self._memcache_station_broadcasts_id)
-			if self._broadcasts is None:				
-				logging.info("Past broadcasts not in memcache")
-
-				broadcasts = self.request_broadcasts(step, datetime.utcnow())
-				logging.info("Past broadcasts retrieved from datastore")
-
-				extended_broadcasts = Broadcast.get_extended_broadcasts(broadcasts, self.station)
-				self._broadcasts = extended_broadcasts
-
-				memcache.set(self._memcache_station_broadcasts_id, self._broadcasts)
-				logging.info("Extended past broadcasts put in memcache")
-			else:
-				logging.info("Past broadcasts already in memcache")
-
-		return self._broadcasts
+	def get_broadcasts(self, offset):
+		timestamp = timegm(offset.utctimetuple())
+		memcache_broadcasts_id = self._memcache_station_broadcasts_id + "." + str(timestamp)
+		
+		past_broadcasts = memcache.get(memcache_broadcasts_id)
+		if past_broadcasts is None:
+			logging.info("Past broadcasts not in memcache")
+			
+			broadcasts = self.broadcasts_query(offset)
+			logging.info("Past broadcasts retrieved from datastore")
+			
+			extended_broadcasts = Broadcast.get_extended_broadcasts(broadcasts, self.station)
+			past_broadcasts = extended_broadcasts
+			
+			memcache.set(memcache_broadcasts_id, past_broadcasts)
+			logging.info("Extended past broadcasts put in memcache")
+			
+		else:
+			logging.info("Past broadcasts already in memcache")
+			
+		return past_broadcasts
 	
-	def request_broadcasts(self, step, offset):
+	def broadcasts_query(self, offset):
 		q = Broadcast.all()
 		q.filter("station", self.station.key())
 		q.filter("created <", offset)
 		q.order("-created")
-		broadcasts = q.fetch(step)
+		broadcasts = q.fetch(10)
 		
 		return broadcasts
-	
-	def get_broadcasts(self, offset):		
-		step = 10
-		extended_broadcasts = []
-
-		for b in self.broadcasts:
-			if(b["created"] < timegm(offset.utctimetuple())):
-				extended_broadcasts.append(b)
-
-			# If list has reached the limit of a "fetching step", stop the loop
-			if len(extended_broadcasts) == step:
-				break
-
-		# If past broadcasts length is 0, request the datastore
-		if(len(extended_broadcasts) == 0):
-			broadcasts = self.request_broadcasts(step, offset)
-			logging.info("Past broadcasts retrieved from datastore")
-			extended_broadcasts = Broadcast.get_extended_broadcasts(broadcasts, self.station)
-
-			# Add, if any, additional results to memcache
-			if(len(extended_broadcasts) > 0):
-				self.broadcasts += extended_broadcasts
-				memcache.set(self._memcache_station_broadcasts_id, self.broadcasts)
-				logging.info("New extended past broadcasts put in memcache")
-
-		return extended_broadcasts
-
-	def add_to_broadcasts(self, extended_broadcast):
-		existing_broadcasts = memcache.get(self._memcache_station_broadcasts_id)
-		if existing_broadcasts is not None:
-			new_broadcast = [extended_broadcast] + existing_broadcasts
-			memcache.set(self._memcache_station_broadcasts_id, new_broadcast)
-			logging.info("New extended past broadcasts put in memcache")
 	
 	# Get the 10 latest tracks added by the station
 	def get_recommandations(self, offset):
