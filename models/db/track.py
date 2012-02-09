@@ -92,9 +92,6 @@ class Track(db.Model):
 						"youtube_title": youtube_track["title"],
 						"youtube_duration": youtube_track["duration"],
 					}
-					
-					# Add new broadcast to the user library
-					user_proxy.add_to_library(extended_track)
 		
 		return (track, extended_track)
 

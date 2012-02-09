@@ -223,72 +223,35 @@ class UserApi:
 			memcache.set(self._memcache_user_favorites_id, self.favorites)
 			logging.info("Favorites updated in memcache")
 
-
-	@property
-	def library(self):
-		step = 10
-		
-		if not hasattr(self, "_library"):
-			self._library = memcache.get(self._memcache_user_library_id)
-			if self._library is None:				
-				logging.info("Library tracks not in memcache")
-				
-				tracks = self.request_library(step, datetime.utcnow())
-				logging.info("Library tracks retrieved from datastore")
-				
-				extended_tracks = Track.get_extended_tracks(tracks)
-				self._library = extended_tracks
-				
-				memcache.set(self._memcache_user_library_id, self._library)
-				logging.info("Extended library tracks put in memcache")
-			
-			else:
-				logging.info("Library tracks already in memcache")
-
-		return self._library
-
-		
 	def get_library(self, offset):
-		step = 10
-		extended_tracks = []
+		timestamp = timegm(offset.utctimetuple())
+		memcache_library_id = self._memcache_user_library_id + "." + str(timestamp)
 		
-		for t in self.library:
-			if(t["track_created"] < timegm(offset.utctimetuple())):
-				extended_tracks.append(t)
-
-			# If tracks has reached the limit of a "fetching step", stop the loop
-			if len(extended_tracks) == step:
-				break
-				
-		# If library length is 0, request the datastore
-		if(len(extended_tracks) == 0):
-			tracks = self.request_library(step, offset)
-			logging.info("Library tracks retrieved from datastore")
-			extended_tracks = Track.get_extended_tracks(tracks)
-		
-			# Add, if any, additional results to memcache
-			if(len(extended_tracks) > 0):
-				self.library += extended_tracks
-				memcache.set(self._memcache_user_library_id, self.library)
-				logging.info("New extended library tracks put in memcache")
-				
-		return extended_tracks
+		past_library = memcache.get(memcache_library_id)
+		if(past_library is None):
+			logging.info("Past library not in memcache")
+			
+			library = self.library_query(offset)
+			logging.info("Past library retrieved from datastore")
+			
+			extended_library = Track.get_extended_tracks(library)
+			past_library = extended_library
+			
+			memcache.set(memcache_library_id, past_library)
+			logging.info("Extended past library put in memcache")
+		else:
+			logging.info("Past library already in memcache")
+			
+		return past_library
 	
-	def request_library(self, step, offset):	
+	def library_query(self, offset):
 		q = Track.all()
 		q.filter("user", self.user.key())
 		q.filter("created <", offset)
 		q.order("-created")
-		tracks = q.fetch(step)
+		library = q.fetch(10)
 		
-		return tracks
-
-	def add_to_library(self, extended_track):
-		existing_library = memcache.get(self._memcache_user_library_id)
-		if existing_library is not None:
-			new_library = [extended_track] + existing_library
-			memcache.set(self._memcache_user_library_id, new_library)
-			logging.info("New extended library track put in memcache")
+		return library
 	
 	@property
 	def number_of_favorites(self):
