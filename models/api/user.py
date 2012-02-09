@@ -111,65 +111,35 @@ class UserApi:
 				return True
 		return False
 	
-	@property
-	def favorites(self):
-		step = 10
-		
-		if not hasattr(self, "_favorites"):
-			self._favorites = memcache.get(self._memcache_user_favorites_id)
-			if self._favorites is None:				
-				logging.info("Favorites not in memcache")
-				
-				favorites = self.request_favorites(step, datetime.utcnow())
-				logging.info("Favorites retrieved from datastore")
-				
-				extended_favorites = Favorite.get_extended_favorites(favorites)
-				self._favorites = extended_favorites
-				
-				memcache.set(self._memcache_user_favorites_id, self._favorites)
-				logging.info("Extended favorites put in memcache")
-			
-			else:
-				logging.info("Favorites already in memcache")
-
-		return self._favorites
-
 	def get_favorites(self, offset):
-		step = 10
-		extended_favorites = []
-
-		for f in self.favorites:
-			if(f["created"] < timegm(offset.utctimetuple())):
-				extended_favorites.append(f)
-
-			# If favorites has reached the limit of a "fetching step", stop the loop
-			if len(extended_favorites) == step:
-				break
-
-		# If favorites length is 0, request the datastore
-		if(len(extended_favorites) == 0):
-			favorites = self.request_favorites(step, offset)
-			logging.info("Favorites retrieved from datastore")
+		timestamp = timegm(offset.utctimetuple())
+		memcache_favorites_id = self._memcache_user_favorites_id + "." + str(timestamp)
+		
+		past_favorites = memcache.get(memcache_favorites_id)
+		if past_favorites is None:
+			logging.info("Past favorites not in memcache")
+			
+			favorites = self.favorites_query(offset)
+			logging.info("Past favorites retrieved from datastore")
+			
 			extended_favorites = Favorite.get_extended_favorites(favorites)
-
-			# Add, if any, additional results to memcache
-			if(len(extended_favorites) > 0):
-				self.favorites += extended_favorites
-				memcache.set(self._memcache_user_favorites_id, self.favorites)
-				logging.info("New extended favorites put in memcache")
-
-		return extended_favorites
-
-	
-	def request_favorites(self, step, offset):
+			past_favorites = extended_favorites
+			
+			memcache.set(self._memcache_user_favorites_id, past_favorites)
+			logging.info("Extended favorites put in memcache")
+		else:
+			logging.info("Favorites already in memcache")
+		
+		return past_favorites
+		
+	def favorites_query(self, offset):
 		q = Favorite.all()
 		q.filter("user", self.user.key())
 		q.filter("created <", offset)
 		q.order("-created")
-		favorites = q.fetch(step)
+		favorites = q.fetch(10)
 		
 		return favorites
-		
 
 	def add_to_favorites(self, track, extended_track, station):
 		# Check if the favorite hasn't been stored yet
@@ -181,7 +151,7 @@ class UserApi:
 		if(existing_favorite):
 			logging.info("Track already favorited by this user")
 		else:
-			extended_favorites = self.favorites
+			#extended_favorites = self.favorites
 			
 			favorite = Favorite(
 				track = track.key(),
@@ -191,13 +161,7 @@ class UserApi:
 			logging.info("Favorite saved into datastore")
 	
 			self.increment_favorites_counter()
-			logging.info("Favorite counter incremented")
-			
-			extended_favorite = Favorite.get_extended_favorite(favorite, extended_track, station)
-			extended_favorites.insert(0, extended_favorite)
-			memcache.set(self._memcache_user_favorites_id, extended_favorites)
-			logging.info("Favorites updated in memcache")
-	
+			logging.info("Favorite counter incremented")	
 		
 	def delete_from_favorites(self, track):
 		q = Favorite.all()
@@ -213,15 +177,6 @@ class UserApi:
 			
 			self.decrement_favorites_counter()
 			logging.info("Favorite counter decremented")
-			
-			for i in range(len(self.favorites)):
-				extended_favorite = self.favorites[i]
-				if(str(extended_favorite["track_id"]) == str(track.key().id())):
-					self.favorites.pop(i)
-					break;
-			
-			memcache.set(self._memcache_user_favorites_id, self.favorites)
-			logging.info("Favorites updated in memcache")
 
 	def get_library(self, offset):
 		timestamp = timegm(offset.utctimetuple())
