@@ -1,11 +1,11 @@
 // ---------------------------------------------------------------------------
-// TRACKS MANAGER
+// TRACK MANAGER
 // ---------------------------------------------------------------------------
 
-TracksManager.prototype = new ScrollTabManager();
-TracksManager.prototype.constructor = TracksManager;
+TrackManager.prototype = new ScrollTabManager();
+TrackManager.prototype.constructor = TrackManager;
 
-function TracksManager(station_client){
+function TrackManager(station_client){
 	ScrollTabManager.call(this, station_client);
 	
 	// Settings
@@ -24,7 +24,7 @@ function TracksManager(station_client){
 	this.scrollListen();
 }
 
-TracksManager.prototype.getData = function(){
+TrackManager.prototype.getData = function(){
 	var shortname = this.station_client.station.shortname;
 	var offset = this.offset;
 	var data = {
@@ -34,7 +34,7 @@ TracksManager.prototype.getData = function(){
 	return data
 }
 
-TracksManager.prototype.serverToLocalItem = function(content){
+TrackManager.prototype.serverToLocalItem = function(content){
 	content["type"] = "track";
 	content["track_submitter_key_name"] = this.station_client.station.key_name;
 	content["track_submitter_name"] = this.station_client.station.name;

@@ -2,7 +2,6 @@
 // TAB MANAGER
 // ---------------------------------------------------------------------------
 
-///*
 function TabManager(station_client){
 	this.station_client = station_client;
 	this.items = [];

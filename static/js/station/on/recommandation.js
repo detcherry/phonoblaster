@@ -23,15 +23,16 @@ function RecommandationManager(station_client){
 
 RecommandationManager.prototype.dispatch = function(){
 	var number_of_broadcasts = this.station_client.broadcasts_counter.count;
+	var that = this;
+	
 	if(number_of_broadcasts == 0){		
 		// Call Facebook API to know which tracks the user has posted on his wall
-		var that = this;
 		FACEBOOK.retrieveWallLinks(function(items){
 			that.filterFacebook(items);
 		})
 	}
 	else{		
-		// Call history API to get the latest tracks broacast in the station
+		// Call tracks API 
 		this.get();
 	}
 }
@@ -169,7 +170,6 @@ RecommandationManager.prototype.serverToLocalItem = function(content){
 	if(content.track_id){
 		new_track = content;
 		new_track["type"] = "track";
-		new_track["track_admin"] = true;
 		new_track["track_submitter_key_name"] = this.station_client.station.key_name;
 		new_track["track_submitter_name"] = this.station_client.station.name;
 		new_track["track_submitter_url"] = "/" + this.station_client.station.shortname;
@@ -189,7 +189,6 @@ RecommandationManager.prototype.serverToLocalItem = function(content){
 			"youtube_duration": content.duration,
 			"track_id": null,
 			"track_created": null,
-			"track_admin": true,
 			"track_submitter_key_name": this.station_client.station.key_name,
 			"track_submitter_name": this.station_client.station.name,
 			"track_submitter_url": "/" + this.station_client.station.shortname,
