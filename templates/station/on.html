@@ -151,11 +151,9 @@
 			{% if is_admin %}
 			<!-- Favorite tab is not displayed during first launch -->
 			<!--<li style="width:80px;"><a href="#favorites-tab" style="width:66px">Favorites</a></li>-->
-			{% else %}
-			<!-- A user non admin cannot suggest his tracks favorited from another station -->
 			{% endif %}
 			<li class="tuto" data-original-title="Tracks you recently broadcast or suggested.">
-				<a href="#library-tab">Library</a>
+				<a href="#tracks-tab">Tracks</a>
 			</li>
 		{% endif%}
 	</ul>
@@ -217,14 +215,14 @@
 				</form>
 			</div>
 		</div>
-		<div id="favorites-tab" class="tab-content">
+		<!--<div id="favorites-tab" class="tab-content">
 			<div class="tab-items">
 				<div class="init">No favorite</div>
 			</div>
-		</div>
-		<div id="library-tab" class="tab-content">
+		</div>-->
+		<div id="tracks-tab" class="tab-content">
 			<div class="tab-items">
-				<div class="init">No track in your library</div>
+				<div class="init">No past tracks in this station</div>
 			</div>
 		</div>
 	</div>
@@ -254,7 +252,7 @@
 <script type="text/javascript" src="/static/js/station/on/suggestion.js"></script>
 <script type="text/javascript" src="/static/js/station/on/search.js"></script>
 <script type="text/javascript" src="/static/js/station/on/status.js"></script>
-<script type="text/javascript" src="/static/js/station/on/library.js"></script>
+<script type="text/javascript" src="/static/js/station/on/tracks.js"></script>
 <script type="text/javascript" src="/static/js/station/on/viral.js"></script>
 <script type="text/javascript" src="/static/js/station/on/air.js"></script>
 <script type="text/javascript" src="/static/js/station/on/on.js"></script>

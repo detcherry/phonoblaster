@@ -125,7 +125,7 @@ class UserApi:
 			extended_favorites = Favorite.get_extended_favorites(favorites)
 			past_favorites = extended_favorites
 			
-			memcache.set(self._memcache_user_favorites_id, past_favorites)
+			memcache.set(memcache_favorites_id, past_favorites)
 			logging.info("Extended favorites put in memcache")
 		else:
 			logging.info("Favorites already in memcache")
@@ -150,9 +150,7 @@ class UserApi:
 		
 		if(existing_favorite):
 			logging.info("Track already favorited by this user")
-		else:
-			#extended_favorites = self.favorites
-			
+		else:			
 			favorite = Favorite(
 				track = track.key(),
 				user = self.user.key(),
@@ -177,36 +175,6 @@ class UserApi:
 			
 			self.decrement_favorites_counter()
 			logging.info("Favorite counter decremented")
-
-	def get_library(self, offset):
-		timestamp = timegm(offset.utctimetuple())
-		memcache_library_id = self._memcache_user_library_id + "." + str(timestamp)
-		
-		past_library = memcache.get(memcache_library_id)
-		if(past_library is None):
-			logging.info("Past library not in memcache")
-			
-			library = self.library_query(offset)
-			logging.info("Past library retrieved from datastore")
-			
-			extended_library = Track.get_extended_tracks(library)
-			past_library = extended_library
-			
-			memcache.set(memcache_library_id, past_library)
-			logging.info("Extended past library put in memcache")
-		else:
-			logging.info("Past library already in memcache")
-			
-		return past_library
-	
-	def library_query(self, offset):
-		q = Track.all()
-		q.filter("user", self.user.key())
-		q.filter("created <", offset)
-		q.order("-created")
-		library = q.fetch(10)
-		
-		return library
 	
 	@property
 	def number_of_favorites(self):

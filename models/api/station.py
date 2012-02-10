@@ -27,6 +27,7 @@ MEMCACHE_STATION_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".station."
 MEMCACHE_STATION_QUEUE_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".queue.station."
 MEMCACHE_STATION_PRESENCES_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".presences.station."
 MEMCACHE_STATION_BROADCASTS_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".broadcasts.station."
+MEMCACHE_STATION_TRACKS_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".tracks.station."
 COUNTER_OF_BROADCASTS_PREFIX = "station.broadcasts.counter."
 COUNTER_OF_VIEWS_PREFIX = "station.views.counter."
 
@@ -38,6 +39,7 @@ class StationApi():
 		self._memcache_station_queue_id = MEMCACHE_STATION_QUEUE_PREFIX + self._shortname
 		self._memcache_station_presences_id = MEMCACHE_STATION_PRESENCES_PREFIX + self._shortname
 		self._memcache_station_broadcasts_id = MEMCACHE_STATION_BROADCASTS_PREFIX + self._shortname
+		self._memcache_station_tracks_id = MEMCACHE_STATION_TRACKS_PREFIX + self._shortname
 		self._counter_of_broadcasts_id = COUNTER_OF_BROADCASTS_PREFIX + self._shortname
 		self._counter_of_views_id = COUNTER_OF_VIEWS_PREFIX + self._shortname
 	
@@ -443,5 +445,37 @@ class StationApi():
 		
 		extended_tracks = Track.get_extended_tracks(tracks)
 		return extended_tracks
+		
+	def get_tracks(self, offset):
+		timestamp = timegm(offset.utctimetuple())
+		memcache_tracks_id = self._memcache_station_tracks_id + "." + str(timestamp)
+		
+		past_tracks = memcache.get(memcache_tracks_id)
+		if past_tracks is None:
+			logging.info("Past tracks not in memcache")
+			
+			tracks = self.tracks_query(offset)
+			logging.info("Past tracks retrieved from datastore")
+			
+			extended_tracks = Track.get_extended_tracks(tracks)
+			past_tracks = extended_tracks
+			
+			memcache.set(memcache_tracks_id, past_tracks)
+			logging.info("Extended tracks put in memcache")
+		else:
+			logging.info("Past tracks already in memcache")
+		
+		return past_tracks
+	
+	def tracks_query(self, offset):
+		q = Track.all()
+		q.filter("station", self.station.key())
+		q.filter("created <", offset)
+		q.order("-created")
+		tracks = q.fetch(10)
+		
+		return tracks
+		
+		
 		
 		
