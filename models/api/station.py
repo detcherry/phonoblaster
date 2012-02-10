@@ -433,18 +433,6 @@ class StationApi():
 		broadcasts = q.fetch(10)
 		
 		return broadcasts
-	
-	# Get the 10 latest tracks added by the station
-	def get_recommandations(self, offset):
-		q = Track.all()
-		q.filter("station", self.station.key())
-		q.filter("admin", True)
-		q.filter("created <", offset)
-		q.order("-created")
-		tracks = q.fetch(10)
-		
-		extended_tracks = Track.get_extended_tracks(tracks)
-		return extended_tracks
 		
 	def get_tracks(self, offset):
 		timestamp = timegm(offset.utctimetuple())

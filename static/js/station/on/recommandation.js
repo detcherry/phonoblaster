@@ -9,7 +9,7 @@ function RecommandationManager(station_client){
 	ScrollTabManager.call(this, station_client);
 	
 	// Settings
-	this.url = "api/recommandations"
+	this.url = "api/tracks"
 	this.data_type = "json"
 	
 	// UI Settings
@@ -257,4 +257,3 @@ RecommandationManager.prototype.UIBuild = function(item){
 				
 	return div;
 }
-
