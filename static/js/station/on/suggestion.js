@@ -25,6 +25,19 @@ function SuggestionManager(station_client){
 	this.processListen();
 }
 
+SuggestionManager.prototype.serverToLocalItem = function(raw_item){
+	var new_suggestion = raw_item;
+	new_suggestion["track_id"] = null;
+	new_suggestion["track_created"] = null;
+	
+	var item = {
+		id: new_suggestion.key_name,
+		created: new_suggestion.created,
+		content: new_suggestion,
+	}
+	return item
+}
+
 SuggestionManager.prototype.postSubmit = function(btn, item){
 	
 	if(this.suggestion_on){

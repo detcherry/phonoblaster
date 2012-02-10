@@ -198,6 +198,77 @@ class StationApi():
 
 		return self._queue		
 	
+	# Add a new broadcast to the queue
+	def add_to_queue(self, broadcast):
+		extended_broadcast = None
+		if broadcast:
+			room = self.room()
+			if(room == 0):
+				logging.info("Queue full")
+			else:
+				logging.info("Some room in the queue")
+
+				track = None
+				extended_track = None
+
+				if(broadcast["track_id"]):
+					track = Track.get_by_id(int(broadcast["track_id"]))
+
+					# If track on Phonoblaster, get extended track from Youtube
+					if(track):
+						logging.info("Track on Phonoblaster")
+						extended_track = Track.get_extended_tracks([track])[0]
+
+				else:
+					# If obviously not, look for it though, save it otherwise and get extended track from Youtube
+					if(broadcast["youtube_id"]):
+						track, extended_track = Track.get_or_insert_by_youtube_id(broadcast["youtube_id"], self.station)
+
+				if(track and extended_track):
+
+					user_key = None
+					if(broadcast["type"] == "suggestion"):
+						user_key_name = broadcast["track_submitter_key_name"]
+						user_key = db.Key.from_path("User", user_key_name)
+
+					# Get the queue expiration time
+					queue_expiration_time = self.expiration_time()
+
+					new_broadcast = Broadcast(
+						key_name = broadcast["key_name"],
+						track = track.key(),
+						station = self.station.key(),
+						user = user_key,
+						expired = queue_expiration_time + timedelta(0, extended_track["youtube_duration"]),
+					)
+					new_broadcast.put()
+					logging.info("New broadcast put in datastore")
+					
+					# Suggested broadcast
+					if(user_key):
+						user = db.get(user_key)
+						extended_broadcast = Broadcast.get_extended_broadcast(new_broadcast, extended_track, None, user)
+					else:
+						station_key = Track.station.get_value_for_datastore(track)					
+						
+						# Regular broadcast
+						if(station_key == self.station.key()):
+							extended_broadcast = Broadcast.get_extended_broadcast(new_broadcast, extended_track, self.station, None)	
+						# Rebroadcast
+						else:
+							station = db.get(station_key)
+							extended_broadcast = Broadcast.get_extended_broadcast(new_broadcast, extended_track, station, None)											
+
+					# Put extended broadcasts in memcache
+					self._queue.append(extended_broadcast)
+					memcache.set(self._memcache_station_queue_id, self._queue)
+					logging.info("Queue updated in memcache")
+
+					self.increment_broadcasts_counter()
+
+		return extended_broadcast	
+	
+	"""
 	# Add a new braodcast to the queue
 	def add_to_queue(self, broadcast, user_proxy):
 		user = user_proxy.user
@@ -267,6 +338,7 @@ class StationApi():
 					
 					
 		return extended_broadcast
+	"""
 	
 	# Returns the room in the queue
 	def room(self):

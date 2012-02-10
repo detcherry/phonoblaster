@@ -51,7 +51,7 @@ class Favorite(db.Model):
 			"youtube_duration": extended_track["youtube_duration"],
 			"track_id": extended_track["track_id"],
 			"track_created": extended_track["track_created"],
-			"track_admin": extended_track["track_admin"],
+			#"track_admin": extended_track["track_admin"],
 			"track_submitter_key_name": station.key().name(),
 			"track_submitter_name": station.name,
 			"track_submitter_url": "/" + station.shortname,
