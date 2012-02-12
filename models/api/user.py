@@ -23,7 +23,7 @@ COUNTER_OF_FAVORITES = "user.favorites.counter."
 class UserApi:
 	def __init__(self, facebook_id):
 		self._facebook_id = str(facebook_id)
-		self._memcache_facebook_id = MEMCACHE_USER_PREFIX + self._facebook_id
+		self._memcache_user_id = MEMCACHE_USER_PREFIX + self._facebook_id
 		self._memcache_user_contributions_id = MEMCACHE_USER_CONTRIBUTIONS_PREFIX + self._facebook_id
 		self._memcache_user_favorites_id = MEMCACHE_USER_FAVORITES_PREFIX + self._facebook_id
 		self._memcache_user_library_id = MEMCACHE_USER_LIBRARY_PREFIX + self._facebook_id
@@ -33,13 +33,13 @@ class UserApi:
 	@property
 	def user(self):
 		if not hasattr(self, "_user"):
-			self._user = memcache.get(self._memcache_facebook_id)
+			self._user = memcache.get(self._memcache_user_id)
 			if self._user is None:
 				logging.info("User not in memcache")
 				self._user = User.get_by_key_name(self._facebook_id)
 				if self._user:
 					logging.info("User exists")
-					memcache.set(self._memcache_facebook_id, self._user)
+					memcache.set(self._memcache_user_id, self._user)
 					logging.info("%s %s put in memcache"%(self._user.first_name, self._user.last_name))
 				else:
 					logging.info("User does not exist")
@@ -59,7 +59,7 @@ class UserApi:
 		user.put()
 		logging.info("User put in datastore")
 		
-		memcache.set(self._memcache_facebook_id, user)
+		memcache.set(self._memcache_user_id, user)
 		logging.info("User put in memcacche")
 		
 		# Put the user in the proxy
@@ -73,7 +73,7 @@ class UserApi:
 		self.user.put()
 		logging.info("User access token updated in datastore")
 		
-		memcache.set(self._memcache_facebook_id, self.user)
+		memcache.set(self._memcache_user_id, self.user)
 		logging.info("User access token updated in memcache")
 		
 	# Return the user contributions (pages he's admin of)
