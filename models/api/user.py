@@ -10,11 +10,13 @@ from google.appengine.api.taskqueue import Task
 
 from controllers import facebook
 from models.db.user import User
+from models.db.friendships import Friendships
 from models.db.favorite import Favorite
 from models.db.track import Track
 from models.db.counter import Shard
 
 MEMCACHE_USER_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".user."
+MEMCACHE_USER_FRIENDS_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".friends.user."
 MEMCACHE_USER_CONTRIBUTIONS_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".contributions.user."
 MEMCACHE_USER_FAVORITES_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".favorites.user."
 MEMCACHE_USER_LIBRARY_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".library.user."
@@ -24,6 +26,7 @@ class UserApi:
 	def __init__(self, facebook_id):
 		self._facebook_id = str(facebook_id)
 		self._memcache_user_id = MEMCACHE_USER_PREFIX + self._facebook_id
+		self._memcache_user_friends_id = MEMCACHE_USER_FRIENDS_PREFIX + self._facebook_id
 		self._memcache_user_contributions_id = MEMCACHE_USER_CONTRIBUTIONS_PREFIX + self._facebook_id
 		self._memcache_user_favorites_id = MEMCACHE_USER_FAVORITES_PREFIX + self._facebook_id
 		self._memcache_user_library_id = MEMCACHE_USER_LIBRARY_PREFIX + self._facebook_id
@@ -38,7 +41,6 @@ class UserApi:
 				logging.info("User not in memcache")
 				self._user = User.get_by_key_name(self._facebook_id)
 				if self._user:
-					logging.info("User exists")
 					memcache.set(self._memcache_user_id, self._user)
 					logging.info("%s %s put in memcache"%(self._user.first_name, self._user.last_name))
 				else:
@@ -65,8 +67,11 @@ class UserApi:
 		# Put the user in the proxy
 		self._user = user
 		
+		# Put friends in datastore
+		self.put_friends()
+		
 		return self._user
-	
+		
 	# Update the facebook user access token
 	def update_token(self, facebook_access_token):
 		self.user.facebook_access_token = facebook_access_token
@@ -75,6 +80,75 @@ class UserApi:
 		
 		memcache.set(self._memcache_user_id, self.user)
 		logging.info("User access token updated in memcache")
+		
+		self.update_friends()
+	
+	@property
+	def friends(self):
+		if not hasattr(self, "_friends"):
+			self._friends = memcache.get(self._memcache_user_friends_id)
+			if self._friends is None:
+				logging.info("Friends not in memcache")
+				friendships = self.friendships_query()				
+				self._friends = friendships.friends
+				
+				if self._friends:
+					memcache.set(self._memcache_user_friends_id, self._friends)
+					logging.info("Friends put in memcache")
+				else:
+					logging.info("Friends do not exist...")
+			else:
+				logging.info("Friends already in memcache")
+		
+		return self._friends
+	
+	def friendships_query(self):
+		q = Friendships.all()
+		q.ancestor(self.user.key())
+		friendships = q.get()
+		
+		return friendships
+		
+	def friendships_facebook_query(self):
+		graph = facebook.GraphAPI(self.user.facebook_access_token)
+		friends = graph.get_connections(self.user.key().name(),"friends")["data"]
+		
+		# Build user keys from friends ids
+		users_keys = []
+		for f in friends:
+			user_key = db.Key.from_path("User", f["id"])
+			users_keys.append(user_key)
+		
+		return users_keys
+	
+	def put_friends(self):
+		users_keys = self.friendships_facebook_query()
+		logging.info("Friendships retrieved from Facebook")
+			
+		friendships = Friendships(
+			friends = users_keys,
+			parent = self.user,
+		)
+		friendships.put()
+		logging.info("Friendships saved in datastore")
+		
+		memcache.set(self._memcache_user_friends_id, friendships.friends)
+		logging.info("Friends saved in memcache")
+	
+	# Update the facebook user list of friends
+	def update_friends(self):
+		friendships = self.friendships_query()
+		logging.info("Friendships retrieved from datastore")		
+		
+		users_keys = self.friendships_facebook_query()
+		logging.info("Friendships retrieved from Facebook")
+			
+		friendships.friends = users_keys
+		friendships.put()
+		logging.info("Friendships updated in datastore")
+		
+		memcache.set(self._memcache_user_friends_id, friendships.friends)
+		logging.info("Friends updated in memcache")
 		
 	# Return the user contributions (pages he's admin of)
 	@property
