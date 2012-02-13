@@ -114,19 +114,19 @@ class UserApi:
 		friends = graph.get_connections(self.user.key().name(),"friends")["data"]
 		
 		# Build user keys from friends ids
-		users_keys = []
+		user_keys = []
 		for f in friends:
 			user_key = db.Key.from_path("User", f["id"])
-			users_keys.append(user_key)
+			user_keys.append(user_key)
 		
-		return users_keys
+		return user_keys
 	
 	def put_friends(self):
-		users_keys = self.friendships_facebook_query()
+		user_keys = self.friendships_facebook_query()
 		logging.info("Friendships retrieved from Facebook")
 			
 		friendships = Friendships(
-			friends = users_keys,
+			friends = user_keys,
 			parent = self.user,
 		)
 		friendships.put()
@@ -134,21 +134,27 @@ class UserApi:
 		
 		memcache.set(self._memcache_user_friends_id, friendships.friends)
 		logging.info("Friends saved in memcache")
+		
+		# Put friends in proxy
+		self._friends = friendships.friends
 	
 	# Update the facebook user list of friends
 	def update_friends(self):
 		friendships = self.friendships_query()
 		logging.info("Friendships retrieved from datastore")		
 		
-		users_keys = self.friendships_facebook_query()
+		user_keys = self.friendships_facebook_query()
 		logging.info("Friendships retrieved from Facebook")
 			
-		friendships.friends = users_keys
+		friendships.friends = user_keys
 		friendships.put()
 		logging.info("Friendships updated in datastore")
 		
 		memcache.set(self._memcache_user_friends_id, friendships.friends)
 		logging.info("Friends updated in memcache")
+		
+		# Put friends in proxy
+		self._friends = friendships.friends
 		
 	# Return the user contributions (pages he's admin of)
 	@property
