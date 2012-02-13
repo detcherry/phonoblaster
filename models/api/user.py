@@ -239,7 +239,10 @@ class UserApi:
 			logging.info("Favorite saved into datastore")
 	
 			self.increment_favorites_counter()
-			logging.info("Favorite counter incremented")	
+			logging.info("User favorites counter incremented")
+			
+			Track.increment_favorites_counter(track.key().id())
+			logging.info("Track favorites counter incremented")
 		
 	def delete_from_favorites(self, track):
 		q = Favorite.all()
@@ -255,6 +258,9 @@ class UserApi:
 			
 			self.decrement_favorites_counter()
 			logging.info("Favorite counter decremented")
+			
+			Track.decrement_favorites_counter(track.key().id())
+			logging.info("Track favorites counter decremented")
 	
 	@property
 	def number_of_favorites(self):

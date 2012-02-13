@@ -9,6 +9,7 @@ from models.db.counter import Shard
 from models.db.youtube import Youtube
 
 COUNTER_OF_VIEWS_PREFIX = "track.views."
+COUNTER_OF_FAVORITES_PREFIX = "track.favorites."
 
 class Track(db.Model):
 	"""
@@ -108,6 +109,31 @@ class Track(db.Model):
 			}
 		)
 		task.add(queue_name = "counters-queue")
-		
-		
+	
+	@staticmethod
+	def number_of_favorites(track_id):
+		shard_name = COUNTER_OF_FAVORITES_PREFIX + str(track_id)
+		count = Shard.get_count(shard_name)
+		return count
+	
+	@staticmethod
+	def increment_favorites_counter(track_id):
+		shard_name = COUNTER_OF_FAVORITES_PREFIX + str(track_id)
+		Track.add_task(shard_name, "increment")
+	
+	@staticmethod
+	def decrement_favorites_counter(track_id):
+		shard_name = COUNTER_OF_FAVORITES_PREFIX + str(track_id)
+		Track.add_task(shard_name, "decrement")
+	
+	@staticmethod
+	def add_task(shard_name, method):
+		task = Task(
+			url = "/taskqueue/counter",
+			params = {
+				"shard_name": shard_name,
+				"method": method
+			}
+		)
+		task.add(queue_name = "counters-queue")
 	
