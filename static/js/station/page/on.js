@@ -124,6 +124,9 @@ StationClient.prototype.dispatch = function(data){
 	if(entity == "broadcast"){
 		manager = this.queue_manager;
 	}
+	if(entity == "comment"){
+		manager = this.comment_manager;
+	}
 	
 	if(manager){
 		if(event == "new"){
