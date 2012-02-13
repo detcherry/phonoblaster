@@ -4,7 +4,7 @@
 
 function StatusManager(station_client){
 	this.station_client = station_client;
-	this._status = "not connected";
+	this._status = "not on air";
 	this.latest_signal_time = PHB.now();
 	
 	this.init();
@@ -18,14 +18,12 @@ StatusManager.prototype = {
 	init: function(){
 		var that = this;
 		setInterval(function(){
-			var admins_presences = that.station_client.presence_manager.admins_presences;
-			// If admin there + status said not connected, set a connected status
-			if(admins_presences.length > 0 && that._status == "not connected"){
-				that.setStatus("connected")
+			var live_item = that.station_client.queue_manager.live_item;
+			if(live_item){
+				that.setStatus("on air")
 			}
-			// If admin not there, set a not connected status
-			if(admins_presences.length == 0){
-				that.setStatus("not connected")
+			else{
+				that.setStatus("not on air")
 			}
 		}, 1000)
 	},
@@ -52,7 +50,7 @@ StatusManager.prototype = {
 		})
 		
 		$("input#comment").blur(function(){
-			that.postStatus("connected")
+			that.postStatus("on air")
 		})
 
 		$("input#search").focus(function(){
@@ -64,14 +62,14 @@ StatusManager.prototype = {
 		})
 		
 		$("input#search").blur(function(){
-			that.postStatus("connected")
+			that.postStatus("on air")
 		})
 		
 		$("ul#tabs a").click(function(){
 			var href = $(this).attr("href");
 			var status = null;
 			if(href == "#queue-tab"){
-				 status = "connected"
+				 status = "on air"
 			}
 			if(href == "#suggestions-tab"){
 				status = "looking at people suggestions"
@@ -92,10 +90,7 @@ StatusManager.prototype = {
 		if(this.station_client.admin){
 			
 			var that = this
-			var people_connected = that.station_client.presence_manager.friends_presences.concat(
-				that.station_client.presence_manager.authenticated_presences,
-				that.station_client.presence_manager.unauthenticated_presences
-			)
+			var people_connected = that.station_client.session_manager.sessions_counter;
 			// If more than one person connected
 			if(people_connected.length > 0){
 				

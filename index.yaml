@@ -40,6 +40,13 @@ indexes:
   - name: station
   - name: created
 
+- kind: SessionStory
+  properties:
+  - name: ended
+  - name: receivers
+  - name: station
+  - name: created
+
 - kind: Suggestion
   properties:
   - name: station

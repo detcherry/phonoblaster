@@ -15,7 +15,6 @@ from google.appengine.api import memcache
 from google.appengine.api.taskqueue import Task
 
 from models.db.station import Station
-from models.db.presence import Presence
 from models.db.comment import Comment
 from models.db.broadcast import Broadcast
 from models.db.track import Track
@@ -25,11 +24,11 @@ from models.api.user import UserApi
 
 MEMCACHE_STATION_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".station."
 MEMCACHE_STATION_QUEUE_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".queue.station."
-MEMCACHE_STATION_PRESENCES_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".presences.station."
 MEMCACHE_STATION_BROADCASTS_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".broadcasts.station."
 MEMCACHE_STATION_TRACKS_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".tracks.station."
 COUNTER_OF_BROADCASTS_PREFIX = "station.broadcasts.counter."
 COUNTER_OF_VIEWS_PREFIX = "station.views.counter."
+COUNTER_OF_SESSIONS_PREFIX = "station.sessions.counter."
 
 class StationApi():
 	
@@ -37,11 +36,11 @@ class StationApi():
 		self._shortname = shortname
 		self._memcache_station_id = MEMCACHE_STATION_PREFIX + self._shortname
 		self._memcache_station_queue_id = MEMCACHE_STATION_QUEUE_PREFIX + self._shortname
-		self._memcache_station_presences_id = MEMCACHE_STATION_PRESENCES_PREFIX + self._shortname
 		self._memcache_station_broadcasts_id = MEMCACHE_STATION_BROADCASTS_PREFIX + self._shortname
 		self._memcache_station_tracks_id = MEMCACHE_STATION_TRACKS_PREFIX + self._shortname
 		self._counter_of_broadcasts_id = COUNTER_OF_BROADCASTS_PREFIX + self._shortname
 		self._counter_of_views_id = COUNTER_OF_VIEWS_PREFIX + self._shortname
+		self._counter_of_sessions_id = COUNTER_OF_SESSIONS_PREFIX + self._shortname
 	
 	# Return the station
 	@property
@@ -69,97 +68,32 @@ class StationApi():
 		
 		return on_air
 	
-	# Return the list of users connected to a station
 	@property
-	def presences(self):
-		if not hasattr(self, "_presences"):
-			self._presences = memcache.get(self._memcache_station_presences_id)
-			if self._presences is None:
-				self._presences = []
-				logging.info("Presences not in memcache")
-				q = Presence.all()
-				q.filter("station", self.station.key())
-				q.filter("connected", True)
-				q.filter("ended", None)
-				q.filter("created >",  datetime.now() - timedelta(0,7200))
-				presences = q.fetch(1000) # Max number of entities App Engine can fetch in one call
-				
-				# Format extended presences
-				self._presences = Presence.get_extended_presences(presences, self.station)
-				
-				# Put extended presences in memcache
-				memcache.set(self._memcache_station_presences_id, self._presences)
-				logging.info("Presences loaded in memcache")
-			else:
-				# We clean up the presences list in memcache
-				cleaned_up_presences_list = []
-				token_timeout = datetime.now() - timedelta(0,7200)
-				limit = timegm(token_timeout.utctimetuple())
-				
-				for presence in self._presences:
-					if(presence["created"] > limit):
-						cleaned_up_presences_list.append(presence)
-				
-				if(len(cleaned_up_presences_list) != len(self._presences)):
-					self._presences = cleaned_up_presences_list
-					memcache.set(self._memcache_station_presences_id, self._presences)
-					logging.info("Presences list already in memcache and cleaned up")
-				else:
-					logging.info("Presences list already in memcache but no need to clean up")
-			
-		return self._presences
-
-	# Add a presence to a station
-	def add_presence(self, channel_id):
-		# Get presence from datastore 
-		presence = Presence.get_by_key_name(channel_id)
-		
-		extended_presence = None
-		if(presence):
-			# Format presence into extended presence
-			extended_presence = Presence.get_extended_presences([presence], self.station)[0]
-			
-			# Add it to the list in memcache
-			self.presences.append(extended_presence)
-
-			# Put new list in memcache
-			memcache.set(self._memcache_station_presences_id, self._presences)
-			logging.info("New presence put in memcache")
-			
-			# Put new present in datastore
-			presence.connected = True
-			presence.put()
-			logging.info("Presence updated in datastore")
-
-		return extended_presence
+	def number_of_sessions(self):
+		if not hasattr(self, "_number_of_sessions"):
+			shard_name = self._counter_of_sessions_id
+			self._number_of_sessions = Shard.get_count(shard_name)
+		return self._number_of_sessions
 	
-	# Remove a presence from a station
-	def remove_presence(self, channel_id):
-		# Get presence from datastore 
-		presence_gone = Presence.get_by_key_name(channel_id)
-		
-		if(presence_gone):	
-			# Format presence gone into extended presence
-			extended_presence = Presence.get_extended_presences([presence_gone], self.station)[0]
+	def increment_sessions_counter(self):
+		task = Task(
+			url = "/taskqueue/counter",
+			params = {
+				"shard_name": self._counter_of_sessions_id,
+				"method": "increment"
+			}
+		)
+		task.add(queue_name = "counters-queue")
 
-			# Update presences list
-			updated_presences = []
-			for p in self.presences:
-				if(p["channel_id"] != extended_presence["channel_id"]):
-					updated_presences.append(p)
-
-			# Put new list in proxy
-			self._presences = updated_presences
-			# Put new list in memcache
-			memcache.set(self._memcache_station_presences_id, self._presences)
-			logging.info("Presence removed from memcache")
-			
-			# Update presence in datastore
-			presence_gone.ended = datetime.now()
-			presence_gone.put()
-			logging.info("Presence updated in datastore")
-
-		return extended_presence
+	def decrement_sessions_counter(self):
+		task = Task(
+			url = "/taskqueue/counter",
+			params = {
+				"shard_name": self._counter_of_sessions_id,
+				"method": "decrement"
+			}
+		)
+		task.add(queue_name = "counters-queue")		
 	
 	# Returns the current station queue
 	@property

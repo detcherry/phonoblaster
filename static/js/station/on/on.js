@@ -2,7 +2,6 @@ $(function(){
 	STATION_CLIENT = new StationClient(USER, ADMIN, STATION)
 })
 
-
 function StationClient(user, admin, station){
 	this.init(user, admin, station);
 }
@@ -18,7 +17,7 @@ StationClient.prototype = {
 		this.broadcasts_counter = new Counter("#broadcasts");
 		this.views_counter = new Counter("#views");
 
-		this.presence_manager = null;
+		this.session_manager = null;
 		this.comment_manager = null;
 		this.suggestion_manager = null;
 		this.queue_manager = null;
@@ -29,15 +28,15 @@ StationClient.prototype = {
 
 		this.favorite_sdk = null;
 
-		this.presence();
+		this.connect();
 	},
 
-	// Add a new presence: request Client ID and Token from Google App Engine
-	presence: function(){
+	// Add a new session: request client ID and token from Google App Engine
+	connect: function(){
 		var that = this;
 		
 		$.ajax({
-			url: "/api/presences",
+			url: "/api/sessions",
 			type: "POST",
 			dataType: "json",
 			timeout: 60000,
@@ -85,7 +84,7 @@ StationClient.prototype = {
 	            that.dispatch(message);
 	        },
 	        connect: function(){
-				// Fetch all the content: presences, comments, suggestions, queue
+				// Fetch all the content: sessions, comments, suggestions, queue
 				that.fetch();
 	        }
 		})
@@ -93,7 +92,8 @@ StationClient.prototype = {
 	
 	// Fetch presences, comments and queue after connection to pubnub + init all the tabs
 	fetch: function(){
-		this.presence_manager = new PresenceManager(this); // Fetching
+		this.session_manager = new SessionManager(this); // Fetching
+		this.session_manager.sessions_counter.increment(); // We have to count the current connection
 		
 		// Once time has been initialized, initialize everything else
 		var that = this;
@@ -150,8 +150,8 @@ StationClient.prototype = {
 		PHB.log(entity + " " + event)
 		
 		var manager = null;
-		if(entity == "presence"){
-			manager = this.presence_manager;
+		if(entity == "session"){
+			manager = this.session_manager;
 		}
 		if(entity == "broadcast"){
 			manager = this.queue_manager;

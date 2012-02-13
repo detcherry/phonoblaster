@@ -5,7 +5,7 @@ queue:
 - name: comments-queue
   rate: 500/s
   bucket_size: 100
-- name: presences-queue
+- name: sessions-queue
   rate: 500/s
   bucket_size: 100
 - name: counters-queue
@@ -16,3 +16,4 @@ queue:
   bucket_size: 100
 - name: status-queue
   rate: 500/s
+  

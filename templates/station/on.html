@@ -5,17 +5,11 @@
 {% endblock %}
 
 {% block left-column %}
-	<div class="row" id="presences" style="border:none">
-		<a href="#">
-			<strong class="number">0</strong>
-			<span class="title">Listeners</span>
-		</a>
+	<div class="row" id="sessions" style="border:none">
+		<strong class="number">{{ number_of_sessions }}</strong>
+		<span class="title">Listeners</span>
 	</div>
-	<div id="presence-rows">
-		<div id="admins-rows"></div>
-		<div id="friends-rows"></div>
-		<div id="authenticated-rows"></div>
-	</div>
+	<div id="friend-sessions" style="border:none"></div>
 	<div class="row" id="bring-people">
 		<span class="btn primary tuto" data-original-title="Share this on Facebook!">
 			{% if is_admin %}Bring your fans!{% else %}Bring friends!{% endif %}
@@ -244,7 +238,7 @@
 <script type="text/javascript" src="/static/js/station/comment.js"></script>
 <script type="text/javascript" src="/static/js/station/counter.js"></script>
 
-<script type="text/javascript" src="/static/js/station/on/presence.js"></script>
+<script type="text/javascript" src="/static/js/station/on/session.js"></script>
 <script type="text/javascript" src="/static/js/station/on/chromeless.js"></script>
 <script type="text/javascript" src="/static/js/station/on/alert.js"></script>
 <script type="text/javascript" src="/static/js/station/on/recommandation.js"></script>

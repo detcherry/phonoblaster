@@ -47,7 +47,7 @@ ViralManager.prototype = {
 		if(this.station_client.queue_manager.live_item){
 			var title = this.station_client.queue_manager.live_item.content.youtube_title;
 			var station = this.station_client.station.name;
-			var people_listening = this.station_client.presence_manager.getCounter();
+			var people_listening = this.station_client.session_manager.sessions_counter.count;
 			
 			// If user is station admin (focus on content)
 			if(this.station_client.admin){

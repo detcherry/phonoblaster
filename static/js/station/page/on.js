@@ -85,16 +85,17 @@ StationClient.prototype.init = function(user, admin, station){
 	this.station = station;
 	this.channel_id = null;
 	
-	this.presence_manager = null;
+	this.session_manager = null;
 	this.queue_manager = null;
 	
 	this.favorite_sdk = null;
 	
-	this.presence();
+	this.connect();
 }
 
 StationClient.prototype.fetch = function(){
-	this.presence_manager = new PresenceManager(this); // Fetching
+	this.session_manager = new SessionManager(this); // Fetching
+	this.session_manager.sessions_counter.increment(); // We have to count the current connection
 	
 	// Once time has been initialized, initialize everything else
 	var that = this;

@@ -1,13 +1,13 @@
 @import url("root.css");
 
-/* ----- PRESENCES ------ */
+/* ----- SESSIONS ------*/
 
-div#presences{
+div#sessions{
 	float:right;
 	padding:4px;
 }
 
-#presences strong.number{
+#sessions strong.number{
 	font-size:16px;
 }
 

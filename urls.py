@@ -18,7 +18,7 @@ from controllers.api.favorites import ApiFavoritesHandler
 from controllers.api.favorites import ApiFavoritesDeleteHandler
 from controllers.api.tracks import ApiTracksHandler
 from controllers.api.broadcasts import ApiBroadcastsHandler
-from controllers.api.presences import ApiPresencesHandler
+from controllers.api.sessions import ApiSessionsHandler
 from controllers.api.comments import ApiCommentsHandler
 from controllers.api.views import ApiViewsHandler
 from controllers.api.status import ApiStatusHandler
@@ -34,7 +34,7 @@ application = webapp.WSGIApplication(
 		('/api/favorites/(\w+)', ApiFavoritesDeleteHandler),
 		('/api/tracks', ApiTracksHandler),
 		('/api/broadcasts', ApiBroadcastsHandler),
-		('/api/presences', ApiPresencesHandler),
+		('/api/sessions', ApiSessionsHandler),
 		('/api/comments', ApiCommentsHandler),
 		('/api/status', ApiStatusHandler),
 		('/api/air', ApiAirHandler),
