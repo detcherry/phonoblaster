@@ -295,18 +295,10 @@ class StationApi():
 			self._number_of_views = Shard.get_count(shard_name)
 		return self._number_of_views
 	
-	# Increment the views counter of the track which is live + station view counter
+	# Starts a task that will increment the station view counter
 	def increment_views_counter(self):
-		live_broadcast = self.queue[0]
-		track_id = int(live_broadcast["track_id"])
-			
-		# Increment the views counter of the track which is live
-		Track.increment_views_counter(track_id)
-		
-		# Increment the views counter of the station
 		shard_name = self._counter_of_views_id
 		Shard.task(shard_name, "increment")
-		
 	
 	def get_broadcasts(self, offset):
 		timestamp = timegm(offset.utctimetuple())
