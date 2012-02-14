@@ -141,12 +141,10 @@
 				<span class="round"></span>
 			</a>
 		</li>
-		{% if user_proxy %}
-			{% if is_admin %}
+		{% if is_admin %}
 			<!-- Favorite tab is not displayed during first launch -->
 			<!--<li style="width:80px;"><a href="#favorites-tab" style="width:66px">Favorites</a></li>-->
-			{% endif %}
-			<li class="tuto" data-original-title="Tracks you recently broadcast or suggested.">
+			<li class="tuto" data-original-title="Tracks you recently broadcast.">
 				<a href="#tracks-tab" id="tracks-header">Tracks</a>
 			</li>
 		{% endif%}
@@ -155,7 +153,7 @@
 		<div id="queue-tab" class="tab-content">
 			<div id="queue-header" class="fixed">
 				<span id="search-icon"></span>
-				<input type="text" value="{% if is_admin %}Add a track{% else %}Suggest a track{% endif %}" id="search" autocomplete="off" class="tuto" data-original-title="Search and add tracks from Youtube (soon: Soundcloud)"/>
+				<input type="text" value="{% if is_admin %}Add a track{% else %}Suggest a track{% endif %}" id="search" autocomplete="off" class="tuto" data-original-title="Search and {% if is_admin %}add{% else %}suggest{% endif%} tracks from Youtube (soon: Soundcloud)"/>
 				<div id="search-overlay"></div>
 				<div id="search-tab">
 					<div class="tab-items">
