@@ -21,6 +21,7 @@ MEMCACHE_USER_CONTRIBUTIONS_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".contri
 MEMCACHE_USER_FAVORITES_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".favorites.user."
 MEMCACHE_USER_LIBRARY_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".library.user."
 COUNTER_OF_FAVORITES = "user.favorites.counter."
+COUNTER_OF_SUGGESTIONS = "user.suggestions.counter."
 
 class UserApi:
 	def __init__(self, facebook_id):
@@ -31,6 +32,7 @@ class UserApi:
 		self._memcache_user_favorites_id = MEMCACHE_USER_FAVORITES_PREFIX + self._facebook_id
 		self._memcache_user_library_id = MEMCACHE_USER_LIBRARY_PREFIX + self._facebook_id
 		self._counter_of_favorites_id = COUNTER_OF_FAVORITES + self._facebook_id
+		self._counter_of_suggestions_id = COUNTER_OF_SUGGESTIONS + self._facebook_id
 	
 	# Return the user
 	@property
@@ -276,3 +278,17 @@ class UserApi:
 	def decrement_favorites_counter(self):
 		shard_name = self._counter_of_favorites_id
 		Shard.task(shard_name, "decrement")
+	
+	@property
+	def number_of_suggestions(self):
+		if not hasattr(self, "_number_of_suggestions"):
+			shard_name = self._counter_of_suggestions_id
+			self._number_of_suggestions = Shard.get_count(shard_name)
+		return self._number_of_suggestions
+	
+	def increment_suggestions_counter(self):
+		shard_name = self._counter_of_suggestions_id
+		Shard.task(shard_name, "increment")
+		
+		
+		
