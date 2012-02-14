@@ -20,26 +20,34 @@ from models.db.story import SessionStory
 from models.api.station import StationApi
 
 class ApiSessionsHandler(BaseHandler):
-	@login_required
 	def get(self):		
 		shortname = self.request.get("shortname")
 		station_proxy = StationApi(shortname)
 		station = station_proxy.station
+		number_of_sessions = station_proxy.number_of_sessions
 		
-		user = self.user_proxy.user
+		extended_sessions = None
+		if(self.user_proxy):
+			user = self.user_proxy.user
 		
-		q = SessionStory.all(keys_only = True)
-		q.filter("receivers =", user.key())
-		q.filter("station", station.key())
-		q.filter("ended", None)
-		q.filter("created >",  datetime.now() - timedelta(0,7200))
-		session_story_keys = q.fetch(50) # Arbitrary number
+			q = SessionStory.all(keys_only = True)
+			q.filter("receivers =", user.key())
+			q.filter("station", station.key())
+			q.filter("ended", None)
+			q.filter("created >",  datetime.now() - timedelta(0,7200))
+			session_story_keys = q.fetch(50) # Arbitrary number
 		
-		session_keys = [k.parent() for k in session_story_keys]
-		sessions = Session.get(session_keys)
+			session_keys = [k.parent() for k in session_story_keys]
+			sessions = Session.get(session_keys)
 		
-		extended_sessions = Session.get_extended_sessions(sessions)
-		self.response.out.write(json.dumps(extended_sessions))
+			extended_sessions = Session.get_extended_sessions(sessions)
+		
+		sessions_data = {
+			"number": number_of_sessions,
+			"friends": extended_sessions,
+		}
+			
+		self.response.out.write(json.dumps(sessions_data))
 		
 
 	def post(self):

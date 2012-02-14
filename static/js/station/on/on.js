@@ -93,7 +93,6 @@ StationClient.prototype = {
 	// Fetch presences, comments and queue after connection to pubnub + init all the tabs
 	fetch: function(){
 		this.session_manager = new SessionManager(this); // Fetching
-		this.session_manager.sessions_counter.increment(); // We have to count the current connection
 		
 		// Once time has been initialized, initialize everything else
 		var that = this;

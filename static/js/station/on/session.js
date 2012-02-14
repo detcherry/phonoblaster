@@ -5,7 +5,8 @@
 function SessionManager(station_client){
 	this.station_client = station_client;
 	
-	this.sessions_counter = new Counter("#sessions");
+	//this.sessions_counter = new Counter("#sessions");
+	this.sessions_counter = null;
 	this.friend_sessions = [];
 	this.duplicate_friend_sessions = [];
 	
@@ -19,7 +20,6 @@ SessionManager.prototype = {
 	init: function(){
 		var that = this;
 		
-		// Works only for authenticated users
 		if(this.station_client.user){
 			// First fetch friends
 			this.fetchFriends(function(){
@@ -28,7 +28,8 @@ SessionManager.prototype = {
 			});	
 		}
 		else{
-			// Display facebook facepile or 'login button to see friends listening'
+			// Fetch sessions directly (in fact only the number of sessions)
+			that.fetchSessions();
 		}
 	},
 	
@@ -57,12 +58,24 @@ SessionManager.prototype = {
 			error: function(xhr, status, error) {
 				PHB.log('An error occurred: ' + error + '\nPlease retry.');
 			},
-			success: function(json){				
-				// Add each new friend session to the DOM
-				$.each(json, function(index, value){
-					var friend_session = value
-					that.add(friend_session);
-				})
+			success: function(json){
+				// Init sessions counter
+				$("#sessions strong.number").html(json.number)
+				that.sessions_counter = new Counter("#sessions");
+				
+				if(json.friends){
+					friends = json.friends
+
+					// Add each new friend session to the DOM
+					$.each(friends, function(index, value){
+						var friend_session = value
+						that.add(friend_session);
+					})
+				}
+				else{
+					// Display facebook facepile or 'login button to see friends listening'
+				}
+	
 			},
 		});
 	},
@@ -72,7 +85,9 @@ SessionManager.prototype = {
 		this.add(new_session)
 		
 		// Increment sessions counter
-		this.sessions_counter.increment();
+		if(this.sessions_counter){
+			this.sessions_counter.increment();
+		}
 	},
 	
 	// Process incoming sessions
@@ -182,8 +197,10 @@ SessionManager.prototype = {
 			}
 		}
 		
-		// Decrement sessions counter
-		this.sessions_counter.decrement();
+		if(this.sessions_counter){
+			// Decrement sessions counter
+			this.sessions_counter.decrement();
+		}
 	},
 	
 	UIRemove: function(session){
