@@ -30,24 +30,29 @@ class DisconnectHandler(webapp.RequestHandler):
 		station_proxy = StationApi(shortname)
 		
 		# Init user proxy
+		user = None
 		user_key = Session.user.get_value_for_datastore(session)
-		user_key_name = user_key.name()
-		user_proxy = UserApi(user_key_name)
-		
-		# Retrieve session story
-		q = SessionStory.all()
-		q.ancestor(session.key())
-		session_story = q.get()
-		
-		session_story.ended = datetime.now()
-		session_story.put()
-		logging.info("Session story ended in datastore")
+		if(user_key):
+			user_key_name = user_key.name()
+			user_proxy = UserApi(user_key_name)
+			user = user_proxy.user
+			
+			# Retrieve session story
+			q = SessionStory.all()
+			q.ancestor(session.key())
+			session_story = q.get()
+
+			session_story.ended = datetime.now()
+			session_story.put()
+			logging.info("Session story ended in datastore")
+		else:
+			logging.info("Anonymous session. No story to end in datastore")
 		
 		# Decrement the station sessions counter
 		station_proxy.decrement_sessions_counter();
 		
 		# Add a taskqueue to warn everyone
-		extended_session = Session.get_extended_session(session, user_proxy.user)
+		extended_session = Session.get_extended_session(session, user)
 		
 		# Add a taskqueue to warn everyone
 		new_session_data = {
