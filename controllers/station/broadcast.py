@@ -1,3 +1,5 @@
+import re
+
 from controllers.station.root import RootHandler
 from models.db.broadcast import Broadcast
 from models.api.station import StationApi
@@ -7,7 +9,9 @@ class BroadcastHandler(RootHandler):
 		broadcast = Broadcast.get_by_key_name(key_name)
 		
 		if(broadcast):
-			shortname = broadcast.station.shortname
+			
+			m = re.match(r"(\w+).(\w+)", key_name)
+			shortname = m.group(1)			
 			self.station_proxy = StationApi(shortname)
 			
 			user_agent = self.request.headers["User-Agent"]
