@@ -140,10 +140,10 @@ SuggestionManager.prototype.postListen = function(btn, item){
 			// POST request to the server
 			that.post(new_item, function(response){
 				that.postCallback(new_item, response);
+				
+				// POST action to facebook
+				that.postAction(new_item);
 			})	
-			
-			// POST action to facebook
-			that.postAction(new_item);
 		}
 	})
 },
@@ -263,18 +263,15 @@ SuggestionManager.prototype.UIBuild = function(item){
 }
 
 SuggestionManager.prototype.postAction = function(new_item){
-	var track_id = new_item.content.track_id
-
-	// Necessary to have a track id (that means tracks from the listener library)
-	if(track_id){
-		var track_url = PHB.site_url + "/track/" + track_id;
-		var station_url = PHB.site_url + "/" + this.station_client.station.shortname;
-		var obj = { "track": track_url };
-		var extra = { "station": station_url };
-		var expires_in = 0;
-		var action = "suggest";	
-		FACEBOOK.putAction(action, obj, extra, expires_in);
-	}
+	var suggestion_key_name = new_item.content.key_name;
+	var suggestion_url = PHB.site_url + "/suggestion/" + suggestion_key_name;
+	var station_url = PHB.site_url + "/" + this.station_client.station.shortname;
+	var obj = { "suggestion": suggestion_url };
+	var extra = { "station": station_url };
+	var expires_in = 0;
+	var action = "submit";
+	
+	FACEBOOK.putAction(action, obj, extra, expires_in)
 }
 
 // -------------------------------- NEW --------------------------------------
