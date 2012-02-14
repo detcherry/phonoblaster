@@ -1,0 +1,108 @@
+{% extends "station/root.html" %}
+
+{% block meta %}
+	<title>{{ suggestion.youtube_title }}</title>
+	<meta name="description" content="Suggested to {{ station_proxy.station.name }} by {{ suggestion.track_submitter_name }}">
+{% endblock %}
+
+{% block facebook %}
+	<!-- Suggestion Open Graph Tags -->
+	<meta property="fb:app_id" content="{{ facebook_app_id }}"/>
+	<meta property="og:type" content="{{ version }}:suggestion"/> 
+	<meta property="og:url" content="{{ site_url }}/suggestion/{{ suggestion.key_name }}"/> 
+	<meta property="og:title" content="{{ suggestion.youtube_title }}"/> 
+	<meta property="og:description" content="Suggested to {{ station_proxy.station.name}} by {{ suggestion.track_submitter_name }}"/>
+	<meta property="og:image"  content="http://i.ytimg.com/vi/{{ suggestion.youtube_id }}/hqdefault.jpg"/> 
+	<meta property="og:site_name" content="Phonoblaster"/>
+	<meta property="og:video:type" content="text/html"/>
+	<meta property="og:video" content="{{ site_url }}/suggestion/{{ suggestion.key_name }}"/>
+	<meta property="{{ version }}:station" content="{{ site_url }}/{{ station_proxy.station.shortname }}"/>
+{% endblock %}
+
+{% block style %}
+	<link type="text/css" rel="stylesheet" href="/static/css/station/suggestion.css" />
+{% endblock %}
+
+{% block middle-column %}
+	<div class="fixed">
+		<div id="station-title">
+			<h2>{{ station_proxy.station.name }}</h2>
+			<div class="fb-like" data-href="{{ station_proxy.station.link }}" data-send="false" data-layout="button_count"  data-show-faces="false"></div>
+		</div>
+		<div id="video">
+			<div id="player-wrapper">
+				<div id="youtube-player"></div>
+			</div>
+		</div>
+		<div id="video-details">
+			<span class="clip">
+				<img src="http://i.ytimg.com/vi/{{ suggestion.youtube_id }}/default.jpg"/>
+			</span>
+			<div class="above-title">
+				<h3>Current track</h3>
+			</div>
+			<div class="submitter"></div>
+			<div class="title">
+				<span class="middle">{{ suggestion.youtube_title }}</span>
+			</div>
+		</div>
+	</div>
+{% endblock %}
+
+{% block script %}
+<script type="text/javascript" src="/static/js/library/favorite.js"></script>
+
+<script type="text/javascript" src="/static/js/station/swfobject.js"></script>
+<script type="text/javascript" src="/static/js/station/counter.js"></script>
+
+<script type="text/javascript" src="/static/js/station/off/embedded.js"></script>
+<script type="text/javascript" src="/static/js/station/tab.js"></script>
+<script type="text/javascript" src="/static/js/station/suggestion.js"></script>
+<script type="text/javascript">
+	//--- Reset ---
+	USER = null;
+	ADMIN = false;
+	STATION = null;
+	
+	//--- User Initialization ---
+	{% if user_proxy %} 
+	USER = {
+		"key_name": "{{ user_proxy.user.key.name }}",
+		"name": "{{ user_proxy.user.first_name }} {{ user_proxy.user.last_name }}",
+	}
+	{% endif %}
+	
+	/*--- Admin Initialization ---*/
+	{% if is_admin %} 
+	ADMIN = true;
+	{% endif %}
+	
+	//--- Station Initialization ---
+	STATION = {
+		"key_name": "{{ station_proxy.station.key.name }}",
+		"shortname": "{{ station_proxy.station.shortname }}",
+		"name": "{{ station_proxy.station.name}}",
+	}
+	
+	// ------- Track Initialization ----------
+	var CONTENT = {
+		"key_name": "{{ suggestion.key_name }}",
+		"message": "{{ suggestion.message }}",
+		"created": "{{ suggestion.created }}",
+		"youtube_id": "{{ suggestion.youtube_id }}",
+		"youtube_title": "{{ suggestion.youtube_title }}",
+		"youtube_duration": "{{ suggestion.youtube_duration }}",
+	}
+	
+	var LIVE_ITEM = {
+		"id": CONTENT.key_name,
+		"content": CONTENT,
+		"created": CONTENT.created,
+	}
+</script>
+{% endblock %}
+
+{% block footer %}
+	{% include "footer.html" %}
+{% endblock %}
+

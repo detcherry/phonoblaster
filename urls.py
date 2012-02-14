@@ -10,6 +10,7 @@ from controllers.station.picture import StationPictureHandler
 from controllers.station.broadcasts import StationBroadcastsHandler
 from controllers.station.broadcast import BroadcastHandler
 from controllers.station.track import TrackHandler
+from controllers.station.suggestion import SuggestionHandler
 from controllers.station.page import StationPageHandler
 from controllers.api.queue import ApiQueueHandler
 from controllers.api.queue import ApiQueueDeleteHandler
@@ -48,6 +49,7 @@ application = webapp.WSGIApplication(
 		('/(\w+)/broadcasts', StationBroadcastsHandler),
 		('/broadcast/([\w.]+)', BroadcastHandler),
 		('/track/([0-9]+)', TrackHandler),
+		('/suggestion/([\w.]+)', SuggestionHandler),
 		('/station/page', StationPageHandler),
 		('/.*', AllHandler),
 	],
