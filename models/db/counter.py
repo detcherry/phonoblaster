@@ -1,4 +1,5 @@
 import random
+import os
 
 from google.appengine.api import memcache
 from google.appengine.ext import db
@@ -8,13 +9,14 @@ class Shard(db.Model):
 	
 	@staticmethod
 	def get_count(name):
-	    total = memcache.get(name)
-	    if total is None:
-	        total = 0
-	        for counter in Counter.all().filter('name = ', name):
-	            total += counter.count
-	        memcache.add(name, total)
-	    return total
+		memcache_name = os.environ["CURRENT_VERSION_ID"] + "." + name
+		total = memcache.get(memcache_name)
+		if total is None:
+			total = 0
+			for counter in Counter.all().filter('name = ', name):
+				total += counter.count
+			memcache.add(memcache_name, total)
+		return total
 
 	@staticmethod
 	def increment(name):
@@ -28,7 +30,9 @@ class Shard(db.Model):
 			counter.count += 1
 			counter.put()
 		db.run_in_transaction(txn)
-		memcache.incr(name)
+		
+		memcache_name = os.environ["CURRENT_VERSION_ID"] + "." + name
+		memcache.incr(memcache_name)
 
 	@staticmethod
 	def decrement(name):
@@ -42,7 +46,9 @@ class Shard(db.Model):
 			counter.count -= 1
 			counter.put()
 		db.run_in_transaction(txn)
-		memcache.decr(name)		
+		
+		memcache_name = os.environ["CURRENT_VERSION_ID"] + "." + name
+		memcache.decr(memcache_name)		
 	
 
 class Counter(db.Model):
