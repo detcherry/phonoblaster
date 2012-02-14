@@ -100,15 +100,7 @@ class Track(db.Model):
 	@staticmethod
 	def increment_views_counter(track_id):
 		shard_name = COUNTER_OF_VIEWS_PREFIX + str(track_id)
-
-		task = Task(
-			url = "/taskqueue/counter",
-			params = {
-				"shard_name": shard_name,
-				"method": "increment"
-			}
-		)
-		task.add(queue_name = "counters-queue")
+		Shard.task(shard_name, "increment")
 	
 	@staticmethod
 	def number_of_favorites(track_id):
@@ -119,21 +111,11 @@ class Track(db.Model):
 	@staticmethod
 	def increment_favorites_counter(track_id):
 		shard_name = COUNTER_OF_FAVORITES_PREFIX + str(track_id)
-		Track.add_task(shard_name, "increment")
+		Shard.task(shard_name, "increment")
 	
 	@staticmethod
 	def decrement_favorites_counter(track_id):
 		shard_name = COUNTER_OF_FAVORITES_PREFIX + str(track_id)
-		Track.add_task(shard_name, "decrement")
-	
-	@staticmethod
-	def add_task(shard_name, method):
-		task = Task(
-			url = "/taskqueue/counter",
-			params = {
-				"shard_name": shard_name,
-				"method": method
-			}
-		)
-		task.add(queue_name = "counters-queue")
-	
+		Shard.task(shard_name, "decrement")
+		
+		

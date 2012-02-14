@@ -76,24 +76,12 @@ class StationApi():
 		return self._number_of_sessions
 	
 	def increment_sessions_counter(self):
-		task = Task(
-			url = "/taskqueue/counter",
-			params = {
-				"shard_name": self._counter_of_sessions_id,
-				"method": "increment"
-			}
-		)
-		task.add(queue_name = "counters-queue")
+		shard_name = self._counter_of_sessions_id
+		Shard.task(shard_name, "increment")
 
 	def decrement_sessions_counter(self):
-		task = Task(
-			url = "/taskqueue/counter",
-			params = {
-				"shard_name": self._counter_of_sessions_id,
-				"method": "decrement"
-			}
-		)
-		task.add(queue_name = "counters-queue")		
+		shard_name = self._counter_of_sessions_id
+		Shard.task(shard_name, "decrement")
 	
 	# Returns the current station queue
 	@property
@@ -292,25 +280,13 @@ class StationApi():
 	
 	# Starts a task that will increment the number of broadcasts
 	def increment_broadcasts_counter(self):
-		task = Task(
-			url = "/taskqueue/counter",
-			params = {
-				"shard_name": self._counter_of_broadcasts_id,
-				"method": "increment",
-			}
-		)
-		task.add(queue_name = "counters-queue")
+		shard_name = self._counter_of_broadcasts_id
+		Shard.task(shard_name, "increment")
 	
 	# Starts a task that will decrement the number of broadcasts
 	def decrement_broadcasts_counter(self):
-		task = Task(
-			url = "/taskqueue/counter",
-			params = {
-				"shard_name": self._counter_of_broadcasts_id,
-				"method": "decrement"
-			}
-		)
-		task.add(queue_name = "counters-queue")
+		shard_name = self._counter_of_broadcasts_id
+		Shard.task(shard_name, "decrement")
 	
 	@property
 	def number_of_views(self):
@@ -328,14 +304,9 @@ class StationApi():
 		Track.increment_views_counter(track_id)
 		
 		# Increment the views counter of the station
-		task = Task(
-			url = "/taskqueue/counter",
-			params = {
-				"shard_name": self._counter_of_views_id,
-				"method": "increment"
-			}
-		)
-		task.add(queue_name = "counters-queue")
+		shard_name = self._counter_of_views_id
+		Shard.task(shard_name, "increment")
+		
 	
 	def get_broadcasts(self, offset):
 		timestamp = timegm(offset.utctimetuple())

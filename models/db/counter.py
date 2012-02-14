@@ -3,6 +3,7 @@ import os
 
 from google.appengine.api import memcache
 from google.appengine.ext import db
+from google.appengine.api.taskqueue import Task
 
 class Shard(db.Model):
 	num = db.IntegerProperty(required=True, default=20)
@@ -48,7 +49,18 @@ class Shard(db.Model):
 		db.run_in_transaction(txn)
 		
 		memcache_name = os.environ["CURRENT_VERSION_ID"] + "." + name
-		memcache.decr(memcache_name)		
+		memcache.decr(memcache_name)
+	
+	@staticmethod
+	def task(name, method):
+		task = Task(
+			url = "/taskqueue/counter",
+			params = {
+				"shard_name": name,
+				"method": method
+			}
+		)
+		task.add(queue_name = "counters-queue")		
 	
 
 class Counter(db.Model):

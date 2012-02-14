@@ -257,7 +257,7 @@ class UserApi:
 			logging.info("Favorite deleted from datastore")
 			
 			self.decrement_favorites_counter()
-			logging.info("Favorite counter decremented")
+			logging.info("User Favorites counter decremented")
 			
 			Track.decrement_favorites_counter(track.key().id())
 			logging.info("Track favorites counter decremented")
@@ -270,20 +270,9 @@ class UserApi:
 		return self._number_of_favorites
 	
 	def increment_favorites_counter(self):
-		self.add_task("increment")
+		shard_name = self._counter_of_favorites_id
+		Shard.task(shard_name, "increment")
 
 	def decrement_favorites_counter(self):
-		self.add_task("decrement")		
-		
-	def add_task(self, method):
-		task = Task(
-			url = "/taskqueue/counter",
-			params = {
-				"shard_name": self._counter_of_favorites_id,
-				"method": method,
-			}
-		)
-		task.add(queue_name = "counters-queue")
-		
-		
-		
+		shard_name = self._counter_of_favorites_id
+		Shard.task(shard_name, "decrement")
