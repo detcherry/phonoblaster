@@ -3,6 +3,7 @@ from google.appengine.ext.webapp.util import run_wsgi_app
 
 from controllers.home import HomeHandler
 from controllers.all import AllHandler
+from controllers.profile import ProfileHandler
 from controllers.station.create import StationCreateHandler
 from controllers.station.check import StationCheckHandler
 from controllers.station.station import StationHandler
@@ -51,6 +52,7 @@ application = webapp.WSGIApplication(
 		('/track/([0-9]+)', TrackHandler),
 		('/suggestion/([\w.]+)', SuggestionHandler),
 		('/station/page', StationPageHandler),
+		('/user/([0-9]+)', ProfileHandler),
 		('/.*', AllHandler),
 	],
     debug=True

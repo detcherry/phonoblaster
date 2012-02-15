@@ -1,0 +1,24 @@
+@import url("station/root.css");
+
+/*------- CORRECTIONS -------*/
+
+#right-column{
+	margin-top:0px;
+}
+
+#right-column ul{
+	padding-top:48px;
+}
+
+#tab-content-wrap{
+	margin-top:0px;
+}
+
+#right-column .tab-content .fixed{
+	margin-top: 35px;	
+	height:0px;
+}
+
+#right-column .tab-items{
+	margin-top: 51px;
+}
