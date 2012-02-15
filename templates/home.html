@@ -1,12 +1,12 @@
 {% extends "base.html" %}
 {% block style %}
-	<link type="text/css" rel="stylesheet" href="/static/css/home.css">
+	<link type="text/css" rel="stylesheet" href="/{{ static }}/css/home.css">
 {% endblock %}
 
 {% block main %}
 	{% if not user_proxy %}
 		<div id="welcome-box">
-			<img src="/static/images/icon.png">
+			<img src="/{{ static }}/images/icon.png">
 			<h2>Broadcast your music!</h2>
 			<p class="description">Create your station, play your favorite music and let the world listen to it!</p>
 			<p><a href="#" class="login btn primary">Login with Facebook</a></p>
@@ -36,7 +36,7 @@
 							<span><a href="{{ site_url }}/{{ station.shortname }}">{{ station.name }}</a></span>
 						</p>
 						<p>
-							<img class="loader" src="/static/images/loader.gif" style="visibility:hidden;"/>
+							<img class="loader" src="/{{ static }}/images/loader.gif" style="visibility:hidden;"/>
 							<a href="{{ site_url }}/{{ station.shortname }}" class="btn">Broadcast!</a>
 						</p>
 					</div>
@@ -49,7 +49,7 @@
 							<img src="https://graph.facebook.com/{{ contribution.page_id }}/picture" class="thumbnail"/>
 							<p class="page-name"><span>{{ contribution.page_name }}</span></p>
 							<p>
-								<img class="loader" src="/static/images/loader.gif" style="visibility:hidden;"/>
+								<img class="loader" src="/{{ static }}/images/loader.gif" style="visibility:hidden;"/>
 								<a href="#" class="btn" id="{{ contribution.page_id }}">Create now!</a>
 							</p>
 						</div>
@@ -101,6 +101,6 @@
 
 {% block script %}
 	{% if not user_stations and user_contributions %}
-		<script type="text/javascript" src="/static/js/home.js"></script>
+		<script type="text/javascript" src="/{{ static }}/js/home.js"></script>
 	{% endif %}
 {% endblock %}

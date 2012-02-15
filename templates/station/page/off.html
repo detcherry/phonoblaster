@@ -1,7 +1,7 @@
 {% extends "station/page/root.html" %}
 
 {% block style %}
-	<link type="text/css" rel="stylesheet" href="/static/css/station/page/off.css">
+	<link type="text/css" rel="stylesheet" href="/{{ static }}/css/station/page/off.css">
 {% endblock %}
 
 {% block main %}
@@ -11,7 +11,7 @@
 </div>
 <div id="video">
 	<div id="player-wrapper">
-		<img src="/static/images/loader.gif"/>
+		<img src="/{{ static }}/images/loader.gif"/>
 		<!-- <div id="youtube-player"></div> -->
 	</div>
 </div>
@@ -35,7 +35,7 @@
 			<img src="http://graph.facebook.com/{{ user_proxy.user.key.name }}/picture?type=square">
 			{% endif %}
 		{% else %}
-		<img src="/static/images/unknown-listener.png">
+		<img src="/{{ static }}/images/unknown-listener.png">
 		{% endif %}
 		<form method="post" action="" id="comment">
 			<input type="text" name="comment" id="comment" value="Comment..." autocomplete="off"/>
@@ -55,18 +55,18 @@
 {% endblock %}
 
 {% block script %}
-<script type="text/javascript" src="/static/js/library/favorite.js"></script>
+<script type="text/javascript" src="/{{ static }}/js/library/favorite.js"></script>
 
-<script type="text/javascript" src="/static/js/station/swfobject.js"></script>
-<script type="text/javascript" src="/static/js/station/tab.js"></script>
-<script type="text/javascript" src="/static/js/station/comment.js"></script>
+<script type="text/javascript" src="/{{ static }}/js/station/swfobject.js"></script>
+<script type="text/javascript" src="/{{ static }}/js/station/tab.js"></script>
+<script type="text/javascript" src="/{{ static }}/js/station/comment.js"></script>
 
-<script type="text/javascript" src="/static/js/station/off/embedded.js"></script>
-<script type="text/javascript" src="/static/js/station/off/broadcast.js"></script>
-<script type="text/javascript" src="/static/js/station/off/off.js"></script>
+<script type="text/javascript" src="/{{ static }}/js/station/off/embedded.js"></script>
+<script type="text/javascript" src="/{{ static }}/js/station/off/broadcast.js"></script>
+<script type="text/javascript" src="/{{ static }}/js/station/off/off.js"></script>
 
-<script type="text/javascript" src="/static/js/station/page/page.js"></script>
-<script type="text/javascript" src="/static/js/station/page/off.js"></script>
+<script type="text/javascript" src="/{{ static }}/js/station/page/page.js"></script>
+<script type="text/javascript" src="/{{ static }}/js/station/page/off.js"></script>
 <script type="text/javascript">
 	//--- Reset ---
 	USER = null;

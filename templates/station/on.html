@@ -1,7 +1,7 @@
 {% extends "station/root.html" %}
 
 {% block style %}
-	<link type="text/css" rel="stylesheet" href="/static/css/station/on.css" />
+	<link type="text/css" rel="stylesheet" href="/{{ static }}/css/station/on.css" />
 {% endblock %}
 
 {% block left-column %}
@@ -47,7 +47,7 @@
 		</div>
 		<div id="video">
 			<div id="player-wrapper">
-				<img src="/static/images/loader.gif"/>
+				<img src="/{{ static }}/images/loader.gif"/>
 				<!--<div id="youtube-player"></div>-->
 			</div>
 			<div id="video-settings">
@@ -56,8 +56,8 @@
 				<div id="counter-right">0:00</div>
 				<div id="volume">
 					<a href="#">
-						<img src="/static/images/unmuted.png" id="on"/>
-						<img src="/static/images/muted.png" id="off" style="display:none;"/>
+						<img src="/{{ static }}/images/unmuted.png" id="on"/>
+						<img src="/{{ static }}/images/muted.png" id="off" style="display:none;"/>
 					</a>
 				</div>
 			</div>
@@ -84,7 +84,7 @@
 				<img class="tuto" data-original-title="{{ user_proxy.user.first_name }} {{ user_proxy.user.last_name }}" src="http://graph.facebook.com/{{ user_proxy.user.key.name }}/picture?type=square">
 				{% endif %}
 			{% else %}
-			<img src="/static/images/unknown-listener.png">
+			<img src="/{{ static }}/images/unknown-listener.png">
 			{% endif %}
 			<form method="post" action="" id="comment">
 				<input type="text" name="comment" id="comment" value="Comment..." autocomplete="off"/>
@@ -168,7 +168,7 @@
 				<h2>Broadcast now!</h2>
 				<h3>Put the tracks you recently posted on <strong></strong> in the queue!</h3>
 				<div id="recommandations-zone">
-					<img src="/static/images/loader.gif" class="loader">
+					<img src="/{{ static }}/images/loader.gif" class="loader">
 				</div>
 				<div class="modal-footer">
 					<a class="btn primary">Go to station</a>
@@ -227,27 +227,27 @@
 <!-- App Engine -->
 <script type="text/javascript" src="/_ah/channel/jsapi"></script>
 <!-- Station -->
-<script type="text/javascript" src="/static/js/library/json2.js"></script>
-<script type="text/javascript" src="/static/js/library/tab.js"></script>
-<script type="text/javascript" src="/static/js/library/favorite.js"></script>
+<script type="text/javascript" src="/{{ static }}/js/library/json2.js"></script>
+<script type="text/javascript" src="/{{ static }}/js/library/tab.js"></script>
+<script type="text/javascript" src="/{{ static }}/js/library/favorite.js"></script>
 
-<script type="text/javascript" src="/static/js/station/swfobject.js"></script>
-<script type="text/javascript" src="/static/js/station/tab.js"></script>
-<script type="text/javascript" src="/static/js/station/comment.js"></script>
-<script type="text/javascript" src="/static/js/station/counter.js"></script>
+<script type="text/javascript" src="/{{ static }}/js/station/swfobject.js"></script>
+<script type="text/javascript" src="/{{ static }}/js/station/tab.js"></script>
+<script type="text/javascript" src="/{{ static }}/js/station/comment.js"></script>
+<script type="text/javascript" src="/{{ static }}/js/station/counter.js"></script>
 
-<script type="text/javascript" src="/static/js/station/on/session.js"></script>
-<script type="text/javascript" src="/static/js/station/on/chromeless.js"></script>
-<script type="text/javascript" src="/static/js/station/on/alert.js"></script>
-<script type="text/javascript" src="/static/js/station/on/recommandation.js"></script>
-<script type="text/javascript" src="/static/js/station/on/queue.js"></script>
-<script type="text/javascript" src="/static/js/station/on/suggestion.js"></script>
-<script type="text/javascript" src="/static/js/station/on/search.js"></script>
-<script type="text/javascript" src="/static/js/station/on/status.js"></script>
-<script type="text/javascript" src="/static/js/station/on/track.js"></script>
-<script type="text/javascript" src="/static/js/station/on/viral.js"></script>
-<script type="text/javascript" src="/static/js/station/on/air.js"></script>
-<script type="text/javascript" src="/static/js/station/on/on.js"></script>
+<script type="text/javascript" src="/{{ static }}/js/station/on/session.js"></script>
+<script type="text/javascript" src="/{{ static }}/js/station/on/chromeless.js"></script>
+<script type="text/javascript" src="/{{ static }}/js/station/on/alert.js"></script>
+<script type="text/javascript" src="/{{ static }}/js/station/on/recommandation.js"></script>
+<script type="text/javascript" src="/{{ static }}/js/station/on/queue.js"></script>
+<script type="text/javascript" src="/{{ static }}/js/station/on/suggestion.js"></script>
+<script type="text/javascript" src="/{{ static }}/js/station/on/search.js"></script>
+<script type="text/javascript" src="/{{ static }}/js/station/on/status.js"></script>
+<script type="text/javascript" src="/{{ static }}/js/station/on/track.js"></script>
+<script type="text/javascript" src="/{{ static }}/js/station/on/viral.js"></script>
+<script type="text/javascript" src="/{{ static }}/js/station/on/air.js"></script>
+<script type="text/javascript" src="/{{ static }}/js/station/on/on.js"></script>
 <script type="text/javascript">
 	/*--- Reset ---*/
 	USER = null;

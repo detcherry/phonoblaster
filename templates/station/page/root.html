@@ -1,7 +1,7 @@
 {% extends "station/root.html" %}
 
 {% block style %}
-	<link type="text/css" rel="stylesheet" href="/static/css/station/page/root.css">
+	<link type="text/css" rel="stylesheet" href="/{{ static }}/css/station/page/root.css">
 {% endblock %}
 
 {% block header %}
@@ -13,7 +13,7 @@
 {% block footer %}
 <div id="bottom-bar">
 	<div class="container">
-		<a href="{{ site_url }}" target="_blank"><img src="/static/images/phonoblaster.png"></a>
+		<a href="{{ site_url }}" target="_blank"><img src="/{{ static }}/images/phonoblaster.png"></a>
 		<p>Broadcast your music!</p>
 	</div>
 </div>

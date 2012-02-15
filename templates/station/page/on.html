@@ -1,7 +1,7 @@
 {% extends "station/page/root.html" %}
 
 {% block style %}
-	<link type="text/css" rel="stylesheet" href="/static/css/station/page/on.css">
+	<link type="text/css" rel="stylesheet" href="/{{ static }}/css/station/page/on.css">
 {% endblock %}
 
 
@@ -15,7 +15,7 @@
 </div>
 <div id="video">
 	<div id="player-wrapper">
-		<img src="/static/images/loader.gif"/>
+		<img src="/{{ static }}/images/loader.gif"/>
 		<!-- <div id="youtube-player"></div> -->
 	</div>
 	<div id="video-settings">
@@ -24,8 +24,8 @@
 		<div id="counter-right">0:00</div>
 		<div id="volume">
 			<a href="#">
-				<img src="/static/images/unmuted.png" id="on"/>
-				<img src="/static/images/muted.png" id="off" style="display:none;"/>
+				<img src="/{{ static }}/images/unmuted.png" id="on"/>
+				<img src="/{{ static }}/images/muted.png" id="off" style="display:none;"/>
 			</a>
 		</div>
 	</div>
@@ -50,7 +50,7 @@
 			<img src="http://graph.facebook.com/{{ user_proxy.user.key.name }}/picture?type=square">
 			{% endif %}
 		{% else %}
-		<img src="/static/images/unknown-listener.png">
+		<img src="/{{ static }}/images/unknown-listener.png">
 		{% endif %}
 		<form method="post" action="" id="comment">
 			<input type="text" name="comment" id="comment" value="Comment..." autocomplete="off"/>
@@ -78,21 +78,21 @@
 <!-- App Engine -->
 <script type="text/javascript" src="/_ah/channel/jsapi"></script>
 <!-- Station -->
-<script type="text/javascript" src="/static/js/library/json2.js"></script>
-<script type="text/javascript" src="/static/js/library/favorite.js"></script>
+<script type="text/javascript" src="/{{ static }}/js/library/json2.js"></script>
+<script type="text/javascript" src="/{{ static }}/js/library/favorite.js"></script>
 
-<script type="text/javascript" src="/static/js/station/swfobject.js"></script>
-<script type="text/javascript" src="/static/js/station/tab.js"></script>
-<script type="text/javascript" src="/static/js/station/comment.js"></script>
-<script type="text/javascript" src="/static/js/station/counter.js"></script>
+<script type="text/javascript" src="/{{ static }}/js/station/swfobject.js"></script>
+<script type="text/javascript" src="/{{ static }}/js/station/tab.js"></script>
+<script type="text/javascript" src="/{{ static }}/js/station/comment.js"></script>
+<script type="text/javascript" src="/{{ static }}/js/station/counter.js"></script>
 
-<script type="text/javascript" src="/static/js/station/on/session.js"></script>
-<script type="text/javascript" src="/static/js/station/on/chromeless.js"></script>
-<script type="text/javascript" src="/static/js/station/on/queue.js"></script>
-<script type="text/javascript" src="/static/js/station/on/on.js"></script>
+<script type="text/javascript" src="/{{ static }}/js/station/on/session.js"></script>
+<script type="text/javascript" src="/{{ static }}/js/station/on/chromeless.js"></script>
+<script type="text/javascript" src="/{{ static }}/js/station/on/queue.js"></script>
+<script type="text/javascript" src="/{{ static }}/js/station/on/on.js"></script>
 
-<script type="text/javascript" src="/static/js/station/page/page.js"></script>
-<script type="text/javascript" src="/static/js/station/page/on.js"></script>
+<script type="text/javascript" src="/{{ static }}/js/station/page/page.js"></script>
+<script type="text/javascript" src="/{{ static }}/js/station/page/on.js"></script>
 <script type="text/javascript">
 	/*--- Reset ---*/
 	USER = null;

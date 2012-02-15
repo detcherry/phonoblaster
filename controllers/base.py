@@ -81,6 +81,7 @@ class BaseHandler(webapp.RequestHandler):
 		self._template_values["facebook_app_id"] = config.FACEBOOK_APP_ID
 		self._template_values["site_url"] = config.SITE_URL
 		self._template_values["version"] = config.VERSION
+		self._template_values["static"] = "static"
 		
 		relative_path = os.path.join("../templates/", template_path)
 		path = os.path.join(os.path.dirname(__file__), relative_path)

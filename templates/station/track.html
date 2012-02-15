@@ -20,7 +20,7 @@
 {% endblock %}
 
 {% block style %}
-	<link type="text/css" rel="stylesheet" href="/static/css/station/track.css" />
+	<link type="text/css" rel="stylesheet" href="/{{ static }}/css/station/track.css" />
 {% endblock %}
 
 {% block middle-column %}
@@ -57,15 +57,15 @@
 {% endblock %}
 
 {% block script %}
-<script type="text/javascript" src="/static/js/library/favorite.js"></script>
+<script type="text/javascript" src="/{{ static }}/js/library/favorite.js"></script>
 
-<script type="text/javascript" src="/static/js/station/swfobject.js"></script>
-<script type="text/javascript" src="/static/js/station/counter.js"></script>
+<script type="text/javascript" src="/{{ static }}/js/station/swfobject.js"></script>
+<script type="text/javascript" src="/{{ static }}/js/station/counter.js"></script>
 
-<script type="text/javascript" src="/static/js/station/off/embedded.js"></script>
-<script type="text/javascript" src="/static/js/station/tab.js"></script>
-<script type="text/javascript" src="/static/js/station/latest.js"></script>
-<script type="text/javascript" src="/static/js/station/track.js"></script>
+<script type="text/javascript" src="/{{ static }}/js/station/off/embedded.js"></script>
+<script type="text/javascript" src="/{{ static }}/js/station/tab.js"></script>
+<script type="text/javascript" src="/{{ static }}/js/station/latest.js"></script>
+<script type="text/javascript" src="/{{ static }}/js/station/track.js"></script>
 <script type="text/javascript">
 	//--- Reset ---
 	USER = null;
