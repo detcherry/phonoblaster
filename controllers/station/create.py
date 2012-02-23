@@ -12,37 +12,25 @@ class StationCreateHandler(BaseHandler):
 	def get(self):
 		template_values = {}
 		
-		number_of_favorites = self.user_proxy.number_of_favorites
 		user_contributions = self.user_proxy.contributions
 		
 		user_stations = None
 		if user_contributions:
 			logging.info("User is admin of at least one page")
-			user_page_ids = []
-			for contribution in user_contributions:
-				user_page_ids.append(contribution["page_id"])
-			
-			# Check if some pages have been already created
-			user_stations = []
+			user_page_ids = [contribution["page_id"] for contribution in user_contributions]
 			results = Station.get_by_key_name(user_page_ids)
-			for result in results:
+			
+			for i in range(len(results)):
+				result = results[i]
 				if result is not None:
-					logging.info("User is admin of at least one station")
-					user_stations.append(result)
-		
-		if(user_stations and len(user_stations) > 0):
-			logging.info("User already has a station")
-			station = user_stations[0]
-			self.redirect("/"+ station.shortname)
-		else:
-			logging.info("User does not have a station yet")
-			template_values = {
-				"user_contributions": user_contributions,
-				"number_of_favorites": number_of_favorites,
-			}
-		
-			self.render("station/create.html", template_values)
-	
+					# Remove contribution from list (station already created)
+					user_contributions.pop(i)
+				
+		template_values = {
+			"user_contributions": user_contributions,
+		}
+
+		self.render("station/create.html", template_values)
 	
 	@login_required
 	def post(self):

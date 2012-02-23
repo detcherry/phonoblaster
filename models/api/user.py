@@ -14,6 +14,7 @@ from models.db.friendships import Friendships
 from models.db.favorite import Favorite
 from models.db.track import Track
 from models.db.counter import Shard
+from models.db.station import Station
 
 MEMCACHE_USER_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".user."
 MEMCACHE_USER_FRIENDS_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".friends.user."
@@ -186,6 +187,24 @@ class UserApi:
 		
 		return self._contributions
 	
+	# Return the user stations (stations created he's admin of)
+	@property
+	def stations(self):
+		if not hasattr(self, "_stations"):
+			contributions = self.contributions
+			page_ids = [c["page_id"] for c in contributions]
+			
+			results = Station.get_by_key_name(page_ids)
+			stations = []
+			
+			for result in results:
+				if result is not None:
+					stations.append(result)
+					
+			self._stations = stations
+		
+		return self._stations
+
 	# Tells if a user is an admin of a specific page 
 	def is_admin_of(self, page_id):
 		for contribution in self.contributions:

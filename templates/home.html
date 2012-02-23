@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block style %}
+	<link type="text/css" rel="stylesheet" href="/static/css/station/create.css">
+{% endblock %}
+
+{% block main %}
+<div id="create">
+	<h2>Broadcast <em>music</em> in one of your stations!</h2>
+	{% for station in user_stations %}
+		<div class="contribution">
+			<img src="https://graph.facebook.com/{{ station.key.name }}/picture" class="thumbnail"/>
+			<p class="page-name"><span class="middle">{{ station.name }}</span></p>
+			<p>
+				<img class="loader" src="/static/images/loader.gif" style="visibility:hidden;"/>
+				<a href="/{{ station.shortname }}" class="btn">Tune in!</a>
+			</p>
+		</div>
+	{% endfor %}
+</div>
+{% endblock %}

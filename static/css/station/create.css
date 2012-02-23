@@ -13,13 +13,13 @@
 	width:370px;
 	text-align:center;
 	font-size:14px;
+	letter-spacing:0px;
 	font-weight:normal;
 	color:#999;
 	border: 1px solid #E1E1E1;
 }
 
 #create h2 em{
-	font-size:20px;
 	font-weight:bold;
 	color:#333;
 }
