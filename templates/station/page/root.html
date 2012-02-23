@@ -18,7 +18,16 @@
 		<div class="stroke black"></div>
 		{% block top-right %}
 		{% endblock %}
-		<div id="top-left-status" class="off">off air</div>
+		{% if on_air %}
+		<div id="top-left-status" class="on">
+			<a href="{{ site_url }}/{{ station_proxy.station.shortname }}" target="_top">on air</a>
+		</div>
+		{% else %}
+		<div id="top-left-status" class="off">
+			<a href="{{ site_url }}/{{ station_proxy.station.shortname }}" target="_top">off air</a>
+		</div>
+		{% endif %}
+		<!--<div id="top-left-status" class="off">off air</div>-->
 	</div>
 	<!-- MEDIA -->
 	<div id="media">

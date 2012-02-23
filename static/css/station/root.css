@@ -24,11 +24,11 @@
 	border:1px solid #E1E1E1;
 }
 
-#top-left-status.on a:hover{
+#top-left-status.on a, #top-left-status.on a:hover{
 	color:white;
 }
 
-#top-left-status.off a:hover{
+#top-left-status.off a, #top-left-status.off a:hover{
 	color:#636363;
 }
 

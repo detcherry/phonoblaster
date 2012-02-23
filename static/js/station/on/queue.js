@@ -491,7 +491,8 @@ QueueManager.prototype.UILiveSet = function(item){
 		)
 	}
 	
-	$("#top-left-status").removeClass("off").addClass("on").html("On air")
+	$("#top-left-status").removeClass("off").addClass("on")
+	$("#top-left-status a").html("On air")
 }
 
 QueueManager.prototype.UILiveRemove = function(){
@@ -510,7 +511,8 @@ QueueManager.prototype.UILiveRemove = function(){
 	// Remove the submitter
 	$("#media-submitter").empty();
 	
-	$("#top-left-status").removeClass("on").addClass("off").html("Off air")
+	$("#top-left-status").removeClass("on").addClass("off")
+	$("#top-left-status a").html("Off air")
 }
 
 // -------------------------------- NEW --------------------------------------
