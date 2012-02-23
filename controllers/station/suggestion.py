@@ -1,10 +1,10 @@
 import re
 
-from controllers.station.root import RootHandler
+from controllers.station.secondary import SecondaryHandler
 from models.db.suggestion import Suggestion
 from models.api.station import StationApi
 
-class SuggestionHandler(RootHandler):
+class SuggestionHandler(SecondaryHandler):
 	def get(self, key_name):
 		suggestion = Suggestion.get_by_key_name(key_name)
 		

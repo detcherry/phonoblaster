@@ -1,26 +1,14 @@
 @import url("root.css");
 
-/* ----- A FEW CORRECTIONS ------*/
+/* ----- CORRECTIONS ------ */
 
-#video-details{
-	border-top:1px solid #DDD;
+#media-monitoring{
+	display:none;
 }
 
-#station-status{
-	height:40px;
-}
-
-#right-column ul{
-	margin-top:-66px;
-}
-
-#right-column .tab-content .fixed {
-	margin-top:-37px;
-	height:0px;
-}
-
-.tab-items{
-	margin-top:-21px;
+#media-details{
+	padding-top:10px;
+	border-top:1px solid #E1E1E1;
 }
 
 /*------ BROADCASTS TAB ------*/
@@ -30,32 +18,25 @@
 }
 
 .item:hover{
-	background-color: #F6F6F6;
+	background-color:#F5F5F5;
 }
 
 .item.active{
-	background-color: #E6E6E6;
+	background-color:#E1E1E1;
 }
 
 .item.active:hover{
-	background-color: #E6E6E6;
+	background-color:#E1E1E1;
 }
 
-/*--------- ON AIR ----------*/
+/*------ POPUP ON AIR ------*/
 
 #popup-onair{
-	display:none;
-	float:left;
 	width:500px;
-	height:282px;
 }
 
 #popup-onair h2{
-	padding:16px;
-	padding-left:24px;
 	margin-bottom:16px;
-	text-align:left;
-	border-bottom:1px solid #DDD;
 }
 
 #popup-onair div{
@@ -66,30 +47,28 @@
 	display:block;
 	float:left;
 	margin-left:24px;
-	max-height: 130px;
-	max-width: 96px;
+	max-height:130px;
+	max-width:96px;
 }
 
 #popup-onair h3{
 	float:left;
-	padding:16px;
+	padding-left:16px;
 	width:336px;
-	font-weight:normal;
-	font-size:13px;
 }
 
-#popup-onair span.clip{
+#popup-onair .item-picture{
 	margin-left:16px;
 }
 
-#popup-onair .title{
+#popup-onair .item-title{
 	width:200px;
 	margin-left:16px;
-	height:68px;
+	height:58px;
 }
 
-#popup-onair .title span{
-	height:68px;
+#popup-onair .item-title span{
+	height:58px;
 }
 
 #popup-onair .modal-footer{

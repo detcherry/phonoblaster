@@ -17,22 +17,31 @@ FavoriteSDK.prototype = {
 		var that = this;
 
 		$("a.fav").live("click", function(){
-			var new_item = that.track_manager.live_item;
-
-			// Change icon
-			var btn = $(this)
-			that.toggle(btn)
-
-			// POST new favorite to server
-			that.post(new_item, function(response){
-				that.postCallback(btn, response)
-			})
+			var station_client = that.track_manager.station_client
+			var user = station_client.user
 			
-			// Post action to FACEBOOK
-			that.postAction(new_item);
+			if(!user){
+				FACEBOOK.login()
+			}
+			else{
+				var new_item = that.track_manager.live_item;
 
+				// Change icon
+				var btn = $(this)
+				that.toggle(btn)
+
+				// POST new favorite to server
+				that.post(new_item, function(response){
+					that.postCallback(btn, response)
+				})
+
+				// Post action to FACEBOOK
+				that.postAction(new_item);
+			}
+			
 			$(this).blur();
 			return false;
+			
 		})
 	},
 	

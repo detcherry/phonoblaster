@@ -60,8 +60,8 @@ SessionManager.prototype = {
 			},
 			success: function(json){
 				// Init sessions counter
-				$("#sessions strong.number").html(json.number)
-				that.sessions_counter = new Counter("#sessions");
+				$("#top-right-sessions span.figure").html(json.number)
+				that.sessions_counter = new Counter("#top-right-sessions");
 				
 				if(json.friends){
 					friends = json.friends
@@ -124,14 +124,16 @@ SessionManager.prototype = {
 		var listener_name = session.listener_name;
 		var listener_url = session.listener_url;
 		
-		$("#friend-sessions").append(
+		$("#top-right-session-pictures").append(
 			$("<a/>")
 				.attr("id", channel_id)
 				.attr("href", listener_url)
 				.addClass("tuto") // Twipsy
+				.addClass("session-picture")
 				.attr("data-original-title", listener_name) // Twipsy
 				.append($("<img/>").attr("src", listener_picture_url))
 		)
+		
 	},
 	
 	// Check if a session is a friend of current user

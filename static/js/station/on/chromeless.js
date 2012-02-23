@@ -2,7 +2,9 @@
 // YOUTUBE MANAGER
 // ---------------------------------------------------------------------------
 
-function YoutubeManager(){
+function YoutubeManager(width, height){
+	this.width = width.toString();
+	this.height = height.toString();
 }
 
 YoutubeManager.prototype = {
@@ -27,14 +29,14 @@ YoutubeManager.prototype = {
 				wmode: "transparent"
 			};
 			var atts = { id: "ytplayer" };
-			var videoURL = "http://www.youtube.com/apiplayer?version=3&enablejsapi=1&playerapiid=player1"
-			swfobject.embedSWF(videoURL, "youtube-player", "510", "287", "8", null, null, params, atts);
+			var videoURL = "https://www.youtube.com/apiplayer?version=3&enablejsapi=1&playerapiid=player1"
+			swfobject.embedSWF(videoURL, "youtube-player", this.width, this.height, "8", null, null, params, atts);
 		}
 	},
 	
 	empty: function(){
-		$("#player-wrapper").empty();
-		$("#player-wrapper").append($("<div/>").attr("id","youtube-player"));
+		$("#media").empty();
+		$("#media").append($("<div/>").attr("id","youtube-player"));
 	},
 	
 }
@@ -63,23 +65,21 @@ $(function(){
 	
 	//Listen to volume events
 	VOLUME = true;
-	$("#volume a").click(function(){
+	$("#media-volume").click(function(){
 		if(VOLUME){
 			//turn it off
 			try{ytplayer.mute();}
 			catch(e){PHB.log(e);}
 			VOLUME = false;
-			$("#volume img#on").css("display","none");
-			$("#volume img#off").css("display","inline");
+			$(this).removeClass("unmuted").addClass("muted");
 		}
 		else{
 			//turn it on
 			try{ytplayer.unMute();}
 			catch(e){PHB.log(e);}
 			VOLUME = true;
-			$("#volume img#on").css("display","inline");
-			$("#volume img#off").css("display","none");			
-		}//*/
+			$(this).removeClass("muted").addClass("unmuted");
+		}
 		return false;
 	});
 	

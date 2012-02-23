@@ -1,224 +1,127 @@
 {% extends "station/root.html" %}
 
 {% block style %}
-	<link type="text/css" rel="stylesheet" href="/{{ static }}/css/station/on.css" />
+	<link type="text/css" rel="stylesheet" href="/static/css/station/on.css" />
 {% endblock %}
 
-{% block left-column %}
-	<div class="row" id="sessions" style="border:none">
-		<strong class="number">0</strong>
-		<span class="title">Listeners</span>
-	</div>
-	<div id="friend-sessions" style="border:none"></div>
-	<div class="row" id="bring-people">
-		<span class="btn primary tuto" data-original-title="Share this on Facebook!">
-			{% if is_admin %}Bring your fans!{% else %}Bring friends!{% endif %}
-		</span>
-	</div>
-	{% if user_proxy %}
-	<!-- Bring people (friends of fans) popup -->
-	<div id="popup-bring-people">
-		{% if is_admin %}<h2>Share on {{ station_proxy.station.name }} Wall</h2>{% else %}<h2>Share on your Wall</h2>{% endif %}
-		<form action="#" method="post">
-			{% if is_admin %}
-			<img class="thumbnail" src="https://graph.facebook.com/{{ station_proxy.station.key.name }}/picture?type=square"/>
-			{% else %}
-			<img class="thumbnail" src="https://graph.facebook.com/{{ user_proxy.user.key.name }}/picture?type=square"/>
-			{% endif %}
-			<textarea></textarea>
-			<img class="station" src="https://graph.facebook.com/{{ station_proxy.station.key.name }}/picture?type=square"/>
-			<div class="facebook-link">
-				<span class="link">{{ station_proxy.station.name }}</span>
-				<span class="description">Listen now to {{ station_proxy.station.name }} station on Phonoblaster.</span>
-			</div>
-			<div class="modal-footer">
-				<input type="submit" class="btn primary" value="Share!"/>
-			</div>
-		</form>
-	</div>
+{% block top-right %}
+<div id="top-right-sessions" class="stat">
+	<span class="figure">0</span>
+	<span class="title">Listeners<span>
+</div>
+<div id="top-right-session-pictures"></div>
+{% if is_admin %}
+<a id="top-right-share" class="btn primary" href="#" class="tuto" data-original-title="Share your station on Facebook!">
+	Bring your fans!
+</a>
+{% else %}
+<a id="top-right-share" class="btn primary" href="#" class="tuto" data-original-title="Share this station on Facebook!">
+	Bring your friends!
+</a>
+{% endif %}
+{% endblock %}
+
+{% block main-right %}
+<ul id="tabs">
+	<li class="tuto" data-original-title="Tracks soon on the air!">
+		<a href="#queue-tab" class="current" id="queue-header">
+			Queue
+			<span class="round"></span>
+		</a>
+	</li>
+	<li style="width:96px;" width="96px" class="tuto" data-original-title="Tracks suggested by listeners to the broadcaster">
+		<a href="#suggestions-tab" id="suggestions-header" style="width:84px">
+			Suggestions
+			<span class="round"></span>
+		</a>
+	</li>
+	{% if is_admin %}
+	<li class="tuto" data-original-title="Tracks you recently broadcast.">
+		<a href="#tracks-tab" id="tracks-header">Tracks</a>
+	</li>
 	{% endif %}
-{% endblock %}
-
-{% block middle-column %}
-	<div class="fixed">
-		<div id="station-title">
-			<h2>{{ station_proxy.station.name }}</h2>
-			<div class="fb-like" data-href="{{ station_proxy.station.link }}" data-send="false" data-layout="button_count"  data-show-faces="false"></div>
-		</div>
-		<div id="video">
-			<div id="player-wrapper">
-				<img src="/{{ static }}/images/loader.gif"/>
-				<!--<div id="youtube-player"></div>-->
-			</div>
-			<div id="video-settings">
-				<div id="counter-left">0:00</div>
-				<div id="progression-bar"><div id="filler"></div></div>
-				<div id="counter-right">0:00</div>
-				<div id="volume">
-					<a href="#">
-						<img src="/{{ static }}/images/unmuted.png" id="on"/>
-						<img src="/{{ static }}/images/muted.png" id="off" style="display:none;"/>
-					</a>
-				</div>
-			</div>
-		</div>
-		<div id="video-details">
-			<span class="clip"><!-- No image --></span>
-			<div class="above-title">
-				<h3>Current track</h3>
-				<div id="favorite-track"></div>
-			</div>
-			<div class="submitter"></div>
-			<div class="title">
-				<span class="middle">No track is being broadcast</span>
-			</div>
-			<div class="id"></div>
+</ul>
+<div id="queue-tab" class="tab-content">
+	<div id="search-header">
+		<input type="text" value="{% if is_admin %}Add a track{% else %}Suggest a track{% endif %}" id="search" autocomplete="off" class="tuto" data-original-title="Search and {% if is_admin %}add{% else %}suggest{% endif%} tracks from Youtube (soon: Soundcloud)"/>
+		<div id="search-overlay"></div>
+		<div id="search-tab">
+			<div class="tab-items"><!-- No search items --></div>
 		</div>
 	</div>
-	<div id="comments">
-		<div id="comment-box">
-			{% if user_proxy %}
-				{% if is_admin %}
-				<img class="tuto" data-original-title="{{ station_proxy.station.name }}" src="http://graph.facebook.com/{{ station_proxy.station.key.name }}/picture?type=square">
-				{% else %}
-				<img class="tuto" data-original-title="{{ user_proxy.user.first_name }} {{ user_proxy.user.last_name }}" src="http://graph.facebook.com/{{ user_proxy.user.key.name }}/picture?type=square">
-				{% endif %}
-			{% else %}
-			<img src="/{{ static }}/images/unknown-listener.png">
-			{% endif %}
-			<form method="post" action="" id="comment">
-				<input type="text" name="comment" id="comment" value="Comment..." autocomplete="off"/>
-				<span id="fb-sync" class="active tuto" data-original-title="Comment on Facebook: ON"></span>
-				<input type="submit" value="Comment" class="submit"/>
-			</form>
-		</div>
-		<div id="comments-zone">
+	<div class="tab-items">
+		<div class="init">No track in the station queue</div>
+	</div>
+</div>
+<div id="suggestions-tab" class="tab-content">
+	<div class="tab-items">
+		<div class="init">No suggestion</div>
+	</div>		
+</div>
+<div id="tracks-tab" class="tab-content">
+	<div class="tab-items">
+		<div class="init">No past track for this station</div>
+	</div>
+</div>
+<!-- Recommandation popup -->
+<div class="popup" id="popup-recommandations">
+	<h2>Broadcast now!</h2>
+	<h3>Put the tracks you recently posted on <strong></strong> in the queue!</h3>
+	<div id="recommandations-zone"></div>
+	<div class="modal-footer">
+		<a class="btn primary">Go to station</a>
+	</div>
+</div>
+<!-- Suggestion popup -->
+<div class="popup" id="popup-suggestion">
+	<h2>Suggest now!</h2>
+	<div class="item">
+		<div class="item-picture"><!-- No image yet --></div>
+		<div class="item-title">
+			<span class="middle"><!-- No title yet --></span>
 		</div>
 	</div>
-{% endblock %}
-
-{% block right-column %}
-	<div id="station-status" class="fixed">
-		<span class="btn">Off air</span>
-		<p>
-			<span class="middle">
-				<strong>{{ station_proxy.station.name }}</strong> is <em>not connected</em>
-			</span>
-		</p>
-		<div id="queue-status">
-			<span class="grey circle"></span>
-			<span class="grey circle"></span>
-			<span class="grey circle"></span>
-			<span class="grey circle"></span>
-			<span class="grey circle"></span>
-			<span class="grey circle"></span>
-			<span class="grey circle"></span>
-			<span class="grey circle"></span>
-			<span class="grey circle"></span>
-			<span class="grey circle"></span>
-			<div id="queue-counter" class="tuto" data-original-title="Number of tracks in the queue or live. Max: 10 tracks at the same time"><span>0</span>/10</div>
-		</div>
-	</div>
-	<div id="popup-offair">
-		<h2>{{ station_proxy.station.name }} is now OFF AIR!</h2>
-		<img src="https://graph.facebook.com/{{ station_proxy.station.key.name }}/picture?type=large" class="thumbnail"/>
-		<h3>But you can still check out my latest broadcasts</h3>
-		<div id="broadcasts"></div>
+	<h3>But say something cool about your track first!</h3>
+	<form action="#" method="post">
+		<textarea></textarea>
 		<div class="modal-footer">
-			<a href="/{{ station_proxy.station.shortname }}" class="btn primary">Check it out!</a>
+			<input type="submit" class="btn primary" value="Suggest!"/>
+			<div class="warning">A message must have 10+ characters.</div>
 		</div>
-	</div>
-	<ul id="tabs" class="fixed">
-		<li class="tuto" data-original-title="Tracks soon on the air!">
-			<a href="#queue-tab" class="current" id="queue-header">
-				Queue
-				<span class="round"></span>
-			</a>
-		</li>
-		<li style="width:96px;" class="tuto" data-original-title="Tracks suggested by listeners to the broadcaster">
-			<a href="#suggestions-tab" id="suggestions-header" style="width:84px">
-				Suggestions
-				<span class="round"></span>
-			</a>
-		</li>
+	</form>
+</div>
+<!-- Share popup -->
+<div class="popup" id="popup-share">
+	{% if is_admin %}<h2>Share on {{ station_proxy.station.name }} Wall</h2>{% else %}<h2>Share on your Wall</h2>{% endif %}
+	<form action="#" method="post">
 		{% if is_admin %}
-			<!-- Favorite tab is not displayed during first launch -->
-			<!--<li style="width:80px;"><a href="#favorites-tab" style="width:66px">Favorites</a></li>-->
-			<li class="tuto" data-original-title="Tracks you recently broadcast.">
-				<a href="#tracks-tab" id="tracks-header">Tracks</a>
-			</li>
-		{% endif%}
-	</ul>
-	<div id="tab-content-wrap">
-		<div id="queue-tab" class="tab-content">
-			<div id="queue-header" class="fixed">
-				<span id="search-icon"></span>
-				<input type="text" value="{% if is_admin %}Add a track{% else %}Suggest a track{% endif %}" id="search" autocomplete="off" class="tuto" data-original-title="Search and {% if is_admin %}add{% else %}suggest{% endif%} tracks from Youtube (soon: Soundcloud)"/>
-				<div id="search-overlay"></div>
-				<div id="search-tab">
-					<div class="tab-items">
-					</div>
-				</div>
-			</div>
-			<div class="tab-items">
-				<div class="init">No track in the station queue</div>
-			</div>
-			<!-- Recommandation popup not displayed in the tab -->
-			<div id="popup-recommandation">
-				<h2>Broadcast now!</h2>
-				<h3>Put the tracks you recently posted on <strong></strong> in the queue!</h3>
-				<div id="recommandations-zone">
-					<img src="/{{ static }}/images/loader.gif" class="loader">
-				</div>
-				<div class="modal-footer">
-					<a class="btn primary">Go to station</a>
-				</div>
-			</div>
+		<img class="thumbnail" src="https://graph.facebook.com/{{ station_proxy.station.key.name }}/picture?type=square"/>
+		{% else %}
+		<img class="thumbnail" src="https://graph.facebook.com/{{ user_proxy.user.key.name }}/picture?type=square"/>
+		{% endif %}
+		<textarea></textarea>
+		<img class="station" src="https://graph.facebook.com/{{ station_proxy.station.key.name }}/picture?type=square"/>
+		<div class="facebook-link">
+			<span class="link">{{ station_proxy.station.name }}</span>
+			<span class="description">Listen now to {{ station_proxy.station.name }} station on Phonoblaster.</span>
 		</div>
-		<div id="suggestions-tab" class="tab-content">
-			<div class="tab-items">
-				<div class="init">No suggestion</div>
-			</div>
-			<!-- Suggestion popup not displayed in the tab -->
-			<div id="popup-suggestion">
-				<div class="row" id="suggestion-recipient">
-					<div class="left">To</div>
-					<div class="right">{{ station_proxy.station.name }}</div>
-				</div>
-				<div class="row" id="suggestion-track">
-					<div class="left">Track</div>
-					<div class="right">
-						<span class="clip"><!-- No image yet --></span>
-						<div class="title"><span class="middle"><!-- No title yet --></span></div>
-					</div>
-				</div>
-				<form action="#" method="post">
-					<div class="row" id="suggestion-message">
-						<div class="left">Message</div>
-						<div class="right">
-							<input type="text" id="youtube-id" name="youtube-id" style="display:none;">
-							<textarea></textarea>
-						</div>
-					</div>
-					<div class="modal-footer">
-						<input type="submit" class="btn primary" value="Suggest!"/>
-						<div class="warning">A message must have 10+ characters.</div>
-					</div>
-				</form>
-			</div>
+		<div class="modal-footer">
+			<input type="submit" class="btn primary" value="Share!"/>
 		</div>
-		<!--<div id="favorites-tab" class="tab-content">
-			<div class="tab-items">
-				<div class="init">No favorite</div>
-			</div>
-		</div>-->
-		<div id="tracks-tab" class="tab-content">
-			<div class="tab-items">
-				<div class="init">No past tracks in this station</div>
-			</div>
-		</div>
+	</form>
+</div>
+<!-- Switch to off air popup -->
+<div class="popup" id="popup-offair">
+	<h2>{{ station_proxy.station.name }} is now OFF AIR!</h2>
+	<img src="https://graph.facebook.com/{{ station_proxy.station.key.name }}/picture?type=large" class="thumbnail"/>
+	<h3>But you can still check out my latest broadcasts</h3>
+	<div id="broadcasts"></div>
+	<div class="modal-footer">
+		<a href="/{{ station_proxy.station.shortname }}" class="btn primary">Check it out!</a>
 	</div>
+</div>
 {% endblock %}
+
 
 {% block script %}
 <!-- Pubnub -->
@@ -227,27 +130,26 @@
 <!-- App Engine -->
 <script type="text/javascript" src="/_ah/channel/jsapi"></script>
 <!-- Station -->
-<script type="text/javascript" src="/{{ static }}/js/library/json2.js"></script>
-<script type="text/javascript" src="/{{ static }}/js/library/tab.js"></script>
-<script type="text/javascript" src="/{{ static }}/js/library/favorite.js"></script>
+<script type="text/javascript" src="/static/js/library/json2.js"></script>
+<script type="text/javascript" src="/static/js/library/tab.js"></script>
+<script type="text/javascript" src="/static/js/library/favorite.js"></script>
 
-<script type="text/javascript" src="/{{ static }}/js/station/swfobject.js"></script>
-<script type="text/javascript" src="/{{ static }}/js/station/tab.js"></script>
-<script type="text/javascript" src="/{{ static }}/js/station/comment.js"></script>
-<script type="text/javascript" src="/{{ static }}/js/station/counter.js"></script>
+<script type="text/javascript" src="/static/js/station/swfobject.js"></script>
+<script type="text/javascript" src="/static/js/station/tab.js"></script>
+<script type="text/javascript" src="/static/js/station/comment.js"></script>
+<script type="text/javascript" src="/static/js/station/counter.js"></script>
 
-<script type="text/javascript" src="/{{ static }}/js/station/on/session.js"></script>
-<script type="text/javascript" src="/{{ static }}/js/station/on/chromeless.js"></script>
-<script type="text/javascript" src="/{{ static }}/js/station/on/alert.js"></script>
-<script type="text/javascript" src="/{{ static }}/js/station/on/recommandation.js"></script>
-<script type="text/javascript" src="/{{ static }}/js/station/on/queue.js"></script>
-<script type="text/javascript" src="/{{ static }}/js/station/on/suggestion.js"></script>
-<script type="text/javascript" src="/{{ static }}/js/station/on/search.js"></script>
-<script type="text/javascript" src="/{{ static }}/js/station/on/status.js"></script>
-<script type="text/javascript" src="/{{ static }}/js/station/on/track.js"></script>
-<script type="text/javascript" src="/{{ static }}/js/station/on/viral.js"></script>
-<script type="text/javascript" src="/{{ static }}/js/station/on/air.js"></script>
-<script type="text/javascript" src="/{{ static }}/js/station/on/on.js"></script>
+<script type="text/javascript" src="/static/js/station/on/session.js"></script>
+<script type="text/javascript" src="/static/js/station/on/chromeless.js"></script>
+<script type="text/javascript" src="/static/js/station/on/alert.js"></script>
+<script type="text/javascript" src="/static/js/station/on/recommandation.js"></script>
+<script type="text/javascript" src="/static/js/station/on/queue.js"></script>
+<script type="text/javascript" src="/static/js/station/on/suggestion.js"></script>
+<script type="text/javascript" src="/static/js/station/on/search.js"></script>
+<script type="text/javascript" src="/static/js/station/on/track.js"></script>
+<script type="text/javascript" src="/static/js/station/on/share.js"></script>
+<script type="text/javascript" src="/static/js/station/on/air.js"></script>
+<script type="text/javascript" src="/static/js/station/on/on.js"></script>
 <script type="text/javascript">
 	/*--- Reset ---*/
 	USER = null;

@@ -1,72 +1,23 @@
 {% extends "station/page/root.html" %}
 
 {% block style %}
-	<link type="text/css" rel="stylesheet" href="/{{ static }}/css/station/page/on.css">
+	<link type="text/css" rel="stylesheet" href="/static/css/station/page/on.css">
 {% endblock %}
 
+{% block top-right %}
+	<div id="top-right-sessions" class="stat">
+		<span class="figure">0</span>
+		<span class="title">Listeners<span>
+	</div>
+{% endblock %}
 
-{% block main %}
-<div id="station-title">
-	<a href="{{ site_url }}/{{ station_proxy.station.shortname }}" target="_top"><h2>{{ station_proxy.station.name }}</h2></a>
-	<div id="station-status"><span class="btn">Off air</span></div>
-	<div id="sessions">
-		<strong class="number">0</strong> people listening
-	</div>
-</div>
-<div id="video">
-	<div id="player-wrapper">
-		<img src="/{{ static }}/images/loader.gif"/>
-		<!-- <div id="youtube-player"></div> -->
-	</div>
-	<div id="video-settings">
-		<div id="counter-left">0:00</div>
-		<div id="progression-bar"><div id="filler"></div></div>
-		<div id="counter-right">0:00</div>
-		<div id="volume">
-			<a href="#">
-				<img src="/{{ static }}/images/unmuted.png" id="on"/>
-				<img src="/{{ static }}/images/muted.png" id="off" style="display:none;"/>
-			</a>
-		</div>
-	</div>
-</div>
-<div id="video-details">
-	<span class="clip"><!-- No image --></span>
-	<div class="above-title">
-		<h3>Current track</h3>
-		<div id="favorite-track"></div>
-	</div>
-	<div class="submitter"></div>
-	<div class="title">
-		<span class="middle">No track is being played</span>
-	</div>
-</div>
-<div id="comments">
-	<div id="comment-box">
-		{% if user_proxy %}
-			{% if is_admin %}
-			<img src="http://graph.facebook.com/{{ station_proxy.station.key.name }}/picture?type=square">
-			{% else %}
-			<img src="http://graph.facebook.com/{{ user_proxy.user.key.name }}/picture?type=square">
-			{% endif %}
-		{% else %}
-		<img src="/{{ static }}/images/unknown-listener.png">
-		{% endif %}
-		<form method="post" action="" id="comment">
-			<input type="text" name="comment" id="comment" value="Comment..." autocomplete="off"/>
-			<span id="fb-sync" class="active tuto" data-original-title="Comment on Facebook: ON"></span>
-		</form>
-	</div>
-	<div id="comments-zone">
-	</div>
-</div>
-<div id="queue-tab">
+{% block main-right %}
+<div id="queue-tab" class="tab-content">
 	<div class="tab-items">
+		<div class="init">No track in the queue.</div>
 	</div>
 	{% if not is_admin %}
-	<a href="{{ site_url }}/{{ station_proxy.station.shortname }}" target="_top" class="btn tuto" data-original-title="Suggest the next track {{ station_proxy.station.name }} will broadcast!">
-		<h3>Suggest a track!</h3>
-	</a>
+	<a href="{{ site_url }}/{{ station_proxy.station.shortname }}" target="_top" class="btn primary tuto" data-original-title="Suggest the next track {{ station_proxy.station.name }} will broadcast!">Suggest a track!</a>
 	{% endif %}
 </div>
 {% endblock %}
@@ -78,21 +29,21 @@
 <!-- App Engine -->
 <script type="text/javascript" src="/_ah/channel/jsapi"></script>
 <!-- Station -->
-<script type="text/javascript" src="/{{ static }}/js/library/json2.js"></script>
-<script type="text/javascript" src="/{{ static }}/js/library/favorite.js"></script>
+<script type="text/javascript" src="/static/js/library/json2.js"></script>
+<script type="text/javascript" src="/static/js/library/favorite.js"></script>
 
-<script type="text/javascript" src="/{{ static }}/js/station/swfobject.js"></script>
-<script type="text/javascript" src="/{{ static }}/js/station/tab.js"></script>
-<script type="text/javascript" src="/{{ static }}/js/station/comment.js"></script>
-<script type="text/javascript" src="/{{ static }}/js/station/counter.js"></script>
+<script type="text/javascript" src="/static/js/station/swfobject.js"></script>
+<script type="text/javascript" src="/static/js/station/tab.js"></script>
+<script type="text/javascript" src="/static/js/station/comment.js"></script>
+<script type="text/javascript" src="/static/js/station/counter.js"></script>
 
-<script type="text/javascript" src="/{{ static }}/js/station/on/session.js"></script>
-<script type="text/javascript" src="/{{ static }}/js/station/on/chromeless.js"></script>
-<script type="text/javascript" src="/{{ static }}/js/station/on/queue.js"></script>
-<script type="text/javascript" src="/{{ static }}/js/station/on/on.js"></script>
+<script type="text/javascript" src="/static/js/station/on/session.js"></script>
+<script type="text/javascript" src="/static/js/station/on/chromeless.js"></script>
+<script type="text/javascript" src="/static/js/station/on/queue.js"></script>
+<script type="text/javascript" src="/static/js/station/on/on.js"></script>
 
-<script type="text/javascript" src="/{{ static }}/js/station/page/page.js"></script>
-<script type="text/javascript" src="/{{ static }}/js/station/page/on.js"></script>
+<script type="text/javascript" src="/static/js/station/page/page.js"></script>
+<script type="text/javascript" src="/static/js/station/page/on.js"></script>
 <script type="text/javascript">
 	/*--- Reset ---*/
 	USER = null;

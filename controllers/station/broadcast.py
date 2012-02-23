@@ -1,10 +1,10 @@
 import re
 
-from controllers.station.root import RootHandler
+from controllers.station.secondary import SecondaryHandler
 from models.db.broadcast import Broadcast
 from models.api.station import StationApi
 
-class BroadcastHandler(RootHandler):
+class BroadcastHandler(SecondaryHandler):
 	def get(self, key_name):
 		broadcast = Broadcast.get_by_key_name(key_name)
 		

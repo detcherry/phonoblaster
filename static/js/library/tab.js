@@ -1,12 +1,12 @@
 $(function(){
-	var aTabController = new tabController();
+	var tab = new Tab();
 });
 
-function tabController(){
+function Tab(){
 	this.init()
 }
 
-tabController.prototype = {
+Tab.prototype = {
 	
 	init: function(){
 		

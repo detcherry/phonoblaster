@@ -1,0 +1,191 @@
+
+/*--------------- CREATE ---------------*/
+
+#create{
+	float:none;
+	margin:auto;
+	width:386px;
+	margin-bottom:400px;
+}
+
+#create h2{
+	padding:8px;
+	width:370px;
+	text-align:center;
+	font-size:14px;
+	font-weight:normal;
+	color:#999;
+	border: 1px solid #E1E1E1;
+}
+
+#create h2 em{
+	font-size:20px;
+	font-weight:bold;
+	color:#333;
+}
+
+#create .contribution{
+	padding:8px;
+	width:370px;
+	background:white;
+	border:1px solid #E1E1E1;
+	border-top:none;
+}
+
+#create img{
+	float:left;
+	width:50px;
+	height:50px;
+}
+
+#create p.page-name{
+	padding:8px;
+	width:196px;
+	height:34px;
+}
+
+#create p.page-name span{
+	height:34px;
+}
+
+#create img.loader{
+	margin-top:18px;
+	margin-right:5px;
+	height:20px;
+	width:20px;
+}
+
+#create .btn{
+	float:right;
+	margin-top:14px;
+	width:70px;
+	text-align:center;
+}
+
+/*---------- POP UP CREATION STATION -----------*/
+
+#popup-contribution{
+	display:none;
+	width:500px;
+	padding-top:18px;
+	-webkit-border-radius:4px;
+	-moz-border-radius:4px;
+	border-radius:4px;
+}
+
+#popup-contribution div, #popup-contribution h3{
+	float:left;
+}
+
+#popup-contribution h3{
+	width:245px;
+	margin-left:20px;
+	margin-top:25px;
+}
+
+#page-confirmation p{
+	clear:left;
+	margin-left:40px;
+}
+
+#page-screenshot{
+	padding:4px;
+	width:190px;
+	-webkit-border-radius:4px;
+	-moz-border-radius:4px;
+	border-radius:4px;
+	border: 1px solid #CCC;
+}
+
+#page-screenshot div.facebook-tab{
+	padding:4px;
+	width:182px;
+}
+
+#page-screenshot span.facebook-sprit{
+	float:left;
+	display:inline-block;
+	height:16px;
+	width:16px;
+	margin-right:4px;
+	background-repeat:no-repeat;
+	background:url("/static/images/facebook-sprits.png");
+}
+
+#page-screenshot span.wall{
+	background-position:-120px -108px;
+}
+
+#page-screenshot span.info{
+	background-position:-85px -126px;
+}
+
+#page-screenshot span.photos{
+	background-position:-50px -91px;
+}
+
+#page-screenshot span.phonoblaster{
+	background-position:-52px -143px;
+}
+
+#address-confirmation{
+	width:100%;
+}
+
+#address-confirmation form{
+	float:left;
+	width:100%;
+	margin-bottom:0px;
+}
+
+#address-confirmation p{
+	clear:left;
+	float:left;
+	margin-top:5px;
+	margin-left:40px;
+	margin-bottom:0px;
+	margin-right:5px;
+	width:148px;
+}
+
+#address-confirmation input#page-shortname{
+	float:left;
+	width:150px;
+}
+
+#shortname-status{
+	margin-top:7px;
+	margin-left:7px;
+}
+
+#address-confirmation .checking{
+	font-style:italic;
+}
+
+#address-confirmation .available{
+	color:#57A957;
+}
+
+#address-confirmation .unavailable{
+	color:#C43C35;
+}
+
+#popup-contribution .modal-footer{
+	clear:left;
+	float:left;
+	width:470px;
+	margin-top:30px;
+	-webkit-border-radius:0px 0px 4px 4px;
+	-moz-border-radius:0px 0px 4px 4px;
+	border-radius:0px 0px 4px 4px;
+}
+
+div#shortname-warning{
+	display:none;
+	float:right;
+	margin:0px;
+	padding-top:8px;
+	width:270px;
+	color:#C43C35;
+}
+

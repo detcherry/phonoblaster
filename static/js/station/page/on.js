@@ -1,10 +1,8 @@
 $(function(){
-	
 	$("#queue-tab a.btn").click(function(){
 		FACEBOOK.loginAndRedirect();
 		return false;
 	})
-	
 })
 
 // ---------------------------------------------------------------------------
@@ -13,7 +11,7 @@ $(function(){
 
 // ----------------- QUEUE ------------------
 
-// New constructor
+// New constructor, Youtube player dimensions changed
 QueueManager.prototype.init = function(station_client){
 	RealtimeTabManager.call(this, station_client);
 	
@@ -27,7 +25,7 @@ QueueManager.prototype.init = function(station_client){
 	
 	// Additional attributes
 	this.live_item = null;
-	this.youtube_manager = new YoutubeManager();
+	this.youtube_manager = new YoutubeManager(510, 287); 
 	
 	// Init Methods
 	this.get();
@@ -36,8 +34,8 @@ QueueManager.prototype.init = function(station_client){
 // No recommandations displayed
 QueueManager.prototype.noData = function(){
 	// UI modifications
-	$("#player-wrapper").empty();
-	$("#player-wrapper").append($("<div/>").attr("id","no-live").html("No live track."));
+	$("#media").empty();
+	$("#media").append($("<p/>").html("No live track."));
 }
 
 // No recommandations or switch to off air mode displayed
@@ -62,15 +60,8 @@ QueueManager.prototype.nextVideo = function(time_out){
 // No alert manager + no broadcast counter incremented
 QueueManager.prototype.newEvent = function(){}
 
-// No broadcast counter decremented + No UI room update
+// No broadcast counter decremented
 QueueManager.prototype.removeEvent = function(){}
-
-// Useless functions
-QueueManager.prototype.updateRoom = function(){}
-QueueManager.prototype.UIRoom = function(){}
-QueueManager.prototype.UIIncrementRoom = function(){}
-QueueManager.prototype.UIDecrementRoom = function(){}
-QueueManager.prototype.UISetRoom = function(new_room){}
 
 // ----------- SWITCH TO OFF AIR ------------
 
@@ -118,8 +109,8 @@ StationClient.prototype.dispatch = function(data){
 	PHB.log(entity + " " + event);
 	
 	var manager = null;
-	if(entity == "presence"){
-		manager = this.presence_manager;
+	if(entity == "session"){
+		manager = this.session_manager;
 	}
 	if(entity == "broadcast"){
 		manager = this.queue_manager;

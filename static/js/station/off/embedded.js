@@ -2,7 +2,9 @@
 // EMBEDDED YOUTUBE MANAGER
 // ---------------------------------------------------------------------------
 
-function EmbeddedYoutubeManager(onStateChangeManager){
+function EmbeddedYoutubeManager(onStateChangeManager, width, height){
+	this.width = width.toString();
+	this.height = height.toString();
 	ON_STATE_CHANGE_MANAGER = onStateChangeManager;
 }
 
@@ -27,15 +29,15 @@ EmbeddedYoutubeManager.prototype = {
 				wmode: "transparent"
 			};
 			var atts = { id: "ytplayer" };
-			var videoURL = "http://www.youtube.com/v/" + YOUTUBE_ID + "?version=3&enablejsapi=1&playerapiid=player1"
-			swfobject.embedSWF(videoURL, "youtube-player", "510", "315", "8", null, null, params, atts);
+			var videoURL = "https://www.youtube.com/v/" + YOUTUBE_ID + "?version=3&enablejsapi=1&playerapiid=player1"
+			swfobject.embedSWF(videoURL, "youtube-player", this.width, this.height, "8", null, null, params, atts);
 		}
 		
 	},
 	
 	empty: function(){
-		$("#player-wrapper").empty();
-		$("#player-wrapper").append($("<div/>").attr("id","youtube-player"));
+		$("#media").empty();
+		$("#media").append($("<div/>").attr("id","youtube-player"));
 	},
 	
 }

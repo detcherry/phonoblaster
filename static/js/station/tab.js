@@ -36,7 +36,7 @@ TabManager.prototype = {
 	processListen: function(){
 		var that = this;
 
-		var process_selector = this.selector + " .process-actions a.btn"
+		var process_selector = this.selector + " .item-process a.btn"
 		$(process_selector).live("click", function(){			
 			var btn = $(this);
 			var item_id = btn.attr("name");
@@ -154,7 +154,7 @@ TabManager.prototype = {
 	
 	deleteListen: function(){
 		var that = this;
-		var delete_selector = this.selector + " .item a.cross"
+		var delete_selector = this.selector + " a.item-cross"
 		
 		$(delete_selector).live("click", function(){
 			var item_id = $(this).attr("name");
@@ -389,54 +389,42 @@ ScrollTabManager.prototype.UIBuild = function(item){
 	}
 	
 	var div = $("<div/>").addClass("item").attr("id",id)
-	
 	div.append(
-		$("<span/>")
-			.addClass("square")
+		$("<div/>")
+			.addClass("item-picture")
+			.append($("<img/>").attr("src", youtube_thumbnail))
+	)
+	.append(
+		$("<div/>")
+			.addClass("item-title")
+			.append($("<span/>").addClass("middle").html(youtube_title))
+	)
+	.append(
+		$("<div/>")
+			.addClass("item-subtitle")
+			.append($("<div/>").addClass("item-duration").html(youtube_duration))
 			.append(
-				$("<img/>")
-					.attr("src", youtube_thumbnail)
+				$("<div/>")
+					.addClass("item-process")
+					.append(
+						$("<a/>")
+							.addClass("btn")
+							.attr("name", id)
+							.html(process_action)
+							.addClass("tuto")
+							.attr("data-original-title", process_info)
+					)
+					.append(
+						$("<a/>")
+							.addClass("preview")
+							.addClass("fancybox.iframe")
+							.attr("href", preview)
+							.addClass("tuto")
+							.attr("data-original-title", "Preview this track")
+					)
 			)
-		)
-		.append(
-			$("<div/>")
-				.addClass("title")
-				.append(
-					$("<span/>")
-						.addClass("middle")
-						.html(youtube_title)
-				)
-		)
-		.append(
-			$("<div/>")
-				.addClass("subtitle")
-				.append(
-					$("<div/>")
-						.addClass("duration")
-						.html(youtube_duration)
-				)
-				.append(
-					$("<div/>")
-						.addClass("process-actions")
-						.append(
-							$("<a/>")
-								.addClass("btn")
-								.attr("name",id)
-								.html(process_action)
-								.addClass("tuto")
-								.attr("data-original-title", process_info)
-						)
-						.append(
-							$("<a/>")
-								.addClass("preview")
-								.addClass("fancybox.iframe")
-								.attr("href",preview)
-								.addClass("tuto")
-								.attr("data-original-title", "Preview track")
-						)
-				)
-		)
-				
+	)
+					
 	return div;
 }
 

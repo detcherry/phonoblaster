@@ -54,17 +54,16 @@ AirManager.prototype = {
 		if(json.response){
 			this.air = true;
 			
-			// Display on air & station as connected
-			$("#station-status span.btn").addClass("danger").html("On air")
-			$("#station-status em").html("connected");
-			
+			// Display on air
+			$("#top-left-status").removeClass("off").addClass("on").html("On air")
+
 			// Update popup
 			var content = json.content;
 			var youtube_id = content.youtube_id;
 			var youtube_thumbnail = "http://i.ytimg.com/vi/" + youtube_id + "/default.jpg";
 			var youtube_title = content.youtube_title;
-			$("#popup-onair span.clip").append($("<img/>").attr("src", youtube_thumbnail))
-			$("#popup-onair .title span").html(youtube_title)
+			$("#popup-onair .item-picture").append($("<img/>").attr("src", youtube_thumbnail))
+			$("#popup-onair span.middle").html(youtube_title)
 			
 			// Display popup
 			$.fancybox($("#popup-onair"), {

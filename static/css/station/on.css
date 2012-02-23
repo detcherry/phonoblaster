@@ -1,42 +1,13 @@
 @import url("root.css");
 
-/*------ SESSIONS ---------*/
-
-#left-column #sessions strong{
-	visibility:hidden;
-}
-
-#friend-sessions{
-	text-align:center;
-	width:140px;
-}
-
-#friend-sessions a{
-	display:inline-block;
-	width:25px;
-	height:25px;
-}
-
-#friend-sessions a img{
-	display:inline;
-	height:25px;
-	width:25px;
-	float:left;
-}
-
-#bring-people .btn{
-	width:94px;
-	text-align:center;
-}
-
-/* --------- ALERT ------------*/
+/* ------- ALERT --------- */
 
 span.round{
-	display: none;
-	float: right;
+	display:none;
+	float:right;
 	margin-top:-4px;
-	height: 8px;
-	width: 8px;
+	height:8px;
+	width:8px;
 	background:#c43c35;
 	-webkit-border-radius:4px;
 	-moz-border-radius:4px;
@@ -46,75 +17,40 @@ span.round{
 	background-image: linear-gradient(top, #ee5f5b, #c43c35);
 }
 
-/* ------ RECOMMANDATION ------ */
+ul#tabs li a.alert{
+	color:#c43c35;
+}
 
-#popup-recommandation{
-	display:none;
+/* ------- SEARCH -------- */
+
+#search-header{
+	margin:15px;
+	margin-bottom:25px;
+	width:248px;
+	background:#FFFFFF;
+}
+
+input#search{
+	position:absolute;
+	top:211px;
+	z-index:3;
+	display:block;
 	float:left;
-	width:800px;
-	height:420px;
+	padding-right:32px;
+	width:211px;
+	background:url("/static/images/phonoblaster-sprits.png") no-repeat;
+	background-color:white;
+	background-position:217px -175px;
 }
 
-#popup-recommandation h2{
-	padding:16px;
-	padding-left:24px;
-	text-align:left;
-	border-bottom:1px solid #DDD;
-}
-
-#popup-recommandation h3{
-	padding: 16px;
-	padding-left: 24px;
-	font-weight: normal;
-	font-size: 13px;
-	color: grey;
-}
-
-#popup-recommandation img.loader{
-	margin-left:370px;
-	margin-top:120px;	
-}
-
-#popup-recommandation div{
-	float:left;
-}
-
-#popup-recommandation #recommandations-zone{
-	height:258px;
-	overflow-y:auto;
-}
-
-#popup-recommandation .item{
-	width:245px;
-	border-bottom:none;
-}
-
-#popup-recommandation .item .title{
-	width:143px;
-}
-
-#popup-recommandation .item .subtitle{
-	width:143px;
-}
-
-#popup-recommandation .process-actions{
-	float:right;
-}
-
-#popup-recommandation .modal-footer{
-	width:770px;
-}
-
-/* --------- SEARCH ----------- */
-
-#queue-header span#search-icon{
-	width:18px;
+input#search:focus{
+	background-position:217px -199px;
 }
 
 #search-overlay{
 	display:none;
 	position:fixed;
-	z-index:2;
+	z-index:1;
 	top:0px;
 	bottom:0px;
 	right:0px;
@@ -123,76 +59,129 @@ span.round{
 
 #search-tab{
 	display:none;
-	position:fixed;
-	z-index:3;
+	position:absolute;
+	z-index:2;
 	margin-top:27px;
-	margin-left:-24px;
-	height:254px;
-	width:300px;
-	background:white;
-	border:1px solid #DDD;
+	margin-left:0px;
+	height:294px;
+	width:294px;
+	background:#F5F5F5;
+	border:1px solid #E1E1E1;
 	overflow-y:scroll;
 }
 
-#search-tab .tab-items{
-	margin-top:0px;
-	width:285px;
-	border:none;
+/* ------ ITEM WRAPPER (SUGGESTIONS & FAVORITES) ------ */
+
+.item-wrapper{
+	margin-bottom:15px;
+	padding:10px;
+	background:#FFFFFF;
 }
 
-#search-tab .item .square{
-	width:80px;	
+.item-wrapper-submitter{
+	width:26px;
+	height:26px;
+	padding-right:10px;
+	overflow:hidden;
 }
 
-#search-tab .item .square img{
-	left:-20px;
+.item-wrapper-submitter img{
+	display:block;
+	float:left;
+	height:26px;
 }
 
-/*--------- SUGGESTION ---------*/
+.item-wrapper-content{
+	width:192px;
+}
+
+.item-wrapper-content p{
+	width:100%;
+	font-size:11px;
+	line-height:15px;
+	overflow:hidden;
+}
+
+.item-wrapper-content p a:hover{
+	color:#7F7F7F;
+}
+
+.item-wrapper .item{
+	margin-top:10px;
+	margin-bottom:0px;
+	padding:0px;
+}
+
+.item-wrapper .item-title{
+	width:108px;
+}
+
+.item-wrapper .item-subtitle{
+	width:112px;
+}
+
+/* ------ POPUP RECOMMANDATION ------ */
+
+#popup-recommandations{
+	width:800px;
+}
+
+#popup-recommandations h2{
+	width:760px;
+}
+
+#popup-recommandations div{
+	float:left;
+}
+
+#recommandations-zone{
+	height:275px;
+	overflow-y:auto;
+}
+
+#popup-recommandations .item{
+	margin-right:15px;
+	width:226px;
+}
+
+#popup-recommandations .item-title{
+	width:142px;
+}
+
+#popup-recommandations .item-subtitle{
+	width:146px;
+}
+
+#popup-recommandations .item-process{
+	float:right;
+}
+
+#popup-recommandations .modal-footer{
+	width:770px;
+}
+
+/* ------- POPUP SUGGESTION ------- */
 
 #popup-suggestion{
-	display:none;
-	float:left;
-	width:440px;
+	width:394px;
 }
 
-#popup-suggestion .row{
-	margin:0px;
-	margin-top:8px;
-	margin-bottom:8px;
+#popup-suggestion h2{
+	width:354px;
 }
 
-#popup-suggestion .left{
-	float:left;
-	margin-right:8px;
-	padding:8px;
-	width:50px;
-	text-align:right;
+#popup-suggestion .item, #popup-suggestion textarea, #popup-suggestion h3{
+	margin-top:15px;
+	margin-left:24px;
 }
 
-#popup-suggestion .right{
-	float:left;
-	padding:8px;
-	width:350px;
-}
-
-#popup-suggestion .title{
-	float:left;
-	padding-left:16px;
-	height:68px;
-	width:212px;
-}
-
-#popup-suggestion .title span{
-	height:68px;
-}
-
-#popup-suggestion form{
-	margin-bottom:0px;
+#popup-suggestion h3{
+	clear:left;
+	padding:0px;
 }
 
 #popup-suggestion textarea{
-	width:334px;
+	width:347px;
 }
 
 #popup-suggestion .warning{
@@ -203,86 +192,24 @@ span.round{
 	color:#C43C35;
 }
 
-/* -------- WRAPPER ITEM (SUGGESTIONS & FAVORITES)-------- */
-
-.wrapper-item{
-	padding:8px;
-	border-bottom:1px solid #DDD;
+#popup-suggestion .modal-footer{
+	width:364px;
+	margin-top:15px;
 }
 
-.wrapper-item img.submitter{
-	display:block;
-	float:left;
-	margin-right:8px;
-	height:26px;
-	width:26px;
-}
+/* ------- POPUP SHARE -------*/
 
-.wrapper-item .content{
-	width:244px;
-	margin-bottom:8px;	
-}
-
-.wrapper-item .content p{
-	width:100%;
-	font-size:11px;
-	line-height:15px;
-	overflow:hidden;
-}
-
-.wrapper-item .content p a{
-	font-weight:bold;
-	color:#0084B4;
-}
-
-.wrapper-item .content p a:hover{
-	color:#0084B4;
-}
-
-#right-column .wrapper-item .item{
-	padding:0px;
-	border:none;
-	margin-left:34px;
-}
-
-#right-column .wrapper-item .item .square{
-	width:80px;
-}
-
-#right-column .wrapper-item .item .square img{
-	left:-15px;
-}
-
-#right-column .wrapper-item .item .title{
-	width:152px;
-}
-
-#right-column .wrapper-item .item .subtitle{
-	width:156px;
-}
-
-/* ------- BRING PEOPLE POPUP -------*/
-
-#popup-bring-people{
-	display:none;
-	float:left;
+#popup-share{
 	width:440px;
 }
 
-#popup-bring-people h2{
-	padding:16px;
-	padding-left:24px;
-	text-align:left;
-	border-bottom:1px solid #DDD;
-}
-
-#popup-bring-people form{
+#popup-share form{
 	margin-top:16px;
 	margin-bottom:0px;
 	float:left;
 }
 
-#popup-bring-people img.thumbnail{
+#popup-share img.thumbnail{
 	display:block;
 	float:left;
 	margin-left:24px;
@@ -290,13 +217,13 @@ span.round{
 	height:37px;
 }
 
-#popup-bring-people textarea{
+#popup-share textarea{
 	display:block;
 	width:324px;
 	min-height:37px;
 }
 
-#popup-bring-people img.station{
+#popup-share img.station{
 	display:block;
 	float:left;
 	height:50px;
@@ -305,7 +232,7 @@ span.round{
 	margin-bottom:24px;
 }
 
-#popup-bring-people .facebook-link{
+#popup-share .facebook-link{
 	float:left;
 	width:268px;
 	margin-top:8px;
@@ -313,21 +240,21 @@ span.round{
 	font-size:11px;
 }
 
-#popup-bring-people .facebook-link span{
+#popup-share .facebook-link span{
 	display:block;
 	padding:4px;
 }
 
-#popup-bring-people .facebook-link span.link{
+#popup-share .facebook-link span.link{
 	color:#3B5998;
 	font-weight:bold;
 }
 
-#popup-bring-people .facebook-link span.description{
+#popup-share .facebook-link span.description{
 	color: #999;
 }
 
-#popup-bring-people .modal-footer{
+#popup-share .modal-footer{
 	float:left;
 	width:410px;
 }
@@ -335,18 +262,11 @@ span.round{
 /*--------- OFF AIR ----------*/
 
 #popup-offair{
-	display:none;
-	float:left;
 	width:500px;
-	height:421px;
 }
 
 #popup-offair h2{
-	padding:16px;
-	padding-left:24px;
 	margin-bottom:16px;
-	text-align:left;
-	border-bottom:1px solid #DDD;
 }
 
 #popup-offair div{
@@ -357,31 +277,22 @@ span.round{
 	display:block;
 	float:left;
 	margin-left:24px;
-	max-height: 130px;
-	max-width: 96px;
+	max-height:130px;
+	max-width:96px;
 }
 
 #popup-offair h3{
 	float:left;
-	padding:16px;
 	width:336px;
-	font-weight:normal;
-	font-size:13px;
 }
 
 #popup-offair #broadcasts{
-	margin-left: 16px;
+	margin-left:16px;
 	width:336px;
 }
 
-#popup-offair span.clip{
-	margin-right: 8px;
-	margin-bottom: 8px;
-	width:100px;
-}
-
-#popup-offair span.clip img{
-	left:-11px;
+#popup-offair .item-picture{
+	margin-bottom:10px;
 }
 
 #popup-offair .modal-footer{

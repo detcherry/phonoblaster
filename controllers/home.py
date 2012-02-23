@@ -6,32 +6,7 @@ from models.db.station import Station
 
 class HomeHandler(BaseHandler):
 	def get(self):
-		template_values = {}
-		
 		if(self.user_proxy):
-			number_of_favorites = self.user_proxy.number_of_favorites
-			user_contributions = self.user_proxy.contributions
-			
-			user_stations = None
-			if user_contributions:
-				logging.info("User is admin of at least one page")
-				user_page_ids = []
-				for contribution in user_contributions:
-					user_page_ids.append(contribution["page_id"])
-				
-				# Check if some pages have been already created
-				user_stations = []
-				results = Station.get_by_key_name(user_page_ids)
-				for result in results:
-					if result is not None:
-						logging.info("User is admin of at least one station")
-						user_stations.append(result)
-			
-			template_values = {
-				"user_stations": user_stations,
-				"user_contributions": user_contributions,
-				"number_of_favorites": number_of_favorites,
-			}
-			
-		self.render("home.html", template_values)
-		
+			self.redirect("/station/create")
+		else:
+			self.render("home.html", None)

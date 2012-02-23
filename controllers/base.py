@@ -20,12 +20,7 @@ def login_required(method):
         user_proxy = self.user_proxy
         if not user_proxy:
             if self.request.method == "GET":
-				redirection = {
-					"client_id": config.FACEBOOK_APP_ID,
-					"redirect_uri": self.request.url,
-					"scope": "email,publish_actions,read_stream,publish_stream,manage_pages"
-				}
-				self.redirect("https://www.facebook.com/dialog/oauth?" + urllib.urlencode(redirection))
+				self.redirect("/")
 				return
             self.error(403)
         else:
@@ -63,7 +58,7 @@ class BaseHandler(webapp.RequestHandler):
 					# If token is different, update the token
 					if user.facebook_access_token != cookie["access_token"]:
 						user_proxy.update_token(cookie["access_token"])
-						logging.info("Token updated in user %s %s"%(user.first_name, user.last_name))
+						logging.info("Token and friends updated in user %s %s"%(user.first_name, user.last_name))
 				self._user_proxy = user_proxy
 
 		return self._user_proxy
@@ -81,7 +76,6 @@ class BaseHandler(webapp.RequestHandler):
 		self._template_values["facebook_app_id"] = config.FACEBOOK_APP_ID
 		self._template_values["site_url"] = config.SITE_URL
 		self._template_values["version"] = config.VERSION
-		self._template_values["static"] = "static"
 		
 		relative_path = os.path.join("../templates/", template_path)
 		path = os.path.join(os.path.dirname(__file__), relative_path)

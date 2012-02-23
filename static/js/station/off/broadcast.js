@@ -8,6 +8,12 @@ BroadcastManager.prototype.constructor = BroadcastManager;
 function BroadcastManager(station_client){
 	ScrollTabManager.call(this, station_client);
 	
+	this.init();
+}
+
+// ----------------------- INIT --------------------------
+
+BroadcastManager.prototype.init = function(){
 	// Settings
 	this.url = "/api/broadcasts"
 	this.data_type = "json"
@@ -19,7 +25,7 @@ function BroadcastManager(station_client){
 	
 	// Additional attributes
 	this.live_item = null;
-	this.youtube_manager = new EmbeddedYoutubeManager(this);
+	this.youtube_manager = new EmbeddedYoutubeManager(this, 640, 360);
 	
 	this.get();
 	this.scrollListen();
@@ -42,8 +48,8 @@ BroadcastManager.prototype.noData = function(){
 	// If no track is currently being played
 	if(!this.live_item){
 		// UI modifications
-		$("#player-wrapper").empty();
-		$("#player-wrapper").append($("<div/>").attr("id","no-live").html("No past broadcast."));
+		$("#media").empty();
+		$("#media").append($("<div/>").attr("id","no-live").html("No past broadcast."));
 	}
 }
 
@@ -96,54 +102,38 @@ BroadcastManager.prototype.UIBuild = function(item){
 	}
 	
 	var div = $("<div/>").addClass("item").attr("id",id)
+	div.append(
+		$("<div/>")
+			.addClass("item-picture")
+			.append($("<img/>").attr("src", youtube_thumbnail))
+	)
+	.append(
+		$("<div/>")
+			.addClass("item-title")
+			.append($("<span/>").addClass("middle").html(youtube_title))
+	)
 	
 	div.append(
-		$("<span/>")
-			.addClass("square")
-			.append(
-				$("<img/>")
-					.attr("src", youtube_thumbnail)
-			)
-	)
-	.append(
 		$("<div/>")
-			.addClass("title")
-			.append(
-				$("<span/>")
-					.addClass("middle")
-					.html(youtube_title)
-			)
-	)
-	.append(
-		$("<div/>")
-			.addClass("subtitle")
-			.append(
-				$("<div/>")
-					.addClass("duration")
-					.html(youtube_duration)
-			)
+			.addClass("item-subtitle")
+			.append($("<div/>").addClass("item-duration").html(youtube_duration))
 	)
 	
 	if(mention){
-		var subtitle = div.find(".subtitle");
+		var subtitle = div.find(".item-subtitle")
 		subtitle.append(
-				$("<div/>")
-				.addClass("submitter")
+			$("<div/>")
+				.addClass("item-submitter")
 				.append(
 					$("<img/>")
 						.attr("src", track_submitter_picture)
-						.addClass("station")
 						.addClass("tuto")
 						.attr("data-original-title", track_submitter_name)
 				)
-				.append(
-					$("<span/>")
-						.html(mention)
-				)
+				.append($("<span/>").html(mention))
 		)
-
 	}
-	
+		
 	return div
 }
 
@@ -255,10 +245,10 @@ BroadcastManager.prototype.UILiveSet = function(item){
 	var track_submitter_picture = "https://graph.facebook.com/" + content.track_submitter_key_name + "/picture?type=square";
 	
 	// Display the image
-	$("#video-details span.clip").append($("<img/>").attr("src", youtube_thumbnail));
+	$("#media-picture").append($("<img/>").attr("src", youtube_thumbnail));
 	
 	// Display the title
-	$("#video-details span.middle").html(youtube_title);
+	$("#media-title span.middle").html(youtube_title);
 	
 	var mention = null;
 	if(type == "suggestion"){
@@ -270,7 +260,7 @@ BroadcastManager.prototype.UILiveSet = function(item){
 	
 	if(mention){
 		// Display the submitter
-		$("#video-details .submitter")
+		$("#media-submitter")
 			.append(
 				$("<img/>")
 					.attr("src", track_submitter_picture)
@@ -281,8 +271,8 @@ BroadcastManager.prototype.UILiveSet = function(item){
 	}
 	
 	// Display the favorite icon
-	if(content.track_id && this.station_client.user){
-		$("#favorite-track").append(
+	if(content.track_id){
+		$("#media-details-right").append(
 			$("<a/>")
 				.attr("href", "#")
 				.addClass("fav")
@@ -294,16 +284,16 @@ BroadcastManager.prototype.UILiveSet = function(item){
 
 BroadcastManager.prototype.UILiveRemove = function(){
 	// Remove image
-	$("#video-details span.clip").empty();
+	$("#media-picture").empty();
 	
 	// Remove title
-	$("#video-details span.middle").html("No track is being played");
+	$("#media-title span.middle").html("No track is being broadcast");
 	
-	// Remove favorite icon
-	$("#favorite-track").empty();
+	// Remove the favorite icon
+	$("#media-details-right").empty();
 	
 	// Remove the submitter
-	$("#video-details .submitter").empty();
+	$("#media-submitter").empty();
 }
 
 BroadcastManager.prototype.UIActive = function(id){

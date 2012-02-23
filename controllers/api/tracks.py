@@ -10,7 +10,6 @@ from controllers.base import login_required
 from models.api.station import StationApi
 
 class ApiTracksHandler(BaseHandler):
-	@login_required
 	def get(self):
 		shortname = self.request.get("shortname")
 		station_proxy = StationApi(shortname)

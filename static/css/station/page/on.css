@@ -1,43 +1,6 @@
+@import url("../on.css");
 @import url("root.css");
 
-/* ----- SESSIONS ------*/
-
-div#sessions{
-	float:right;
-	padding:4px;
+#progression-bar{
+	width:385px;
 }
-
-#sessions strong.number{
-	font-size:16px;
-}
-
-/* ------- QUEUE TAB -------- */
-
-#queue-tab{
-	margin-top:5px;
-	width:230px;
-}
-
-#queue-tab div.tab-items{
-	margin-top:0px;
-	width:228px;
-	border-top:1px solid #DDD;
-}
-
-#queue-tab a.btn{
-	margin-top:5px;
-}
-
-#queue-tab a.btn h3{
-	padding-top: 12px;
-	padding-bottom: 12px;
-	width:200px;
-	text-align:center;
-}
-
-.item .cross{
-	display:none;
-}
-
-
-

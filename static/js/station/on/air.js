@@ -27,7 +27,7 @@ AirManager.prototype = {
 		
 		var that = this;
 		$.ajax({
-			url: "/api/recommandations",
+			url: "/api/tracks",
 			type: "GET",
 			dataType: "json",
 			timeout: 60000,
@@ -45,14 +45,14 @@ AirManager.prototype = {
 		if(json){
 			var items = json
 			$.each(items, function(index, content){
-				if(index<9){
+				if(index<8){
 					var youtube_id = content.youtube_id;
 					var youtube_title = content.youtube_title;
 					var youtube_thumbnail = "http://i.ytimg.com/vi/" + youtube_id + "/default.jpg";
 					$("#popup-offair #broadcasts")
 						.append(
-							$("<span/>")
-								.addClass("clip")
+							$("<div/>")
+								.addClass("item-picture")
 								.append(
 									$("<img/>").attr("src", youtube_thumbnail)
 								)

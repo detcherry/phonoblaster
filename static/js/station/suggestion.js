@@ -7,10 +7,6 @@ function StationClient(user, admin, station){
 	this.user = user;
 	this.admin = admin;
 	this.station = station;
-	
-	this.broadcasts_counter = new Counter("#broadcasts");
-	this.views_counter = new Counter("#views");
-	
 	this.suggestion_manager = new SuggestionManager(this);	
 }
 
@@ -18,8 +14,14 @@ function StationClient(user, admin, station){
 function SuggestionManager(station_client){
 	this.station_client = station_client;
 	this.live_item = LIVE_ITEM;
+	var that = this
 	
-	this.youtube_manager = new EmbeddedYoutubeManager(this)
+	// Init interface
+	$("#media").empty().append($("<div/>").attr("id","youtube-player"));
+	$("#media-title span.middle").html(that.live_item.content.youtube_title);
+	$("#media-picture").append($("<img/>").attr("src", "http://i.ytimg.com/vi/" + that.live_item.content.youtube_id + "/default.jpg"));
+	
+	this.youtube_manager = new EmbeddedYoutubeManager(this, 640, 360)
 	this.youtube_manager.init(LIVE_ITEM.content.youtube_id)
 }
 

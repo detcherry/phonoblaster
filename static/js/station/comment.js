@@ -13,7 +13,7 @@ function CommentManager(station_client){
 	this.data_type = "json"
 	
 	// UI Settings
-	this.selector = "#comments-zone"
+	this.selector = "#comments-display"
 	
 	// Init methods
 	this.inputListen();
@@ -24,7 +24,7 @@ CommentManager.prototype.inputListen = function(){
 	var that = this;
 	
 	// Listen to focus events in the comment form
-	$("#comment-box input#comment").focus(function(){
+	$("input#comments-input").focus(function(){
 		var default_content = "Comment..."
 		var content = $(this).val()
 		
@@ -58,8 +58,8 @@ CommentManager.prototype.inputListen = function(){
 	})
 	
 	// Listen to submit events in the comment form
-	$("form#comment").submit(function(){
-		var message = $("input[id='comment']").val();
+	$("form#comments-form").submit(function(){
+		var message = $("input[id='comments-input']").val();
 		
 		if(message.length > 0 && message != "Comment..."){	
 			// Build comment
@@ -70,7 +70,7 @@ CommentManager.prototype.inputListen = function(){
 			that.UIPrepend(div);
 
 			// Empty the comment box
-			$("input[id='comment']").val("");
+			$("input[id='comments-input']").val("");
 
 			// POST comment to everyone
 			that.post(new_item, function(response){
@@ -143,22 +143,21 @@ CommentManager.prototype.UIBuild = function(item){
 		var div = $("<div/>").addClass("comment").attr("id", id)
 		
 		div.append(
-			$("<img/>")
-				.attr("src", author_picture_url)
-				.addClass("user")
-			)
-			.append(
-				$("<div/>")
-					.addClass("content")
-					.append(
-						$("<p/>")
-							.append($("<a/>").attr("href", author_url).html(author_name))
-							.append(" " + message)
-					)
-			)
-			.append($("<div/>").addClass("border"))
-			.append($("<div/>").addClass("time").html(created))
-		
+			$("<div/>")
+				.addClass("comment-submitter-picture")
+				.append($("<img/>").attr("src", author_picture_url))
+		)
+		.append(
+			$("<div/>")
+				.addClass("comment-content")
+				.append(
+					$("<p/>")
+						.append($("<a/>").attr("href", author_url).html(author_name))
+						.append(" " + message)
+				)
+		)
+		.append($("<div/>").addClass("comment-time").html(created))
+				
 	}
 	else{
 		// This is a broadcast notification
@@ -199,35 +198,32 @@ CommentManager.prototype.UIBuild = function(item){
 		}
 		
 		var div = $("<div/>").addClass("comment").attr("id", id)
-		
 		div.append(
-			$("<img/>")
-				.attr("src", track_submitter_picture)
-				.addClass("station")
-			)
-			.append(
-				$("<div/>")
-					.addClass("content")
-					.append(mention)
-					.append(
-						$("<span/>")
-							.addClass("clip")
-							.append(
-								$("<img/>").attr("src", youtube_thumbnail)
-							)
-					)
-					.append(
-						$("<div/>")
-							.addClass("title")
-							.append(
-								$("<span/>")
-									.addClass("middle")
-									.html(youtube_title)
-							)
-					)
-			)
-			.append($("<div/>").addClass("border"))
-			.append($("<div/>").addClass("time").html(created))
+			$("<div/>")
+				.addClass("comment-submitter-picture")
+				.append($("<img/>").attr("src", track_submitter_picture))
+		)
+		.append(
+			$("<div/>")
+				.addClass("comment-content")
+				.append(mention)
+				.append(
+					$("<div/>")
+						.addClass("item")
+						.append(
+							$("<div/>")
+								.addClass("item-picture")
+								.append($("<img/>").attr("src", youtube_thumbnail))
+						)
+						.append(
+							$("<div/>")
+								.addClass("item-title")
+								.append($("<span/>").addClass("middle").html(youtube_title))
+						)
+				)
+				
+		)
+		.append($("<div/>").addClass("comment-time").html(created))		
 		
 	}
 	
@@ -263,6 +259,4 @@ CommentManager.prototype.facebook = function(message){
 	
 	
 }
-
-
 

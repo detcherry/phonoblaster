@@ -47,7 +47,7 @@ SuggestionManager.prototype.postSubmit = function(btn, item){
 		var youtube_thumbnail = "http://i.ytimg.com/vi/" + content.youtube_id + "/default.jpg"
 		
 		// Update fancy box content
-		$("#popup-suggestion span.clip").append($("<img/>").attr("src", youtube_thumbnail))
+		$("#popup-suggestion .item-picture").append($("<img/>").attr("src", youtube_thumbnail))
 		$("#popup-suggestion .middle").html(youtube_title);
 		
 		// Display updated fancy box
@@ -184,62 +184,48 @@ SuggestionManager.prototype.UIBuild = function(item){
 	var youtube_thumbnail = "http://i.ytimg.com/vi/" + content.youtube_id + "/default.jpg";
 	var preview = "http://www.youtube.com/embed/" + content.youtube_id + "?autoplay=1"
 	
-	var div = $("<div/>").addClass("wrapper-item").attr("id", id)
+	var div = $("<div/>").addClass("item-wrapper").attr("id", id)
 	
 	div.append(
-		$("<img/>")
-			.addClass("submitter")
-			.attr("src", track_submitter_picture)
-			.addClass("tuto")
-			.attr("data-original-title", track_submitter_name)
+		$("<div/>")
+			.addClass("item-wrapper-submitter")
+			.append($("<img/>").attr("src", track_submitter_picture))
 	)
 	.append(
 		$("<div/>")
-			.addClass("content")
+			.addClass("item-wrapper-content")
 			.append(
 				$("<p/>")
-					.append(
-						$("<a/>")
-							.attr("href", track_submitter_url)
-							.html(track_submitter_name)
-					)
+					.append($("<a/>").attr("href", track_submitter_url).html(track_submitter_name))
 					.append(" ")
 					.append(message)
 			)
-	)
-	.append(
-		$("<div/>")
-			.addClass("item")
-			.append(
-				$("<span/>")
-					.addClass("square")
-					.append(
-						$("<img/>").attr("src", youtube_thumbnail)
-					)
-			)
 			.append(
 				$("<div/>")
-					.addClass("title")
-					.append(
-						$("<span/>")
-							.addClass("middle")
-							.html(youtube_title))
-			)
-			.append(
-				$("<div/>")
-					.addClass("subtitle")
+					.addClass("item")
 					.append(
 						$("<div/>")
-							.addClass("duration")
-							.html(youtube_duration)
+							.addClass("item-picture")
+							.append($("<img/>").attr("src", youtube_thumbnail))
+					)
+					.append(
+						$("<div/>")
+							.addClass("item-title")
+							.append($("<span/>").addClass("middle").html(youtube_title))
+					)
+					.append(
+						$("<div/>")
+							.addClass("item-subtitle")
+							.append($("<div/>").addClass("item-duration").html(youtube_duration))
 					)
 			)
 	)
 	
+	
 	if(this.station_client.admin){
-		div.find(".subtitle").append(
+		div.find(".item-subtitle").append(
 			$("<div/>")
-				.addClass("process-actions")
+				.addClass("item-process")
 				.append(
 					$("<a/>")
 						.addClass("btn")
@@ -254,7 +240,7 @@ SuggestionManager.prototype.UIBuild = function(item){
 						.addClass("fancybox.iframe")
 						.attr("href", preview)
 						.addClass("tuto")
-						.attr("data-original-title", "Preview track")
+						.attr("data-original-title", "Preview this track")
 				)
 		)
 	}

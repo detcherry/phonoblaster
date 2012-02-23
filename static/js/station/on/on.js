@@ -14,8 +14,8 @@ StationClient.prototype = {
 		this.station = station;
 		this.channel_id = null;
 
-		this.broadcasts_counter = new Counter("#broadcasts");
-		this.views_counter = new Counter("#views");
+		this.broadcasts_counter = new Counter("#top-left-broadcasts");
+		this.views_counter = new Counter("#top-left-views");
 
 		this.session_manager = null;
 		this.comment_manager = null;
@@ -23,7 +23,6 @@ StationClient.prototype = {
 		this.queue_manager = null;
 		this.search_manager = null;
 		this.track_manager = null;
-		this.status_manager = null;
 		this.viral_manager = null;
 
 		this.favorite_sdk = null;
@@ -131,8 +130,7 @@ StationClient.prototype = {
 			)	
 			
 			that.track_manager = new TrackManager(that); // Lazy fetching
-			that.status_manager = new StatusManager(that);
-			that.viral_manager = new ViralManager(that);
+			that.viral_manager = new ShareManager(that);
 			
 			that.favorite_sdk = new FavoriteSDK(that.queue_manager)
 			
@@ -160,9 +158,6 @@ StationClient.prototype = {
 		}
 		if(entity == "suggestion"){
 			manager = this.suggestion_manager;
-		}
-		if(entity == "status"){
-			manager = this.status_manager;
 		}
 		
 		if(event == "new"){

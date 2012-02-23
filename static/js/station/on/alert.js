@@ -70,7 +70,7 @@ AlertManager.prototype = {
 	
 	show: function(){
 		var link_selector = this.a
-		$(link_selector).css("color", "#c43c35");
+		$(link_selector).addClass("alert");
 		
 		var round_selector = this.a + " span.round"
 		$(round_selector).show();
@@ -78,7 +78,7 @@ AlertManager.prototype = {
 	
 	hide: function(){
 		var link_selector = this.a
-		$(link_selector).css("color", "grey");
+		$(link_selector).removeClass("alert");
 				
 		var round_selector = this.a + " span.round"
 		$(round_selector).hide();

@@ -1,8 +1,8 @@
-from controllers.station.root import RootHandler
+from controllers.station.secondary import SecondaryHandler
 from models.db.track import Track
 from models.api.station import StationApi
 
-class TrackHandler(RootHandler):
+class TrackHandler(SecondaryHandler):
 	def get(self, track_id)	:
 		track = Track.get_by_id(int(track_id))
 		

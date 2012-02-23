@@ -1,0 +1,574 @@
+/* ----- COMMON STYLE BETWEEN STATION AND PROFILE PAGES ----- */
+
+/* ---- COLUMNS ------*/
+
+#left-column{
+	margin-top:-15px;
+	margin-bottom:-15px;
+	padding-top:15px;
+	padding-bottom:15px;
+	width:638px;
+	margin-right:20px;
+	border:1px solid #E1E1E1;
+	border-top:none;
+}
+
+#right-column{
+	margin-top:-15px;
+	margin-bottom:-15px;
+	padding-top:15px;
+	padding-bottom:15px;
+	width:278px;
+	min-height:923px;
+	border:1px solid #E1E1E1;
+	border-top:none;
+	background:url("/static/images/grid.png");
+}
+
+/* ----- TOP ---- */
+
+#top-left, #top-right{
+	height:130px;
+	padding-bottom:15px;
+	padding-right:15px;
+	border-bottom:3px solid #000000;
+}
+
+/* ---------------------------------------- TOP LEFT --------------------------------------------- */
+
+#top-left{
+	width:623px;
+}
+
+#top-left-picture{
+	height:130px;
+	width:110px;
+	margin-right:10px;
+	overflow:hidden;
+}
+
+#top-left-picture img{
+	max-width:110px;
+}
+
+#top-left-description, #top-left-title{
+	width:503px;
+}
+
+#top-left-description{
+	min-height:130px;
+	overflow:hidden;
+}
+
+#top-left-title{
+	height:23px;
+	overflow:hidden;
+}
+
+#top-left-description h1{
+	margin-right:10px;
+	max-width:408px;
+	text-transform:uppercase;
+}
+
+#top-left-figures{
+	clear:left;
+	margin-bottom:15px;
+	padding-bottom:15px;
+	padding-right:15px;
+	border-bottom:1px solid #E1E1E1;
+}
+
+#top-left-broadcasts{
+	margin-right:15px;
+}
+
+#top-left-page{
+	clear:left;
+	height:16px;
+	width:348px;
+	overflow:hidden;
+}
+
+#top-left-page a{
+	color:#636363;
+}
+
+#top-left-page a:hover{
+	color:#333333;
+}
+
+/* ---------------------------------------- MEDIA --------------------------------------------- */
+
+#main-left{
+	padding-top:15px;
+}
+
+#media{
+	margin-left:-1px;
+	width:640px;
+	height:360px;	
+}
+
+#media .loader{
+	display:block;
+	margin:auto;
+	margin-top:140px;
+}
+
+#media-monitoring, #media-details{
+	padding-left:20px;
+	padding-right:10px;
+	width:608px;
+	background:#FFFFFF;
+}
+
+#media-monitoring{
+	padding-top:10px;
+	padding-bottom:10px;
+	color:#7F7F7F;
+	border-top:1px solid #E1E1E1;
+}
+
+#progression-bar{
+	margin-left:10px;
+	margin-right:10px;
+	height:15px;
+	width:500px;
+	background:url("/static/images/grid.png");
+	border:1px solid #C4C4C4;
+}
+
+#filler{
+	height:15px;
+	background:#C4C4C4;
+}
+
+#media-volume{
+	width:17px;
+	height:17px;
+	margin-left:15px;
+	background:url("/static/images/phonoblaster-sprits.png");
+}
+
+#media-volume.unmuted{
+	background-position:-49px -181px;
+}
+
+#media-volume.muted{
+	background-position:-42px -203px
+}
+
+#media-details{
+	padding-bottom:10px;
+	border-bottom:1px solid #E1E1E1;
+}
+
+#media-id{
+	display:none;
+}
+
+#media-picture{
+	position:relative;
+	width:120px;
+	height:66px;
+	overflow:hidden;
+}
+
+#media-picture img{
+	position:absolute;
+	top:-12px;
+}
+
+#media-details-center{
+	padding-left:20px;
+	height:66px;
+	width:378px;
+}
+
+#media-details-center-top{
+	padding-right:20px;
+	width:358px;
+}
+
+#media-details-center-top h3{
+	float:left;
+}
+
+#media-submitter{
+	float:right;
+}
+
+#media-submitter img{
+	display:block;
+	float:right;
+	margin-left:8px;
+	height:22px;
+}
+
+#media-submitter span{
+	display:block;
+	float:right;
+	padding-top:2px;
+	color:#C4C4C4;
+}
+
+#media-details-center h3{
+	width:114px;
+	font-style:italic;
+	text-transform:uppercase;
+}
+
+#media-details .stroke{
+	margin-top:7px;
+	margin-bottom:8px;
+}
+
+#media-title{
+	clear:left;
+	height:18px;
+	width:378px;
+	overflow:hidden;
+}
+
+#media-title span{
+	height:18px;
+}
+
+#media-details-right{
+	margin-right:-10px;
+	height:66px;
+	width:99px;
+	border-left:1px solid #E1E1E1;
+}
+
+#media-details-right a{
+	display:block;
+	margin:auto;
+	margin-top:20px;
+	height:30px;
+	width:30px;
+}
+
+a.fav{
+	background:url("/static/images/phonoblaster-sprits.png");
+	background-position:-35px -85px;
+}
+
+a.fav:hover{
+	background-position:-2px -85px;
+}
+
+a.unfav{
+	background:url("/static/images/phonoblaster-sprits.png");
+	background-position:-71px -85px;
+}
+
+/* ---------------------------------------- COMMENTS --------------------------------------------- */
+
+#comments{
+	margin-top:10px;
+	margin-left:10px;
+	width:618px;
+}
+
+div#comments-input{
+	width:596px;
+	padding:10px;
+	background:#F1F1F1;
+	border:1px solid #E1E1E1;
+}
+
+#comments-input-picture, .comment-submitter-picture{
+	width:36px;
+	height:36px;
+	padding-right:10px;
+	overflow:hidden;
+}
+
+#comments-input-picture img, .comment-submitter-picture img{
+	width:36px;
+	height:36px;
+}
+
+form#comments-form{
+	padding-top:4px;
+	padding-left:10px;
+	padding-bottom:4px;
+	height:28px;
+	width:539px;
+	border-left:1px solid #E1E1E1;
+}
+
+input#comments-input{
+	display:block;
+	float:left;
+	width:404px;
+	margin-right:10px;
+}
+
+span#fb-sync{
+	cursor:pointer;
+	display:block;
+	float:left;
+	height:28px;
+	width:28px;
+	margin-right:10px;
+}
+
+span#fb-sync.active{
+	background:url("/static/images/phonoblaster-sprits.png");
+	background-position:-6px -143px;
+}
+
+span#fb-sync.inactive{
+	background:url("/static/images/phonoblaster-sprits.png");
+	background-position:-42px -143px;
+}
+
+input#comments-submit{
+	padding-left:10px;
+	padding-right:10px;
+	height:28px;
+	font-style:italic;
+	color:#FFFFFF;
+	background:#000000;
+	-webkit-border-radius:6px;
+	-moz-border-radius:6px;
+	border-radius:6px;
+}
+
+#comments-display{
+	width:616px;
+	min-height:200px;
+	background:#FFFFFF;
+	border:1px solid #E1E1E1;
+	border-top:none;
+	
+}
+
+.comment{
+	padding:10px;
+	width:596px;
+	border-bottom:1px solid #E1E1E1;
+}
+
+.comment-content{
+	padding:10px;
+	width:496px;
+	border-left:1px solid #E1E1E1;
+}
+
+.comment-content p{
+	width:100%;
+}
+
+.comment-content a{
+	color:#7F7F7F;
+}
+
+.comment-content .item{
+	margin-bottom:0px;
+}
+
+.comment-time{
+	padding-top:10px;
+	color:#E1E1E1;
+}
+
+#comments-footer{
+	width:180px;
+	margin-left:214px;
+	height:16px;
+	background:url("/static/images/phonoblaster-sprits.png") no-repeat;
+	background-position:-4px -62px;
+}
+
+/* ---------------------------------------- TOP RIGHT --------------------------------------------- */
+
+#top-right{
+	padding-left:15px;
+	width:248px;
+}
+
+/* --------------------------------------------- TABS --------------------------------------------- */
+
+#main-right{
+	padding-top:15px;
+	background:#F5F5F5;
+	border-bottom:3px solid #000000;
+}
+
+ul#tabs{
+	margin-left:-1px;
+	height:32px;
+	width:279px;
+	border-bottom:1px solid #E1E1E1;
+}
+
+ul#tabs li{
+	width:72px;
+	line-height:16px;
+	margin-right:3px;
+}
+
+ul#tabs li a{
+	display:block;
+	float:left;
+	padding:6px;
+	padding-top:10px;
+	height:15px;
+	width:58px;
+	text-align:center;
+	color:#6B6B6B;
+	font-size:13px;
+	font-family:Futura;
+	font-style:italic;
+	text-decoration:none;
+	letter-spacing:0px;
+	-webkit-border-radius:6px 6px 0px 0px;
+	-moz-border-radius:6px 6px 0px 0px;
+	border-radius:6px 6px 0px 0px;
+	border-left:1px solid #F5F5F5;
+	border-top:1px solid #F5F5F5;
+	border-right:1px solid #F5F5F5;
+	background:#F5F5F5;
+}
+
+ul#tabs li a#queue-header{
+	border-left:1px solid #E1E1E1;
+}
+
+ul#tabs li a.current{
+	height:16px;
+	color:#333333;
+	border-left:1px solid #E1E1E1;
+	border-top:1px solid #E1E1E1;
+	border-right:1px solid #E1E1E1;
+	background:#F1F1F1;
+}
+
+.tab-content{
+	display:none;
+	width:278px;
+	min-height:500px;
+	background:#F1F1F1;
+}
+
+.tab-content > div{
+	display:block;
+}
+
+.tab-items{
+	padding:15px;
+	width:248px;
+}
+
+.item{
+	margin-bottom:15px;
+	padding:10px;
+	background:#FFFFFF;
+}
+
+.item-picture{	
+	display:block;
+	float:left;
+	position:relative;
+	height:58px;
+	width:70px;
+	overflow:hidden;
+	margin-right:10px;
+}
+
+.item-picture img{
+	height:90px;
+	position:absolute;
+	top:-16px;
+	left:-25px;
+}
+
+.item-title{
+	padding-top:4px;
+	padding-right:4px;
+	width:138px;
+	height:32px;
+	overflow:hidden;
+}
+
+.item-title span{
+	height:34px;
+	line-height:15px;
+}
+
+a.item-cross{
+	display:block;
+	float:left;
+	margin-right:-14px;
+	padding:6px;
+	padding-right:4px;
+	padding-top:2px;
+	height:12px;
+	width:10px;
+	color:#333333;
+	background:#E1E1E1;
+}
+
+a.item-cross:hover{
+	color:#F5F5F5;
+	background:#333333;
+	text-decoration:none;
+}
+
+.item-subtitle{
+	height:22px;
+	width:148px;
+}
+
+.item-duration{
+	padding-top:6px;
+	color:#7F7F7F;
+}
+
+.item-submitter{
+	float:right;
+	margin-right:-4px;
+	padding-top:4px;
+}
+
+.item-submitter img{
+	display:block;
+	float:right;
+	margin-left:8px;
+	height:22px;
+}
+
+.item-submitter span{
+	display:block;
+	float:right;
+	padding-top:2px;
+	color:#C4C4C4;
+}
+
+.item-process{
+	float:right;
+	margin-top:2px;
+}
+
+.item a.preview{
+	display:block;
+	float:right;
+	margin-right:8px;
+	height:22px;
+	width:22px;
+	background:url("/static/images/phonoblaster-sprits.png");
+	background-position: -32px -117px;
+}
+
+.item a.preview:hover{
+	background-position: -5px -117px;
+}
+
+.item a.btn{
+	float:right;
+	margin-right:-14px;
+}

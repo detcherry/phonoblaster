@@ -1,22 +1,81 @@
 {% extends "station/root.html" %}
 
-{% block style %}
-	<link type="text/css" rel="stylesheet" href="/{{ static }}/css/station/page/root.css">
-{% endblock %}
-
 {% block header %}
 {% endblock %}
 
+{% block style %}
+	<link type="text/css" rel="stylesheet" href="/static/css/station/page/root.css">
+{% endblock %}
+
 {% block main %}
+	<!-- TOP -->
+	<div id="top-left-description">
+		<div id="top-left-title">
+			<a href="{{ site_url }}/{{ station_proxy.station.shortname }}" target="_top">
+				<h1>{{ station_proxy.station.name }}</h1>
+			</a>
+		</div>
+		<div class="stroke black"></div>
+		{% block top-right %}
+		{% endblock %}
+		<div id="top-left-status" class="off">off air</div>
+	</div>
+	<!-- MEDIA -->
+	<div id="media">
+		<img src="/static/images/loader.gif" class="loader"/>
+		<!--<div id="youtube-player"></div>-->
+	</div>
+	<div id="media-monitoring">
+		<div id="counter-left">0:00</div>
+		<div id="progression-bar"><div id="filler"></div></div>
+		<div id="counter-right">0:00</div>
+		<div id="media-volume" class="unmuted"></div>
+	</div>
+	<div id="media-details">
+		<!-- Below div necessary for JS -->
+		<div id="media-id"></div>
+		<div id="media-picture"><!-- No image --></div>
+		<div id="media-details-center">
+			<div id="media-details-center-top">
+				<h3>Current track</h3>
+				<div id="media-submitter"><!-- No submitter --></div>
+			</div>
+			<div class="stroke black"></div>
+			<div id="media-title">
+				<span class="middle">No track is being broadcast</span>
+			</div>
+		</div>
+		<div id="media-details-right"><!-- No favorite link --></div>
+	</div>
+	<div id="comments-input">
+		<div id="comments-input-picture">
+			{% if user_proxy %}
+				{% if is_admin %}
+				<img class="tuto" data-original-title="{{ station_proxy.station.name }}" src="http://graph.facebook.com/{{ station_proxy.station.key.name }}/picture?type=square">
+				{% else %}
+				<img class="tuto" data-original-title="{{ user_proxy.user.first_name }} {{ user_proxy.user.last_name }}" src="http://graph.facebook.com/{{ user_proxy.user.key.name }}/picture?type=square">
+				{% endif %}
+			{% else %}
+			<img src="/static/images/unknown.png">
+			{% endif %}
+		</div>
+		<form method="post" action="" id="comments-form">
+			<input type="text" name="comment" id="comments-input" value="Comment..." autocomplete="off"/>
+			<span id="fb-sync" class="active tuto" data-original-title="Comment on Facebook: ON"></span>
+			<input type="submit" value="Comment" id="comments-submit"/>
+		</form>
+	</div>
+	<div id="comments-display"></div>
+	{% block main-right %}
+	{% endblock %}
 {% endblock %}
 
 {% block footer %}
-<div id="bottom-bar">
-	<div class="container">
-		<a href="{{ site_url }}" target="_blank"><img src="/{{ static }}/images/phonoblaster.png"></a>
-		<p>Broadcast your music!</p>
+	<div id="bottom-bar">
+		<div class="container">
+			<a href="{{ site_url }}" target="_blank"><img src="/static/images/phonoblaster.png"></a>
+		</div>
 	</div>
-</div>
 {% endblock %}
 
 {% block front %}

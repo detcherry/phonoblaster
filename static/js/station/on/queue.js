@@ -24,7 +24,7 @@ QueueManager.prototype.init = function(station_client){
 	
 	// Additional attributes
 	this.live_item = null;
-	this.youtube_manager = new YoutubeManager();
+	this.youtube_manager = new YoutubeManager(640, 360);
 	this.alert_manager = new AlertManager(station_client, "New broadcast!", "#queue-header");
 	this.recommandation_manager = null;
 	
@@ -37,8 +37,8 @@ QueueManager.prototype.init = function(station_client){
 
 QueueManager.prototype.noData = function(){
 	// UI modifications
-	$("#player-wrapper").empty();
-	$("#player-wrapper").append($("<div/>").attr("id","no-live").html("No live track."));
+	$("#media").empty();
+	$("#media").append($("<p/>").html("No live track."));
 	
 	if(this.station_client.admin){
 		// Open the recommandation manager
@@ -58,9 +58,6 @@ QueueManager.prototype.add = function(content){
 			that.UIAdd(new_item, previous_item);
 		})
 	}
-	
-	//Update room
-	this.updateRoom()
 }
 
 QueueManager.prototype.addToItems = function(new_item, callback){
@@ -137,59 +134,44 @@ QueueManager.prototype.UIBuild = function(item){
 	var div = $("<div/>").addClass("item").attr("id", id)
 	
 	div.append(
-		$("<span/>")
-			.addClass("square")
-			.append(
-				$("<img/>")
-					.attr("src", youtube_thumbnail)
-			)
+		$("<div/>")
+			.addClass("item-picture")
+			.append($("<img/>").attr("src", youtube_thumbnail))
 	)
 	.append(
 		$("<div/>")
-			.addClass("title")
-			.append(
-				$("<span/>")
-					.addClass("middle")
-					.html(youtube_title)
-			)
+			.addClass("item-title")
+			.append($("<span/>").addClass("middle").html(youtube_title))
 	)
-
+	
 	if(this.station_client.admin){
 		div.append(
 			$("<a/>")
 				.attr("href","#")
-				.addClass("cross")
+				.addClass("item-cross")
 				.attr("name", id)
 				.html("X")
 		)
 	}
-
+	
 	div.append(
 		$("<div/>")
-			.addClass("subtitle")
-			.append(
-				$("<div/>")
-					.addClass("duration")
-					.html(youtube_duration)
-			)
+			.addClass("item-subtitle")
+			.append($("<div/>").addClass("item-duration").html(youtube_duration))
 	)
-
+	
 	if(mention){
-		var subtitle = div.find(".subtitle")
+		var subtitle = div.find(".item-subtitle")
 		subtitle.append(
 			$("<div/>")
-				.addClass("submitter")
+				.addClass("item-submitter")
 				.append(
 					$("<img/>")
 						.attr("src", track_submitter_picture)
-						.addClass("station")
 						.addClass("tuto")
 						.attr("data-original-title", track_submitter_name)
 				)
-				.append(
-					$("<span/>")
-						.html(mention)
-				)
+				.append($("<span/>").html(mention))
 		)
 	}
 
@@ -283,9 +265,6 @@ QueueManager.prototype.liveOver = function(){
 	
 	// Remove the broadcast from the live UI
 	this.UILiveRemove();
-	
-	// Update the room
-	this.updateRoom();
 }
 
 QueueManager.prototype.postView = function(){
@@ -310,12 +289,14 @@ QueueManager.prototype.postView = function(){
 }
 
 QueueManager.prototype.UIProgress = function(video_start, duration){
-	var x = parseInt(video_start*400/duration);
+	var width = $("#progression-bar").width()
+	
+	var x = parseInt(video_start*width/duration);
 	$('#filler').css('width', x.toString() + 'px');
 	
 	$("#filler").clearQueue();
 	$('#filler').animate({
-		width:'400px',
+		width: width.toString()+"px",
 	}, (duration - video_start)*1000,'linear');
 	
 	var that = this;
@@ -365,46 +346,17 @@ QueueManager.prototype.postAction = function(item){
 
 //----------------------------- QUEUE STATUS -------------------------------
 
-QueueManager.prototype.updateRoom = function(){
-	var number_of_items = this.items.length;
-	if(this.live_item){
-		number_of_items++
+QueueManager.prototype.UIRoom = function(){
+
+	var queue_room = 10;
+	
+	if(this.UILive()){
+		var queue_items_selector = this.selector + " .item"
+		var queue_items_number = $(queue_items_selector).length
+		queue_room = 9 - queue_items_number;
 	}
 	
-	var room = 10 - number_of_items;
-	this.UISetRoom(room);
-}
-
-QueueManager.prototype.UIRoom = function(){
-	var queue_room = $("#queue-status .grey").length
 	return queue_room
-}
-
-QueueManager.prototype.UIIncrementRoom = function(){
-	var queue_room = this.UIRoom();
-	queue_room++;
-	this.UISetRoom(queue_room);
-}
-
-QueueManager.prototype.UIDecrementRoom = function(){
-	var queue_room = this.UIRoom();
-	queue_room--;
-	this.UISetRoom(queue_room);
-}
-
-QueueManager.prototype.UISetRoom = function(new_room){
-	var number_of_items = 10 - new_room;
-	
-	$("#queue-status .circle").each(function(index, element){
-		if(index < number_of_items){
-			$(this).removeClass("grey").addClass("black")
-		}
-		else{
-			$(this).removeClass("black").addClass("grey")
-		}
-	})	
-	
-	$("#queue-counter span").html(number_of_items)
 }
 
 //------------------------------- POST -------------------------------------
@@ -446,8 +398,6 @@ QueueManager.prototype.postSubmit = function(btn, incoming_item){
 			this.youtube_manager.init(new_item.content.youtube_id, 0);
 		}
 		
-		this.UIDecrementRoom();
-
 		// POST request to the server
 		var that = this;
 		this.post(new_item, function(response){
@@ -457,10 +407,6 @@ QueueManager.prototype.postSubmit = function(btn, incoming_item){
 	else{
 		this.UIFail(btn)
 	}
-}
-
-QueueManager.prototype.unPostEvent = function(){
-	this.UIIncrementRoom(); // Specific to QueueManager
 }
 
 QueueManager.prototype.UISuccess = function(btn){
@@ -485,7 +431,7 @@ QueueManager.prototype.UIFail = function(btn){
 
 // Returns the current live item 
 QueueManager.prototype.UILive = function(){
-	var item_id = $("#video-details .id").html();
+	var item_id = $("#media-id").html();
 	return item_id;
 }
 
@@ -506,13 +452,13 @@ QueueManager.prototype.UILiveSet = function(item){
 	var track_submitter_picture = "https://graph.facebook.com/" + content.track_submitter_key_name + "/picture?type=square";
 	
 	// Display the image
-	$("#video-details span.clip").append($("<img/>").attr("src", youtube_thumbnail));
+	$("#media-picture").append($("<img/>").attr("src", youtube_thumbnail));
 	
 	// Display the title
-	$("#video-details span.middle").html(youtube_title);
+	$("#media-title span.middle").html(youtube_title);
 	
 	// Put the item id in the div
-	$("#video-details .id").html(id);
+	$("#media-id").html(id);
 	
 	var mention = null;
 	if(type == "suggestion"){
@@ -524,7 +470,7 @@ QueueManager.prototype.UILiveSet = function(item){
 	
 	if(mention){
 		// Display the submitter
-		$("#video-details .submitter")
+		$("#media-submitter")
 			.append(
 				$("<img/>")
 					.attr("src", track_submitter_picture)
@@ -534,9 +480,9 @@ QueueManager.prototype.UILiveSet = function(item){
 			.append($("<span/>").html(mention))
 	}
 	
-	if(content.track_id && this.station_client.user){
+	if(content.track_id){
 		// Favorite button
-		$("#favorite-track").append(
+		$("#media-details-right").append(
 			$("<a/>")
 				.attr("href", "#")
 				.addClass("fav")
@@ -545,26 +491,26 @@ QueueManager.prototype.UILiveSet = function(item){
 		)
 	}
 	
-	$("#station-status span.btn").addClass("danger").html("On air")
+	$("#top-left-status").removeClass("off").addClass("on").html("On air")
 }
 
 QueueManager.prototype.UILiveRemove = function(){
 	// Remove image
-	$("#video-details span.clip").empty();
+	$("#media-picture").empty();
 	
 	// Remove title
-	$("#video-details span.middle").html("No track is being broadcast");
+	$("#media-title span.middle").html("No track is being broadcast");
 	
 	// Remove the broadcast key_name in the div
-	$("#video-details .id").empty();
+	$("#media-id").empty();
 	
 	// Remove the favorite icon
-	$("#favorite-track").empty();
+	$("#media-details-right").empty();
 	
 	// Remove the submitter
-	$("#video-details .submitter").empty();
+	$("#media-submitter").empty();
 	
-	$("#station-status span.btn").removeClass("danger").html("Off air")
+	$("#top-left-status").removeClass("on").addClass("off").html("Off air")
 }
 
 // -------------------------------- NEW --------------------------------------
@@ -607,10 +553,7 @@ QueueManager.prototype.remove = function(id){
 	}
 }
 
-QueueManager.prototype.removeEvent = function(){
-	// Update the room
-	this.updateRoom();
-	
+QueueManager.prototype.removeEvent = function(){	
 	// Decrement the broadcasts counter
 	this.station_client.broadcasts_counter.decrement();
 }

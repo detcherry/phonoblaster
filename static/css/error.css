@@ -6,19 +6,21 @@
 
 #error{
 	width:270px;
+	margin-top:40px;
+	margin-left:40px;
 }
 
 #error h2{
 	float:left;
 	padding-top:30px;
 	padding-bottom:30px;
-	padding-left: 4px;
-	font-size: 26px;
-	font-weight: bold;
-	line-height: 30px;
+	padding-left:4px;
+	font-size:26px;
+	font-weight:bold;
+	line-height:30px;
 	color: #404040;
 }
 
 #error p{
-	padding-left: 4px;
+	padding-left:4px;
 }

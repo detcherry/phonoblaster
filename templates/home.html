@@ -1,106 +1,50 @@
 {% extends "base.html" %}
 {% block style %}
-	<link type="text/css" rel="stylesheet" href="/{{ static }}/css/home.css">
+	<link type="text/css" rel="stylesheet" href="/static/css/home.css">
 {% endblock %}
 
-{% block main %}
-	{% if not user_proxy %}
-		<div id="welcome-box">
-			<img src="/{{ static }}/images/icon.png">
-			<h2>Broadcast your music!</h2>
-			<p class="description">Create your station, play your favorite music and let the world listen to it!</p>
-			<p><a href="#" class="login btn primary">Login with Facebook</a></p>
-			<p class="info">Nothing will be published without your agreement. No spam.</p>
-		</div>
-	{% else %}
-		<div id="home-left">
-			<img src="https://graph.facebook.com/{{ user_proxy.user.key.name }}/picture" class="thumbnail"/>
-			<div class="user-information">
-				<p><strong>{{ user_proxy.user.first_name }} {{ user_proxy.user.last_name }}</strong></p>
-				<p class="stats">
-					<a href="/user/{{ user_proxy.user.key.name }}">
-						<strong>{{ number_of_favorites }}</strong> Favorites
-					</a>
-				</p>
+{% block header %}
+<div class="topbar">
+	<div class="topbar-inner">
+		<div class="container">
+			<h1>Phonoblaster</h1>
+			<a id="logo" href="/"></a>
+			<div id="menu">
+			{% if not user_proxy %}
+				<div>Broadcast your music now!</div>
+			{% else %}
+				<div><a href="#" class="logout">Logout</a></div>
+			{% endif %}
 			</div>
 		</div>
-		<div id="home-right">
-			{% if user_stations %}
-				<h2>Your stations on <em>Phonoblaster!</em></h2>
-				{% for station in user_stations %}
-					<div class="station">
-						<a href="{{ site_url }}/{{ station.shortname }}">
-							<img src="https://graph.facebook.com/{{ station.key.name }}/picture" class="thumbnail"/>
-						</a>
-						<p class="page-name">
-							<span><a href="{{ site_url }}/{{ station.shortname }}">{{ station.name }}</a></span>
-						</p>
-						<p>
-							<img class="loader" src="/{{ static }}/images/loader.gif" style="visibility:hidden;"/>
-							<a href="{{ site_url }}/{{ station.shortname }}" class="btn">Broadcast!</a>
-						</p>
-					</div>
-				{% endfor %}
-			{% else %}
-				{% if user_contributions %}
-					<h2>Set up <em>Phonoblaster</em> for your fan pages!</h2>
-					{% for contribution in user_contributions %}
-						<div class="contribution">
-							<img src="https://graph.facebook.com/{{ contribution.page_id }}/picture" class="thumbnail"/>
-							<p class="page-name"><span>{{ contribution.page_name }}</span></p>
-							<p>
-								<img class="loader" src="/{{ static }}/images/loader.gif" style="visibility:hidden;"/>
-								<a href="#" class="btn" id="{{ contribution.page_id }}">Create now!</a>
-							</p>
-						</div>
-					{% endfor %}
-					<div id="popup-contribution">
-						<div id="page-confirmation">
-							<h3>1. Successfully created!</h3>
-							<p>on your fan page</p>
-						</div>
-						<div id="page-screenshot">
-							<div class="facebook-tab">
-								<span class="facebook-sprit wall"></span>
-								<div>Wall</div>
-							</div>
-							<div class="facebook-tab">
-								<span class="facebook-sprit info"></span>
-								<div>Info</div>
-							</div>
-							<div class="facebook-tab">
-								<span class="facebook-sprit photos"></span>
-								<div>Photos</div>
-							</div>
-							<div class="facebook-tab" style="background-color:#D8DFEA;">
-								<span class="facebook-sprit phonoblaster"></span>
-								<div>Phonoblaster</div>
-							</div>
-						</div>
-						<div id="address-confirmation">
-							<form method="post" action="station/create">
-								<input type="text" name="page-id" id="page-id" style="display:none;"/>
-								<h3>2. Confirm your address!</h3>
-								<p>http://www.phonoblaster.com/</p>
-								<input type="text" name="page-shortname" id="page-shortname" autocomplete="off"/>
-								<div id="shortname-status"></div>
-								<div class="modal-footer">
-									<input type="submit" class="btn primary" value="Go!"/>
-									<div id="shortname-warning">Choose an unavailable address first. Thanks</div>
-								</div>
-							</form>
-						</div>
-					</div>
-				{% else %}
-				<!-- Do something for people that don't have any fan page -->
-				{% endif %}
-			{% endif %}
-		</div>
-	{% endif %}
+	</div>
+</div>
 {% endblock %}
 
-{% block script %}
-	{% if not user_stations and user_contributions %}
-		<script type="text/javascript" src="/{{ static }}/js/home.js"></script>
-	{% endif %}
+
+{% block main %}
+	<div id="welcome">
+		<img src="/static/images/welcome.png">
+		<div class="stroke black"></div>
+		<div id="welcome-title">
+			<h1>Create your station, play your favorite music and let the world listen to it!</h1>
+			<a class="login" href="#">Login with Facebook</a>
+			<p>We'll never post to your wall without your permission.</p>
+		</h1>
+	</div>
+	<div class="welcome-section">
+		<img src="/static/images/welcome-lighthouse.png">
+		<h2>Help your fans discover music!</h2>
+		<p>Imagine your fans can just go to a web page to listen the same music you're listening to right now. Wouldn't it the best way to let them know about your biggest influences, favorite artists or most amazing records?</p>
+	</div>
+	<div class="welcome-section">
+		<img src="/static/images/welcome-like.png">
+		<h2>Engage a growing audience</h2>
+		<p>Build Phonoblaster on top of your Facebook page and start connecting in real time with your fans around music. Engage your community and your audience will grow bringing new fans on board!</p>
+	</div>
+	<div class="welcome-section">
+		<img src="/static/images/welcome-watch.png">
+		<h2>Dead simple signup</h2>
+		<p>You're 2 clicks away from broadcasting your favorite music to the entire world. Why don't you get started right now and perform an amazing set? Of course, Phonoblaster is completely free.</p>
+	</div>
 {% endblock %}

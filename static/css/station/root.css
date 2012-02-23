@@ -1,697 +1,81 @@
-/*------- CORRECTION --------*/
+@import url("../common.css");
 
-body{
-	overflow-x:hidden;
-}
+/* ------- AIR STATUS ------- */
 
-#main{
-	padding-top:0px;
-}
-
-.fixed{
-	position:fixed;
-	z-index:1;
-}
-
-/*------- LEFT COLUMN -------*/
-
-#left-column{
-	width:140px;
-}
-
-#left-column .fixed{
-	padding-top:10px; /*---- if position:fixed removed put this padding-top in main ---*/
-	width:140px;
-}
-
-#left-column img{
-	width:130px;
-}
-
-#left-column .row{
-	margin-left:0px;
-	padding:8px;
-	width:124px;
-	color:#999;
-	border-bottom: 1px solid #DDD;
-}
-
-#left-column .row:last-child{
-	border-bottom: none;
-}
-
-#left-column .row a{
-	display:block;
-	height:20px;
-	color:#333;
-}
-
-.row#page span{
-	float:left;
-	display:inline-block;
-	height:16px;
-	width:16px;
-	margin-right:14px;
-	margin-left:12px;
-	background-repeat:no-repeat;
-	background:url("/static/images/facebook-sprits.png");
-	background-position:-170px -91px;
-}
-
-#left-column .row a:hover{
-	text-decoration:none;
-	color:#0084B4;
-}
-
-#left-column .row a:hover strong{
-	color:#0084B4;
-}
-
-#left-column .row span.title{
-	line-height:20px;
-}
-
-#left-column .row strong{
-	display:block;
-	float:left;
-	margin-right:8px;
-	width:35px;
-	overflow:hidden;
-	font-weight:bold;
-	font-size:16px;
-	color:#333;
-	text-align:center;
-}
-
-#left-column #broadcasts strong, #left-column #views strong{
-	visibility:hidden;
-}
-
-/*-------- MIDDLE COLUMN -------*/
-
-#middle-column{
-	padding-left:20px;
-	width:510px;
-	/*--- posiion:fixed related below ---*/
-	margin-left:140px;
-	margin-top:425px;
-}
-
-#middle-column .fixed{
-	padding-top:10px; 	/*---- padding:top must go to main in case no position:fixed ---*/
-	margin-top:-425px;
-	width:510px;
-	background:#F6F6F6;
-}
-
-#station-title{
-	width:100%;
-	padding-bottom:4px;
-}
-
-#station-title h2{
-	max-width:410px;
-	font-size:16px;
-	font-style:italic;
-}
-
-#station-title .fb-like{
-	margin-left:10px;
-	padding-top:1px;
-}
-
-/* --------- VIDEO -------*/
-
-#video{
-	height:315px;
-	width:510px;
-}
-
-#video object{
-	margin-bottom:-5px;
-}
-
-/* Necessary for Firefox */
-#player-wrapper{
-	height:287px;
-	width:510px;
-}
-
-#player-wrapper img{
-	margin-top:100px;
-	margin-left:230px;
-}
-
-#player-wrapper #no-live{
-	margin-top:120px;
-	margin-left:205px;
-}
-
-#youtube-player{
-	height:287px;
-	width:510px;
-}
-
-/*------ VIDEO SETTINGS ------*/
-
-#video-settings{
-	width:500px;
-	height:18px;
-	padding:4px;
-	font-size:11px;
-	border:1px solid #DDD;
-}
-
-#progression-bar{
-	margin-left:8px;
-	margin-right:8px;
-	height:16px;
-	width:400px;
-	border:1px solid #DDD;
-}
-
-#filler{
-	height:16px;
-	background-color:#DDD;
-}
-
-div#volume{
+#top-left-status{
 	float:right;
+	margin-top:-8px;
+	padding:10px;
+	text-transform:uppercase;
+	font-family:Futura;
+	letter-spacing:1px;	
+	font-size:13px;
 }
 
-#volume img{
-	height:18px;
-	width:18px;
+#top-left-status.on{
+	color:white;
+	background:#D42222;
+	border:1px solid #DB7171;
 }
 
-/*------- VIDEO DETAILS -----*/
-
-#video-details{
-	padding:4px;
-	width:500px;
-	height:64px;
-	border:1px solid #DDD;
-	border-top:none;
+#top-left-status.off{
+	color:#636363;
+	background:#C4C4C4;
+	border:1px solid #E1E1E1;
 }
 
-#video-details .clip{
-	height:64px;
-	width:118px;
+#top-left-status.on a:hover{
+	color:white;
 }
 
-#video-details .clip img{
-	height:88px;
+#top-left-status.off a:hover{
+	color:#636363;
 }
 
-#video-details h3{
-	padding:8px;
-	padding-top:4px;
-	padding-bottom:4px;
+/* ----------- SESSIONS ------------*/
+
+#top-right-sessions{
+	margin-bottom:10px;
 }
 
-#video-details .title{
-	padding:8px;
-	padding-top:4px;
-	width:362px;
-	height:30px;
+#top-right-session-pictures{
+	clear:left;
+	width:248px;
+	height:70px;
+	margin-bottom:10px;
 	overflow:hidden;
 }
 
-#video-details .title span{
-	height:30px;
-}
-
-#video-details .id{
-	display:none;
-}
-
-#video-details .submitter{
-	float:right;
-	font-size:11px;
-	width:100px;
-}
-
-#video-details .submitter span{
-	display:block;
-	float:right;
-	padding-top:2px;
-	color:#B3B3B3;
-	padding-right:6px;
-}
-
-#video-details .submitter img{
-	height:22px;
-	display:block;
-	float:right;
-}
-
-#favorite-track{
-	height:25px;
-}
-
-#favorite-track a.fav{
-	display:block;
-	height:23px;
-	width:23px;
-	background:url("/static/images/phonoblaster-sprits.png");
-	background-position: -98px 0px;
-}
-
-#favorite-track a.fav:hover{
-	background-position: -121px 0px;
-}
-
-#favorite-track a.unfav{
-	display:block;
-	height:23px;
-	width:23px;
-	background:url("/static/images/phonoblaster-sprits.png");
-	background-position: -145px 0px;
-}
-
-/*-------- COMMENTS ---------*/
-
-#comments{
-	width:508px;
-	border:1px solid #DDD;
-	border-top:none;	
-}
-
-#comment-box{
-	width:500px;
-	padding:4px;
-	height:28px;
-	border-bottom: 1px solid #ddd;
-}
-
-#comment-box img{
+a.session-picture{
 	display:block;
 	float:left;
-	margin-right:4px;
-	height:26px;
-	width:26px;
-	border: 1px solid #ddd;
+	margin-right:3px;
+	margin-bottom:3px;
+	padding:2px;
+	background:#FFFFFF;
 }
 
-#comment-box form{
-	display:block;
-	float:left;
-	width:468px;
-	margin:0px;
-}
-
-input#comment{
-	display:block;
-	float:left;
-	width:354px;
-	margin-right:4px;
-}
-
-span#fb-sync{
-	cursor:pointer;
+a.session-picture img{
 	display:block;
 	float:left;
 	height:28px;
 	width:28px;
-	margin-right:4px;
 }
 
-span#fb-sync.active{
-	background:url("/static/images/phonoblaster-sprits.png");
-	background-position:-5px -28px;
+a#top-right-share{
+	float:right;
 }
 
-span#fb-sync.inactive{
-	background:url("/static/images/phonoblaster-sprits.png");
-	background-position:-41px -28px;
+/* ------- FACEPILE ------- */
+
+.fb-facepile{
+	margin-left:10px;
 }
 
-#comments-zone{
-	padding-bottom:8px;
-	min-height:400px;
+/* --------- MEDIA -------- */
+
+#media p{
+	margin-top:156px;
 	width:100%;
-	background:white;
-}
-
-.comment{
-	margin-top:-4px;
-	padding:4px;
-	padding-bottom:0px;
-	width:502px;	
-}
-
-.comment:first-child{
-	margin-top:0px;
-}
-
-.comment img.user, .comment img.station{
-	display:block;
-	float:left;
-	margin-right:8px;
-	height:25px;
-	border: 1px solid #ddd;
-}
-
-.comment .content{
-	min-height:27px;
-	width:462px;
-}
-
-.comment .content p{
-	width:100%;
-	line-height:15px;
-	font-size:11px;
-	overflow:hidden;
-}
-
-.comment .content p a{
-	font-weight:bold;
-	color:#0084B4;
-}
-
-.comment .content p a:hover{
-	color:#0084B4;
-}
-
-.comment .content span.clip{
-	margin-top:4px;
-	margin-bottom:4px;
-	margin-right:8px;
-	height:52px;
-	width:96px;
-}
-
-.comment .content span.clip img{
-	height:72px;
-}
-
-.comment .title{
-	height:52px;
-	width:358px;
-	font-size:11px;
-}
-
-.comment .title span{
-	height:52px;
-}
-
-.comment .border{
-	margin-right:8px;
-	width:456px;
-	height:4px;
-	border-bottom:1px solid #CCC;
-}
-
-.comment .time{
-	margin-top:-1px;
-	color:#CCC;
-	font-size:11px;
-	line-height: 10px;
-}
-
-
-/*------- RIGHT COLUMN --------*/
-
-#right-column{
-	padding-left:20px;
-	width:310px;
-	/*--- posiion:fixed related below ---*/
-	margin-top:115px;
-}
-
-#right-column .fixed{
-	background:#F6F6F6;
-}
-
-#station-status{
-	margin-top:-116px;
-	padding-top:10px;
-	height:110px;
-	width:330px;
-}
-
-#station-status .btn{
-	display:block;
-	float:left;
-	margin-top:2px;
-	margin-right:8px;
-}
-
-#station-status p{
-	height:30px;
-	width:230px;
-	overflow:hidden;
-	line-height:16px;
-	font-size:11px;
-}
-
-#station-status p span{
-	height:30px;
-}
-
-#station-status p strong{
-	font-weight:bold;
-	color:#0084B4;
-}
-
-#queue-status{
-	width:310px;
-}
-
-#queue-status span.circle{
-	display:block;
-	float:left;
-	margin-top:8px;
-	padding-left:2px;
-	padding-right:2px;
-	height:22px;
-	width:22px;
-	background:url("/static/images/phonoblaster-sprits.png");
-}
-
-#queue-status span.black{
-	background-position:-25px -0px;
-}
-
-#queue-status span.grey{
-	background-position: -0px -0px;
-}
-
-#queue-counter{
-	margin-top:8px;
-	margin-left:8px;
-}
-
-#right-column ul{
-	margin:0px;
-	margin-top:-38px;
-	float:left;
-	width:312px;
-	height:32px;
-	padding:0px;
-	list-style-type:none;
-	border-bottom:1px solid #B3B3B3;
-}
-
-#right-column li{
-	display:block;
-	float:left;
-	width:72px;
-	line-height:16px;
-}
-
-#right-column li a{
-	display:block;
-	float:left;
-	padding:6px;
-	padding-top:10px;
-	height:15px;
-	width:58px;
-	text-align:center;
-	color:#B3B3B3;
-	font-size:13px;
-	text-decoration:none;
-	-webkit-border-radius:6px 6px 0px 0px;
-	-moz-border-radius:6px 6px 0px 0px;
-	border-radius:6px 6px 0px 0px;
-	border-left:1px solid #F6F6F6;
-	border-top:1px solid #F6F6F6;
-	border-right:1px solid #F6F6F6;
-}
-
-#right-column li a.current{
-	height:16px;
-	color:#808080;
-	border-left:1px solid #B3B3B3;
-	border-top:1px solid #B3B3B3;
-	border-right:1px solid #B3B3B3;
-	background:#F6F6F6;
-}
-
-#right-column li a:hover{
-	color:#808080;
-}
-
-#tab-content-wrap{
-	margin-top:-4px;
-	width:310px;
-}
-
-.tab-content div{
-	display:block;
-}
-
-.tab-content{
-	display:none;
-	width:296px;
-	padding:8px;
-}
-
-#queue-tab{
-	margin-top:44px;
-}
-
-#queue-header input{
-	position:fixed;
-	z-index:3;
-	margin-left:118px;
-	width:150px;
-}
-
-#queue-header span#search-icon{
-	float:right;
-	display:inline-block;
-	height:20px;
-	width:20px;
-	background: url("/static/images/phonoblaster-sprits.png");
-	background-position:-50px 5px;
-}
-
-#right-column .tab-content .fixed{
-	margin-top:-52px;
-	padding-top:8px;
-	padding-bottom:8px;
-	width:296px;
-	height:30px;
-	background:#F6F6F6;
-	border-bottom: 1px solid #DDD;
-}
-
-#queue-tab .tab-items{
-	margin-top:-8px;
-}
-
-#right-column .tab-items{
-	width:294px;
-	min-height:500px;
-	background:white;
-	border: 1px solid #DDD;
-}
-
-#right-column .init{
-	padding:8px;
-}
-
-#right-column .loader{
-	display:none;
-	height:40px;
-	width:100%;
-	background: url("/static/images/loader.gif") no-repeat;
-	background-position: center center;
-}
-
-.item{
-	padding:8px;
-	font-size:11px;
-	border-bottom: 1px solid #DDD;
-}
-
-.item .square{	
-	display:block;
-	float:left;
-	position:relative;
-	height:68px;
-	width:90px;
-	overflow:hidden;
-	margin-right:8px;
-}
-
-.item .square img{
-	height:90px;
-	position:absolute;
-	top:-11px;
-	left:-15px;	
-}
-
-.item .title{
-	padding-right:4px;
-	width:166px;
-	height:46px;
-	overflow:hidden;
-}
-
-.item .title span{
-	height:46px;
-	line-height:15px;
-}
-
-.item a.cross{
-	display:block;
-	float:left;
-	height:12px;
-	width:10px;
-	color:#B3B3B3;
-}
-
-.item a.cross:hover{
-	text-decoration:none;
-	color:#404040;
-}
-
-.item .subtitle{
-	height:22px;
-	width:180px;
-}
-
-.item .duration{
-	padding-top:2px;
-}
-
-#right-column .item .submitter{
-	float:right;
-}
-
-.item .submitter img{
-	display:block;
-	float:right;
-	margin-left:8px;
-	height:22px;
-}
-
-.item .submitter span{
-	display:block;
-	float:right;
-	padding-top:2px;
-	color:#B3B3B3;
-}
-
-#right-column .item .process-actions{
-	float:right;
-}
-
-.item a.preview{
-	display:block;
-	float:right;
-	margin-right:8px;
-	height:22px;
-	width:22px;
-	background:url("/static/images/phonoblaster-sprits.png");
-	background-position: -73px 1px;
-}
-
-.item a.btn{
-	display:block;
-	float:right;
-	padding:4px 13px 5px;
-	font-size:11px;
+	text-align:center;	
 }

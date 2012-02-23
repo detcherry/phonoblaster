@@ -1,51 +1,52 @@
 // ---------------------------------------------------------------------------
-// VIRAL MANAGER
+// SHARE MANAGER
 // ---------------------------------------------------------------------------
 
-function ViralManager(station_client){
+function ShareManager(station_client){
 	this.station_client = station_client;
 	this.listen();
 }
 
-ViralManager.prototype = {
+ShareManager.prototype = {
 	
 	listen: function(){
 		var that = this;
 		
 		// Listen to events to bring people inside station (from broadcaster or listener)
-		$("#bring-people .btn").click(function(){
+		$("a#top-right-share").click(function(){
 			// User must be logged in to share the station
 			if(!that.station_client.user){
 				FACEBOOK.login()
 			}
 			else{
 				// Display popup
-				that.bringPeoplePopup()
+				that.sharePopup()
 			}
 			return false;
 		});
 		
 		// Listen to submit events for bringing people inside station
-		$("#popup-bring-people form").submit(function(event){
+		$("#popup-share form").submit(function(event){
 			event.preventDefault();
 			
-			var message = $("#popup-bring-people textarea").val();
+			var message = $("#popup-share textarea").val();
 			var link = PHB.site_url + "/" + that.station_client.station.shortname;
 			var picture = PHB.site_url + "/" + that.station_client.station.shortname + "/picture";
-			var btn = $("#bring-people .btn");
+			var btn = $("a#top-right-share");
 			
-			that.bringPeopleSubmit(message, link, picture, function(response){
-				that.bringPeopleCallback(btn, response);
+			that.shareSubmit(message, link, picture, function(response){
+				that.shareCallback(btn, response);
 			});
 		});
 					
 	},
 	
-	bringPeoplePopup: function(){
+	sharePopup: function(){
 		var popup_content = null
-		// If live broadcast
-		if(this.station_client.queue_manager.live_item){
-			var title = this.station_client.queue_manager.live_item.content.youtube_title;
+		
+		// If UI live broadcast
+		if(this.station_client.queue_manager.UILive()){
+			var title = $("#media-title span.middle").html();
 			var station = this.station_client.station.name;
 			var people_listening = this.station_client.session_manager.sessions_counter.count;
 			
@@ -56,21 +57,21 @@ ViralManager.prototype = {
 			// If user is basic listener (focus on social)
 			else{
 				popup_content = "♬ Listening live to " + station + " on Phonoblaster w/ " + people_listening + " other people. ♬"
-			}
+			}	
 		}
 		else{
 			popup_content = ""	
 		}
 		
-		$("#popup-bring-people textarea").val(popup_content);
+		$("#popup-share textarea").val(popup_content);
 		
 		// Display fancy box
-		$.fancybox($("#popup-bring-people"), {
+		$.fancybox($("#popup-share"), {
 			topRatio: 0.4,
 		});		
 	},
 	
-	bringPeopleSubmit: function(message, link, picture, callback){
+	shareSubmit: function(message, link, picture, callback){
 		var that = this;
 		if(this.station_client.admin){
 			var page_id = that.station_client.station.key_name;
@@ -84,19 +85,19 @@ ViralManager.prototype = {
 		$.fancybox.close(true)
 	},
 	
-	bringPeopleCallback: function(btn, response){
+	shareCallback: function(btn, response){
 		var initial_content = btn.html();
 	    
 		if(response){
-			btn.removeClass("primary").addClass("success").html("Post sent")
+			btn.html("Post sent")
 			setTimeout(function(){
-				btn.removeClass("success").addClass("primary").html(initial_content);
+				btn.html(initial_content);
 			}, 2000)
 		}
 		else{
-			btn.removeClass("primary").addClass("danger").html("Error. Try again.")
+			btn.html("Error. Try again.")
 			setTimeout(function(){
-				btn.removeClass("success").addClass("primary").html(initial_content);
+				btn.html(initial_content);
 			}, 2000)
 		}
 		

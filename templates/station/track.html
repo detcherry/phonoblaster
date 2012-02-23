@@ -1,4 +1,4 @@
-{% extends "station/root.html" %}
+{% extends "station/secondary.html" %}
 
 {% block meta %}
 	<title>{{ track.youtube_title }}</title>
@@ -19,79 +19,12 @@
 	<meta property="{{ version }}:station" content="{{ site_url }}/{{ station_proxy.station.shortname }}"/>
 {% endblock %}
 
-{% block style %}
-	<link type="text/css" rel="stylesheet" href="/{{ static }}/css/station/track.css" />
-{% endblock %}
 
-{% block middle-column %}
-	<div class="fixed">
-		<div id="station-title">
-			<h2>{{ station_proxy.station.name }}</h2>
-			<div class="fb-like" data-href="{{ station_proxy.station.link }}" data-send="false" data-layout="button_count"  data-show-faces="false"></div>
-		</div>
-		<div id="video">
-			<div id="player-wrapper">
-				<div id="youtube-player"></div>
-			</div>
-		</div>
-		<div id="video-details">
-			<span class="clip">
-				<img src="http://i.ytimg.com/vi/{{ track.youtube_id }}/default.jpg"/>
-			</span>
-			<div class="above-title">
-				<h3>Current track</h3>
-				<div id="favorite-track">
-					{% if user_proxy %}<a href="#" class="fav tuto" data-original-title="Favorite this track"></a>{% endif %}
-				</div>
-			</div>
-			<div class="submitter"></div>
-			<div class="title">
-				<span class="middle">{{ track.youtube_title }}</span>
-			</div>
-		</div>
-	</div>
-{% endblock %}
 
-{% block right-column %}
-	{% include "right_column.html" %}
-{% endblock %}
-
-{% block script %}
-<script type="text/javascript" src="/{{ static }}/js/library/favorite.js"></script>
-
-<script type="text/javascript" src="/{{ static }}/js/station/swfobject.js"></script>
-<script type="text/javascript" src="/{{ static }}/js/station/counter.js"></script>
-
-<script type="text/javascript" src="/{{ static }}/js/station/off/embedded.js"></script>
-<script type="text/javascript" src="/{{ static }}/js/station/tab.js"></script>
-<script type="text/javascript" src="/{{ static }}/js/station/latest.js"></script>
-<script type="text/javascript" src="/{{ static }}/js/station/track.js"></script>
+{% block secondary-script %}
+<script type="text/javascript" src="/static/js/library/favorite.js"></script>
+<script type="text/javascript" src="/static/js/station/track.js"></script>
 <script type="text/javascript">
-	//--- Reset ---
-	USER = null;
-	ADMIN = false;
-	STATION = null;
-	
-	//--- User Initialization ---
-	{% if user_proxy %} 
-	USER = {
-		"key_name": "{{ user_proxy.user.key.name }}",
-		"name": "{{ user_proxy.user.first_name }} {{ user_proxy.user.last_name }}",
-	}
-	{% endif %}
-	
-	/*--- Admin Initialization ---*/
-	{% if is_admin %} 
-	ADMIN = true;
-	{% endif %}
-	
-	//--- Station Initialization ---
-	STATION = {
-		"key_name": "{{ station_proxy.station.key.name }}",
-		"shortname": "{{ station_proxy.station.shortname }}",
-		"name": "{{ station_proxy.station.name}}",
-	}
-	
 	// ------- Track Initialization ----------
 	var CONTENT = {
 		"youtube_id": "{{ track.youtube_id }}",
@@ -107,8 +40,4 @@
 		"created": CONTENT.track_created,
 	}
 </script>
-{% endblock %}
-
-{% block footer %}
-	{% include "footer.html" %}
 {% endblock %}

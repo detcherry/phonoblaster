@@ -2,13 +2,15 @@
 
 .topbar{
 	float:left;
-	height:46px;
-	z-index:999;	
+	height:50px;
+	width:100%;
+	position:static;	
 }
 
 .topbar-inner{
-	padding-top:8px;
-	padding-bottom:8px;
+	padding-top:10px;
+	padding-bottom:10px;
+	width:100%;
 }
 
 .topbar-inner a:hover{
@@ -25,27 +27,35 @@
 .topbar-inner a#logo{
 	display:block;
 	float:left;
-	padding-top:2px;
-}
-
-.topbar-inner a#logo img{
-	width: 150px;
+	width:190px;
+	height:30px;
+	background:url("/static/images/phonoblaster-sprits.png");
+	background-position:0px 0px;
 }
 
 .topbar-inner #menu{
 	float:right;
-	padding-top:2px;
 }
 
 .topbar-inner #menu div{
 	float:left;
-	padding-right:8px;
-	padding-left:8px;
-	line-height:30px;
+	padding-right:10px;
+	padding-left:10px;
+	line-height:28px;
 	color:white;
 }
 
 .topbar-inner #menu div a{
 	float:left;
-	color:white;
+}
+
+.topbar-inner a.login{
+	display:block;
+	margin-top:0px;
+	width:178px;
+	height:30px;
+	text-indent:-3000px;
+	background-image:url("/static/images/phonoblaster-sprits.png");
+	background-position:-5px -230px;
+	border-radius: 6px;
 }

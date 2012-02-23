@@ -2,13 +2,13 @@
 	<div class="topbar-inner">
 		<div class="container">
 			<h1>Phonoblaster</h1>
-			<a id="logo" href="/"><img src="/{{ static }}/images/phonoblaster.png"/></a>
+			<a id="logo" href="/"></a>
 			<div id="menu">
 			{% if user_proxy %}
 				<div><a href="#" class="logout">Logout</a></div>
 			{% else %}
 				<div>Broadcast your music now!</div>
-				<div><a href="#" class="login btn primary">Login with Facebook</a></div>
+				<div><a href="#" class="login">Login with Facebook</a></div>
 			{% endif %}
 			</div>
 		</div>

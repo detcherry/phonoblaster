@@ -73,12 +73,11 @@ RecommandationManager.prototype.filterYoutube = function(youtube_ids){
 		success: function(json){			
 			var items = json.data.items; 
 			if(items && items.length > 0){
-				// Update recommandation popup and display it
-				$("#popup-recommandation h3 strong").html("Facebook")
-				that.displayPopup();
+				// Update recommandation popup 
+				$("#popup-recommandations h3 strong").html("Facebook")
 				
 				// Remove volume
-				$("#volume a").trigger("click");
+				$("#media-volume").trigger("click");
 				
 				// Filter music videos only
 				var music_videos = [];
@@ -92,6 +91,9 @@ RecommandationManager.prototype.filterYoutube = function(youtube_ids){
 				that.empty(function(){
 					that.getCallback(music_videos);
 				})
+				
+				that.displayPopup();
+				
 			}
 		},
 	})
@@ -126,11 +128,11 @@ RecommandationManager.prototype.get = function(){
 		success: function(json){
 			if(json.length > 0){
 				// Update recommandation popup and display it
-				$("#popup-recommandation h3 strong").html("Phonoblaster")
+				$("#popup-recommandations h3 strong").html("Phonoblaster")
 				that.displayPopup();
 				
 				// Remove volume
-				$("#volume a").trigger("click");
+				$("#media-volume").trigger("click");
 				
 				that.empty(function(){
 					that.getCallback(json);
@@ -141,7 +143,7 @@ RecommandationManager.prototype.get = function(){
 }
 
 RecommandationManager.prototype.displayPopup = function(){
-	$.fancybox($("#popup-recommandation"), {
+	$.fancybox($("#popup-recommandations"), {
 		topRatio: 0.4,
 		modal: true,
 	});
@@ -149,18 +151,18 @@ RecommandationManager.prototype.displayPopup = function(){
 
 RecommandationManager.prototype.closeListen = function(){
 	var that = this
-	$("#popup-recommandation a.primary").click(function(){
+	$("#popup-recommandations a.primary").click(function(){
 		// Close popup
 		$.fancybox.close(true);
 		
 		// Put volume back
-		$("#volume a").trigger("click");
+		$("#media-volume").trigger("click");
 		
 		if(that.station_client.queue_manager.UILive()){
-			// Popup to bring people delayed after 1 sec
+			// Popup to share station delayed after 1 sec
 			setTimeout(function(){
-				$("#bring-people .btn").trigger("click");
-			}, 5000)
+				$("#top-right-share").trigger("click");
+			}, 1000)
 		}
 	})
 }
@@ -216,43 +218,26 @@ RecommandationManager.prototype.UIBuild = function(item){
 	var process_action = "Queue!"
 	
 	var div = $("<div/>").addClass("item").attr("id",id)
-	
 	div.append(
-		$("<span/>")
-			.addClass("square")
+		$("<div/>")
+			.addClass("item-picture")
+			.append($("<img/>").attr("src", youtube_thumbnail))
+	)
+	.append(
+		$("<div/>")
+			.addClass("item-title")
+			.append($("<span/>").addClass("middle").html(youtube_title))
+	)
+	.append(
+		$("<div/>")
+			.addClass("item-subtitle")
+			.append($("<div/>").addClass("item-duration").html(youtube_duration))
 			.append(
-				$("<img/>")
-					.attr("src", youtube_thumbnail)
+				$("<div/>")
+					.addClass("item-process")
+					.append($("<a/>").addClass("btn").attr("name",id).html(process_action))
 			)
-		)
-		.append(
-			$("<div/>")
-				.addClass("title")
-				.append(
-					$("<span/>")
-						.addClass("middle")
-						.html(youtube_title)
-				)
-		)
-		.append(
-			$("<div/>")
-				.addClass("subtitle")
-				.append(
-					$("<div/>")
-						.addClass("duration")
-						.html(youtube_duration)
-				)
-				.append(
-					$("<div/>")
-						.addClass("process-actions")
-						.append(
-							$("<a/>")
-								.addClass("btn")
-								.attr("name",id)
-								.html(process_action)
-						)
-				)
-		)
+	)
 				
 	return div;
 }

@@ -39,10 +39,9 @@ Facebook.prototype.loginAndRedirect = function(){
 	
 }
 
-
 // ----------- Comment -----------
 
-// Necessary to add target = blank for every link
+// Necessary to add target = top for every link
 CommentManager.prototype.UIBuild = function(item){
 	
 	// There are 2 types of items: real comments and broadcast notifications
@@ -60,22 +59,22 @@ CommentManager.prototype.UIBuild = function(item){
 		
 		var div = $("<div/>").addClass("comment").attr("id", id)
 		
+		
 		div.append(
-			$("<img/>")
-				.attr("src", author_picture_url)
-				.addClass("user")
-			)
-			.append(
-				$("<div/>")
-					.addClass("content")
-					.append(
-						$("<p/>")
-							.append($("<a/>").attr("href", author_url).attr("target", "_top").html(author_name))
-							.append(" " + message)
-					)
-			)
-			.append($("<div/>").addClass("border"))
-			.append($("<div/>").addClass("time").html(created))
+			$("<div/>")
+				.addClass("comment-submitter-picture")
+				.append($("<img/>").attr("src", author_picture_url))
+		)
+		.append(
+			$("<div/>")
+				.addClass("comment-content")
+				.append(
+					$("<p/>")
+						.append($("<a/>").attr("href", author_url).attr("target", "_top").html(author_name))
+						.append(" " + message)
+				)
+		)
+		.append($("<div/>").addClass("comment-time").html(created))
 		
 	}
 	else{
@@ -116,36 +115,34 @@ CommentManager.prototype.UIBuild = function(item){
 				.append($("<a/>").attr("href", station_url).attr("target", "_top").html(station_name))
 		}
 		
-		var div = $("<div/>").addClass("comment").attr("id", id)
 		
+		var div = $("<div/>").addClass("comment").attr("id", id)
 		div.append(
-			$("<img/>")
-				.attr("src", track_submitter_picture)
-				.addClass("station")
-			)
-			.append(
-				$("<div/>")
-					.addClass("content")
-					.append(mention)
-					.append(
-						$("<span/>")
-							.addClass("clip")
-							.append(
-								$("<img/>").attr("src", youtube_thumbnail)
-							)
-					)
-					.append(
-						$("<div/>")
-							.addClass("title")
-							.append(
-								$("<span/>")
-									.addClass("middle")
-									.html(youtube_title)
-							)
-					)
-			)
-			.append($("<div/>").addClass("border"))
-			.append($("<div/>").addClass("time").html(created))
+			$("<div/>")
+				.addClass("comment-submitter-picture")
+				.append($("<img/>").attr("src", track_submitter_picture))
+		)
+		.append(
+			$("<div/>")
+				.addClass("comment-content")
+				.append(mention)
+				.append(
+					$("<div/>")
+						.addClass("item")
+						.append(
+							$("<div/>")
+								.addClass("item-picture")
+								.append($("<img/>").attr("src", youtube_thumbnail))
+						)
+						.append(
+							$("<div/>")
+								.addClass("item-title")
+								.append($("<span/>").addClass("middle").html(youtube_title))
+						)
+				)
+				
+		)
+		.append($("<div/>").addClass("comment-time").html(created))
 		
 	}
 	

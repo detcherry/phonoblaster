@@ -1,192 +1,215 @@
-@import url("../root.css");
-
 /* ------ OVERWRITES ------ */
 
 html{
+	overflow-x:hidden;
 	overflow-y:visible;
 }
 
 #main{
-	margin-top:0px;
 	padding:0px;
-	min-height:700px;
+	min-height:600px;
 }
 
 .container{
 	padding:5px;
 	width:510px;
 	height:100%;
+	background:url("/static/images/grid.png");
 }
 
-/* ---- STATION TITLE ----*/
+/* ----- TOP LEFT CORRECTIONS ----- */
 
-#station-title h2{
-	margin-top:5px;
-	margin-left:5px;
+#top-left-description{
+	min-height:42px;
 }
 
-#station-title a{
-	text-decoration:none;
+#top-left-description{
+	width:510px;
 }
 
-#station-title .btn{
-	display:block;
-	float:left;
-	margin-left:10px;
-	cursor:auto;
-}
-
-#station-status{
-	margin-top:0px;
-	padding-top:0px;
+#top-left-title{
 	width:auto;
-	height:32px;
 }
 
-/* ----- VIDEO DETAILS ----*/
-
-#video-details{
-	height:53px;
+#top-left-description .stroke{
+	margin-top:2px;
+	margin-bottom:2px;
+	margin-right:6px;
 }
 
-#video-details .clip{
-	margin-right:3px;
-	height:53px;
-	width:94px;
+#top-left-status{
+	margin-top:-24px;
 }
 
-#video-details .clip img{
-	top:-18px;
-	left:-11px;
+/* ---- MAIN LEFT CORRECTIONS ----- */
+
+#media{
+	margin-left:0px;
+	width:510px;
+	height:287px;
 }
 
-#video-details h3{
-	padding:5px;
-	padding-bottom:2px;
-	padding-right:8px;
+#media .loader{
+	margin-top:106px;
 }
 
-#favorite-track{
-	height:23px;
-	padding-top:2px;
+#media-monitoring, #media-details{
+	padding-left:10px;
+	padding-right:10px;
+	width:488px;
+	background:#FFFFFF;
+	border-left:1px solid #E1E1E1;
+	border-right:1px solid #E1E1E1;
 }
 
-#video-details .title{
-	padding:5px;
-	padding-top:7px;
-	height:16px;
-	width:393px;
+#media-picture{
+	width:80px;
 }
 
-#video-details .title span{
-	height:16px;
+#media-picture img{
+	left:-20px;
 }
 
-/* ----- COMMENTS ------ */
-
-#comments{
-	margin-top:5px;
-	margin-right:5px;
-	width:273px;
-	border-top:1px solid #DDD;
+#media-details-center{
+	width:318px;
 }
 
-#comment-box{
-	display:block;
-	float:left;
-	width:263px;
-	padding:5px;
-	border-bottom: 1px solid #DDD;
+#media-title{
+	padding-right:10px;
+	width:308px;
 }
 
-#comment-box form{
-	width:231px;
+#media-details-center-top{
+	width:298px;
 }
 
-input#comment{
-	width:189px;
+#media-details-right{
+	width:79px;
 }
 
-span#fb-sync{
-	margin-right:0px;
+/* ---- COMMENTS ---- */
+
+div#comments-input{
+	width:488px;
+	border-top:none;
 }
 
-#comments-zone{
-	min-height:466px;
-	padding-bottom:5px;
+form#comments-form{
+	width:430px;
+}
+
+input#comments-input{
+	width:295px;
+}
+
+#comments-display{
+	width:279px;
+	min-height:180px;
+}
+
+#comments-footer{
+	display:none;
 }
 
 .comment{
-	width:265px;
+	padding:5px;
+	width:270px;
 }
 
-.comment .content{
-	width:230px;
+.comment-submitter-picture{
+	padding-right:5px;
+	width:28px;
+	height:28px;
 }
 
-.comment .border{
-	width:228px;
+.comment-submitter-picture img{
+	width:28px;
+	height:28px;
 }
 
-.comment .content span.clip{
+.comment-content{
+	padding:5px;
+	width:215px;
+}
+
+.comment-content .item-picture{
 	height:34px;
 	width:60px;
 }
 
-.comment .content span.clip img{
+.comment-content .item-picture img{
 	top:-28px;
-	left:-17px;
+	left:-30px;
 }
 
-#main .comment div.title{
+.comment-content .item-title{
 	margin-top:4px;
 	margin-bottom:4px;
 	height:34px;
 	width:160px;
 }
 
-.comment .title span{
-	height:34px;
+.comment-time{
+	display:none;
 }
 
+/*------ RIGHT TAB -----*/
 
-/* ------- ITEMS ------- */
-
-#main div.tab-items{
-	min-height:250px;
-	width:508px;
-	background:white;
-	border:1px solid #DDD;
+.tab-content{
+	display:block;
+	margin-left:-1px;
+	width:228px;
+	min-height:180px;
+	border:1px solid #E1E1E1;
 	border-top:none;
 }
 
+.tab-content .tab-items{
+	padding:5px;
+	width:218px;
+	min-height:90px;
+	border-bottom:3px solid #000000;
+}
+
 .item{
+	margin-bottom:5px;
 	padding:5px;
 }
 
-.item .square {
+.item:last-child{
+	margin-bottom:0px;
+}
+
+.item-picture{
 	height:34px;
 	width:60px;
 }
 
-.item .square img {
+.item-picture img {
 	top:-28px;
-	left:-32px;
+	left:-30px;
 }
 
-.item .title {
-	padding-right:0px;
-	width:150px;
+.item-title {
+	padding:0px;
+	width:138px;
 	height:34px;
 }
 
-.item .title span {
+.item-title span {
 	height:34px;
 	line-height:16px;
 }
 
-.item .subtitle{
+.item-subtitle{
 	display:none;
+}
+
+.tab-content a.btn.primary{
+	float:left;
+	margin:20px;
+	padding:10px;
+	margin-left:44px;
 }
 
 /* ------- ERROR ------- */
@@ -216,7 +239,8 @@ div#error{
 /* ------ FOOTER ------ */
 
 #bottom-bar{
-	height:100px;
+	height:0px;
+	margin-bottom:40px;
 }
 
 #bottom-bar .container{
@@ -224,13 +248,16 @@ div#error{
 }
 
 #bottom-bar img{
-	height:30px;
-	margin-left:160px;
+	height:20px;
+	margin-left:10px;
 	margin-top:10px;
-	margin-bottom:5px;
 }
 
 #bottom-bar p{
 	margin-left:185px;
 	color:#F6F6F6;
 }
+
+
+
+
