@@ -19,15 +19,15 @@ class StationCreateHandler(BaseHandler):
 			logging.info("User is admin of at least one page")
 			user_page_ids = [contribution["page_id"] for contribution in user_contributions]
 			results = Station.get_by_key_name(user_page_ids)
-			
+						
+			contributions_left = []
 			for i in range(len(results)):
 				result = results[i]
-				if result is not None:
-					# Remove contribution from list (station already created)
-					user_contributions.pop(i)
+				if result is None:
+					contributions_left.append(user_contributions[i])
 				
 		template_values = {
-			"user_contributions": user_contributions,
+			"user_contributions": contributions_left,
 		}
 
 		self.render("station/create.html", template_values)
