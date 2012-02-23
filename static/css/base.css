@@ -208,6 +208,7 @@ a.btn:hover, input.btn:hover{
 	color:#F5F5F5;
 	background:#333333;
 	text-decoration:none;
+	text-shadow:none;
 }
 
 a.btn.success, a.btn.success:hover{
