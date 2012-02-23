@@ -9,4 +9,4 @@ class HomeHandler(BaseHandler):
 		if(self.user_proxy):
 			self.redirect("/station/create")
 		else:
-			self.render("home.html", None)
+			self.render("welcome.html", None)
