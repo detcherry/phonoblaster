@@ -44,17 +44,13 @@ TabCreationManager.prototype = {
 
 			// Hide loader gif
 			obj.prev().css("visibility", "hidden");
-
-			// Build text to display
-			var repl = $("<span/>").addClass("btn");
+			
 			if(response){
-				repl.addClass("success").html("Created!");
-			}else{
-				repl.addClass("danger").html("Error...");
+				obj.addClass("success").html("Created")
 			}
-
-			// Replace link by text
-			obj.replaceWith(repl);
+			else{
+				obj.addClass("danger").html("Error...")
+			}
 
 			// Display popup if response positive
 			if(response){
