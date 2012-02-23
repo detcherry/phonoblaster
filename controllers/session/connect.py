@@ -17,9 +17,6 @@ from models.api.user import UserApi
 
 class ConnectHandler(webapp.RequestHandler):
 	def post(self):
-		# Increment the station sessions counter
-		station_proxy.increment_sessions_counter();
-		
 		channel_id = str(self.request.get('from'))
 		logging.info("%s is ready to receive messages" %(channel_id))
 		
@@ -29,6 +26,9 @@ class ConnectHandler(webapp.RequestHandler):
 		m = re.match(r"(\w+).(\w+)", channel_id)
 		shortname = m.group(1)
 		station_proxy = StationApi(shortname)
+		
+		# Increment the station sessions counter
+		station_proxy.increment_sessions_counter();
 		
 		# Init user proxy
 		user = None		
