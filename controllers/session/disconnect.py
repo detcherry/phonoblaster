@@ -19,6 +19,9 @@ from models.db.story import SessionStory
 
 class DisconnectHandler(webapp.RequestHandler):
 	def post(self):
+		# Decrement the station sessions counter
+		station_proxy.decrement_sessions_counter();
+		
 		channel_id = str(self.request.get('from'))
 		logging.info("%s cannot receive messages anymore" %(channel_id))
 		
@@ -47,9 +50,6 @@ class DisconnectHandler(webapp.RequestHandler):
 			logging.info("Session story ended in datastore")
 		else:
 			logging.info("Anonymous session. No story to end in datastore")
-		
-		# Decrement the station sessions counter
-		station_proxy.decrement_sessions_counter();
 		
 		# Add a taskqueue to warn everyone
 		extended_session = Session.get_extended_session(session, user)

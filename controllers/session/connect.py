@@ -17,6 +17,9 @@ from models.api.user import UserApi
 
 class ConnectHandler(webapp.RequestHandler):
 	def post(self):
+		# Increment the station sessions counter
+		station_proxy.increment_sessions_counter();
+		
 		channel_id = str(self.request.get('from'))
 		logging.info("%s is ready to receive messages" %(channel_id))
 		
@@ -61,9 +64,6 @@ class ConnectHandler(webapp.RequestHandler):
 			
 		else:
 			logging.info("Anonymous session. No session story to put in datastore.")
-		
-		# Increment the station sessions counter
-		station_proxy.increment_sessions_counter();
 		
 		# Add a taskqueue to warn everyone
 		extended_session = Session.get_extended_session(session, user)
