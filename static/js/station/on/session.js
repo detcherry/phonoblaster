@@ -5,12 +5,14 @@
 function SessionManager(station_client){
 	this.station_client = station_client;
 	
-	//this.sessions_counter = new Counter("#sessions");
 	this.sessions_counter = null;
-	this.friend_sessions = [];
-	this.duplicate_friend_sessions = [];
 	
-	this.friends = [];
+	this.sessions = [];
+	this.duplicate_sessions = []
+	
+	// Necessary for users logged in and not admins
+	this.friends = []
+	
 	this.init();
 }
 
@@ -28,7 +30,7 @@ SessionManager.prototype = {
 			});	
 		}
 		else{
-			// Fetch sessions directly (in fact only the number of sessions)
+			// Fetch sessions directly
 			that.fetchSessions();
 		}
 	},
@@ -63,28 +65,25 @@ SessionManager.prototype = {
 				$("#top-right-sessions span.figure").html(json.number)
 				that.sessions_counter = new Counter("#top-right-sessions");
 				
-				if(json.friends){
-					friends = json.friends
-					
-					PHB.log(json.friends)
+				if(json.sessions){
+					var sessions = json.sessions;
 					
 					// Add each new friend session to the DOM
-					$.each(friends, function(index, value){
-						var friend_session = value
-						that.add(friend_session);
-					})
+					$.each(sessions, function(index, value){
+						var session = value;
+						that.add(session);
+					})					
 				}
-				else{
-					// Display facebook facepile or 'login button to see friends listening'
-				}
-	
 			},
 		});
 	},
 	
 	// Incoming sessions received from PubNub
 	new: function(new_session){
-		this.add(new_session)
+		// Session of a logged in listener
+		if(new_session.listener_key_name){
+			this.add(new_session)
+		}
 		
 		// Increment sessions counter
 		if(this.sessions_counter){
@@ -92,27 +91,28 @@ SessionManager.prototype = {
 		}
 	},
 	
-	// Process incoming sessions
+	// Process incoming logged in sessions
 	add: function(new_session){
-		if(new_session.listener_key_name == this.station_client.user.key_name || this.isFriend(new_session)){
+		if(this.station_client.admin || new_session.listener_key_name == this.station_client.user.key_name || this.isFriend(new_session)){
 			var that = this;
 			
 			// Check if the new listener is not already listening
 			var duplicate = false;
-			for(var i=0, c=that.friend_sessions.length; i<c; i++){
-				var friend_session = that.friend_sessions[i];
-				if(friend_session.listener_key_name == new_session.listener_key_name){
+			for(var i=0, c=that.sessions.length; i<c; i++){
+				var session = that.sessions[i];
+				if(session.listener_key_name == new_session.listener_key_name){
 					duplicate = true;
 					break;
 				}
 			}
 			
 			if(duplicate){
-				this.duplicate_friend_sessions.push(new_session)
+				// Add session to the duplicate list
+				this.duplicate_sessions.push(new_session)
 			}
 			else{
-				// Add session to the friends list
-				this.friend_sessions.push(new_session)
+				// Add session to the list
+				this.sessions.push(new_session)
 
 				// Add session to the UI
 				this.UIAdd(new_session)
@@ -153,51 +153,54 @@ SessionManager.prototype = {
 	},
 	
 	// Remove the session gone if it's a friend who's listening
-	remove: function(session){		
+	remove: function(session_gone){		
 		var was_duplicate = false;
-
-		if(this.isFriend(session)){
-			// We gonna check first in the duplicate list
-			var that = this;
-			for(var i=0, c=that.duplicate_friend_sessions.length; i<c; i++){
-				var duplicate_friend_session = that.duplicate_friend_sessions[i];
-				if(duplicate_friend_session.key_name == session.key_name){
-					that.duplicate_friend_sessions.splice(i,1);
-					was_duplicate = true;
-					break;
-				}
-			}
-
-			// Then if it's not in the duplicate list, we look into the original list
-			if(!was_duplicate){
-				for(var i=0, c=that.friend_sessions.length; i<c; i++){
-					var friend_session = that.friend_sessions[i];
-					if(friend_session.key_name == session.key_name){
-						// Remove from the friends list
-						that.friend_sessions.splice(i,1);
-
-						// Remove from the UI
-						that.UIRemove(session)
-
-						// Stop the loop
+		
+		if(session_gone.listener_key_name){
+			if(this.station_client.admin || new_session.listener_key_name == this.station_client.user.key_name || this.isFriend(session_gone)){
+				// We gonna check first in the duplicate list
+				var that = this;
+				for(var i=0, c=that.duplicate_sessions.length; i<c; i++){
+					var duplicate_session = that.duplicate_sessions[i];
+					if(duplicate_session.key_name == session_gone.key_name){
+						that.duplicate_sessions.splice(i,1);
+						was_duplicate = true;
 						break;
 					}
 				}
-			}
 
-			// If the same user was in the duplicate sessions list, we put it back in the sessions list
-			for(var i=0, c=that.duplicate_friend_sessions.length; i<c; i++){
-				var duplicate_friend_session = that.duplicate_friend_sessions[i];
-				if(duplicate_friend_session.listener_key_name == session.listener_key_name){
-					// We remove the sessions from the duplicates
-					that.duplicate_friend_sessions.splice(i,1)
+				// Then if it's not in the duplicate list, we look into the original list
+				if(!was_duplicate){
+					for(var i=0, c=that.sessions.length; i<c; i++){
+						var session = that.sessions[i];
+						if(session.key_name == session_gone.key_name){
+							// Remove from the sessions list
+							that.sessions.splice(i,1);
 
-					// We put it into the friends list
-					that.add(duplicate_friend_session);
+							// Remove from the UI
+							that.UIRemove(session_gone)
 
-					// Stop the loop
-					break;
-				}					
+							// Stop the loop
+							break;
+						}
+					}
+				}
+
+				// If the same user was in the duplicate sessions list, we put it back in the sessions list
+				for(var i=0, c=that.duplicate_sessions.length; i<c; i++){
+					var duplicate_session = that.duplicate_sessions[i];
+					if(duplicate_session.listener_key_name == session_gone.listener_key_name){
+						// We remove the session from the duplicates
+						that.duplicate_sessions.splice(i,1)
+
+						// We put it into the main list
+						that.add(duplicate_session);
+
+						// Stop the loop
+						break;
+					}					
+				}
+
 			}
 		}
 		

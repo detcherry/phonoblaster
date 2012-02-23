@@ -28,23 +28,35 @@ class ApiSessionsHandler(BaseHandler):
 		
 		extended_sessions = None
 		if(self.user_proxy):
-			user = self.user_proxy.user
+			session_story_keys = []
+			
+			# If admin fetch every session story
+			if(self.user_proxy.is_admin_of(station.key().name())):
+				q = SessionStory.all(keys_only = True)
+				q.filter("station", station.key())
+				q.filter("ended", None)
+				q.filter("created >",  datetime.now() - timedelta(0,7200))
+				session_story_keys = q.fetch(50) # Arbitrary number
+			
+			# If simple user, only fetch session story he's a recipient of
+			else:
+				user = self.user_proxy.user
 		
-			q = SessionStory.all(keys_only = True)
-			q.filter("receivers =", user.key())
-			q.filter("station", station.key())
-			q.filter("ended", None)
-			q.filter("created >",  datetime.now() - timedelta(0,7200))
-			session_story_keys = q.fetch(50) # Arbitrary number
+				q = SessionStory.all(keys_only = True)
+				q.filter("receivers =", user.key())
+				q.filter("station", station.key())
+				q.filter("ended", None)
+				q.filter("created >",  datetime.now() - timedelta(0,7200))
+				session_story_keys = q.fetch(50) # Arbitrary number
+		
 		
 			session_keys = [k.parent() for k in session_story_keys]
 			sessions = Session.get(session_keys)
-		
 			extended_sessions = Session.get_extended_sessions(sessions)
 		
 		sessions_data = {
 			"number": number_of_sessions,
-			"friends": extended_sessions,
+			"sessions": extended_sessions,
 		}
 			
 		self.response.out.write(json.dumps(sessions_data))
