@@ -65,7 +65,9 @@ SessionManager.prototype = {
 				
 				if(json.friends){
 					friends = json.friends
-
+					
+					PHB.log(json.friends)
+					
 					// Add each new friend session to the DOM
 					$.each(friends, function(index, value){
 						var friend_session = value
@@ -92,7 +94,7 @@ SessionManager.prototype = {
 	
 	// Process incoming sessions
 	add: function(new_session){
-		if(this.isFriend(new_session)){
+		if(new_session.listener_key_name == this.station_client.user.key_name || this.isFriend(new_session)){
 			var that = this;
 			
 			// Check if the new listener is not already listening

@@ -47,9 +47,13 @@ class ConnectHandler(webapp.RequestHandler):
 				existing_story.put()
 				logging.info("User session. Existing story updated in memcache.")				
 			else:
+				# Receivers of a session story are the friends of the user and the user himself
+				receivers = user_proxy.friends
+				receivers.append(user_proxy.user.key())
+				
 				new_story = SessionStory(
 					parent = session,
-					receivers = user_proxy.friends,
+					receivers = receivers,
 					station = station_proxy.station,
 				)
 				new_story.put()
