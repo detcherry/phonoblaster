@@ -120,43 +120,43 @@ input#search:focus{
 	width:112px;
 }
 
-/* ------ POPUP RECOMMANDATION ------ */
+/* ------ POPUP RECOMMENDATION ------ */
 
-#popup-recommandations{
+#popup-recommendations{
 	width:800px;
 }
 
-#popup-recommandations h2{
+#popup-recommendations h2{
 	width:760px;
 }
 
-#popup-recommandations div{
+#popup-recommendations div{
 	float:left;
 }
 
-#recommandations-zone{
+#recommendations-zone{
 	height:275px;
 	overflow-y:auto;
 }
 
-#popup-recommandations .item{
+#popup-recommendations .item{
 	margin-right:15px;
 	width:226px;
 }
 
-#popup-recommandations .item-title{
+#popup-recommendations .item-title{
 	width:142px;
 }
 
-#popup-recommandations .item-subtitle{
+#popup-recommendations .item-subtitle{
 	width:146px;
 }
 
-#popup-recommandations .item-process{
+#popup-recommendations .item-process{
 	float:right;
 }
 
-#popup-recommandations .modal-footer{
+#popup-recommendations .modal-footer{
 	width:770px;
 }
 

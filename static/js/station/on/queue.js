@@ -42,7 +42,7 @@ QueueManager.prototype.noData = function(){
 	
 	if(this.station_client.admin){
 		// Open the recommandation manager
-		this.recommandation_manager = new RecommandationManager(this.station_client)
+		this.recommandation_manager = new RecommendationManager(this.station_client)
 	}
 }
 

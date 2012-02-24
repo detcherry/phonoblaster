@@ -1,11 +1,11 @@
 // ---------------------------------------------------------------------------
-// RECOMMANDATION MANAGER
+// RECOMMENDATION MANAGER
 // ---------------------------------------------------------------------------
 
-RecommandationManager.prototype = new ScrollTabManager();
-RecommandationManager.prototype.constructor = RecommandationManager;
+RecommendationManager.prototype = new ScrollTabManager();
+RecommendationManager.prototype.constructor = RecommendationManager;
 
-function RecommandationManager(station_client){
+function RecommendationManager(station_client){
 	ScrollTabManager.call(this, station_client);
 	
 	// Settings
@@ -13,7 +13,7 @@ function RecommandationManager(station_client){
 	this.data_type = "json";
 	
 	// UI Settings
-	this.selector = "#recommandations-zone";
+	this.selector = "#recommendations-zone";
 	
 	// Init Method
 	this.dispatch();
@@ -21,7 +21,7 @@ function RecommandationManager(station_client){
 	this.closeListen();
 }
 
-RecommandationManager.prototype.dispatch = function(){
+RecommendationManager.prototype.dispatch = function(){
 	var number_of_broadcasts = this.station_client.broadcasts_counter.count;
 	var that = this;
 	
@@ -38,7 +38,7 @@ RecommandationManager.prototype.dispatch = function(){
 }
 
 // Collect the data necessary to GET items from the server
-RecommandationManager.prototype.getData = function(){
+RecommendationManager.prototype.getData = function(){
 	var number_of_broadcasts = this.station_client.broadcasts_counter.count;
 	
 	if(number_of_broadcasts == 0){
@@ -57,7 +57,7 @@ RecommandationManager.prototype.getData = function(){
 	return data
 }
 
-RecommandationManager.prototype.get = function(){	
+RecommendationManager.prototype.get = function(){	
 	var that = this;	
 	var data = this.getData();
 	
@@ -73,14 +73,12 @@ RecommandationManager.prototype.get = function(){
 		},
 		success: function(json){
 			if(json.length > 0){
-				// Update recommandation popup and display it
-				$("#popup-recommandations h3 strong").html("Phonoblaster")
+				// Update recommendation popup and display it
+				$("#popup-recommendations h3 strong").html("Phonoblaster")
 				
 				// Remove volume
 				$("#media-volume").trigger("click");
-				
-				PHB.log(json)
-				
+								
 				that.empty(function(){
 					that.getCallback(json);
 				})
@@ -91,16 +89,16 @@ RecommandationManager.prototype.get = function(){
 	});	
 }
 
-RecommandationManager.prototype.displayPopup = function(){
-	$.fancybox($("#popup-recommandations"), {
+RecommendationManager.prototype.displayPopup = function(){
+	$.fancybox($("#popup-recommendations"), {
 		topRatio: 0.4,
 		modal: true,
 	});
 }
 
-RecommandationManager.prototype.closeListen = function(){
+RecommendationManager.prototype.closeListen = function(){
 	var that = this
-	$("#popup-recommandations a.primary").click(function(){
+	$("#popup-recommendations a.primary").click(function(){
 		// Close popup
 		$.fancybox.close(true);
 		
@@ -116,7 +114,7 @@ RecommandationManager.prototype.closeListen = function(){
 	})
 }
 
-RecommandationManager.prototype.serverToLocalItem = function(content){	
+RecommendationManager.prototype.serverToLocalItem = function(content){	
 	// Tracks fetched from Phonoblaster
 	if(content.track_id){
 		new_track = content;
@@ -155,7 +153,7 @@ RecommandationManager.prototype.serverToLocalItem = function(content){
 	return item;	
 }
 
-RecommandationManager.prototype.UIBuild = function(item){
+RecommendationManager.prototype.UIBuild = function(item){
 	var id = item.id;
 	var content = item.content;
 	
