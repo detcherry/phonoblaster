@@ -14,8 +14,7 @@ class StationCreateHandler(BaseHandler):
 		
 		user_contributions = self.user_proxy.contributions
 		
-		user_stations = None
-		if user_contributions:
+		if(len(user_contributions) > 0):
 			logging.info("User is admin of at least one page")
 			user_page_ids = [contribution["page_id"] for contribution in user_contributions]
 			results = Station.get_by_key_name(user_page_ids)
@@ -25,6 +24,9 @@ class StationCreateHandler(BaseHandler):
 				result = results[i]
 				if result is None:
 					contributions_left.append(user_contributions[i])
+		else:
+			self.user_proxy.reset_contributions()
+			contributions_left = None
 				
 		template_values = {
 			"user_contributions": contributions_left,

@@ -187,6 +187,9 @@ class UserApi:
 		
 		return self._contributions
 	
+	def reset_contributions(self):
+		memcache.delete(self._memcache_user_contributions_id)
+	
 	# Return the user stations (stations created he's admin of)
 	@property
 	def stations(self):
