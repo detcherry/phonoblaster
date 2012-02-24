@@ -33,6 +33,11 @@ indexes:
   - name: created
     direction: desc
 
+- kind: Recommendation
+  properties:
+  - name: user
+  - name: created
+
 - kind: SessionStory
   properties:
   - name: ended

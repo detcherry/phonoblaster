@@ -9,11 +9,11 @@ function RecommandationManager(station_client){
 	ScrollTabManager.call(this, station_client);
 	
 	// Settings
-	this.url = "api/tracks"
-	this.data_type = "json"
+	this.url = null;
+	this.data_type = "json";
 	
 	// UI Settings
-	this.selector = "#recommandations-zone"
+	this.selector = "#recommandations-zone";
 	
 	// Init Method
 	this.dispatch();
@@ -25,89 +25,35 @@ RecommandationManager.prototype.dispatch = function(){
 	var number_of_broadcasts = this.station_client.broadcasts_counter.count;
 	var that = this;
 	
-	if(number_of_broadcasts == 0){		
-		// Call Facebook API to know which tracks the user has posted on his wall
-		FACEBOOK.retrieveWallLinks(function(items){
-			that.filterFacebook(items);
-		})
+	if(number_of_broadcasts == 0){
+		// Call recommendations API
+		this.url = "/api/recommendations"
 	}
 	else{		
 		// Call tracks API 
-		this.get();
-	}
-}
-
-RecommandationManager.prototype.filterFacebook = function(items){
-	var youtube_ids = []
-	$.each(items, function(i, item){
-		var re = RegExp("http://www.youtube.com/watch\\?v=([\\w_]+)","g")
-		var m = re.exec(item.link)		
-		if(m!= null){
-			youtube_ids.push(m[1])
-		}
-	})
-	
-	this.filterYoutube(youtube_ids)
-}
-
-RecommandationManager.prototype.filterYoutube = function(youtube_ids){
-	var url = "https://gdata.youtube.com/feeds/api/videos"
-	var data_type = "jsonp";
-	var q = youtube_ids.join("|");	
- 	var data = {
-		"q": q,
-		"format": 5,
-		"v": 2,
-		"alt": "jsonc",
+		this.url = "/api/tracks"
 	}
 	
-	var that = this;
-	$.ajax({
-		url: url,
-		dataType: data_type,
-		timeout: 60000,
-		data: data,
-		error: function(xhr, status, error) {
-			PHB.log('An error occurred: ' + error + '\nPlease retry.');
-		},
-		success: function(json){			
-			var items = json.data.items; 
-			if(items && items.length > 0){
-				// Update recommandation popup 
-				$("#popup-recommandations h3 strong").html("Facebook")
-				
-				// Remove volume
-				$("#media-volume").trigger("click");
-				
-				// Filter music videos only
-				var music_videos = [];
-				$.each(items, function(i, item){
-					if(item.category == "Music"){
-						music_videos.push(item)
-					}
-				})
-				
-				// Add and display music videos
-				that.empty(function(){
-					that.getCallback(music_videos);
-				})
-				
-				that.displayPopup();
-				
-			}
-		},
-	})
-	
+	this.get()
 }
 
 // Collect the data necessary to GET items from the server
 RecommandationManager.prototype.getData = function(){
-	var shortname = this.station_client.station.shortname;
-	var offset = PHB.now();
-	var data = {
-		shortname: shortname,
-		offset: offset,
+	var number_of_broadcasts = this.station_client.broadcasts_counter.count;
+	
+	if(number_of_broadcasts == 0){
+		var data = {}
 	}
+	else{
+		var shortname = this.station_client.station.shortname;
+		var offset = PHB.now();
+		var data = {
+			shortname: shortname,
+			offset: offset,
+		}
+	}
+	
+
 	return data
 }
 
@@ -129,14 +75,17 @@ RecommandationManager.prototype.get = function(){
 			if(json.length > 0){
 				// Update recommandation popup and display it
 				$("#popup-recommandations h3 strong").html("Phonoblaster")
-				that.displayPopup();
 				
 				// Remove volume
 				$("#media-volume").trigger("click");
 				
+				PHB.log(json)
+				
 				that.empty(function(){
 					that.getCallback(json);
 				})
+				
+				that.displayPopup();
 			}
 		},
 	});	

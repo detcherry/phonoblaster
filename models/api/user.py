@@ -1,5 +1,6 @@
 import logging
 import os
+import re
 
 from datetime import datetime
 from calendar import timegm
@@ -15,6 +16,7 @@ from models.db.favorite import Favorite
 from models.db.track import Track
 from models.db.counter import Shard
 from models.db.station import Station
+from models.db.recommendation import Recommendation
 
 MEMCACHE_USER_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".user."
 MEMCACHE_USER_FRIENDS_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".friends.user."
@@ -72,6 +74,9 @@ class UserApi:
 		
 		# Put the user friends
 		self.task_friends()
+		
+		# Put the user recommendations
+		self.task_recommendations()
 		
 		return self._user
 		
@@ -310,6 +315,44 @@ class UserApi:
 	def increment_suggestions_counter(self):
 		shard_name = self._counter_of_suggestions_id
 		Shard.task(shard_name, "increment")
+	
+	def task_recommendations(self):
+		task = Task(
+			url = "/taskqueue/recommendations",
+			params = {
+				"key_name": self._facebook_id,
+			}
+		)
+		task.add(queue_name = "worker-queue")
+	
+	def save_recommendations(self):
+		graph = facebook.GraphAPI(self.user.facebook_access_token)
+		items = graph.get_connections("me","links", limit=50)["data"]
+				
+		recommendations = []
+		for item in items:
+			if item.has_key("link"):
+				m = re.match(r"http://www.youtube.com/watch\?v=([\w_-]+)", item["link"])
+				if m is not None:
+					recommendations.append(Recommendation(
+						youtube_id = m.group(1),
+						user = self.user.key(),
+					))
+				
+		db.put(recommendations)
+		logging.info("Recommandations put in the datastore")
+			
+	def recommendations_query(self):
+		q = Recommendation.all()
+		q.filter("user", self.user.key())
+		q.order("created")
+		recommendations = q.fetch(30)
+		
+		return recommendations
+		
+		
+	
+	
 		
 		
 		

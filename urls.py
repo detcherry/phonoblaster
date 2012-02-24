@@ -22,6 +22,7 @@ from controllers.api.tracks import ApiTracksHandler
 from controllers.api.broadcasts import ApiBroadcastsHandler
 from controllers.api.sessions import ApiSessionsHandler
 from controllers.api.comments import ApiCommentsHandler
+from controllers.api.recommendations import ApiRecommendationsHandler
 from controllers.api.views import ApiViewsHandler
 from controllers.api.status import ApiStatusHandler
 from controllers.api.air import ApiAirHandler
@@ -38,6 +39,7 @@ application = webapp.WSGIApplication(
 		('/api/broadcasts', ApiBroadcastsHandler),
 		('/api/sessions', ApiSessionsHandler),
 		('/api/comments', ApiCommentsHandler),
+		('/api/recommendations', ApiRecommendationsHandler),
 		('/api/status', ApiStatusHandler),
 		('/api/air', ApiAirHandler),
 		('/api/views', ApiViewsHandler),

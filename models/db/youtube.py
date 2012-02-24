@@ -42,6 +42,13 @@ class Youtube():
 				if(skip):
 					extended_tracks.append(None)
 				else:
+					music = False
+					
+					if(len(entry.category) > 0):
+						for c in entry.category:
+							if(c.term == "Music"):
+								music = True
+										
 					id = re.sub(r"http://gdata.youtube.com/feeds/api/videos/","", entry.id.text)
 					title = entry.title.text
 					duration = int(entry.media.duration.seconds)
@@ -50,6 +57,7 @@ class Youtube():
 						"id": id,
 						"title": title,
 						"duration": duration,
+						"music": music,
 					})
 
 		return extended_tracks
