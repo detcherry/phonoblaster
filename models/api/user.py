@@ -70,8 +70,8 @@ class UserApi:
 		# Put the user in the proxy
 		self._user = user
 		
-		# Put friends in datastore
-		self.put_friends()
+		# Put the user friends
+		self.task_friends()
 		
 		return self._user
 		
@@ -84,7 +84,8 @@ class UserApi:
 		memcache.set(self._memcache_user_id, self.user)
 		logging.info("User access token updated in memcache")
 		
-		self.update_friends()
+		# Update the user friends
+		self.task_friends()
 	
 	@property
 	def friends(self):
@@ -124,41 +125,39 @@ class UserApi:
 		
 		return user_keys
 	
-	def put_friends(self):
-		user_keys = self.friendships_facebook_query()
-		logging.info("Friendships retrieved from Facebook")
-			
-		friendships = Friendships(
-			friends = user_keys,
-			parent = self.user,
+	def task_friends(self):
+		task = Task(
+			url = "/taskqueue/friends",
+			params = {
+				"key_name": self._facebook_id,
+			}
 		)
-		friendships.put()
-		logging.info("Friendships saved in datastore")
-		
-		memcache.set(self._memcache_user_friends_id, friendships.friends)
-		logging.info("Friends saved in memcache")
-		
-		# Put friends in proxy
-		self._friends = friendships.friends
+		task.add(queue_name = "worker-queue")
 	
-	# Update the facebook user list of friends
-	def update_friends(self):
+	# Put or update the facebook user list of friends
+	def save_friends(self):
 		friendships = self.friendships_query()
 		logging.info("Friendships retrieved from datastore")		
 		
+		if friendships is None:
+			logging.info("Put of %s %s friends" % (self.user.first_name, self.user.last_name))
+			friendships = Friendships(parent = self.user)
+		else:
+			logging.info("Update of %s %s friends" % (self.user.first_name, self.user.last_name))
+		
 		user_keys = self.friendships_facebook_query()
 		logging.info("Friendships retrieved from Facebook")
-			
+		
 		friendships.friends = user_keys
 		friendships.put()
-		logging.info("Friendships updated in datastore")
+		logging.info("Friendships saved in datastore")
 		
 		memcache.set(self._memcache_user_friends_id, friendships.friends)
 		logging.info("Friends updated in memcache")
 		
 		# Put friends in proxy
 		self._friends = friendships.friends
-		
+	
 	# Return the user contributions (pages he's admin of)
 	@property
 	def contributions(self):
