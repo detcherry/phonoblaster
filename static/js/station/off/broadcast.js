@@ -49,7 +49,7 @@ BroadcastManager.prototype.noData = function(){
 	if(!this.live_item){
 		// UI modifications
 		$("#media").empty();
-		$("#media").append($("<div/>").attr("id","no-live").html("No past broadcast."));
+		$("#media").append($("<p/>").html("No past broadcast."));
 	}
 }
 
