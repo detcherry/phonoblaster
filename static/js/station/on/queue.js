@@ -242,7 +242,7 @@ QueueManager.prototype.nextVideo = function(time_out){
 					that.recommandation_manager.dispatch();
 				}
 				else{
-					that.recommandation_manager = new RecommandationManager(that.station_client)
+					that.recommandation_manager = new RecommendationManager(that.station_client)
 				}
 			}
 			// Redirect to offline mode
