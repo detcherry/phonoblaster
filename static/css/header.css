@@ -59,3 +59,16 @@
 	background-position:-5px -230px;
 	border-radius: 6px;
 }
+
+.topbar-inner a.profile{
+	width:70px;
+}
+
+.topbar-inner a.profile img{
+	display:block;
+	float:left;
+	width:25px;
+	margin-right:10px;
+}
+
+
