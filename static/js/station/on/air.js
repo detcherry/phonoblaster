@@ -48,7 +48,7 @@ AirManager.prototype = {
 				if(index<8){
 					var youtube_id = content.youtube_id;
 					var youtube_title = content.youtube_title;
-					var youtube_thumbnail = "http://i.ytimg.com/vi/" + youtube_id + "/default.jpg";
+					var youtube_thumbnail = "https://i.ytimg.com/vi/" + youtube_id + "/default.jpg";
 					$("#popup-offair #broadcasts")
 						.append(
 							$("<div/>")

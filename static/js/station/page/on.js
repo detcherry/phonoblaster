@@ -96,7 +96,6 @@ StationClient.prototype.fetch = function(){
 		that.favorite_sdk = new FavoriteSDK(that.queue_manager)
 		
 		that.comment_manager = new CommentManager(that);
-		that.comment_manager.get(); // Fetching
 	})
 }
 

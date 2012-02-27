@@ -4,3 +4,11 @@
 #progression-bar{
 	width:380px;
 }
+
+a.item-cross{
+	display:none;
+}
+
+.comment-content .item-title{
+	width:135px;
+}

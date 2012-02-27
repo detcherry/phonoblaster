@@ -60,7 +60,7 @@ AirManager.prototype = {
 			// Update popup
 			var content = json.content;
 			var youtube_id = content.youtube_id;
-			var youtube_thumbnail = "http://i.ytimg.com/vi/" + youtube_id + "/default.jpg";
+			var youtube_thumbnail = "https://i.ytimg.com/vi/" + youtube_id + "/default.jpg";
 			var youtube_title = content.youtube_title;
 			$("#popup-onair .item-picture").append($("<img/>").attr("src", youtube_thumbnail))
 			$("#popup-onair span.middle").html(youtube_title)

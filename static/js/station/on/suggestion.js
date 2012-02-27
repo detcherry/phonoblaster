@@ -44,7 +44,7 @@ SuggestionManager.prototype.postSubmit = function(btn, item){
 		// Suggestion authorized
 		var content = item.content
 		var youtube_title = content.youtube_title
-		var youtube_thumbnail = "http://i.ytimg.com/vi/" + content.youtube_id + "/default.jpg"
+		var youtube_thumbnail = "https://i.ytimg.com/vi/" + content.youtube_id + "/default.jpg"
 		
 		// Update fancy box content
 		$("#popup-suggestion .item-picture").append($("<img/>").attr("src", youtube_thumbnail))
@@ -181,8 +181,8 @@ SuggestionManager.prototype.UIBuild = function(item){
 	
 	var youtube_title = content.youtube_title;
 	var youtube_duration = PHB.convertDuration(content.youtube_duration);
-	var youtube_thumbnail = "http://i.ytimg.com/vi/" + content.youtube_id + "/default.jpg";
-	var preview = "http://www.youtube.com/embed/" + content.youtube_id + "?autoplay=1"
+	var youtube_thumbnail = "https://i.ytimg.com/vi/" + content.youtube_id + "/default.jpg";
+	var preview = "https://www.youtube.com/embed/" + content.youtube_id + "?autoplay=1"
 	
 	var div = $("<div/>").addClass("item-wrapper").attr("id", id)
 	

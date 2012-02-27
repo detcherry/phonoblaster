@@ -87,7 +87,7 @@ CommentManager.prototype.UIBuild = function(item){
 		var youtube_id = content.youtube_id;
 		var youtube_title = content.youtube_title;
 		var youtube_duration = PHB.convertDuration(content.youtube_duration)
-		var youtube_thumbnail = "http://i.ytimg.com/vi/" + youtube_id + "/default.jpg";
+		var youtube_thumbnail = "https://i.ytimg.com/vi/" + youtube_id + "/default.jpg";
 		var track_submitter_name = content.track_submitter_name;
 		var track_submitter_url = content.track_submitter_url;
 		var track_submitter_picture = "https://graph.facebook.com/" + content.track_submitter_key_name + "/picture?type=square";

@@ -378,8 +378,8 @@ ScrollTabManager.prototype.UIBuild = function(item){
 	var youtube_id = content.youtube_id;
 	var youtube_title = content.youtube_title;
 	var youtube_duration = PHB.convertDuration(content.youtube_duration)
-	var youtube_thumbnail = "http://i.ytimg.com/vi/" + youtube_id + "/default.jpg";
-	var preview = "http://www.youtube.com/embed/" + youtube_id + "?autoplay=1"
+	var youtube_thumbnail = "https://i.ytimg.com/vi/" + youtube_id + "/default.jpg";
+	var preview = "https://www.youtube.com/embed/" + youtube_id + "?autoplay=1"
 	
 	var process_action = "Suggest"
 	var process_info = "Suggest this track to the broadcaster"
