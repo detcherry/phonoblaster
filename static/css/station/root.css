@@ -1,5 +1,11 @@
 @import url("../common.css");
 
+/* ------ RIGHT COLUMN ------ */
+
+#right-column{
+	min-height:923px;
+}
+
 /* ------- AIR STATUS ------- */
 
 #top-left-status{
@@ -64,12 +70,4 @@ a.session-picture img{
 
 a#top-right-share{
 	float:right;
-}
-
-/* --------- MEDIA -------- */
-
-#media p{
-	margin-top:156px;
-	width:100%;
-	text-align:center;	
 }
