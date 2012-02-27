@@ -47,6 +47,14 @@
 	color:#7F7F7F;
 }
 
+#welcome-title img{
+	height:14px;
+	display:inline-block;
+	margin:0px;
+	margin-right:5px;
+	margin-bottom:-3px;	
+}
+
 .welcome-section{
 	margin-left:3%;
 	margin-right:3%;
