@@ -1,1 +1,36 @@
 @import url("common.css");
+
+/* ----- RIGHT COLUMN ----*/
+
+#right-column{
+	min-height:638px;
+}
+
+/* ----- CORRECTIONS ------ */
+
+#media-monitoring{
+	display:none;
+}
+
+#media-details{
+	padding-top:10px;
+	border-top:1px solid #E1E1E1;
+}
+
+/*------ FAVORITES TAB ------*/
+
+.item{
+	cursor:pointer;
+}
+
+.item:hover{
+	background-color:#F5F5F5;
+}
+
+.item.active{
+	background-color:#E1E1E1;
+}
+
+.item.active:hover{
+	background-color:#E1E1E1;
+}

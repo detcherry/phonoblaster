@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+
+{% block meta %}
+	<title>{{ profile_proxy.user.first_name }} {{ profile_proxy.user.last_name }}</title>
+	<meta name="description" content="{{ profile_proxy.user.first_name }} is using Phonoblaster, a social music platform to share and discover new music.">
+{% endblock %}
+
+{% block facebook %}
+	<!-- User Open Graph Tags -->
+	<meta property="fb:app_id" content="{{ facebook_app_id }}"/>
+	<meta property="og:type" content="{{ version }}:user"/> 
+	<meta property="og:url" content="{{ site_url }}/user/{{ profile_proxy.user.key.name }}"/> 
+	<meta property="og:title" content="{{ profile_proxy.user.first_name }} {{ profile_proxy.user.last_name }}"/> 
+	<meta property="og:description" content="{{ profile_proxy.user.first_name }} is using Phonoblaster, a social music platform to share and discover new music."/>
+	<meta property="og:image" content="https://graph.facebook.com/{{ profile_proxy.user.key.name }}/picture?type=large"/> 
+	<meta property="og:site_name" content="Phonoblaster"/>
+	<meta property="og:video:type" content="text/html"/>
+	<meta property="og:video" content="{{ site_url }}/user/{{ profile_proxy.user.key.name }}"/>
+{% endblock %}
+
+{% block style %}
+	<link type="text/css" rel="stylesheet" href="/static/css/profile.css" />
+{% endblock %}
+
+{% block top-left %}
+	<div id="top-left-picture">
+		<a href="/user/{{ profile_proxy.user.key.name }}">
+			<img src="https://graph.facebook.com/{{ profile_proxy.user.key.name }}/picture?type=large"/>
+		</a>
+	</div>
+	<div id="top-left-description">
+		<div id="top-left-title">
+			<a href="/user/{{ profile_proxy.user.key.name }}">
+				<h1>{{ profile_proxy.user.first_name }} {{ profile_proxy.user.last_name }}</h1>
+			</a>
+		</div>
+		<div class="stroke black"></div>
+		<div id="top-left-figures">
+			<div id="top-left-favorites" class="stat">
+				<span class="figure">{{ number_of_favorites }}</span>
+				<span class="title">Favorites</span>
+			</div>
+			<div id="top-left-suggestions" class="stat">
+				<span class="figure">{{ number_of_suggestions }}</span>
+				<span class="title"> Suggestions</span>
+			</div>
+		</div>
+	</div>
+{% endblock %}
+
+{% block main-left %}
+	{% include "media.html" %}
+{% endblock %}
+
+{% block main-right %}
+	<ul id="tabs">
+		<li class="tuto" data-original-title="Tracks favorited by {{ profile_proxy.user.first_name }} {{ profile_proxy.user.last_name }}" style="width:90px">
+			<a href="#favorites-tab" class="current" id="favorites-header" style="width:76px">Favorites</a>
+		</li>
+	</ul>
+	<div id="favorites-tab" class="tab-content">
+		<div class="tab-items">
+			<div class="init">No favorite.</div>
+		</div>
+	</div>
+{% endblock %}
+
+{% block script %}
+<script type="text/javascript" src="/static/js/library/tab.js"></script>
+<script type="text/javascript" src="/static/js/library/favorite.js"></script>
+
+<script type="text/javascript" src="/static/js/station/swfobject.js"></script>
+<script type="text/javascript" src="/static/js/station/tab.js"></script>
+
+<script type="text/javascript" src="/static/js/station/off/embedded.js"></script>
+<script type="text/javascript" src="/static/js/profile/favorite.js"></script>
+<!--<script type="text/javascript" src="/static/js/profile/suggestion.js"></script>-->
+<script type="text/javascript" src="/static/js/profile/profile.js"></script>
+<script type="text/javascript">
+	//--- Reset ---
+	USER = null;
+	STATION = null;
+	//--- User Initialization ---
+	{% if user_proxy %} 
+	USER = {
+		"key_name": "{{ user_proxy.user.key.name }}",
+		"name": "{{ user_proxy.user.first_name }} {{ user_proxy.user.last_name }}",
+	}
+	{% endif %}
+	//--- Profile Initialization ---
+	PROFILE = {
+		"key_name": "{{ profile_proxy.user.key.name }}",
+		"name": "{{ profile_proxy.user.first_name }} {{ profile_proxy.user.last_name }}",
+	}
+</script>
+{% endblock %}
