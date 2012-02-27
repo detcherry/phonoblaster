@@ -56,9 +56,7 @@ FavoriteSDK.prototype = {
 	
 	// Build data to POST
 	postData: function(item){
-		var shortname = this.track_manager.station_client.station.shortname;		
 		var data = {
-			shortname: shortname,
 			content: JSON.stringify(item.content),
 		}
 		return data
@@ -94,10 +92,9 @@ FavoriteSDK.prototype = {
 	
 	postAction: function(item){
 		var track_url = PHB.site_url + "/track/" + item.content.track_id;
-		var station_url = PHB.site_url + "/" + this.track_manager.station_client.station.shortname;
 
 		var obj = { "track": track_url };
-		var extra = { "station": station_url };
+		var extra = {};
 		var expires_in = 0;
 		var action = "favorite";	
 
