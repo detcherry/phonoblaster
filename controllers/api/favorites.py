@@ -9,21 +9,20 @@ from controllers.base import login_required
 
 from models.db.track import Track
 
-from models.api.station import StationApi
+from models.api.user import UserApi
 
 class ApiFavoritesHandler(BaseHandler):
-	@login_required
 	def get(self):
+		key_name = self.request.get("key_name")
+		profile_proxy = UserApi(key_name)
 		offset = datetime.utcfromtimestamp(int(self.request.get("offset")))
-		extended_favorites = self.user_proxy.get_favorites(offset)
+		
+		extended_favorites = profile_proxy.get_favorites(offset)
 		self.response.out.write(json.dumps(extended_favorites))
 	
 	@login_required
 	def post(self):
 		content = json.loads(self.request.get("content"))
-		shortname = self.request.get("shortname")
-		station_proxy = StationApi(shortname)
-		station = station_proxy.station
 		
 		response = False;
 		if(content["track_id"]):
@@ -36,8 +35,8 @@ class ApiFavoritesHandler(BaseHandler):
 				extended_track = Track.get_extended_tracks([track])[0]
 				
 				if(extended_track):
-					self.user_proxy.add_to_favorites(track, extended_track, station)
-					response = True;
+					self.user_proxy.add_to_favorites(track)
+					response = True
 		
 		self.response.out.write(json.dumps({ "response": response }))
 					

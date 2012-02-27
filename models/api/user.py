@@ -249,7 +249,7 @@ class UserApi:
 		
 		return favorites
 
-	def add_to_favorites(self, track, extended_track, station):
+	def add_to_favorites(self, track):
 		# Check if the favorite hasn't been stored yet
 		q = Favorite.all()
 		q.filter("user", self.user.key())
