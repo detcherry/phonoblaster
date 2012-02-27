@@ -19,7 +19,6 @@
 	padding-top:15px;
 	padding-bottom:15px;
 	width:278px;
-	min-height:923px;
 	border:1px solid #E1E1E1;
 	border-top:none;
 	background:url("/static/images/grid.png");
@@ -79,7 +78,7 @@
 	border-bottom:1px solid #E1E1E1;
 }
 
-#top-left-broadcasts{
+#top-left-figures .stat{
 	margin-right:15px;
 }
 
@@ -262,6 +261,12 @@ a.fav:hover{
 a.unfav{
 	background:url("/static/images/phonoblaster-sprits.png");
 	background-position:-71px -85px;
+}
+
+#media p{
+	margin-top:156px;
+	width:100%;
+	text-align:center;	
 }
 
 /* ---------------------------------------- COMMENTS --------------------------------------------- */
