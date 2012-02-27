@@ -10,7 +10,6 @@ class ProfileHandler(BaseHandler):
 		template_values = {
 			"profile_proxy": profile_proxy,
 			"number_of_favorites": profile_proxy.number_of_favorites,
-			"number_of_suggestions": profile_proxy.number_of_suggestions,
 		}
 		
 		self.render("profile.html", template_values)
