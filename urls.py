@@ -8,7 +8,6 @@ from controllers.station.create import StationCreateHandler
 from controllers.station.check import StationCheckHandler
 from controllers.station.station import StationHandler
 from controllers.station.picture import StationPictureHandler
-from controllers.station.broadcasts import StationBroadcastsHandler
 from controllers.station.broadcast import BroadcastHandler
 from controllers.station.track import TrackHandler
 from controllers.station.suggestion import SuggestionHandler
@@ -47,7 +46,6 @@ application = webapp.WSGIApplication(
 		('/station/check', StationCheckHandler),
 		('/(\w+)', StationHandler),
 		('/(\w+)/picture', StationPictureHandler),
-		('/(\w+)/broadcasts', StationBroadcastsHandler),
 		('/broadcast/([\w.]+)', BroadcastHandler),
 		('/track/([0-9]+)', TrackHandler),
 		('/suggestion/([\w.]+)', SuggestionHandler),
