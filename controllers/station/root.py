@@ -25,6 +25,7 @@ class RootHandler(BaseHandler):
 			self._template_values["on_air"] = self.station_proxy.on_air()
 			self._template_values["number_of_broadcasts"] = self.station_proxy.number_of_broadcasts
 			self._template_values["number_of_views"] = self.station_proxy.number_of_views
+			self._template_values["number_of_suggestions"] = self.station_proxy.number_of_suggestions
 		except AttributeError:
 			# in case of a 404 error
 			logging.info("No station proxy")

@@ -305,17 +305,6 @@ class UserApi:
 		shard_name = self._counter_of_favorites_id
 		Shard.task(shard_name, "decrement")
 	
-	@property
-	def number_of_suggestions(self):
-		if not hasattr(self, "_number_of_suggestions"):
-			shard_name = self._counter_of_suggestions_id
-			self._number_of_suggestions = Shard.get_count(shard_name)
-		return self._number_of_suggestions
-	
-	def increment_suggestions_counter(self):
-		shard_name = self._counter_of_suggestions_id
-		Shard.task(shard_name, "increment")
-	
 	def task_recommendations(self):
 		task = Task(
 			url = "/taskqueue/recommendations",

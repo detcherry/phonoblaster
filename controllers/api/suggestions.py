@@ -74,7 +74,7 @@ class ApiSuggestionsHandler(BaseHandler):
 					extended_suggestion = Suggestion.get_extended_suggestion(suggestion, youtube_track, user)
 					
 					# Increment the user number of suggestions
-					self.user_proxy.increment_suggestions_counter()
+					station_proxy.increment_suggestions_counter()
 		
 		response = False
 		if(extended_suggestion):

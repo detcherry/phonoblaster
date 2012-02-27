@@ -29,6 +29,7 @@ MEMCACHE_STATION_TRACKS_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".tracks.sta
 COUNTER_OF_BROADCASTS_PREFIX = "station.broadcasts.counter."
 COUNTER_OF_VIEWS_PREFIX = "station.views.counter."
 COUNTER_OF_SESSIONS_PREFIX = "station.sessions.counter."
+COUNTER_OF_SUGGESTIONS_PREFIX = "station.suggestions.counter."
 
 class StationApi():
 	
@@ -41,6 +42,7 @@ class StationApi():
 		self._counter_of_broadcasts_id = COUNTER_OF_BROADCASTS_PREFIX + self._shortname
 		self._counter_of_views_id = COUNTER_OF_VIEWS_PREFIX + self._shortname
 		self._counter_of_sessions_id = COUNTER_OF_SESSIONS_PREFIX + self._shortname
+		self._counter_of_suggestions_id = COUNTER_OF_SUGGESTIONS_PREFIX + self._shortname
 	
 	# Return the station
 	@property
@@ -361,6 +363,15 @@ class StationApi():
 		
 		return tracks
 		
-		
+	@property
+	def number_of_suggestions(self):
+		if not hasattr(self, "_number_of_suggestions"):
+			shard_name = self._counter_of_suggestions_id
+			self._number_of_suggestions = Shard.get_count(shard_name)
+		return self._number_of_suggestions
+
+	def increment_suggestions_counter(self):
+		shard_name = self._counter_of_suggestions_id
+		Shard.task(shard_name, "increment")
 		
 		
