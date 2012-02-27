@@ -146,7 +146,7 @@ input#comments-input{
 	margin-top:4px;
 	margin-bottom:4px;
 	height:34px;
-	width:160px;
+	width:135px;
 }
 
 .comment-time{
@@ -190,6 +190,10 @@ input#comments-input{
 	left:-30px;
 }
 
+a.item-cross{
+	display:none;
+}
+
 .item-title {
 	padding:0px;
 	width:138px;
@@ -210,6 +214,8 @@ input#comments-input{
 	margin:20px;
 	padding:10px;
 	margin-left:44px;
+	width:120px;
+	text-align:center;
 }
 
 /* ------- ERROR ------- */

@@ -18,6 +18,8 @@
 	</div>
 	{% if not is_admin %}
 	<a href="{{ site_url }}/{{ station_proxy.station.shortname }}" target="_top" class="btn primary tuto" data-original-title="Suggest the next track {{ station_proxy.station.name }} will broadcast!">Suggest a track!</a>
+	{% else %}
+	<a href="{{ site_url }}/{{ station_proxy.station.shortname }}" target="_top" class="btn primary tuto" data-original-title="Add the next track on Phonoblaster!">Add a track!</a>
 	{% endif %}
 </div>
 {% endblock %}
