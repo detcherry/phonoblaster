@@ -17,6 +17,7 @@ class Comment(db.Model):
 	@staticmethod
 	def get_extended_comments(comments, station):
 		extended_comments = []
+		ordered_extended_comments = []
 		
 		if(comments):
 			
@@ -44,9 +45,17 @@ class Comment(db.Model):
 			for comment, user in zip(regular_comments, users):
 				extended_comment = Comment.get_extended_comment(comment, None, user)
 				extended_comments.append(extended_comment)
+				
+			for c in comments:
+				key_name = c.key().name()
+				for e in extended_comments:
+					if(e["key_name"] == key_name):
+						ordered_extended_comments.append(e)
+						break
 		
 		logging.info("Extended comments generated")
-		return extended_comments
+		#return extended_comments
+		return ordered_extended_comments
 	
 	# Format a comment and a user into an extended comment entitity
 	@staticmethod
