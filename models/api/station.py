@@ -21,6 +21,7 @@ from models.db.track import Track
 from models.db.counter import Shard
 
 from models.api.user import UserApi
+from models.api.admin import AdminApi
 
 MEMCACHE_STATION_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".station."
 MEMCACHE_STATION_QUEUE_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".queue.station."
@@ -61,6 +62,44 @@ class StationApi():
 			else:
 				logging.info("Station already in memcache")	
 		return self._station
+	
+	def put_station(self, page_id, shortname, page_name, page_link):
+		station = Station(
+			key_name = page_id,
+			shortname = shortname,
+			name = page_name,
+			link = page_link,
+		)
+		station.put()
+		
+		# Increment admin counter of stations
+		admin_proxy = AdminApi()
+		admin_proxy.increment_stations_counter()
+		logging.info("Counter of stations incremented")
+		
+		# Mail admins
+		self.mail()
+		
+	def mail(self):
+		admin_proxy = AdminApi()
+		
+		subject = "New phonoblaster station: %s" % (self.station.name)
+		body = """
+A new station has been created on Phonoblaster:
+%s, %s
+		
+Global number of stations: %s
+		""" %(self.station.name, self.station.link, admin_proxy.number_of_stations)
+		
+		task = Task(
+			url = "/taskqueue/mail",
+			params = {
+				"to": "activity@phonoblaster.com",
+				"subject": subject,
+				"body": body,
+			}
+		)
+		task.add(queue_name = "worker-queue")
 	
 	# Check if station is on air
 	def on_air(self):

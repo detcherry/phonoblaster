@@ -18,6 +18,8 @@ from models.db.counter import Shard
 from models.db.station import Station
 from models.db.recommendation import Recommendation
 
+from models.api.admin import AdminApi
+
 MEMCACHE_USER_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".user."
 MEMCACHE_USER_FRIENDS_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".friends.user."
 MEMCACHE_USER_CONTRIBUTIONS_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".contributions.user."
@@ -78,6 +80,14 @@ class UserApi:
 		# Put the user recommendations
 		self.task_recommendations()
 		
+		# Increment admin counter of users
+		admin_proxy = AdminApi()
+		admin_proxy.increment_users_counter()
+		logging.info("Counter of users incremented")
+		
+		# Mail new user to admins
+		self.mail()
+		
 		return self._user
 		
 	# Update the facebook user access token
@@ -135,6 +145,27 @@ class UserApi:
 			url = "/taskqueue/friends",
 			params = {
 				"key_name": self._facebook_id,
+			}
+		)
+		task.add(queue_name = "worker-queue")
+	
+	def mail(self):
+		admin_proxy = AdminApi()
+		
+		subject = "New phonoblaster user: %s %s" % (self.user.first_name, self.user.last_name)
+		body = """
+A new user has logged into Phonoblaster:
+%s %s, %s
+		
+Global number of users: %s
+		""" %(self.user.first_name, self.user.last_name, self.user.email, admin_proxy.number_of_users)
+		
+		task = Task(
+			url = "/taskqueue/mail",
+			params = {
+				"to": "activity@phonoblaster.com",
+				"subject": subject,
+				"body": body,
 			}
 		)
 		task.add(queue_name = "worker-queue")

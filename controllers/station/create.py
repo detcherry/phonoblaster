@@ -6,6 +6,7 @@ from controllers.base import login_required
 
 from controllers import facebook
 from models.db.station import Station
+from models.api.station import StationApi
 
 class StationCreateHandler(BaseHandler):
 	@login_required
@@ -55,16 +56,10 @@ class StationCreateHandler(BaseHandler):
 					graph = facebook.GraphAPI(self.user_proxy.user.facebook_access_token)
 					page_information = graph.get_object(page_id)
 					
-					station = Station(
-						key_name = page_id,
-						shortname = page_shortname,
-						name = page_information["name"],
-						link = page_information["link"],
-					)
-					station.put()
+					station_proxy = StationApi(page_shortname)
+					station_proxy.put_station(page_id, page_shortname, page_information["name"], page_information["link"])
 					
-					logging.info("New station %s put in the datastore" %(station.name))
-					self.redirect("/"+station.shortname)
+					self.redirect("/"+page_shortname)
 				
 				else:
 					self.error(403)
