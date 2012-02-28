@@ -1,0 +1,16 @@
+/* ----------- ADMIN DASHBOARD ------------ */
+
+#admin h1{
+	margin-top:20px;
+	margin-bottom:20px;
+	width:100%;
+}
+
+#admin p{
+	height:200px;
+	width:50%;
+}
+
+#admin strong{
+	font-size:100px;
+}

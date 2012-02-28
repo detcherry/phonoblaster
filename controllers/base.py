@@ -27,6 +27,25 @@ def login_required(method):
             return method(self, *args, **kwargs)
     return wrapper
 
+def admin_required(method):
+	@wraps(method)
+	def wrapper(self, *args, **kwargs):
+		admin = False
+
+		if self.user_proxy:
+			facebook_id = self.user_proxy.user.key().name()
+			if facebook_id in ["663812262","698198735"]:
+				admin = True
+
+		if not admin:
+			if self.request.method == "GET":
+				self.redirect("/")
+				return
+			self.error(403)
+		else:
+			return method(self, *args, **kwargs)
+	return wrapper
+
 class BaseHandler(webapp.RequestHandler):
 	@property
 	def user_proxy(self):
