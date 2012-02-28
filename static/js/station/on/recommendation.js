@@ -28,12 +28,12 @@ RecommendationManager.prototype.dispatch = function(){
 	if(number_of_broadcasts == 0){
 		// Call recommendations API
 		this.url = "/api/recommendations"
-		$("#popup-recommendations h3 strong").html("Phonoblaster")
+		$("#popup-recommendations h3 strong").html("Facebook")
 	}
 	else{		
 		// Call tracks API 
 		this.url = "/api/tracks"
-		$("#popup-recommendations h3 strong").html("Facebook")
+		$("#popup-recommendations h3 strong").html("Phonoblaster")
 	}
 	
 	this.get()
