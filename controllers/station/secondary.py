@@ -1,9 +1,9 @@
+import logging
+
 from controllers.station.root import RootHandler
 from datetime import datetime
 
-
 class SecondaryHandler(RootHandler):
-	
 	def render(self, template_path, template_values):
 		if template_values:
 			self._template_values = template_values
