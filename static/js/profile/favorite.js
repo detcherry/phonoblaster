@@ -75,22 +75,22 @@ FavoriteManager.prototype.UIBuild = function(item){
 		$("<div/>")
 			.addClass("item-subtitle")
 			.append($("<div/>").addClass("item-duration").html(youtube_duration))
+			.append(
+				$("<div/>")
+					.addClass("item-submitter")
+					.append(
+						$("<a/>")
+							.attr("href", track_submitter_url)
+							.append(
+									$("<img/>")
+										.attr("src", track_submitter_picture)
+										.addClass("tuto")
+										.attr("data-original-title", track_submitter_name)
+							)
+					)
+					.append($("<span/>").html(mention))
+			)
 	)
-	
-	if(mention){
-		var subtitle = div.find(".item-subtitle")
-		subtitle.append(
-			$("<div/>")
-				.addClass("item-submitter")
-				.append(
-					$("<img/>")
-						.attr("src", track_submitter_picture)
-						.addClass("tuto")
-						.attr("data-original-title", track_submitter_name)
-				)
-				.append($("<span/>").html(mention))
-		)
-	}
 		
 	return div
 }
@@ -121,10 +121,14 @@ FavoriteManager.prototype.UILiveSet = function(item){
 	// Display the submitter
 	var mention = "Favorited from"
 	$("#media-submitter").append(
-		$("<img/>")
-			.attr("src", track_submitter_picture)
-			.addClass("tuto") // Twipsy
-			.attr("data-original-title", track_submitter_name)
+		$("<a/>")
+			.attr("href", track_submitter_url)
+			.append(
+				$("<img/>")
+					.attr("src", track_submitter_picture)
+					.addClass("tuto") // Twipsy
+					.attr("data-original-title", track_submitter_name)
+			)
 	)
 	.append($("<span/>").html(mention))
 	
