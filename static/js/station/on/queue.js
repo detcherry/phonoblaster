@@ -166,10 +166,15 @@ QueueManager.prototype.UIBuild = function(item){
 			$("<div/>")
 				.addClass("item-submitter")
 				.append(
-					$("<img/>")
-						.attr("src", track_submitter_picture)
-						.addClass("tuto")
-						.attr("data-original-title", track_submitter_name)
+					$("<a/>")
+						.attr("href", track_submitter_url)
+						.attr("target", "_top")
+						.append(
+							$("<img/>")
+								.attr("src", track_submitter_picture)
+								.addClass("tuto")
+								.attr("data-original-title", track_submitter_name)
+						)
 				)
 				.append($("<span/>").html(mention))
 		)
@@ -472,10 +477,15 @@ QueueManager.prototype.UILiveSet = function(item){
 		// Display the submitter
 		$("#media-submitter")
 			.append(
-				$("<img/>")
-					.attr("src", track_submitter_picture)
-					.addClass("tuto") // Twipsy
-					.attr("data-original-title", track_submitter_name)
+				$("<a/>")
+					.attr("href", track_submitter_url)
+					.attr("target", "_top")
+					.append(
+						$("<img/>")
+							.attr("src", track_submitter_picture)
+							.addClass("tuto")
+							.attr("data-original-title", track_submitter_name)
+					)
 			)
 			.append($("<span/>").html(mention))
 	}

@@ -222,7 +222,7 @@ CommentManager.prototype.UIBuild = function(item){
 				.addClass("comment-submitter-picture")
 				.append(
 					$("<a/>")
-						.attr("href", author_url)
+						.attr("href", track_submitter_url)
 						.attr("target", "_top")
 						.append($("<img/>").attr("src", track_submitter_picture))
 				)
