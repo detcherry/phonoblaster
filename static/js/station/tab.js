@@ -604,7 +604,7 @@ ScrollPlayTabManager.prototype.liveListen = function(){
 
 ScrollPlayTabManager.prototype.postAction = function(item){
 	if(this.station_client.user){
-		var track_url = PHB.site_url + "/track/" + item.id;
+		var track_url = PHB.site_url + "/track/" + item.content.track_id;
 		var obj = { "track": track_url };
 		var extra = {};
 		var expires_in = item.content.youtube_duration;
