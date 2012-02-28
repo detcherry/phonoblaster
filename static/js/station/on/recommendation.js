@@ -28,10 +28,12 @@ RecommendationManager.prototype.dispatch = function(){
 	if(number_of_broadcasts == 0){
 		// Call recommendations API
 		this.url = "/api/recommendations"
+		$("#popup-recommendations h3 strong").html("Phonoblaster")
 	}
 	else{		
 		// Call tracks API 
 		this.url = "/api/tracks"
+		$("#popup-recommendations h3 strong").html("Facebook")
 	}
 	
 	this.get()
@@ -73,9 +75,6 @@ RecommendationManager.prototype.get = function(){
 		},
 		success: function(json){
 			if(json.length > 0){
-				// Update recommendation popup and display it
-				$("#popup-recommendations h3 strong").html("Phonoblaster")
-				
 				// Remove volume
 				$("#media-volume").trigger("click");
 								
