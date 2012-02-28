@@ -630,7 +630,8 @@ ScrollPlayTabManager.prototype.UILiveRemove = function(){
 }
 
 ScrollPlayTabManager.prototype.UIActive = function(id){
-	$("#favorites-tab .item").removeClass("active");
+	var selector = this.name + " .item"
+	$(selector).removeClass("active");
 	
 	var re = RegExp("[.]","g");
 	var selector = "#" + id.toString().replace(re, "\\.");
