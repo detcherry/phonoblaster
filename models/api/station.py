@@ -14,6 +14,8 @@ from google.appengine.ext import db
 from google.appengine.api import memcache
 from google.appengine.api.taskqueue import Task
 
+from controllers import config
+
 from models.db.station import Station
 from models.db.comment import Comment
 from models.db.broadcast import Broadcast
@@ -85,11 +87,11 @@ class StationApi():
 		
 		subject = "New phonoblaster station: %s" % (self.station.name)
 		body = """
-A new station has been created on Phonoblaster:
+A new station (%s/%s) has been created on Phonoblaster:
 %s, %s
 		
 Global number of stations: %s
-		""" %(self.station.name, self.station.link, admin_proxy.number_of_stations)
+		""" %(config.SITE_URL, self.station.shortname, self.station.name, self.station.link, admin_proxy.number_of_stations)
 		
 		task = Task(
 			url = "/taskqueue/mail",
