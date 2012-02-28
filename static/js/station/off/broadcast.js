@@ -102,6 +102,7 @@ BroadcastManager.prototype.UIBuild = function(item){
 				.append(
 					$("<a/>")
 						.attr("href", track_submitter_url)
+						.attr("target", "_top")
 						.append(
 							$("<img/>")
 								.attr("src", track_submitter_picture)
@@ -153,6 +154,7 @@ BroadcastManager.prototype.UILiveSet = function(item){
 			.append(
 				$("<a/>")
 					.attr("href", track_submitter_url)
+					.attr("target", "_top")
 					.append(
 						$("<img/>")
 							.attr("src", track_submitter_picture)

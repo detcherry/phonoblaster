@@ -154,14 +154,19 @@ CommentManager.prototype.UIBuild = function(item){
 		div.append(
 			$("<div/>")
 				.addClass("comment-submitter-picture")
-				.append($("<img/>").attr("src", author_picture_url))
+				.append(
+					$("<a/>")
+						.attr("href", author_url)
+						.attr("target", "_top")
+						.append($("<img/>").attr("src", author_picture_url))
+				)
 		)
 		.append(
 			$("<div/>")
 				.addClass("comment-content")
 				.append(
 					$("<p/>")
-						.append($("<a/>").attr("href", author_url).html(author_name))
+						.append($("<a/>").attr("href", author_url).attr("target", "_top").html(author_name))
 						.append(" " + message)
 				)
 		)
@@ -187,7 +192,12 @@ CommentManager.prototype.UIBuild = function(item){
 		var station_url = "/" + this.station_client.station.shortname;
 		var station_picture = "https://graph.facebook.com/" + this.station_client.station.key_name + "/picture?type=square";
 		
-		var mention = $("<p/>").append($("<a/>").attr("href", track_submitter_url ).html(track_submitter_name))
+		var mention = $("<p/>").append(
+			$("<a/>")
+				.attr("href", track_submitter_url )
+				.attr("target", "_top")
+				.html(track_submitter_name)
+		)
 		
 		if(type == "track"){
 			// Regular broadcast
@@ -197,20 +207,25 @@ CommentManager.prototype.UIBuild = function(item){
 			// Suggestion
 			mention
 				.append(" suggestion was broadcast by ")
-				.append($("<a/>").attr("href", station_url).html(station_name))
+				.append($("<a/>").attr("href", station_url).attr("target", "_top").html(station_name))
 		}
 		if(type == "favorite"){
 			// Rebroadcast
 			mention
 				.append(" track was rebroadcast by ")
-				.append($("<a/>").attr("href", station_url).html(station_name))
+				.append($("<a/>").attr("href", station_url).attr("target", "_top").html(station_name))
 		}
 		
 		var div = $("<div/>").addClass("comment").attr("id", id)
 		div.append(
 			$("<div/>")
 				.addClass("comment-submitter-picture")
-				.append($("<img/>").attr("src", track_submitter_picture))
+				.append(
+					$("<a/>")
+						.attr("href", author_url)
+						.attr("target", "_top")
+						.append($("<img/>").attr("src", track_submitter_picture))
+				)
 		)
 		.append(
 			$("<div/>")
