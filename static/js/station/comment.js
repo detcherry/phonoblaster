@@ -93,8 +93,17 @@ CommentManager.prototype.prePostBuild = function(message){
 	
 	// Build a comment key name
 	var channel_id = this.station_client.channel_id;
-	var created = PHB.now();
-	var comment_key_name = channel_id + ".comment." + created + Math.floor(Math.random()*100).toString();
+	if(channel_id){
+		var created = PHB.now();
+		var random = Math.floor(Math.random()*100).toString();
+		var comment_key_name = channel_id + ".comment." + created + random;
+	}
+	else{
+		var created = PHB.now();
+		var random = Math.floor(Math.random()*100).toString();
+		var comment_key_name = this.station_client.station.shortname + ".offline.comment." + created + random
+	}
+
 	
 	if(this.station_client.admin){
 		var author_key_name = this.station_client.station.key_name;
