@@ -25,6 +25,11 @@ indexes:
   properties:
   - name: station
   - name: created
+
+- kind: Comment
+  properties:
+  - name: station
+  - name: created
     direction: desc
 
 - kind: Favorite

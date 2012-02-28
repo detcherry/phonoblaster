@@ -711,10 +711,10 @@ RealtimeTabManager.prototype.addToItems = function(new_item, callback){
 			// The new item has been posted after (OK)
 			else{
 				previous_item = item;
-				following_items.push(new_item);
 				break;
 			}
 		}
+		following_items.push(new_item);
 		this.items = following_items.concat(previous_items);
 	}
 	
