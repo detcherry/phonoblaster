@@ -34,7 +34,7 @@ def admin_required(method):
 
 		if self.user_proxy:
 			facebook_id = self.user_proxy.user.key().name()
-			if facebook_id in ["663812262","698198735"]:
+			if facebook_id in ["663812262","698198735","1478671803"]:
 				admin = True
 
 		if not admin:
