@@ -94,6 +94,10 @@ div, p, h1, h2, form, ul, li, ol{
 	float:left;
 }
 
+div#fb-root{
+	float:none;
+}
+
 h1, h2, h3{
 	font-family:Futura;
 	color:#333333;
