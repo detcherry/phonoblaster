@@ -54,7 +54,7 @@ TabCreationManager.prototype = {
 
 			// Display popup if response positive
 			if(response){
-				var stationCreationManager = new StationCreationManager(this.page_id, this.page_name);
+				stationCreationManager = new StationCreationManager(this.page_id, this.page_name);
 			}
 	},
 	
@@ -63,6 +63,7 @@ TabCreationManager.prototype = {
 function StationCreationManager(page_id, page_name){
 	this.page_id = page_id;
 	this.page_shortname = "";
+	this.request_counter = 0;
 	
 	this.updatePopupContent(page_name)
 	this.displayPopup();
@@ -185,56 +186,71 @@ StationCreationManager.prototype = {
 		old_page_shortname = this.page_shortname;
 		this.page_shortname = $("input#page-shortname").val();
 		
-		if(this.page_shortname.length <= 30 && this.page_shortname != old_page_shortname){
+		if(this.page_shortname.length < 4){
 			// Display checking message
 			$("#shortname-status")
-				.removeClass("unavailable")
+				.addClass("unavailable")
 				.removeClass("available")
-				.addClass("checking")
-				.html("Checking...");
-
-			var that = this;
-			$.ajax({
-				url: "/station/check",
-				type: "POST",
-				dataType: "json",
-				timeout: 60000,
-				data: {
-					page_shortname: that.page_shortname,
-				},
-				error: function(xhr, status, error) {
-					PHB.log('An error occurred: ' + error + '\nPlease retry.');
-					callback.call(this, false);
-				},
-				success: function(json){
-					if(json.availability){
-						callback.call(this, json.availability)
-					}
-					else{
+				.removeClass("checking")
+				.html("Too short");
+		}
+		else{
+			if(this.page_shortname.length <= 30 && this.page_shortname != old_page_shortname){
+				// Display checking message
+				$("#shortname-status")
+					.removeClass("unavailable")
+					.removeClass("available")
+					.addClass("checking")
+					.html("Checking...");
+				
+				this.request_counter++
+				
+				var that = this;
+				$.ajax({
+					url: "/station/check",
+					type: "POST",
+					dataType: "json",
+					timeout: 60000,
+					data: {
+						page_shortname: that.page_shortname,
+					},
+					error: function(xhr, status, error) {
+						PHB.log('An error occurred: ' + error + '\nPlease retry.');
 						callback.call(this, false);
-					}
-				},
-			});
+					},
+					success: function(json){
+						that.request_counter--;
+											
+						if(json.availability){
+							callback.call(this, json.availability)
+						}
+						else{
+							callback.call(this, false);
+						}
+					},
+				});
+			}
 		}
 	},
 	
-	displayAvailability: function(response){		
-		// Display availability status
-		if(response){
-			$("#shortname-status")
-				.removeClass("checking")
-				.removeClass("unavailable")
-				.addClass("available")
-				.html("Available");
+	displayAvailability: function(response){
+		if(this.request_counter == 0 && $("#shortname-status").html() == "Checking..."){
+			// Display availability status
+			if(response){
+				$("#shortname-status")
+					.removeClass("checking")
+					.removeClass("unavailable")
+					.addClass("available")
+					.html("Available");
+			}
+			else{
+				$("#shortname-status")
+					.removeClass("checking")
+					.removeClass("available")
+					.addClass("unavailable")
+					.html("Unavailable");
+			}
 		}
-		else{
-			$("#shortname-status")
-				.removeClass("checking")
-				.removeClass("available")
-				.addClass("unavailable")
-				.html("Unavailable");
-		}
-		
 	},	
 }
 

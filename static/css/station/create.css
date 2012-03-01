@@ -185,8 +185,12 @@ div#shortname-warning{
 	float:right;
 	margin:0px;
 	padding-top:8px;
-	width:270px;
+	width:226px;
 	color:#C43C35;
+}
+
+#popup-contribution .modal-footer input{
+	padding:8px;
 }
 
 /* ----------- CREATE FACEBOOK PAGE ------------ */
