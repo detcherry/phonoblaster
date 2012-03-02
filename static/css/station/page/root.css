@@ -5,6 +5,10 @@ html{
 	overflow-y:visible;
 }
 
+body{
+	padding-bottom:0px;
+}
+
 #main{
 	padding:0px;
 	min-height:600px;
@@ -104,7 +108,7 @@ input#comments-input{
 
 #comments-display{
 	width:279px;
-	min-height:180px;
+	min-height:250px;
 }
 
 #comments-footer{
@@ -159,7 +163,7 @@ input#comments-input{
 	display:block;
 	margin-left:-1px;
 	width:228px;
-	min-height:180px;
+	min-height:250px;
 	border:1px solid #E1E1E1;
 	border-top:none;
 }
@@ -167,7 +171,7 @@ input#comments-input{
 .tab-content .tab-items{
 	padding:5px;
 	width:218px;
-	min-height:90px;
+	min-height:160px;
 	border-bottom:3px solid #000000;
 }
 
@@ -256,7 +260,7 @@ div#error{
 #bottom-bar img{
 	height:20px;
 	margin-left:10px;
-	margin-top:10px;
+	margin-top:16px;
 }
 
 #bottom-bar p{
