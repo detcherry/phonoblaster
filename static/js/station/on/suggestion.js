@@ -110,41 +110,37 @@ SuggestionManager.prototype.postListen = function(btn, item){
 		event.preventDefault()
 		
 		var message = $("#popup-suggestion textarea").val();
-		if(message.length < 10){
-			$("#popup-suggestion .warning").show()
-		}
-		else{		
-			// Build the Track item + message into a Suggestion item
-			var new_item = that.prePostBuild(item, message)
+		// Build the Track item + message into a Suggestion item
+		var new_item = that.prePostBuild(item, message)
+		
+		// Set button as suggested
+		that.UISuccess(btn)
+		
+		// Remove fancy box
+		$.fancybox.close(true)
+		
+		// Reset popup
+		$("#popup-suggestion textarea").val("");
+		$("#popup-suggestion .warning").hide();
+		
+		// Prepend the suggestion locally
+		var new_item_div = that.UIBuild(new_item)
+		that.UIPrepend(new_item_div);
+		
+		// Prevent any suggestion submission before a 3 minutes period
+		that.suggestion_on = false;
+		setTimeout(function(){
+			that.suggestion_on = true;
+		}, 180000)
+		
+		// POST request to the server
+		that.post(new_item, function(response){
+			that.postCallback(new_item, response);
 			
-			// Set button as suggested
-			that.UISuccess(btn)
-			
-			// Remove fancy box
-			$.fancybox.close(true)
-			
-			// Reset popup
-			$("#popup-suggestion textarea").val("");
-			$("#popup-suggestion .warning").hide();
-			
-			// Prepend the suggestion locally
-			var new_item_div = that.UIBuild(new_item)
-			that.UIPrepend(new_item_div);
-			
-			// Prevent any suggestion submission before a 3 minutes period
-			that.suggestion_on = false;
-			setTimeout(function(){
-				that.suggestion_on = true;
-			}, 180000)
-			
-			// POST request to the server
-			that.post(new_item, function(response){
-				that.postCallback(new_item, response);
-				
-				// POST action to facebook
-				that.postAction(new_item);
-			})	
-		}
+			// POST action to facebook
+			that.postAction(new_item);
+		})	
+
 	})
 },
 
