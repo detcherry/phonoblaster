@@ -70,6 +70,10 @@ input#search:focus{
 	overflow-y:scroll;
 }
 
+#search-tab .tab-items{
+	background-color:#F8F8F8;
+}
+
 /* ------ ITEM WRAPPER (SUGGESTIONS & FAVORITES) ------ */
 
 .item-wrapper{
