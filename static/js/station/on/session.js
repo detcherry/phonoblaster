@@ -93,7 +93,8 @@ SessionManager.prototype = {
 	
 	// Process incoming logged in sessions
 	add: function(new_session){
-		if(this.station_client.admin || new_session.listener_key_name == this.station_client.user.key_name || this.isFriend(new_session)){
+		//if(this.station_client.admin || new_session.listener_key_name == this.station_client.user.key_name || this.isFriend(new_session)){
+		if(true){
 			var that = this;
 			
 			// Check if the new listener is not already listening
@@ -157,7 +158,8 @@ SessionManager.prototype = {
 		var was_duplicate = false;
 		
 		if(session_gone.listener_key_name){
-			if(this.station_client.admin || new_session.listener_key_name == this.station_client.user.key_name || this.isFriend(session_gone)){
+			//if(this.station_client.admin || new_session.listener_key_name == this.station_client.user.key_name || this.isFriend(session_gone)){
+			if(true){
 				// We gonna check first in the duplicate list
 				var that = this;
 				for(var i=0, c=that.duplicate_sessions.length; i<c; i++){

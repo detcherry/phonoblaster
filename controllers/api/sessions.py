@@ -26,7 +26,21 @@ class ApiSessionsHandler(BaseHandler):
 		station = station_proxy.station
 		number_of_sessions = station_proxy.number_of_sessions
 		
+		q = SessionStory.all(keys_only = True)
+		q.filter("station", station.key())
+		q.filter("ended", None)
+		q.filter("created >",  datetime.now() - timedelta(0,7200))
+		session_story_keys = q.fetch(50) # Arbitrary number
+		
+		session_keys = [k.parent() for k in session_story_keys]
+		sessions = Session.get(session_keys)
+		extended_sessions = Session.get_extended_sessions(sessions)
+		
+		"""
+		CODE READY FOR VERSION WHERE DISPLAYED LISTENERS = FRIENDS (FOR LOGGED IN USERS) / EVERYONE (FOR ADMINS)
+		
 		extended_sessions = None
+		
 		if(self.user_proxy):
 			session_story_keys = []
 			
@@ -53,6 +67,8 @@ class ApiSessionsHandler(BaseHandler):
 			session_keys = [k.parent() for k in session_story_keys]
 			sessions = Session.get(session_keys)
 			extended_sessions = Session.get_extended_sessions(sessions)
+		
+		"""
 		
 		sessions_data = {
 			"number": number_of_sessions,
