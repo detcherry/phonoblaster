@@ -486,13 +486,16 @@ ScrollTabManager.prototype.scrollListen = function(){
 			tab_active = true;
 		}
 		
-		if(tab_active){
-			var height = $(this).height();
-			var scroll_height = $(this).scrollTop();
-			var document_height = $(document).height();
-			var scroll_bottom = document_height - height - scroll_height;
+		if(tab_active){			
+			var above_tab_height = 248;
+			var tab_height = $(that.name).height();
 			
-			if(scroll_bottom < 400 && !that.load && that.scrolling_on){
+			var scroll_height = $(this).scrollTop();
+			var window_height = $(this).height();
+			
+			var below_tab_height = scroll_height + window_height - above_tab_height - tab_height
+			
+			if(below_tab_height > 100 && !that.load && that.scrolling_on){
 				var last_item = that.items[that.items.length -1];
 				that.offset = last_item.created;
 				that.load = true;
