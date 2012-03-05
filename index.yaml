@@ -25,11 +25,6 @@ indexes:
   properties:
   - name: station
   - name: created
-
-- kind: Comment
-  properties:
-  - name: station
-  - name: created
     direction: desc
 
 - kind: Favorite
@@ -37,11 +32,6 @@ indexes:
   - name: user
   - name: created
     direction: desc
-
-- kind: Recommendation
-  properties:
-  - name: user
-  - name: created
 
 - kind: SessionStory
   properties:

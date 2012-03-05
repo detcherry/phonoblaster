@@ -365,7 +365,6 @@ Global number of users: %s
 	def recommendations_query(self):
 		q = Recommendation.all()
 		q.filter("user", self.user.key())
-		q.order("created")
 		recommendations = q.fetch(30)
 		
 		return recommendations
