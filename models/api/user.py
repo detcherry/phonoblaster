@@ -20,23 +20,17 @@ from models.db.recommendation import Recommendation
 from models.api.admin import AdminApi
 
 MEMCACHE_USER_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".user."
-MEMCACHE_USER_FRIENDS_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".friends.user."
 MEMCACHE_USER_CONTRIBUTIONS_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".contributions.user."
 MEMCACHE_USER_FAVORITES_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".favorites.user."
-MEMCACHE_USER_LIBRARY_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".library.user."
 COUNTER_OF_FAVORITES = "user.favorites.counter."
-COUNTER_OF_SUGGESTIONS = "user.suggestions.counter."
 
 class UserApi:
 	def __init__(self, facebook_id):
 		self._facebook_id = str(facebook_id)
 		self._memcache_user_id = MEMCACHE_USER_PREFIX + self._facebook_id
-		self._memcache_user_friends_id = MEMCACHE_USER_FRIENDS_PREFIX + self._facebook_id
 		self._memcache_user_contributions_id = MEMCACHE_USER_CONTRIBUTIONS_PREFIX + self._facebook_id
 		self._memcache_user_favorites_id = MEMCACHE_USER_FAVORITES_PREFIX + self._facebook_id
-		self._memcache_user_library_id = MEMCACHE_USER_LIBRARY_PREFIX + self._facebook_id
 		self._counter_of_favorites_id = COUNTER_OF_FAVORITES + self._facebook_id
-		self._counter_of_suggestions_id = COUNTER_OF_SUGGESTIONS + self._facebook_id
 	
 	# Return the user
 	@property
