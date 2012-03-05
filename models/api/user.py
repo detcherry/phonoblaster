@@ -56,10 +56,11 @@ class UserApi:
 	@property
 	def access_token(self):
 		if not hasattr(self, "_access_token"):
-			token_response = facebook.get_access_token_from_code(self._code, config.FACEBOOK_APP_ID, config.FACEBOOK_APP_SECRET)
+			if self._code:
+				token_response = facebook.get_access_token_from_code(self._code, config.FACEBOOK_APP_ID, config.FACEBOOK_APP_SECRET)
 			
-			if "access_token" in token_response:
-				self._access_token = token_response["access_token"][-1]
+				if "access_token" in token_response:
+					self._access_token = token_response["access_token"][-1]
 		
 		return self._access_token
 			
@@ -121,7 +122,6 @@ Global number of users: %s
 			self._contributions = memcache.get(self._memcache_user_contributions_id)
 			
 			if self._contributions is None:
-				#graph = facebook.GraphAPI(self.user.facebook_access_token)
 				graph = facebook.GraphAPI(self.access_token)
 				accounts = graph.get_connections(self.user.key().name(),"accounts")["data"]
 				
@@ -262,12 +262,12 @@ Global number of users: %s
 			url = "/taskqueue/recommendations",
 			params = {
 				"key_name": self._uid,
+				"code": self._code,
 			}
 		)
 		task.add(queue_name = "worker-queue")
 	
 	def save_recommendations(self):
-		#graph = facebook.GraphAPI(self.user.facebook_access_token)
 		graph = facebook.GraphAPI(self.access_token)
 		items = graph.get_connections("me","links", limit=50)["data"]
 				
@@ -277,6 +277,7 @@ Global number of users: %s
 				m = re.match(r"http://www.youtube.com/watch\?v=([\w_-]+)", item["link"])
 				if m is not None:
 					recommendations.append(Recommendation(
+						key_name = m.group(1) + self.user.key().name(),
 						youtube_id = m.group(1),
 						user = self.user.key(),
 					))
