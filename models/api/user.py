@@ -10,6 +10,8 @@ from google.appengine.api import memcache
 from google.appengine.api.taskqueue import Task
 
 from controllers import facebook
+from controllers import config
+
 from models.db.user import User
 from models.db.favorite import Favorite
 from models.db.track import Track
@@ -20,26 +22,29 @@ from models.db.recommendation import Recommendation
 from models.api.admin import AdminApi
 
 MEMCACHE_USER_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".user."
+MEMCACHE_USER_ACCESS_TOKEN_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".token.user."
 MEMCACHE_USER_CONTRIBUTIONS_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".contributions.user."
 MEMCACHE_USER_FAVORITES_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".favorites.user."
 COUNTER_OF_FAVORITES = "user.favorites.counter."
 
 class UserApi:
-	def __init__(self, facebook_id):
-		self._facebook_id = str(facebook_id)
-		self._memcache_user_id = MEMCACHE_USER_PREFIX + self._facebook_id
-		self._memcache_user_contributions_id = MEMCACHE_USER_CONTRIBUTIONS_PREFIX + self._facebook_id
-		self._memcache_user_favorites_id = MEMCACHE_USER_FAVORITES_PREFIX + self._facebook_id
-		self._counter_of_favorites_id = COUNTER_OF_FAVORITES + self._facebook_id
+	def __init__(self, uid, code = None):
+		self._uid = uid
+		self._code = code # only for an authenticated user
+		self._memcache_user_id = MEMCACHE_USER_PREFIX + self._uid
+		self._memcache_user_access_token_id = MEMCACHE_USER_ACCESS_TOKEN_PREFIX + self._uid
+		self._memcache_user_contributions_id = MEMCACHE_USER_CONTRIBUTIONS_PREFIX + self._uid
+		self._memcache_user_favorites_id = MEMCACHE_USER_FAVORITES_PREFIX + self._uid
+		self._counter_of_favorites_id = COUNTER_OF_FAVORITES + self._uid
 	
-	# Return the user
+	# Return the user 
 	@property
 	def user(self):
 		if not hasattr(self, "_user"):
 			self._user = memcache.get(self._memcache_user_id)
 			if self._user is None:
 				logging.info("User not in memcache")
-				self._user = User.get_by_key_name(self._facebook_id)
+				self._user = User.get_by_key_name(self._uid)
 				if self._user:
 					memcache.set(self._memcache_user_id, self._user)
 					logging.info("%s %s put in memcache"%(self._user.first_name, self._user.last_name))
@@ -47,13 +52,33 @@ class UserApi:
 					logging.info("User does not exist")
 			else:
 				logging.info("%s %s already in memcache"%(self._user.first_name, self._user.last_name))
-		return self._user
+		return self._user	
 	
-	# Put the user
-	def put_user(self, facebook_id, facebook_access_token, first_name, last_name, email):
+	# Returns the user access token (facebook)
+	@property
+	def access_token(self):
+		if not hasattr(self, "_access_token"):
+			self._access_token = memcache.get(self._memcache_user_access_token_id)
+			if self._access_token is None:
+				logging.info("User access token not in memcache")
+				token_response = facebook.get_access_token_from_code(self._code, config.FACEBOOK_APP_ID, config.FACEBOOK_APP_SECRET)
+				
+				if "access_token" in token_response:
+					self._access_token = token_response["access_token"][-1]
+					expires = int(token_response["expires"][-1])
+					
+					memcache.set(self._memcache_user_access_token_id, self._access_token, expires)
+					logging.info("User access token put in memcache")					
+					
+			else:
+				logging.info("User access token already in memcache")
+		
+		return self._access_token
+			
+	# Puts new user in the datastore	
+	def put_user(self, uid, first_name, last_name, email):
 		user = User(
-			key_name = str(facebook_id),
-			facebook_access_token = facebook_access_token,
+			key_name = uid,
 			first_name = first_name,
 			last_name = last_name,
 			email = email,
@@ -62,7 +87,7 @@ class UserApi:
 		logging.info("User put in datastore")
 		
 		memcache.set(self._memcache_user_id, user)
-		logging.info("User put in memcacche")
+		logging.info("User put in memcache")
 		
 		# Put the user in the proxy
 		self._user = user
@@ -79,15 +104,6 @@ class UserApi:
 		self.mail()
 		
 		return self._user
-		
-	# Update the facebook user access token
-	def update_token(self, facebook_access_token):
-		self.user.facebook_access_token = facebook_access_token
-		self.user.put()
-		logging.info("User access token updated in datastore")
-		
-		memcache.set(self._memcache_user_id, self.user)
-		logging.info("User access token updated in memcache")
 	
 	def mail(self):
 		admin_proxy = AdminApi()
@@ -117,7 +133,8 @@ Global number of users: %s
 			self._contributions = memcache.get(self._memcache_user_contributions_id)
 			
 			if self._contributions is None:
-				graph = facebook.GraphAPI(self.user.facebook_access_token)
+				#graph = facebook.GraphAPI(self.user.facebook_access_token)
+				graph = facebook.GraphAPI(self.access_token)
 				accounts = graph.get_connections(self.user.key().name(),"accounts")["data"]
 				
 				contributions = []
@@ -256,13 +273,14 @@ Global number of users: %s
 		task = Task(
 			url = "/taskqueue/recommendations",
 			params = {
-				"key_name": self._facebook_id,
+				"key_name": self._uid,
 			}
 		)
 		task.add(queue_name = "worker-queue")
 	
 	def save_recommendations(self):
-		graph = facebook.GraphAPI(self.user.facebook_access_token)
+		#graph = facebook.GraphAPI(self.user.facebook_access_token)
+		graph = facebook.GraphAPI(self.access_token)
 		items = graph.get_connections("me","links", limit=50)["data"]
 				
 		recommendations = []

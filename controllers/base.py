@@ -33,8 +33,8 @@ def admin_required(method):
 		admin = False
 
 		if self.user_proxy:
-			facebook_id = self.user_proxy.user.key().name()
-			if facebook_id in ["663812262","698198735","1478671803"]:
+			uid = self.user_proxy.user.key().name()
+			if uid in ["663812262","698198735","1478671803"]:
 				admin = True
 
 		if not admin:
@@ -51,35 +51,27 @@ class BaseHandler(webapp.RequestHandler):
 	def user_proxy(self):
 		if not hasattr(self, "_user_proxy"):
 			self._user_proxy = None
-			cookie = facebook.get_user_from_cookie(
-				self.request.cookies,
-				config.FACEBOOK_APP_ID,
-				config.FACEBOOK_APP_SECRET
-			)
+			cookie = self.request.cookies.get("fbsr_" + config.FACEBOOK_APP_ID, "")
 			if cookie:
-				# Store a local instance of the user data so we don't need a round-trip to Facebook on every request
-				user_proxy = UserApi(cookie["uid"])
-				user = user_proxy.user
-				
-				# If not registered, save the new user
-				if not user:
-					graph = facebook.GraphAPI(cookie["access_token"])
-					profile = graph.get_object("me")
-					user = user_proxy.put_user(
-						cookie["uid"], 
-						cookie["access_token"],
-						profile["first_name"],
-						profile["last_name"],
-						profile["email"]
-					)
-					logging.info("New user: %s %s" %(user.first_name, user.last_name))
-				else:
-					# If token is different, update the token
-					if user.facebook_access_token != cookie["access_token"]:
-						user_proxy.update_token(cookie["access_token"])
-						logging.info("Token and friends updated in user %s %s"%(user.first_name, user.last_name))
-				self._user_proxy = user_proxy
-
+				response = facebook.parse_signed_request(cookie, config.FACEBOOK_APP_SECRET)
+				if response:
+					user_proxy = UserApi(response["user_id"], code=response["code"])
+					user = user_proxy.user
+					
+					# If not registered, save the new user
+					if not user:
+						graph = facebook.GraphAPI(user_proxy.access_token)
+						profile = graph.get_object("me")
+						user = user_proxy.put_user(
+							response["user_id"], 
+							profile["first_name"],
+							profile["last_name"],
+							profile["email"]
+						)
+						logging.info("New user: %s %s" %(user.first_name, user.last_name))
+					
+					self._user_proxy = user_proxy
+		
 		return self._user_proxy
 
 	# Custom rendering function

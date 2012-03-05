@@ -221,7 +221,24 @@ def parse_signed_request(signed_request, secret):
 
     return {}
 
+def get_access_token_from_code(code, app_id, app_secret):
+    if not code:
+	    return None
+		
+    args = dict(
+        code = code,
+        client_id = app_id,
+        client_secret = app_secret,
+        redirect_uri = '',
+    )
+    
+    file = urllib.urlopen("https://graph.facebook.com/oauth/access_token?" + urllib.urlencode(args))
+    try:
+	    token_response = cgi.parse_qs(file.read())
+    finally:
+	    file.close()
 
+    return token_response
 
 def get_user_from_cookie(cookies, app_id, app_secret):
     """Parses the cookie set by the official Facebook JavaScript SDK.
@@ -247,24 +264,15 @@ def get_user_from_cookie(cookies, app_id, app_secret):
     if not response:
         return None
 
-    args = dict(
-        code = response['code'],
-        client_id = app_id,
-        client_secret = app_secret,
-        redirect_uri = '',
-    )
+    token_response = get_access_token_from_code(response["code"], app_id, app_secret)
 
-    file = urllib.urlopen("https://graph.facebook.com/oauth/access_token?" + urllib.urlencode(args))
-    try:
-        token_response = cgi.parse_qs(file.read())
-    finally:
-        file.close()
-
-	if "access_token" in token_response:
-		access_token = token_response["access_token"][-1]
-		return dict(
-			uid = response["user_id"],
-			access_token = access_token,
-		)
-	else:
-		return None
+    if "access_token" in token_response:
+	    access_token = token_response["access_token"][-1]
+	    expires = token_response["expires"][-1]
+	    return dict(
+	        uid = response["user_id"],
+	        access_token = access_token,
+	        expires = expires,
+	    )
+    else:
+	    return None
