@@ -22,7 +22,6 @@ from models.db.recommendation import Recommendation
 from models.api.admin import AdminApi
 
 MEMCACHE_USER_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".user."
-MEMCACHE_USER_ACCESS_TOKEN_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".token.user."
 MEMCACHE_USER_CONTRIBUTIONS_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".contributions.user."
 MEMCACHE_USER_FAVORITES_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".favorites.user."
 COUNTER_OF_FAVORITES = "user.favorites.counter."
@@ -32,7 +31,6 @@ class UserApi:
 		self._uid = uid
 		self._code = code # only for an authenticated user
 		self._memcache_user_id = MEMCACHE_USER_PREFIX + self._uid
-		self._memcache_user_access_token_id = MEMCACHE_USER_ACCESS_TOKEN_PREFIX + self._uid
 		self._memcache_user_contributions_id = MEMCACHE_USER_CONTRIBUTIONS_PREFIX + self._uid
 		self._memcache_user_favorites_id = MEMCACHE_USER_FAVORITES_PREFIX + self._uid
 		self._counter_of_favorites_id = COUNTER_OF_FAVORITES + self._uid
@@ -58,19 +56,10 @@ class UserApi:
 	@property
 	def access_token(self):
 		if not hasattr(self, "_access_token"):
-			self._access_token = memcache.get(self._memcache_user_access_token_id)
-			if self._access_token is None:
-				logging.info("User access token not in memcache")
-				token_response = facebook.get_access_token_from_code(self._code, config.FACEBOOK_APP_ID, config.FACEBOOK_APP_SECRET)
-				
-				if "access_token" in token_response:
-					self._access_token = token_response["access_token"][-1]
-					
-					memcache.set(self._memcache_user_access_token_id, self._access_token)
-					logging.info("User access token put in memcache")					
-					
-			else:
-				logging.info("User access token already in memcache")
+			token_response = facebook.get_access_token_from_code(self._code, config.FACEBOOK_APP_ID, config.FACEBOOK_APP_SECRET)
+			
+			if "access_token" in token_response:
+				self._access_token = token_response["access_token"][-1]
 		
 		return self._access_token
 			
