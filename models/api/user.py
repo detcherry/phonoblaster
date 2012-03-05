@@ -65,9 +65,8 @@ class UserApi:
 				
 				if "access_token" in token_response:
 					self._access_token = token_response["access_token"][-1]
-					expires = int(token_response["expires"][-1])
 					
-					memcache.set(self._memcache_user_access_token_id, self._access_token, expires)
+					memcache.set(self._memcache_user_access_token_id, self._access_token)
 					logging.info("User access token put in memcache")					
 					
 			else:

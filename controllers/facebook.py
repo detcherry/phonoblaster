@@ -268,11 +268,9 @@ def get_user_from_cookie(cookies, app_id, app_secret):
 
     if "access_token" in token_response:
 	    access_token = token_response["access_token"][-1]
-	    expires = token_response["expires"][-1]
 	    return dict(
 	        uid = response["user_id"],
-	        access_token = access_token,
-	        expires = expires,
+	        access_token = access_token
 	    )
     else:
 	    return None
