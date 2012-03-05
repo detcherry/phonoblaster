@@ -10,9 +10,6 @@ function SessionManager(station_client){
 	this.sessions = [];
 	this.duplicate_sessions = []
 	
-	// Necessary for users logged in and not admins
-	this.friends = []
-	
 	this.init();
 }
 
