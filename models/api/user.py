@@ -11,7 +11,6 @@ from google.appengine.api.taskqueue import Task
 
 from controllers import facebook
 from models.db.user import User
-from models.db.friendships import Friendships
 from models.db.favorite import Favorite
 from models.db.track import Track
 from models.db.counter import Shard
@@ -74,9 +73,6 @@ class UserApi:
 		# Put the user in the proxy
 		self._user = user
 		
-		# Put the user friends
-		self.task_friends()
-		
 		# Put the user recommendations
 		self.task_recommendations()
 		
@@ -98,56 +94,6 @@ class UserApi:
 		
 		memcache.set(self._memcache_user_id, self.user)
 		logging.info("User access token updated in memcache")
-		
-		# Update the user friends
-		self.task_friends()
-	
-	@property
-	def friends(self):
-		if not hasattr(self, "_friends"):
-			self._friends = memcache.get(self._memcache_user_friends_id)
-			if self._friends is None:
-				logging.info("Friends not in memcache")
-				friendships = self.friendships_query()				
-				self._friends = friendships.friends
-				
-				if self._friends:
-					memcache.set(self._memcache_user_friends_id, self._friends)
-					logging.info("Friends put in memcache")
-				else:
-					logging.info("Friends do not exist...")
-			else:
-				logging.info("Friends already in memcache")
-		
-		return self._friends
-	
-	def friendships_query(self):
-		q = Friendships.all()
-		q.ancestor(self.user.key())
-		friendships = q.get()
-		
-		return friendships
-		
-	def friendships_facebook_query(self):
-		graph = facebook.GraphAPI(self.user.facebook_access_token)
-		friends = graph.get_connections(self.user.key().name(),"friends")["data"]
-		
-		# Build user keys from friends ids
-		user_keys = []
-		for f in friends:
-			user_key = db.Key.from_path("User", f["id"])
-			user_keys.append(user_key)
-		
-		return user_keys
-	
-	def task_friends(self):
-		task = Task(
-			url = "/taskqueue/friends",
-			params = {
-				"key_name": self._facebook_id,
-			}
-		)
-		task.add(queue_name = "worker-queue")
 	
 	def mail(self):
 		admin_proxy = AdminApi()
@@ -169,30 +115,6 @@ Global number of users: %s
 			}
 		)
 		task.add(queue_name = "worker-queue")
-	
-	# Put or update the facebook user list of friends
-	def save_friends(self):
-		friendships = self.friendships_query()
-		logging.info("Friendships retrieved from datastore")		
-		
-		if friendships is None:
-			logging.info("Put of %s %s friends" % (self.user.first_name, self.user.last_name))
-			friendships = Friendships(parent = self.user)
-		else:
-			logging.info("Update of %s %s friends" % (self.user.first_name, self.user.last_name))
-		
-		user_keys = self.friendships_facebook_query()
-		logging.info("Friendships retrieved from Facebook")
-		
-		friendships.friends = user_keys
-		friendships.put()
-		logging.info("Friendships saved in datastore")
-		
-		memcache.set(self._memcache_user_friends_id, friendships.friends)
-		logging.info("Friends updated in memcache")
-		
-		# Put friends in proxy
-		self._friends = friendships.friends
 	
 	# Return the user contributions (pages he's admin of)
 	@property
