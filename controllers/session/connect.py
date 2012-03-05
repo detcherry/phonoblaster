@@ -10,7 +10,6 @@ from google.appengine.api.taskqueue import Task
 from controllers import config
 
 from models.db.session import Session
-from models.db.story import SessionStory
 
 from models.api.station import StationApi
 from models.api.user import UserApi
@@ -20,8 +19,6 @@ class ConnectHandler(webapp.RequestHandler):
 		channel_id = str(self.request.get('from'))
 		logging.info("%s is ready to receive messages" %(channel_id))
 		
-		session = Session.get_by_key_name(channel_id)
-		
 		# Init station proxy
 		m = re.match(r"(\w+).(\w+)", channel_id)
 		shortname = m.group(1)
@@ -30,40 +27,22 @@ class ConnectHandler(webapp.RequestHandler):
 		# Increment the station sessions counter
 		station_proxy.increment_sessions_counter();
 		
-		# Init user proxy
-		user = None		
+		# Get session
+		session = Session.get_by_key_name(channel_id)
+		# After a reconnection the session may have ended. Correct it.
+		if session.ended is not None:
+			session.ended = None
+			session.put()
+			logging.info("Session had ended (probable reconnection). Corrected session put.")
+
+		# Init user
+		user = None
 		user_key = Session.user.get_value_for_datastore(session)
 		if(user_key):
-			
 			# Load user proxy
 			user_key_name = user_key.name()
 			user_proxy = UserApi(user_key_name)
 			user = user_proxy.user
-			
-			# Check it there is not already a session story with this session as a parent
-			q = SessionStory.all()
-			q.ancestor(session.key())
-			existing_story = q.get()
-			
-			if existing_story:
-				existing_story.ended = None;
-				existing_story.put()
-				logging.info("User session. Existing story updated in memcache.")				
-			else:
-				# Receivers of a session story are the friends of the user and the user himself
-				receivers = user_proxy.friends
-				receivers.append(user_proxy.user.key())
-				
-				new_story = SessionStory(
-					parent = session,
-					receivers = receivers,
-					station = station_proxy.station,
-				)
-				new_story.put()
-				logging.info("User session. New session story put in datastore")
-			
-		else:
-			logging.info("Anonymous session. No session story to put in datastore.")
 		
 		# Add a taskqueue to warn everyone
 		extended_session = Session.get_extended_session(session, user)

@@ -9,7 +9,9 @@ class Session(db.Model):
 	# key_name = channel_id
 	channel_token = db.StringProperty(required = True)
 	user = db.ReferenceProperty(User, required = False, collection_name = "sessionUser")
+	station = db.ReferenceProperty(Station, required = True, collection_name = "sessionStation")
 	created = db.DateTimeProperty(auto_now_add = True)
+	ended = db.DateTimeProperty()
 	
 	@staticmethod
 	def get_extended_sessions(sessions):
@@ -33,8 +35,8 @@ class Session(db.Model):
 			extended_session = {
 				"key_name": session.key().name(),
 				"created": timegm(session.created.utctimetuple()),
-				"user_key_name": None,
-				"user_name": None,
+				"listener_key_name": None,
+				"listener_name": None,
 				"listener_url": None,
 			}
 			

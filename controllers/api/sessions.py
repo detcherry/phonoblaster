@@ -16,7 +16,6 @@ from controllers.base import BaseHandler
 from controllers.base import login_required
 
 from models.db.session import Session
-from models.db.story import SessionStory
 from models.api.station import StationApi
 
 class ApiSessionsHandler(BaseHandler):
@@ -26,49 +25,13 @@ class ApiSessionsHandler(BaseHandler):
 		station = station_proxy.station
 		number_of_sessions = station_proxy.number_of_sessions
 		
-		q = SessionStory.all(keys_only = True)
+		q = Session.all()
 		q.filter("station", station.key())
 		q.filter("ended", None)
-		q.filter("created >",  datetime.now() - timedelta(0,7200))
-		session_story_keys = q.fetch(50) # Arbitrary number
+		q.filter("user !=", None)
+		sessions = q.fetch(100)
 		
-		session_keys = [k.parent() for k in session_story_keys]
-		sessions = Session.get(session_keys)
 		extended_sessions = Session.get_extended_sessions(sessions)
-		
-		"""
-		CODE READY FOR VERSION WHERE DISPLAYED LISTENERS = FRIENDS (FOR LOGGED IN USERS) / EVERYONE (FOR ADMINS)
-		
-		extended_sessions = None
-		
-		if(self.user_proxy):
-			session_story_keys = []
-			
-			# If admin fetch every session story
-			if(self.user_proxy.is_admin_of(station.key().name())):
-				q = SessionStory.all(keys_only = True)
-				q.filter("station", station.key())
-				q.filter("ended", None)
-				q.filter("created >",  datetime.now() - timedelta(0,7200))
-				session_story_keys = q.fetch(50) # Arbitrary number
-			
-			# If simple user, only fetch session story he's a recipient of
-			else:
-				user = self.user_proxy.user
-		
-				q = SessionStory.all(keys_only = True)
-				q.filter("receivers =", user.key())
-				q.filter("station", station.key())
-				q.filter("ended", None)
-				q.filter("created >",  datetime.now() - timedelta(0,7200))
-				session_story_keys = q.fetch(50) # Arbitrary number
-		
-		
-			session_keys = [k.parent() for k in session_story_keys]
-			sessions = Session.get(session_keys)
-			extended_sessions = Session.get_extended_sessions(sessions)
-		
-		"""
 		
 		sessions_data = {
 			"number": number_of_sessions,
@@ -100,6 +63,7 @@ class ApiSessionsHandler(BaseHandler):
 				key_name = new_channel_id,
 				channel_token = new_channel_token,
 				user = user_key,
+				station = self.station.key(),
 			)
 			new_session.put()
 			logging.info("New session saved in datastore")

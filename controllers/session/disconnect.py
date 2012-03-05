@@ -15,14 +15,11 @@ from models.api.station import StationApi
 from models.api.user import UserApi
 
 from models.db.session import Session
-from models.db.story import SessionStory
 
 class DisconnectHandler(webapp.RequestHandler):
 	def post(self):
 		channel_id = str(self.request.get('from'))
 		logging.info("%s cannot receive messages anymore" %(channel_id))
-		
-		session = Session.get_by_key_name(channel_id)
 		
 		# Init station proxy
 		m = re.match(r"(\w+).(\w+)", channel_id)
@@ -32,24 +29,18 @@ class DisconnectHandler(webapp.RequestHandler):
 		# Decrement the station sessions counter
 		station_proxy.decrement_sessions_counter();
 		
-		# Init user proxy
+		session = Session.get_by_key_name(channel_id)
+		session.ended = datetime.utcnow()
+		session.put()
+		logging.info("Session ended in datastore")
+		
+		# Init user
 		user = None
 		user_key = Session.user.get_value_for_datastore(session)
 		if(user_key):
 			user_key_name = user_key.name()
 			user_proxy = UserApi(user_key_name)
 			user = user_proxy.user
-			
-			# Retrieve session story
-			q = SessionStory.all()
-			q.ancestor(session.key())
-			session_story = q.get()
-
-			session_story.ended = datetime.now()
-			session_story.put()
-			logging.info("Session story ended in datastore")
-		else:
-			logging.info("Anonymous session. No story to end in datastore")
 		
 		# Add a taskqueue to warn everyone
 		extended_session = Session.get_extended_session(session, user)

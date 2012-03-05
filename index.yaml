@@ -33,18 +33,11 @@ indexes:
   - name: created
     direction: desc
 
-- kind: SessionStory
-  properties:
-  - name: ended
-  - name: receivers
-  - name: station
-  - name: created
-
-- kind: SessionStory
+- kind: Session
   properties:
   - name: ended
   - name: station
-  - name: created
+  - name: user
 
 - kind: Suggestion
   properties:
