@@ -19,33 +19,8 @@ function SessionManager(station_client){
 
 SessionManager.prototype = {
 	
+	// Fetch sessions
 	init: function(){
-		var that = this;
-		
-		if(this.station_client.user){
-			// First fetch friends
-			this.fetchFriends(function(){
-				// Then fetch sessions
-				that.fetchSessions();
-			});	
-		}
-		else{
-			// Fetch sessions directly
-			that.fetchSessions();
-		}
-	},
-	
-	// Fetch the user friends (works only for authenticated users)
-	fetchFriends: function(callback){
-		var that = this;
-		FACEBOOK.retrieveFriends(function(friends){
-			that.friends = friends;
-			callback();
-		})
-	},
-	
-	// Fetch friend sessions
-	fetchSessions: function(){
 		var that = this;	
 		var shortname = this.station_client.station.shortname;
 		// Fetch station presences
@@ -134,20 +109,6 @@ SessionManager.prototype = {
 				.append($("<img/>").attr("src", listener_picture_url))
 		)
 		
-	},
-	
-	// Check if a session is a friend of current user
-	isFriend: function(session){
-		var response = false;
-		var that = this;
-		for(var i=0, c=that.friends.length; i<c; i++){
-			var friend = that.friends[i]
-			if(session.listener_key_name == friend.id){
-				response = true;
-				break;
-			}
-		}
-		return response;
 	},
 	
 	// Session left
