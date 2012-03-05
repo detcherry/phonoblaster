@@ -29,7 +29,7 @@ class Shard(db.Model):
 			if counter is None:
 				counter = Counter(key_name=counter_name, name=name)
 			counter.count += 1
-			counter.put()
+			db.put_async(counter)
 		db.run_in_transaction(txn)
 		
 		memcache_name = os.environ["CURRENT_VERSION_ID"] + "." + name
@@ -45,7 +45,7 @@ class Shard(db.Model):
 			if counter is None:
 				counter = Counter(key_name=counter_name, name=name)
 			counter.count -= 1
-			counter.put()
+			db.put_async(counter)
 		db.run_in_transaction(txn)
 		
 		memcache_name = os.environ["CURRENT_VERSION_ID"] + "." + name
