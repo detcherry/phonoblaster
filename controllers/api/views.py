@@ -40,7 +40,7 @@ class ApiViewsHandler(BaseHandler):
 						track = track_key,
 						user = user_key,
 					)
-					new_view.put()
+					db.put_async(new_view)
 					logging.info("New user view put in datastore")
 				else:
 					logging.info("User already viewed this track")
