@@ -53,7 +53,7 @@ class StationCreateHandler(BaseHandler):
 				if(user_admin):
 					
 					# We fetch some information about the facebook page (just the link in fact...)
-					graph = facebook.GraphAPI(self.user_proxy.user.facebook_access_token)
+					graph = facebook.GraphAPI()
 					page_information = graph.get_object(page_id)
 					
 					station_proxy = StationApi(page_shortname)
