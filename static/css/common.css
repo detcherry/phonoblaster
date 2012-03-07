@@ -50,13 +50,16 @@
 	max-width:110px;
 }
 
-#top-left-description, #top-left-title{
+#top-left-description{
 	width:503px;
 }
 
+#top-left-title{
+	max-width:413px;
+}
+
 #top-left-description{
-	min-height:130px;
-	overflow:hidden;
+	height:130px;
 }
 
 #top-left-title{
@@ -67,6 +70,7 @@
 #top-left-description h1{
 	margin-right:10px;
 	max-width:408px;
+	height:23px;
 	text-transform:uppercase;
 }
 

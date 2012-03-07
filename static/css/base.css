@@ -43,7 +43,6 @@
 /* ----- BOOTSTRAP OVERWRITE ----- */
 
 body{
-	position:absolute;
 	float:left;
 	background:#000000;
 	padding-bottom:50px;
