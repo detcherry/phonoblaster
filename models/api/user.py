@@ -18,6 +18,8 @@ from models.db.track import Track
 from models.db.counter import Shard
 from models.db.station import Station
 
+from controllers.facebook import GraphAPIError
+
 from models.api.admin import AdminApi
 
 MEMCACHE_USER_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".user."
@@ -120,7 +122,11 @@ Global number of users: %s
 			
 			if self._contributions is None:
 				graph = facebook.GraphAPI(self.access_token)
-				accounts = graph.get_connections(self.user.key().name(),"accounts")["data"]
+				try:
+					accounts = graph.get_connections(self.user.key().name(),"accounts")["data"]
+				except GraphAPIError:
+					logging.info("User did not accept that Phonoblaster can manage his pages.")
+					accounts = []
 					
 				contributions = []
 				if isinstance(accounts, list):
