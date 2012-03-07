@@ -28,7 +28,7 @@ class ApiSessionsHandler(BaseHandler):
 		q = Session.all()
 		q.filter("station", station.key())
 		q.filter("ended", None)
-		q.filter("user !=", None)
+		q.filter("created >", datetime.utcnow() - timedelta(0,7200))
 		sessions = q.fetch(100)
 		
 		extended_sessions = Session.get_extended_sessions(sessions)

@@ -43,7 +43,9 @@ SessionManager.prototype = {
 					// Add each new friend session to the DOM
 					$.each(sessions, function(index, value){
 						var session = value;
-						that.add(session);
+						if(session.listener_key_name){
+							that.add(session);
+						}
 					})					
 				}
 			},
