@@ -50,6 +50,7 @@ class ApiSuggestionsHandler(BaseHandler):
 			user_last_suggestion = q.get()
 
 			if(user_last_suggestion):
+				extended_suggestion = None
 				logging.info("User submitted a suggestion shortly")
 			else:
 				logging.info("User did not submit a suggestion shortly")
