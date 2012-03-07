@@ -26,17 +26,65 @@ RecommendationManager.prototype.dispatch = function(){
 	var that = this;
 	
 	if(number_of_broadcasts == 0){
-		// Call recommendations API
-		this.url = "/api/recommendations"
 		$("#popup-recommendations h3 strong").html("Facebook")
+		
+		// Call Facebook API to know which tracks the user has posted on his wall
+		FACEBOOK.retrieveWallLinks(function(items){
+			that.filterFacebook(items);
+		})
+		
 	}
 	else{		
 		// Call tracks API 
 		this.url = "/api/tracks"
 		$("#popup-recommendations h3 strong").html("Phonoblaster")
-	}
+		this.get()
+	}	
+}
+
+RecommendationManager.prototype.filterFacebook = function(items){
+	var youtube_ids = []
 	
-	this.get()
+	$.each(items, function(i, item){
+		var re = RegExp("http://www.youtube.com/watch\\?v=([\\w_]+)","g")
+		var m = re.exec(item.link)
+		if(m!= null){
+			youtube_ids.push(m[1])
+		}
+	})
+	
+	if(youtube_ids.length > 0){
+		this.filterYoutube(youtube_ids)
+	}
+}
+
+RecommendationManager.prototype.filterYoutube = function(youtube_ids){
+	var data = {
+		"youtube_ids": youtube_ids.join(","),
+	}
+	var that = this;
+	
+	$.ajax({
+		url: "/api/recommendations",
+		dataType: "json",
+		timeout: 60000,
+		data: data,
+		error: function(xhr, status, error){
+			PHB.log('An error occurred: ' + error + '\nPlease retry.');
+		},
+		success: function(json){
+			if(json.length > 0){
+				// Remove volume
+				$("#media-volume").trigger("click");
+								
+				that.empty(function(){
+					that.getCallback(json);
+				})
+				
+				that.displayPopup();
+			}
+		}
+	})	
 }
 
 // Collect the data necessary to GET items from the server

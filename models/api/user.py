@@ -17,14 +17,6 @@ from models.db.favorite import Favorite
 from models.db.track import Track
 from models.db.counter import Shard
 from models.db.station import Station
-from models.db.recommendation import Recommendation
-
-from controllers.facebook import GraphAPIError
-
-import urllib
-import django_setup
-from django.utils import simplejson as json
-from google.appengine.api import urlfetch
 
 from models.api.admin import AdminApi
 
@@ -88,9 +80,6 @@ class UserApi:
 		
 		# Put the user in the proxy
 		self._user = user
-		
-		# Put the user recommendations
-		self.task_recommendations()
 		
 		# Increment admin counter of users
 		admin_proxy = AdminApi()
@@ -264,53 +253,6 @@ Global number of users: %s
 	def decrement_favorites_counter(self):
 		shard_name = self._counter_of_favorites_id
 		Shard.task(shard_name, "decrement")
-	
-	def task_recommendations(self):
-		task = Task(
-			url = "/taskqueue/recommendations",
-			params = {
-				"key_name": self._uid,
-				"code": self._code,
-			}
-		)
-		task.add(queue_name = "worker-queue")
-	
-	def save_recommendations(self):
-		# We don't use the Facebook SDK because we goes at a deeper level in the API
-		url = "https://graph.facebook.com/me/links?"
-		args = {
-			"access_token": self.access_token,
-			"limit": 50,
-		}
-		
-		response = urlfetch.fetch(url + urllib.urlencode(args), deadline=10)
-		results = json.loads(response.content)
-		
-		if "data" in results:
-			items = results["data"]
-				
-			recommendations = []
-			for item in items:
-				if item.has_key("link"):
-					m = re.match(r"http://www.youtube.com/watch\?v=([\w_-]+)", item["link"])
-					if m is not None:
-						recommendations.append(Recommendation(
-							key_name = m.group(1) + self.user.key().name(),
-							youtube_id = m.group(1),
-							user = self.user.key(),
-						))
-				
-			db.put(recommendations)
-			logging.info("Recommandations put in the datastore")
-			
-	def recommendations_query(self):
-		q = Recommendation.all()
-		q.filter("user", self.user.key())
-		recommendations = q.fetch(30)
-		
-		return recommendations
-		
-		
 	
 	
 		
