@@ -17,6 +17,7 @@ class StationCreateHandler(BaseHandler):
 	def post(self):
 		page_id = self.request.get("page-id")
 		page_shortname = self.request.get("page-shortname")[:30].lower()
+		logging.info(page_id)
 		
 		# We have to check if shortname is ok
 		forbidden_characters = re.search("[^a-zA-Z0-9_]", page_shortname)
