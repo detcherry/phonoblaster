@@ -70,7 +70,12 @@ class BaseHandler(webapp.RequestHandler):
 						)
 						logging.info("New user: %s %s" %(user.first_name, user.last_name))
 					
-					self._user_proxy = user_proxy
+					#self._user_proxy = user_proxy
+					
+					# patch below before login has gone full client
+					access_token = user_proxy.access_token
+					if access_token:
+						self._user_proxy = user_proxy
 		
 		return self._user_proxy
 
