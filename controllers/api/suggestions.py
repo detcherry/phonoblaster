@@ -57,16 +57,16 @@ class ApiSuggestionsHandler(BaseHandler):
 				
 				youtube_id = suggestion["youtube_id"]
 				youtube_track = Youtube.get_extended_tracks([youtube_id])[0]
-				
+								
 				if(youtube_track):
 					logging.info("Suggested track on Youtube")
-					
+										
 					suggestion = Suggestion(
 						key_name = suggestion["key_name"],
-						message = suggestion["message"][:140],
+						message = suggestion["message"][:140].replace("\n"," "),
 						youtube_id = youtube_track["id"],
 						station = station.key(),
-						user = user,
+						user = user.key(),
 					)
 		
 					suggestion.put()
