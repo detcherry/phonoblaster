@@ -1,0 +1,11 @@
+/* ------- CORRECTION ------- */
+
+#main{
+	padding-top:60px;
+	padding-bottom:60px;
+}
+
+#main img{
+	display:block;
+	margin:auto;
+}
