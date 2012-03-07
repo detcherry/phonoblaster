@@ -6,7 +6,7 @@
 {% block main %}
 <div id="create">
 	{% if user_contributions %}
-		<h2>Set up <em>Phonoblaster</em> for your one fan pages!</h2>
+		<h2>Set up <em>Phonoblaster</em> for one of your fan pages!</h2>
 		{% for contribution in user_contributions %}
 			<div class="contribution">
 				<img src="https://graph.facebook.com/{{ contribution.page_id }}/picture" class="thumbnail"/>
