@@ -40,6 +40,8 @@ class StationCreateHandler(BaseHandler):
 		if(self.user_proxy):
 			page_id = self.request.get("page-id")
 			page_shortname = self.request.get("page-shortname")[:30].lower()
+			logging.info(page_id)
+			logging.info(page_shortname)
 			
 			# We have to check if shortname is ok
 			forbidden_characters = re.search("[^a-zA-Z0-9_]", page_shortname)
@@ -51,10 +53,11 @@ class StationCreateHandler(BaseHandler):
 				# We check if the user is a page admin
 				user_admin = self.user_proxy.is_admin_of(page_id)			
 				if(user_admin):
-					
 					# We fetch some information about the facebook page (just the link in fact...)
 					graph = facebook.GraphAPI()
 					page_information = graph.get_object(page_id)
+					
+					logging.info(page_information)
 					
 					station_proxy = StationApi(page_shortname)
 					station_proxy.put_station(page_id, page_shortname, page_information["name"], page_information["link"])
