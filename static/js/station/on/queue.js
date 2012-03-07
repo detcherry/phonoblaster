@@ -275,22 +275,23 @@ QueueManager.prototype.liveOver = function(){
 QueueManager.prototype.postView = function(){
 	var shortname = this.station_client.station.shortname
 	
-	$.ajax({
-		url: "/api/views",
-		type: "POST", 
-		dataType: "json",
-		timeout: 60000,
-		data: {
-			shortname: shortname,
-		},
-		error: function(xhr, status, error) {
-			PHB.log('An error occurred: ' + error + '\nPlease retry.');
-		},
-		success: function(){
-			// The view has been added
-		},
-	});
-	
+	if(this.station_client.user){
+		$.ajax({
+			url: "/api/views",
+			type: "POST", 
+			dataType: "json",
+			timeout: 60000,
+			data: {
+				shortname: shortname,
+			},
+			error: function(xhr, status, error) {
+				PHB.log('An error occurred: ' + error + '\nPlease retry.');
+			},
+			success: function(){
+				// The view has been added
+			},
+		});
+	}
 }
 
 QueueManager.prototype.UIProgress = function(video_start, duration){
