@@ -73,6 +73,13 @@ class StationApi():
 			link = page_link,
 		)
 		station.put()
+		logging.info("Station put in datastore")
+		
+		memcache.set(self._memcache_station_id, station)
+		logging.info("Station put in memcache")
+		
+		# Put station in proxy
+		self._station = station
 		
 		# Increment admin counter of stations
 		admin_proxy = AdminApi()
