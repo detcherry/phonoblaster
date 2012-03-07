@@ -161,11 +161,8 @@ class GraphAPI(object):
         finally:
             file.close()
 
-        try:
-	        if response.get("error"):
-                 raise GraphAPIError(response["error"]["type"],response["error"]["message"])
-        except AttributeError:
-	        logging.info("Response is a boolean") 
+	    if response and response.get("error"):
+		    raise GraphAPIError(response["error"]["type"],response["error"]["message"])
 		
         return response
 
