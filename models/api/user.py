@@ -19,6 +19,13 @@ from models.db.counter import Shard
 from models.db.station import Station
 from models.db.recommendation import Recommendation
 
+from controllers.facebook import GraphAPIError
+
+import urllib
+import django_setup
+from django.utils import simplejson as json
+from google.appengine.api import urlfetch
+
 from models.api.admin import AdminApi
 
 MEMCACHE_USER_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".user."
@@ -56,9 +63,10 @@ class UserApi:
 	@property
 	def access_token(self):
 		if not hasattr(self, "_access_token"):
+			self._access_token = None
 			if self._code:
 				token_response = facebook.get_access_token_from_code(self._code, config.FACEBOOK_APP_ID, config.FACEBOOK_APP_SECRET)
-			
+				
 				if "access_token" in token_response:
 					self._access_token = token_response["access_token"][-1]
 		
@@ -124,7 +132,7 @@ Global number of users: %s
 			if self._contributions is None:
 				graph = facebook.GraphAPI(self.access_token)
 				accounts = graph.get_connections(self.user.key().name(),"accounts")["data"]
-				
+					
 				contributions = []
 				if isinstance(accounts, list):
 					for account in accounts:
@@ -268,22 +276,32 @@ Global number of users: %s
 		task.add(queue_name = "worker-queue")
 	
 	def save_recommendations(self):
-		graph = facebook.GraphAPI(self.access_token)
-		items = graph.get_connections("me","links", limit=50)["data"]
+		# We don't use the Facebook SDK because we goes at a deeper level in the API
+		url = "https://graph.facebook.com/me/links?"
+		args = {
+			"access_token": self.access_token,
+			"limit": 50,
+		}
+		
+		response = urlfetch.fetch(url + urllib.urlencode(args), deadline=10)
+		results = json.loads(response.content)
+		
+		if "data" in results:
+			items = results["data"]
 				
-		recommendations = []
-		for item in items:
-			if item.has_key("link"):
-				m = re.match(r"http://www.youtube.com/watch\?v=([\w_-]+)", item["link"])
-				if m is not None:
-					recommendations.append(Recommendation(
-						key_name = m.group(1) + self.user.key().name(),
-						youtube_id = m.group(1),
-						user = self.user.key(),
-					))
+			recommendations = []
+			for item in items:
+				if item.has_key("link"):
+					m = re.match(r"http://www.youtube.com/watch\?v=([\w_-]+)", item["link"])
+					if m is not None:
+						recommendations.append(Recommendation(
+							key_name = m.group(1) + self.user.key().name(),
+							youtube_id = m.group(1),
+							user = self.user.key(),
+						))
 				
-		db.put(recommendations)
-		logging.info("Recommandations put in the datastore")
+			db.put(recommendations)
+			logging.info("Recommandations put in the datastore")
 			
 	def recommendations_query(self):
 		q = Recommendation.all()
