@@ -88,6 +88,7 @@ class BaseHandler(webapp.RequestHandler):
 		
 		# Standard template values
 		self._template_values["user_proxy"] = self.user_proxy
+		self._template_values["domain"] = config.DOMAIN
 		self._template_values["google_analytics_id"] = config.GOOGLE_ANALYTICS_ID
 		self._template_values["facebook_app_id"] = config.FACEBOOK_APP_ID
 		self._template_values["site_url"] = config.SITE_URL
