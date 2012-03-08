@@ -10,10 +10,9 @@ from models.api.station import StationApi
 class ApiBroadcastsHandler(BaseHandler):
 	def get(self):
 		shortname = self.request.get("shortname")
-		station_proxy = StationApi(shortname)
+		offset = self.request.get("offset")
 		
-		if(station_proxy.station):
-			offset = datetime.utcfromtimestamp(int(self.request.get("offset")))
-			extended_broadcasts = station_proxy.get_broadcasts(offset)
-		
-		self.response.out.write(json.dumps(extended_broadcasts))
+		if(shortname and offset):
+			station_proxy = StationApi(shortname)
+			extended_broadcasts = station_proxy.get_broadcasts(datetime.utcfromtimestamp(int(offset)))
+			self.response.out.write(json.dumps(extended_broadcasts))

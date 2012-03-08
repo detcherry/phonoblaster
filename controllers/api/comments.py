@@ -18,17 +18,17 @@ class ApiCommentsHandler(BaseHandler):
 	def get(self):
 		shortname = self.request.get("shortname")
 		station_proxy = StationApi(shortname)
-		self.station = station_proxy.station
+		station = station_proxy.station
 		
-		q = Comment.all()
-		q.filter("station", self.station.key())
-		q.filter("created <", datetime.utcnow())
-		q.order("-created")
-		comments = q.fetch(50) # Arbitrary number
-		
-		extended_comments = Comment.get_extended_comments(comments, self.station)
-		
-		self.response.out.write(json.dumps(extended_comments))
+		if(station):
+			q = Comment.all()
+			q.filter("station", station.key())
+			q.filter("created <", datetime.utcnow())
+			q.order("-created")
+			comments = q.fetch(50) # Arbitrary number
+	
+			extended_comments = Comment.get_extended_comments(comments, station)
+			self.response.out.write(json.dumps(extended_comments))
 
 	@login_required
 	def post(self):

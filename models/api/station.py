@@ -139,7 +139,7 @@ Global number of stations: %s
 		if not hasattr(self, "_queue"):
 			self._queue = memcache.get(self._memcache_station_queue_id)
 			
-			if self._queue is None:
+			if self._queue is None and self.station:
 				q = Broadcast.all()
 				q.filter("station", self.station.key())
 				q.filter("expired >", datetime.utcnow())
@@ -373,11 +373,13 @@ Global number of stations: %s
 		return past_broadcasts
 	
 	def broadcasts_query(self, offset):
-		q = Broadcast.all()
-		q.filter("station", self.station.key())
-		q.filter("created <", offset)
-		q.order("-created")
-		broadcasts = q.fetch(10)
+		broadcasts = []
+		if(self.station):
+			q = Broadcast.all()
+			q.filter("station", self.station.key())
+			q.filter("created <", offset)
+			q.order("-created")
+			broadcasts = q.fetch(10)
 		
 		return broadcasts
 		
@@ -403,11 +405,13 @@ Global number of stations: %s
 		return past_tracks
 	
 	def tracks_query(self, offset):
-		q = Track.all()
-		q.filter("station", self.station.key())
-		q.filter("created <", offset)
-		q.order("-created")
-		tracks = q.fetch(10)
+		tracks = []
+		if(self.station):			
+			q = Track.all()
+			q.filter("station", self.station.key())
+			q.filter("created <", offset)
+			q.order("-created")
+			tracks = q.fetch(10)
 		
 		return tracks
 		

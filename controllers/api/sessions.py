@@ -23,24 +23,25 @@ class ApiSessionsHandler(BaseHandler):
 		shortname = self.request.get("shortname")
 		station_proxy = StationApi(shortname)
 		station = station_proxy.station
-		number_of_sessions = station_proxy.number_of_sessions
 		
-		q = Session.all()
-		q.filter("station", station.key())
-		q.filter("ended", None)
-		q.filter("created >", datetime.utcnow() - timedelta(0,7200))
-		sessions = q.fetch(100)
-		
-		extended_sessions = Session.get_extended_sessions(sessions)
-		
-		sessions_data = {
-			"number": number_of_sessions,
-			"sessions": extended_sessions,
-		}
+		if(station):
+			number_of_sessions = station_proxy.number_of_sessions
 			
-		self.response.out.write(json.dumps(sessions_data))
+			q = Session.all()
+			q.filter("station", station.key())
+			q.filter("ended", None)
+			q.filter("created >", datetime.utcnow() - timedelta(0,7200))
+			sessions = q.fetch(100)
+	
+			extended_sessions = Session.get_extended_sessions(sessions)
+	
+			sessions_data = {
+				"number": number_of_sessions,
+				"sessions": extended_sessions,
+			}
 		
-
+			self.response.out.write(json.dumps(sessions_data))
+		
 	def post(self):
 		shortname = self.request.get("shortname")
 		self.station_proxy = StationApi(shortname)

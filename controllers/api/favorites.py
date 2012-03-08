@@ -14,11 +14,12 @@ from models.api.user import UserApi
 class ApiFavoritesHandler(BaseHandler):
 	def get(self):
 		key_name = self.request.get("key_name")
-		profile_proxy = UserApi(key_name)
-		offset = datetime.utcfromtimestamp(int(self.request.get("offset")))
+		offset = self.request.get("offset")
 		
-		extended_favorites = profile_proxy.get_favorites(offset)
-		self.response.out.write(json.dumps(extended_favorites))
+		if(key_name and offset):
+			profile_proxy = UserApi(key_name)
+			extended_favorites = profile_proxy.get_favorites(datetime.utcfromtimestamp(int(offset)))
+			self.response.out.write(json.dumps(extended_favorites))
 	
 	@login_required
 	def post(self):

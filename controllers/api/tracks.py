@@ -12,8 +12,9 @@ from models.api.station import StationApi
 class ApiTracksHandler(BaseHandler):
 	def get(self):
 		shortname = self.request.get("shortname")
-		station_proxy = StationApi(shortname)
-		offset = datetime.utcfromtimestamp(int(self.request.get("offset")))
+		offset = self.request.get("offset")
 		
-		extended_tracks = station_proxy.get_tracks(offset)
-		self.response.out.write(json.dumps(extended_tracks))
+		if(shortname and offset):
+			station_proxy = StationApi(shortname)
+			extended_tracks = station_proxy.get_tracks(datetime.utcfromtimestamp(int(offset)))
+			self.response.out.write(json.dumps(extended_tracks))
