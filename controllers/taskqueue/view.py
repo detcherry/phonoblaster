@@ -32,9 +32,6 @@ class ViewHandler(webapp.RequestHandler):
 				Track.increase_views_counter(track_id, number_of_sessions)
 				logging.info("Track views counter increased")
 			
-			"""
-			# WE NEED TO ERASE THE EXISTING VIEW ENTITIES FROM THE DATASTORE FIRST!!!
-			
 			extended_sessions = station_proxy.sessions
 			user_keys = list(set([db.Key.from_path("User", e["listener_key_name"]) for e in extended_sessions]))
 			
@@ -49,7 +46,6 @@ class ViewHandler(webapp.RequestHandler):
 			
 			db.put(views)
 			logging.info("Views put in the datastore")
-			"""
 			
 			# Start another task after this track has ended
 			countdown = int(live_broadcast["youtube_duration"])
