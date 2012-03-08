@@ -138,37 +138,37 @@ Global number of stations: %s
 	def queue(self):
 		if not hasattr(self, "_queue"):
 			self._queue = memcache.get(self._memcache_station_queue_id)
-			
-			if self._queue is None and self.station:
-				q = Broadcast.all()
-				q.filter("station", self.station.key())
-				q.filter("expired >", datetime.utcnow())
-				q.order("expired")
-		 		broadcasts = q.fetch(10)
+			if(self.station):
+				if self._queue is None:
+					q = Broadcast.all()
+					q.filter("station", self.station.key())
+					q.filter("expired >", datetime.utcnow())
+					q.order("expired")
+			 		broadcasts = q.fetch(10)
 		
-				# Format extended broadcasts
-				self._queue = Broadcast.get_extended_broadcasts(broadcasts, self.station)
+					# Format extended broadcasts
+					self._queue = Broadcast.get_extended_broadcasts(broadcasts, self.station)
 		
-				# Put extended broadcasts in memcache
-				memcache.add(self._memcache_station_queue_id, self._queue)
-				logging.info("Queue loaded in memcache")
-			else:
-				# We probably have to clean the memcache from old tracks
-				cleaned_up_queue = []
-				datetime_now = timegm(datetime.utcnow().utctimetuple())
-				
-				for broadcast in self._queue:
-					#if(broadcast["broadcast_expired"] > datetime_now):
-					if(broadcast["expired"] > datetime_now):
-						cleaned_up_queue.append(broadcast)
-				
-				# We only update the memcache if some cleaning up was necessary
-				if(len(self._queue) != len(cleaned_up_queue)):
-					self._queue = cleaned_up_queue
-					memcache.set(self._memcache_station_queue_id, self._queue)
-					logging.info("Queue already in memcache and cleaned up")
+					# Put extended broadcasts in memcache
+					memcache.add(self._memcache_station_queue_id, self._queue)
+					logging.info("Queue loaded in memcache")
 				else:
-					logging.info("Queue already in memcache and no need to clean up")
+					# We probably have to clean the memcache from old tracks
+					cleaned_up_queue = []
+					datetime_now = timegm(datetime.utcnow().utctimetuple())
+				
+					for broadcast in self._queue:
+						#if(broadcast["broadcast_expired"] > datetime_now):
+						if(broadcast["expired"] > datetime_now):
+							cleaned_up_queue.append(broadcast)
+				
+					# We only update the memcache if some cleaning up was necessary
+					if(len(self._queue) != len(cleaned_up_queue)):
+						self._queue = cleaned_up_queue
+						memcache.set(self._memcache_station_queue_id, self._queue)
+						logging.info("Queue already in memcache and cleaned up")
+					else:
+						logging.info("Queue already in memcache and no need to clean up")
 
 		return self._queue		
 	
