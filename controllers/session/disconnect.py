@@ -10,11 +10,7 @@ from google.appengine.ext.webapp.util import run_wsgi_app
 from google.appengine.api.taskqueue import Task
 
 from controllers import config
-
 from models.api.station import StationApi
-from models.api.user import UserApi
-
-from models.db.session import Session
 
 class DisconnectHandler(webapp.RequestHandler):
 	def post(self):
@@ -26,27 +22,10 @@ class DisconnectHandler(webapp.RequestHandler):
 		shortname = m.group(1)
 		station_proxy = StationApi(shortname)
 		
-		# Decrement the station sessions counter
-		station_proxy.decrement_sessions_counter();
-		
-		session = Session.get_by_key_name(channel_id)
-		session.ended = datetime.utcnow()
-		session.put()
-		logging.info("Session ended in datastore")
-		
-		# Init user
-		user = None
-		user_key = Session.user.get_value_for_datastore(session)
-		if(user_key):
-			user_key_name = user_key.name()
-			user_proxy = UserApi(user_key_name)
-			user = user_proxy.user
+		extended_session = station_proxy.remove_from_sessions(channel_id)
 		
 		# Add a taskqueue to warn everyone
-		extended_session = Session.get_extended_session(session, user)
-		
-		# Add a taskqueue to warn everyone
-		new_session_data = {
+		session_gone_data = {
 			"entity": "session",
 			"event": "remove",
 			"content": extended_session,
@@ -55,7 +34,7 @@ class DisconnectHandler(webapp.RequestHandler):
 			url = "/taskqueue/multicast",
 			params = {
 				"station": config.VERSION + "-" + shortname,
-				"data": json.dumps(new_session_data)
+				"data": json.dumps(session_gone_data)
 			}
 		)
 		task.add(queue_name="sessions-queue")

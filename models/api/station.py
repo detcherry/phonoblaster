@@ -17,6 +17,7 @@ from google.appengine.api.taskqueue import Task
 from controllers import config
 
 from models.db.station import Station
+from models.db.session import Session
 from models.db.comment import Comment
 from models.db.broadcast import Broadcast
 from models.db.track import Track
@@ -27,6 +28,7 @@ from models.api.admin import AdminApi
 
 MEMCACHE_STATION_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".station."
 MEMCACHE_STATION_QUEUE_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".queue.station."
+MEMCACHE_STATION_SESSIONS_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".sessions.station."
 MEMCACHE_STATION_BROADCASTS_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".broadcasts.station."
 MEMCACHE_STATION_TRACKS_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".tracks.station."
 COUNTER_OF_BROADCASTS_PREFIX = "station.broadcasts.counter."
@@ -40,6 +42,7 @@ class StationApi():
 		self._shortname = shortname
 		self._memcache_station_id = MEMCACHE_STATION_PREFIX + self._shortname
 		self._memcache_station_queue_id = MEMCACHE_STATION_QUEUE_PREFIX + self._shortname
+		self._memcache_station_sessions_id = MEMCACHE_STATION_SESSIONS_PREFIX + self._shortname
 		self._memcache_station_broadcasts_id = MEMCACHE_STATION_BROADCASTS_PREFIX + self._shortname
 		self._memcache_station_tracks_id = MEMCACHE_STATION_TRACKS_PREFIX + self._shortname
 		self._counter_of_broadcasts_id = COUNTER_OF_BROADCASTS_PREFIX + self._shortname
@@ -125,6 +128,100 @@ Global number of stations: %s
 			self._number_of_sessions = Shard.get_count(shard_name)
 		return self._number_of_sessions
 	
+	# Gives all the listeners (logged in a station)
+	@property
+	def sessions(self):
+		if not hasattr(self, "_sessions"):
+			self._sessions = memcache.get(self._memcache_station_sessions_id)
+			if(self.station):
+				if self._sessions is None:
+					q = Session.all()
+					q.filter("station", self.station.key())
+					q.filter("ended", None)
+					q.filter("created >", datetime.utcnow() - timedelta(0,7200))
+					sessions = q.fetch(100)
+					logging.info(sessions)
+
+					extended_sessions = Session.get_extended_sessions(sessions)
+					logging.info(extended_sessions)
+				
+					memcache.set(self._memcache_station_sessions_id, extended_sessions)
+					logging.info("Listeners put in memcache")
+					
+					self._sessions = extended_sessions
+				else:
+					logging.info("Listeners already in memcache")
+		
+		return self._sessions
+		
+	def add_to_sessions(self, channel_id):
+		self.increment_sessions_counter()
+		logging.info("Sessions counter incremented")
+		
+		# Get session
+		session = Session.get_by_key_name(channel_id)
+		# After a reconnection the session may have ended. Correct it.
+		if session.ended is not None:
+			session.ended = None
+			session.put()
+			logging.info("Session had ended (probable reconnection). Corrected session put.")
+		
+		# Init user
+		user = None
+		user_key = Session.user.get_value_for_datastore(session)
+		if(user_key):
+			# Load user proxy
+			user_key_name = user_key.name()
+			user_proxy = UserApi(user_key_name)
+			user = user_proxy.user
+
+		extended_session = Session.get_extended_session(session, user)
+		
+		if(user_key):
+			existing_sessions = self.sessions
+			new_sessions = existing_sessions.append(extended_session)
+			memcache.set(self._memcache_station_sessions_id, new_sessions)
+			logging.info("Listener added in memcache")
+		else:
+			logging.info("Anonymous listener not added in memcache")
+			
+		return extended_session
+	
+	def remove_from_sessions(self, channel_id):
+		self.decrement_sessions_counter()
+		logging.info("Sessions counter decremented")
+		
+		session = Session.get_by_key_name(channel_id)
+		session.ended = datetime.utcnow()
+		session.put()
+		logging.info("Session ended in datastore")
+		
+		# Init user
+		user = None
+		user_key = Session.user.get_value_for_datastore(session)
+		if(user_key):
+			# Load user proxy
+			user_key_name = user_key.name()
+			user_proxy = UserApi(user_key_name)
+			user = user_proxy.user
+		
+		extended_session = Session.get_extended_session(session, user)
+		
+		if(user_key):
+			new_sessions = []
+			for s in self.sessions:
+				if s["key_name"] != channel_id:
+					new_sessions.append(s)
+			
+			logging.info(self.sessions)
+			memcache.set(self._memcache_station_sessions_id, new_sessions)
+			logging.info(new_sessions)
+			logging.info("Listener removed from memcache")
+		else:
+			logging.info("Anonymous listener not removed from memcache")
+		
+		return extended_session
+	
 	def increment_sessions_counter(self):
 		shard_name = self._counter_of_sessions_id
 		Shard.task(shard_name, "increment")
@@ -158,7 +255,6 @@ Global number of stations: %s
 					datetime_now = timegm(datetime.utcnow().utctimetuple())
 				
 					for broadcast in self._queue:
-						#if(broadcast["broadcast_expired"] > datetime_now):
 						if(broadcast["expired"] > datetime_now):
 							cleaned_up_queue.append(broadcast)
 				

@@ -14,7 +14,7 @@ class Session(db.Model):
 	ended = db.DateTimeProperty()
 	
 	@staticmethod
-	def get_extended_sessions(sessions):
+	def get_extended_sessions(sessions):		
 		# Filter only sessions that have a user
 		keys = [Session.user.get_value_for_datastore(s) for s in sessions]
 		
