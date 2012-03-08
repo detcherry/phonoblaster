@@ -27,6 +27,9 @@ from controllers.api.views import ApiViewsHandler
 from controllers.api.air import ApiAirHandler
 from controllers.api.now import ApiNowHandler
 from controllers.company.company import JobsHandler
+from controllers.company.company import TermsHandler
+from controllers.company.company import FaqHandler
+
 
 application = webapp.WSGIApplication(
 	[
@@ -55,6 +58,8 @@ application = webapp.WSGIApplication(
 		('/station/page', StationPageHandler),
 		('/user/([0-9]+)', ProfileHandler),
 		('/company/jobs', JobsHandler),
+		('/company/terms', TermsHandler),
+		('/company/faq', FaqHandler),
 		('/.*', AllHandler),
 	],
     debug=True
