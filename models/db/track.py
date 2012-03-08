@@ -96,11 +96,11 @@ class Track(db.Model):
 		shard_name = COUNTER_OF_VIEWS_PREFIX + str(track_id)
 		count = Shard.get_count(shard_name)
 		return count
-
+	
 	@staticmethod
-	def increment_views_counter(track_id):
+	def increase_views_counter(track_id, value):
 		shard_name = COUNTER_OF_VIEWS_PREFIX + str(track_id)
-		Shard.task(shard_name, "increment")
+		Shard.increase(shard_name, value)
 	
 	@staticmethod
 	def number_of_favorites(track_id):

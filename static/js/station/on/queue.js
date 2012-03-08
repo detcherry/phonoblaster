@@ -220,9 +220,6 @@ QueueManager.prototype.live = function(new_item){
 	// Program the launch of the next video
 	this.nextVideo(time_out);
 	
-	// Increment the number of views on the server
-	this.postView();
-	
 	// Post action to FACEBOOK
 	this.postAction(this.live_item);
 }
@@ -270,27 +267,6 @@ QueueManager.prototype.liveOver = function(){
 	
 	// Remove the broadcast from the live UI
 	this.UILiveRemove();
-}
-
-QueueManager.prototype.postView = function(){
-	var shortname = this.station_client.station.shortname
-	
-	// User does not need to be authenticated to say he has viewed a track (views counter for station and track)
-	$.ajax({
-		url: "/api/views",
-		type: "POST", 
-		dataType: "json",
-		timeout: 60000,
-		data: {
-			shortname: shortname,
-		},
-		error: function(xhr, status, error) {
-			PHB.log('An error occurred: ' + error + '\nPlease retry.');
-		},
-		success: function(){
-			// The view has been added
-		},
-	});
 }
 
 QueueManager.prototype.UIProgress = function(video_start, duration){

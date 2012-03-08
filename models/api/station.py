@@ -135,16 +135,15 @@ Global number of stations: %s
 			self._sessions = memcache.get(self._memcache_station_sessions_id)
 			if(self.station):
 				if self._sessions is None:
+					logging.info("Listeners not in memcache")
+					
 					q = Session.all()
 					q.filter("station", self.station.key())
 					q.filter("ended", None)
 					q.filter("created >", datetime.utcnow() - timedelta(0,7200))
 					sessions = q.fetch(100)
-					logging.info(sessions)
 
-					extended_sessions = Session.get_extended_sessions(sessions)
-					logging.info(extended_sessions)
-				
+					extended_sessions = Session.get_extended_sessions(sessions)				
 					memcache.set(self._memcache_station_sessions_id, extended_sessions)
 					logging.info("Listeners put in memcache")
 					
@@ -178,8 +177,8 @@ Global number of stations: %s
 		extended_session = Session.get_extended_session(session, user)
 		
 		if(user_key):
-			existing_sessions = self.sessions
-			new_sessions = existing_sessions.append(extended_session)
+			new_sessions = self.sessions
+			new_sessions.append(extended_session)
 			memcache.set(self._memcache_station_sessions_id, new_sessions)
 			logging.info("Listener added in memcache")
 		else:
@@ -213,9 +212,7 @@ Global number of stations: %s
 				if s["key_name"] != channel_id:
 					new_sessions.append(s)
 			
-			logging.info(self.sessions)
 			memcache.set(self._memcache_station_sessions_id, new_sessions)
-			logging.info(new_sessions)
 			logging.info("Listener removed from memcache")
 		else:
 			logging.info("Anonymous listener not removed from memcache")
@@ -335,6 +332,10 @@ Global number of stations: %s
 					logging.info("Queue updated in memcache")
 
 					self.increment_broadcasts_counter()
+					
+					if(len(self.queue) == 1):
+						logging.info("First track added in the queue")
+						self.task_view()
 
 		return extended_broadcast	
 	
@@ -351,6 +352,15 @@ Global number of stations: %s
 			logging.info("Queue not empty")
 			last_broadcast = self.queue[-1]
 			return datetime.utcfromtimestamp(last_broadcast["expired"])
+	
+	def task_view(self):
+		task = Task(
+			url = "/taskqueue/view",
+			params = {
+				"shortname": self._shortname,
+			}
+		)
+		task.add(queue_name = "worker-queue")
 	
 	# Remove a broadcast from the queue
 	def remove_from_queue(self, key_name):
@@ -441,10 +451,9 @@ Global number of stations: %s
 			self._number_of_views = Shard.get_count(shard_name)
 		return self._number_of_views
 	
-	# Starts a task that will increment the station view counter
-	def increment_views_counter(self):
+	def increase_views_counter(self, value):
 		shard_name = self._counter_of_views_id
-		Shard.task(shard_name, "increment")
+		Shard.increase(shard_name, value)
 	
 	def get_broadcasts(self, offset):
 		timestamp = timegm(offset.utctimetuple())

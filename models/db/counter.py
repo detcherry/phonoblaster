@@ -29,7 +29,7 @@ class Shard(db.Model):
 			if counter is None:
 				counter = Counter(key_name=counter_name, name=name)
 			counter.count += 1
-			db.put_async(counter)
+			counter.put()
 		db.run_in_transaction(txn)
 		
 		memcache_name = os.environ["CURRENT_VERSION_ID"] + "." + name
@@ -45,7 +45,7 @@ class Shard(db.Model):
 			if counter is None:
 				counter = Counter(key_name=counter_name, name=name)
 			counter.count -= 1
-			db.put_async(counter)
+			counter.put()
 		db.run_in_transaction(txn)
 		
 		memcache_name = os.environ["CURRENT_VERSION_ID"] + "." + name
@@ -62,6 +62,39 @@ class Shard(db.Model):
 		)
 		task.add(queue_name = "counters-queue")		
 	
+	@staticmethod
+	def increase(name, value):
+		shard = Shard.get_or_insert(name)
+		def txn():
+			index = random.randint(0, shard.num - 1)
+			counter_name = name + str(index)
+			counter = Counter.get_by_key_name(counter_name)
+			if counter is None:
+				counter = Counter(key_name=counter_name, name=name)
+			counter.count += int(value)
+			counter.put()
+		db.run_in_transaction(txn)
+		
+		counter = Shard.get_count(name) + int(value)
+		memcache_name = os.environ["CURRENT_VERSION_ID"] + "." + name
+		memcache.set(memcache_name, counter)
+		
+	@staticmethod
+	def decrease(name, value):
+		shard = Shard.get_or_insert(name)
+		def txn():
+			index = random.randint(0, shard.num - 1)
+			counter_name = name + str(index)
+			counter = Counter.get_by_key_name(counter_name)
+			if counter is None:
+				counter = Counter(key_name=counter_name, name=name)
+			counter.count -= int(value)
+			counter.put()
+		db.run_in_transaction(txn)
+		
+		counter = Shard.get_count(name) - int(value)
+		memcache_name = os.environ["CURRENT_VERSION_ID"] + "." + name
+		memcache.set(memcache_name, counter)
 
 class Counter(db.Model):
 	name = db.StringProperty(required=True)
