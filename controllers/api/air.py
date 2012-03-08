@@ -9,16 +9,16 @@ class ApiAirHandler(BaseHandler):
 	def get(self):
 		shortname = self.request.get("shortname")		
 		station_proxy = StationApi(shortname)
-		queue = station_proxy.queue
+		if(station_proxy.station):
+			queue = station_proxy.queue
+			if(len(queue)>0):
+				data = {
+					"response": True,
+					"content": queue[0],
+				}
+			else:
+				data = {
+					"response": False,
+				}
 		
-		if(len(queue)>0):
-			data = {
-				"response": True,
-				"content": queue[0],
-			}
-		else:
-			data = {
-				"response": False,
-			}
-			
-		self.response.out.write(json.dumps(data))
+			self.response.out.write(json.dumps(data))
