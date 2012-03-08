@@ -25,6 +25,19 @@ Facebook.prototype = {
 		})
 	},
 	
+	putTab: function(page_id, callback){
+		var that = this;
+		that.retrievePageToken(page_id, function(page_token){
+			if(page_token){
+				var url = "/" + page_id + "/tabs";
+				FB.api(url, "post",{ access_token: page_token, app_id: that.app_id, }, callback)
+			}
+			else{
+				callback(false)
+			}
+		})
+	},
+	
 	retrievePageToken: function(page_id, callback){
 		var url = "/" + page_id + "?fields=access_token";
 		FB.api(url, function(response){
@@ -34,22 +47,6 @@ Facebook.prototype = {
 			}
 			callback(page_token)
 		})
-	},
-	
-	putTab: function(page_id, page_token, callback){
-		var url = "/" + page_id + "/tabs";
-		var that = this;
-		FB.api(url, "post",{ access_token: page_token, app_id: that.app_id, }, callback)
-	},
-	
-	createPhonoblasterTab: function(page_id, callback){
-		var that = this;
-		this.retrievePageToken(
-			page_id,
-			function(page_token){
-				that.putTab(page_id, page_token, callback);
-			}
-		);
 	},
 	
 	retrieveAdmins: function(page_id, callback){

@@ -20,7 +20,7 @@ TabCreationManager.prototype = {
 			// Display loader gif
 			var loader = $(this).prev()
 			loader.css("visibility", "visible")
-			
+						
 			that.createTab(function(response){
 				that.displayFeedback(obj, loader, response);
 			});
@@ -33,10 +33,10 @@ TabCreationManager.prototype = {
 		var that = this;
 		// Make sure facebook.js has been loaded
 		if(FACEBOOK){
-			FACEBOOK.createPhonoblasterTab(that.page_id, callback);
+			FACEBOOK.putTab(that.page_id, callback)
 		}
 		else{
-			callback.call(this, false);
+			callback(false)
 		}
 	},
 	
@@ -47,14 +47,10 @@ TabCreationManager.prototype = {
 			
 			if(response){
 				obj.addClass("success").html("Created")
+				stationCreationManager = new StationCreationManager(this.page_id, this.page_name);
 			}
 			else{
 				obj.addClass("danger").html("Error...")
-			}
-
-			// Display popup if response positive
-			if(response){
-				stationCreationManager = new StationCreationManager(this.page_id, this.page_name);
 			}
 	},
 	
