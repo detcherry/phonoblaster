@@ -35,8 +35,10 @@ class Favorite(db.Model):
 			logging.info("Stations retrieved from datastore")
 			
 			for favorite, extended_track, station in zip(favorites, extended_tracks, stations):
-				extended_favorite = Favorite.get_extended_favorite(favorite, extended_track, station)
-				extended_favorites.append(extended_favorite)
+				# Check if the track has not disappeared
+				if(extended_track):
+					extended_favorite = Favorite.get_extended_favorite(favorite, extended_track, station)
+					extended_favorites.append(extended_favorite)
 		
 		logging.info("Extended favorites generated")
 		return extended_favorites
