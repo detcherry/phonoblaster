@@ -13,8 +13,10 @@ class ApiTracksHandler(BaseHandler):
 	def get(self):
 		shortname = self.request.get("shortname")
 		offset = self.request.get("offset")
+		station_proxy = StationApi(shortname)
 		
-		if(shortname and offset):
-			station_proxy = StationApi(shortname)
+		if(station_proxy.station and offset):
 			extended_tracks = station_proxy.get_tracks(datetime.utcfromtimestamp(int(offset)))
 			self.response.out.write(json.dumps(extended_tracks))
+		else:
+			self.error(404)

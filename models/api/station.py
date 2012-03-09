@@ -133,23 +133,22 @@ Global number of stations: %s
 	def sessions(self):
 		if not hasattr(self, "_sessions"):
 			self._sessions = memcache.get(self._memcache_station_sessions_id)
-			if(self.station):
-				if self._sessions is None:
-					logging.info("Listeners not in memcache")
-					
-					q = Session.all()
-					q.filter("station", self.station.key())
-					q.filter("ended", None)
-					q.filter("created >", datetime.utcnow() - timedelta(0,7200))
-					sessions = q.fetch(100)
+			if self._sessions is None:
+				logging.info("Listeners not in memcache")
+				
+				q = Session.all()
+				q.filter("station", self.station.key())
+				q.filter("ended", None)
+				q.filter("created >", datetime.utcnow() - timedelta(0,7200))
+				sessions = q.fetch(100)
 
-					extended_sessions = Session.get_extended_sessions(sessions)				
-					memcache.set(self._memcache_station_sessions_id, extended_sessions)
-					logging.info("Listeners put in memcache")
-					
-					self._sessions = extended_sessions
-				else:
-					logging.info("Listeners already in memcache")
+				extended_sessions = Session.get_extended_sessions(sessions)				
+				memcache.set(self._memcache_station_sessions_id, extended_sessions)
+				logging.info("Listeners put in memcache")
+				
+				self._sessions = extended_sessions
+			else:
+				logging.info("Listeners already in memcache")
 		
 		return self._sessions
 		
@@ -232,36 +231,35 @@ Global number of stations: %s
 	def queue(self):
 		if not hasattr(self, "_queue"):
 			self._queue = memcache.get(self._memcache_station_queue_id)
-			if(self.station):
-				if self._queue is None:
-					q = Broadcast.all()
-					q.filter("station", self.station.key())
-					q.filter("expired >", datetime.utcnow())
-					q.order("expired")
-			 		broadcasts = q.fetch(10)
-		
-					# Format extended broadcasts
-					self._queue = Broadcast.get_extended_broadcasts(broadcasts, self.station)
-		
-					# Put extended broadcasts in memcache
-					memcache.add(self._memcache_station_queue_id, self._queue)
-					logging.info("Queue loaded in memcache")
+			if self._queue is None:
+				q = Broadcast.all()
+				q.filter("station", self.station.key())
+				q.filter("expired >", datetime.utcnow())
+				q.order("expired")
+		 		broadcasts = q.fetch(10)
+	
+				# Format extended broadcasts
+				self._queue = Broadcast.get_extended_broadcasts(broadcasts, self.station)
+	
+				# Put extended broadcasts in memcache
+				memcache.add(self._memcache_station_queue_id, self._queue)
+				logging.info("Queue loaded in memcache")
+			else:
+				# We probably have to clean the memcache from old tracks
+				cleaned_up_queue = []
+				datetime_now = timegm(datetime.utcnow().utctimetuple())
+			
+				for broadcast in self._queue:
+					if(broadcast["expired"] > datetime_now):
+						cleaned_up_queue.append(broadcast)
+			
+				# We only update the memcache if some cleaning up was necessary
+				if(len(self._queue) != len(cleaned_up_queue)):
+					self._queue = cleaned_up_queue
+					memcache.set(self._memcache_station_queue_id, self._queue)
+					logging.info("Queue already in memcache and cleaned up")
 				else:
-					# We probably have to clean the memcache from old tracks
-					cleaned_up_queue = []
-					datetime_now = timegm(datetime.utcnow().utctimetuple())
-				
-					for broadcast in self._queue:
-						if(broadcast["expired"] > datetime_now):
-							cleaned_up_queue.append(broadcast)
-				
-					# We only update the memcache if some cleaning up was necessary
-					if(len(self._queue) != len(cleaned_up_queue)):
-						self._queue = cleaned_up_queue
-						memcache.set(self._memcache_station_queue_id, self._queue)
-						logging.info("Queue already in memcache and cleaned up")
-					else:
-						logging.info("Queue already in memcache and no need to clean up")
+					logging.info("Queue already in memcache and no need to clean up")
 
 		return self._queue		
 	
@@ -345,7 +343,7 @@ Global number of stations: %s
 	
 	# Returns the station expiration time or the current time if there is no track in the tracklist
 	def expiration_time(self):
-		if(len(self.queue) == 0):
+		if not self.queue:
 			logging.info("Queue empty")
 			return datetime.utcnow()
 		else:
@@ -478,13 +476,11 @@ Global number of stations: %s
 		return past_broadcasts
 	
 	def broadcasts_query(self, offset):
-		broadcasts = []
-		if(self.station):
-			q = Broadcast.all()
-			q.filter("station", self.station.key())
-			q.filter("created <", offset)
-			q.order("-created")
-			broadcasts = q.fetch(10)
+		q = Broadcast.all()
+		q.filter("station", self.station.key())
+		q.filter("created <", offset)
+		q.order("-created")
+		broadcasts = q.fetch(10)
 		
 		return broadcasts
 		
@@ -509,14 +505,12 @@ Global number of stations: %s
 		
 		return past_tracks
 	
-	def tracks_query(self, offset):
-		tracks = []
-		if(self.station):			
-			q = Track.all()
-			q.filter("station", self.station.key())
-			q.filter("created <", offset)
-			q.order("-created")
-			tracks = q.fetch(10)
+	def tracks_query(self, offset):		
+		q = Track.all()
+		q.filter("station", self.station.key())
+		q.filter("created <", offset)
+		q.order("-created")
+		tracks = q.fetch(10)
 		
 		return tracks
 		

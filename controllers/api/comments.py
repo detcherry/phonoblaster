@@ -29,6 +29,8 @@ class ApiCommentsHandler(BaseHandler):
 	
 			extended_comments = Comment.get_extended_comments(comments, station)
 			self.response.out.write(json.dumps(extended_comments))
+		else:
+			self.error(404)
 
 	@login_required
 	def post(self):

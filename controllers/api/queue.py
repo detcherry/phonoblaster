@@ -14,11 +14,13 @@ from models.api.station import StationApi
 class ApiQueueHandler(BaseHandler):
 	def get(self):
 		shortname = self.request.get("shortname")
-		
 		station_proxy = StationApi(shortname)
-		queue = station_proxy.queue
 		
-		self.response.out.write(json.dumps(queue))
+		if(station_proxy.station):
+			queue = station_proxy.queue
+			self.response.out.write(json.dumps(queue))
+		else:
+			self.error(404)
 	
 	@login_required
 	def post(self):
@@ -26,32 +28,35 @@ class ApiQueueHandler(BaseHandler):
 		broadcast = json.loads(self.request.get("content"))
 		
 		station_proxy = StationApi(shortname)
-		self.station = station_proxy.station
+		station = station_proxy.station
 		
-		extended_broadcast = None
-		if(self.user_proxy.is_admin_of(self.station.key().name())):
-			extended_broadcast = station_proxy.add_to_queue(broadcast)
+		if(station):
+			extended_broadcast = None
+			if(self.user_proxy.is_admin_of(station.key().name())):
+				extended_broadcast = station_proxy.add_to_queue(broadcast)
 			
-		response = False
-		if(extended_broadcast):
-			# Add a taskqueue to warn everyone
-			broadcast_data = {
-				"entity": "broadcast",
-				"event": "new",
-				"content": extended_broadcast,
-			}
-
-			task = Task(
-				url = "/taskqueue/multicast",
-				params = {
-					"station": config.VERSION + "-" + shortname,
-					"data": json.dumps(broadcast_data)
+			response = False
+			if(extended_broadcast):
+				# Add a taskqueue to warn everyone
+				broadcast_data = {
+					"entity": "broadcast",
+					"event": "new",
+					"content": extended_broadcast,
 				}
-			)
-			task.add(queue_name="broadcasts-queue")
-			response = True
 
-		self.response.out.write(json.dumps({ "response": response }))
+				task = Task(
+					url = "/taskqueue/multicast",
+					params = {
+						"station": config.VERSION + "-" + shortname,
+						"data": json.dumps(broadcast_data)
+					}
+				)
+				task.add(queue_name="broadcasts-queue")
+				response = True
+
+			self.response.out.write(json.dumps({ "response": response }))
+		else:
+			self.error(404)
 		
 
 class ApiQueueDeleteHandler(BaseHandler):
@@ -62,27 +67,30 @@ class ApiQueueDeleteHandler(BaseHandler):
 		shortname = m.group(1)
 		
 		station_proxy = StationApi(shortname)
-		self.station = station_proxy.station
+		station = station_proxy.station
 		
-		response = False
-		if(self.user_proxy.is_admin_of(self.station.key().name())):
-			response = station_proxy.remove_from_queue(key_name)
+		if(station):
+			response = False
+			if(self.user_proxy.is_admin_of(station.key().name())):
+				response = station_proxy.remove_from_queue(key_name)
 		
-		if(response):
-			broadcast_data = {
-				"entity": "broadcast",
-				"event": "remove",
-				"content": key_name,
-			}
-
-			task = Task(
-				url = "/taskqueue/multicast",
-				params = {
-					"station": config.VERSION + "-" + shortname,
-					"data": json.dumps(broadcast_data)
+			if(response):
+				broadcast_data = {
+					"entity": "broadcast",
+					"event": "remove",
+					"content": key_name,
 				}
-			)
-			task.add(queue_name="broadcasts-queue")
 
-		self.response.out.write(json.dumps({ "response": response }))
+				task = Task(
+					url = "/taskqueue/multicast",
+					params = {
+						"station": config.VERSION + "-" + shortname,
+						"data": json.dumps(broadcast_data)
+					}
+				)
+				task.add(queue_name="broadcasts-queue")
+
+			self.response.out.write(json.dumps({ "response": response }))
+		else:
+			self.error(404)
 		

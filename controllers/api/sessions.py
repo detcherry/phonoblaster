@@ -23,23 +23,26 @@ class ApiSessionsHandler(BaseHandler):
 		shortname = self.request.get("shortname")
 		station_proxy = StationApi(shortname)
 		
-		number_of_sessions = station_proxy.number_of_sessions
-		extended_sessions = station_proxy.sessions
-		
-		sessions_data = {
-			"number": number_of_sessions,
-			"sessions": extended_sessions,
-		}
+		if(station_proxy.station):		
+			number_of_sessions = station_proxy.number_of_sessions
+			extended_sessions = station_proxy.sessions
 	
-		self.response.out.write(json.dumps(sessions_data))
+			sessions_data = {
+				"number": number_of_sessions,
+				"sessions": extended_sessions,
+			}
+
+			self.response.out.write(json.dumps(sessions_data))
+		else:
+			self.error(404)
 		
 	def post(self):
 		shortname = self.request.get("shortname")
-		self.station_proxy = StationApi(shortname)
-		self.station = self.station_proxy.station 
+		station_proxy = StationApi(shortname)
+		station = station_proxy.station 
 		
 		output = {}
-		if(self.station):
+		if(station):
 			# Channel ID and token generation
 			time_now = str(timegm(gmtime()))
 			random_integer = str(randrange(1000))
@@ -55,7 +58,7 @@ class ApiSessionsHandler(BaseHandler):
 				key_name = new_channel_id,
 				channel_token = new_channel_token,
 				user = user_key,
-				station = self.station.key(),
+				station = station.key(),
 			)
 			new_session.put()
 			logging.info("New session saved in datastore")
@@ -64,6 +67,7 @@ class ApiSessionsHandler(BaseHandler):
 				"channel_id": new_channel_id,
 				"channel_token": new_channel_token,
 			}
-
-		self.response.out.write(json.dumps(output))
+			self.response.out.write(json.dumps(output))
+		else:
+			self.error(404)
 			

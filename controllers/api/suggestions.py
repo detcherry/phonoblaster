@@ -20,13 +20,16 @@ class ApiSuggestionsHandler(BaseHandler):
 		station_proxy = StationApi(shortname)
 		station = station_proxy.station
 		
-		q = Suggestion.all()
-		q.filter("station", station)
-		q.order("-created")
-		suggestions = q.fetch(20) # Arbitrary number
+		if(station):
+			q = Suggestion.all()
+			q.filter("station", station.key())
+			q.order("-created")
+			suggestions = q.fetch(20) # Arbitrary number
 		
-		extended_suggestions = Suggestion.get_extended_suggestions(suggestions)
-		self.response.out.write(json.dumps(extended_suggestions))
+			extended_suggestions = Suggestion.get_extended_suggestions(suggestions)
+			self.response.out.write(json.dumps(extended_suggestions))
+		else:
+			self.error(404)
 	
 	@login_required
 	def post(self):
