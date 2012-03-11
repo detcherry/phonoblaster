@@ -13,6 +13,7 @@ class StationCreateHandler(BaseHandler):
 	def get(self):
 		template_values = {}
 		
+		self.user_proxy.reset_contributions()
 		user_contributions = self.user_proxy.contributions
 		
 		if(len(user_contributions) > 0):
@@ -26,7 +27,6 @@ class StationCreateHandler(BaseHandler):
 				if result is None:
 					contributions_left.append(user_contributions[i])
 		else:
-			self.user_proxy.reset_contributions()
 			contributions_left = None
 				
 		template_values = {

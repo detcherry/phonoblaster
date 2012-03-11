@@ -2,7 +2,7 @@ from google.appengine.ext import db
 
 class Station(db.Model):
 	# key_name = facebook_id (page)
-	shortname = db.StringProperty()
+	shortname = db.StringProperty(required = True)
 	name = db.StringProperty(required = True)
 	link = db.StringProperty(required = True) # Link of the facebook page
 	created = db.DateTimeProperty(auto_now_add = True)

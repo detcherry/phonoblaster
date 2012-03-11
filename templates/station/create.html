@@ -4,69 +4,80 @@
 {% endblock %}
 
 {% block main %}
-<div id="create">
-	{% if user_contributions %}
-		<h2>Set up <em>Phonoblaster</em> for one of your Facebook pages!</h2>
-		{% for contribution in user_contributions %}
-			<div class="contribution">
-				<img src="https://graph.facebook.com/{{ contribution.page_id }}/picture" class="thumbnail"/>
-				<p class="page-name"><span class="middle">{{ contribution.page_name }}</span></p>
-				<p>
-					<img class="loader" src="/static/images/loader.gif" style="visibility:hidden;"/>
-					<a href="#" class="btn" id="{{ contribution.page_id }}">Create now!</a>
-				</p>
+<div id="left-column">
+	<div class="creation-step">
+		<h1>1.</h1>
+		<div class="creation-box">
+			<img src="/static/images/step-station-creation.png">
+			<h2>Create</h2>
+			<p>your station on your Facebook page</p>
+		</div>
+	</div>
+	<div class="creation-step light">
+		<h1>2.</h1>
+		<div class="creation-box">
+			<img src="/static/images/step-broadcast-music.png">
+			<h2>Broadcast</h2>
+			<p>your favorite music to your fans</p>
+		</div>
+	</div>
+</div>
+<div id="right-column">
+	<div class="content">
+		{% if user_contributions %}
+			{% for contribution in user_contributions %}
+				<div class="contribution">
+					<img src="https://graph.facebook.com/{{ contribution.page_id }}/picture" class="thumbnail"/>
+					<p class="page-name"><span class="middle">{{ contribution.page_name }}</span></p>
+					<p>
+						<img class="loader" src="/static/images/loader.gif" style="visibility:hidden;"/>
+						<a href="#" class="btn" id="{{ contribution.page_id }}">Create now!</a>
+					</p>
+				</div>
+			{% endfor %}
+		{% else %}
+			You don't have any Facebook page.<br/>
+			Create one <a href="https://www.facebook.com/pages/create.php">here</a> and then refresh this page.
+		{% endif %}
+	</div>
+	<div id="creation-skip">Or <a href="/" class="btn primary">Skip</a></div>
+	<div id="popup-contribution">
+		<div id="page-confirmation">
+			<h3>1. Successfully created!</h3>
+			<p>on your fan page</p>
+		</div>
+		<div id="page-screenshot">
+			<div class="facebook-tab">
+				<span class="facebook-sprit wall"></span>
+				<div>Wall</div>
 			</div>
-		{% endfor %}
-		<div id="popup-contribution">
-			<div id="page-confirmation">
-				<h3>1. Successfully created!</h3>
-				<p>on your fan page</p>
+			<div class="facebook-tab">
+				<span class="facebook-sprit info"></span>
+				<div>Info</div>
 			</div>
-			<div id="page-screenshot">
-				<div class="facebook-tab">
-					<span class="facebook-sprit wall"></span>
-					<div>Wall</div>
-				</div>
-				<div class="facebook-tab">
-					<span class="facebook-sprit info"></span>
-					<div>Info</div>
-				</div>
-				<div class="facebook-tab">
-					<span class="facebook-sprit photos"></span>
-					<div>Photos</div>
-				</div>
-				<div class="facebook-tab" style="background-color:#D8DFEA;">
-					<span class="facebook-sprit phonoblaster"></span>
-					<div>Phonoblaster</div>
-				</div>
+			<div class="facebook-tab">
+				<span class="facebook-sprit photos"></span>
+				<div>Photos</div>
 			</div>
-			<div id="address-confirmation">
-				<form method="post" action="/station/create">
-					<input type="text" name="page-id" id="page-id" style="display:none;"/>
-					<h3>2. Confirm your address!</h3>
-					<p>http://www.phonoblaster.com/</p>
-					<input type="text" name="page-shortname" id="page-shortname" autocomplete="off"/>
-					<div id="shortname-status"></div>
-					<div class="modal-footer">
-						<input type="submit" class="btn primary" value="Go!"/>
-						<div id="shortname-warning">Choose an available address first. Thanks</div>
-					</div>
-				</form>
+			<div class="facebook-tab" style="background-color:#D8DFEA;">
+				<span class="facebook-sprit phonoblaster"></span>
+				<div>Phonoblaster</div>
 			</div>
 		</div>
-	{% else %}
-		<h2>Create a <em>Facebook page </em> before broadcasting music!</h2>
-		<div id="create-page">
-			<p>
-				<a href="https://www.facebook.com/pages/create.php" target="_blank">
-					<img src="/static/images/page_on_facebook.jpg">
-				</a>
-			</p>
-			<p>
-				<a href="/station/create" class="btn primary">Then click here</a>
-			</p>
+		<div id="address-confirmation">
+			<form method="post" action="/station/create">
+				<input type="text" name="page-id" id="page-id" style="display:none;"/>
+				<h3>2. Confirm your address!</h3>
+				<p>http://www.phonoblaster.com/</p>
+				<input type="text" name="page-shortname" id="page-shortname" autocomplete="off"/>
+				<div id="shortname-status"></div>
+				<div class="modal-footer">
+					<input type="submit" class="btn primary" value="Go!"/>
+					<div id="shortname-warning">Choose an available address first. Thanks</div>
+				</div>
+			</form>
 		</div>
-	{% endif %}
+	</div>
 </div>
 {% endblock %}
 

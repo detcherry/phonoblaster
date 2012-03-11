@@ -1,11 +1,14 @@
 import logging
 
+from datetime import datetime
+
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp.util import run_wsgi_app
 from google.appengine.ext import db
 
 from models.db.track import Track
 from models.db.view import View
+from models.db.air import Air
 from models.api.station import StationApi
 from google.appengine.api.taskqueue import Task
 
@@ -46,6 +49,17 @@ class ViewHandler(webapp.RequestHandler):
 			
 			db.put(views)
 			logging.info("Views put in the datastore")
+			
+			air = Air(
+				key_name = station_proxy.station.key().name(),
+				shortname = station_proxy.station.shortname,
+				name = station_proxy.station.name,
+				link = station_proxy.station.link,
+				youtube_id = live_broadcast["youtube_id"],
+				expired = datetime.utcfromtimestamp(int(live_broadcast["expired"]))
+			)
+			air.put()
+			logging.info("Air story put in datastore")
 			
 			# Start another task after this track has ended
 			countdown = int(live_broadcast["youtube_duration"])
