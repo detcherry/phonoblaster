@@ -62,13 +62,16 @@ class BaseHandler(webapp.RequestHandler):
 					if not user:
 						graph = facebook.GraphAPI(user_proxy.access_token)
 						profile = graph.get_object("me")
-						user = user_proxy.put_user(
-							response["user_id"], 
-							profile["first_name"],
-							profile["last_name"],
-							profile["email"]
-						)
-						logging.info("New user: %s %s" %(user.first_name, user.last_name))
+						if "email" in profile:		
+							user = user_proxy.put_user(
+								response["user_id"], 
+								profile["first_name"],
+								profile["last_name"],
+								profile["email"]
+							)
+							logging.info("New user: %s %s" %(user.first_name, user.last_name))
+						else:
+							logging.info("User does not share his email. Strange...")
 					
 					#self._user_proxy = user_proxy
 					
