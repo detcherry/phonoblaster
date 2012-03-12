@@ -39,12 +39,6 @@ indexes:
   - name: station
   - name: created
 
-- kind: Session
-  properties:
-  - name: ended
-  - name: station
-  - name: user
-
 - kind: Suggestion
   properties:
   - name: station
