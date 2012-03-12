@@ -6,6 +6,9 @@
 			<div id="menu">
 			{% if user_proxy %}
 				<div>
+					<a href="/">Home</a>
+				</div>
+				<div>
 					<a href="/user/{{ user_proxy.user.key.name }}" class="profile">
 						<img src="https://graph.facebook.com/{{ user_proxy.user.key.name }}/picture?type=square"/>
 						<span>Profile</span>
