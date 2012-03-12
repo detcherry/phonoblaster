@@ -9,7 +9,11 @@
 		<a href="/user/{{ user_proxy.user.key.name }}">
 			<img src="https://graph.facebook.com/{{ user_proxy.user.key.name }}/picture?type=square"/>
 		</a>	
-		<p><a href="//user/{{ user_proxy.user.key.name }}">Damien Detcherry</a></p>
+		<p>
+			<a href="//user/{{ user_proxy.user.key.name }}">
+				{{ user_proxy.user.first_name }} {{user_proxy.user.last_name }}
+			</a>
+		</p>
 		<div class="stat">
 			<span class="figure">{{ user_proxy.number_of_favorites }}</span>
 			<span class="title">Favorites</span>
