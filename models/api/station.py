@@ -33,7 +33,6 @@ MEMCACHE_STATION_BROADCASTS_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".broadc
 MEMCACHE_STATION_TRACKS_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".tracks.station."
 COUNTER_OF_BROADCASTS_PREFIX = "station.broadcasts.counter."
 COUNTER_OF_VIEWS_PREFIX = "station.views.counter."
-COUNTER_OF_SESSIONS_PREFIX = "station.sessions.counter."
 COUNTER_OF_SUGGESTIONS_PREFIX = "station.suggestions.counter."
 
 class StationApi():
@@ -47,7 +46,6 @@ class StationApi():
 		self._memcache_station_tracks_id = MEMCACHE_STATION_TRACKS_PREFIX + self._shortname
 		self._counter_of_broadcasts_id = COUNTER_OF_BROADCASTS_PREFIX + self._shortname
 		self._counter_of_views_id = COUNTER_OF_VIEWS_PREFIX + self._shortname
-		self._counter_of_sessions_id = COUNTER_OF_SESSIONS_PREFIX + self._shortname
 		self._counter_of_suggestions_id = COUNTER_OF_SUGGESTIONS_PREFIX + self._shortname
 	
 	# Return the station
@@ -124,17 +122,17 @@ Global number of stations: %s
 	@property
 	def number_of_sessions(self):
 		if not hasattr(self, "_number_of_sessions"):
-			shard_name = self._counter_of_sessions_id
-			self._number_of_sessions = Shard.get_count(shard_name)
+			self._number_of_sessions = len(self.sessions)
+			
 		return self._number_of_sessions
-	
+		
 	# Gives all the listeners (logged in a station)
 	@property
 	def sessions(self):
 		if not hasattr(self, "_sessions"):
 			self._sessions = memcache.get(self._memcache_station_sessions_id)
 			if self._sessions is None:
-				logging.info("Listeners not in memcache")
+				logging.info("Sessions not in memcache")
 				
 				q = Session.all()
 				q.filter("station", self.station.key())
@@ -144,18 +142,15 @@ Global number of stations: %s
 
 				extended_sessions = Session.get_extended_sessions(sessions)				
 				memcache.set(self._memcache_station_sessions_id, extended_sessions)
-				logging.info("Listeners put in memcache")
+				logging.info("Sessions put in memcache")
 				
 				self._sessions = extended_sessions
 			else:
-				logging.info("Listeners already in memcache")
+				logging.info("Sessions already in memcache")
 		
 		return self._sessions
 		
 	def add_to_sessions(self, channel_id):
-		self.increment_sessions_counter()
-		logging.info("Sessions counter incremented")
-		
 		# Get session
 		session = Session.get_by_key_name(channel_id)
 		# After a reconnection the session may have ended. Correct it.
@@ -175,20 +170,15 @@ Global number of stations: %s
 
 		extended_session = Session.get_extended_session(session, user)
 		
-		if(user_key):
-			new_sessions = self.sessions
-			new_sessions.append(extended_session)
-			memcache.set(self._memcache_station_sessions_id, new_sessions)
-			logging.info("Listener added in memcache")
-		else:
-			logging.info("Anonymous listener not added in memcache")
+		new_sessions = self.sessions
+		new_sessions.append(extended_session)
+		memcache.set(self._memcache_station_sessions_id, new_sessions)
+		logging.info("Session added in memcache")
 			
 		return extended_session
 	
 	def remove_from_sessions(self, channel_id):
-		self.decrement_sessions_counter()
-		logging.info("Sessions counter decremented")
-		
+		# Get session
 		session = Session.get_by_key_name(channel_id)
 		session.ended = datetime.utcnow()
 		session.put()
@@ -204,27 +194,16 @@ Global number of stations: %s
 			user = user_proxy.user
 		
 		extended_session = Session.get_extended_session(session, user)
+				
+		new_sessions = []
+		for s in self.sessions:
+			if s["key_name"] != channel_id:
+				new_sessions.append(s)
 		
-		if(user_key):
-			new_sessions = []
-			for s in self.sessions:
-				if s["key_name"] != channel_id:
-					new_sessions.append(s)
-			
-			memcache.set(self._memcache_station_sessions_id, new_sessions)
-			logging.info("Listener removed from memcache")
-		else:
-			logging.info("Anonymous listener not removed from memcache")
+		memcache.set(self._memcache_station_sessions_id, new_sessions)
+		logging.info("Session removed from memcache")
 		
 		return extended_session
-	
-	def increment_sessions_counter(self):
-		shard_name = self._counter_of_sessions_id
-		Shard.task(shard_name, "increment")
-
-	def decrement_sessions_counter(self):
-		shard_name = self._counter_of_sessions_id
-		Shard.task(shard_name, "decrement")
 	
 	# Returns the current station queue
 	@property

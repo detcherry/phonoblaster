@@ -36,7 +36,12 @@ class ViewHandler(webapp.RequestHandler):
 				logging.info("Track views counter increased")
 			
 			extended_sessions = station_proxy.sessions
-			user_keys = list(set([db.Key.from_path("User", e["listener_key_name"]) for e in extended_sessions]))
+			user_extended_sessions = []
+			for e in extended_sessions:
+				if e["listener_key_name"] is not None:
+					user_extended_sessions.append(db.Key.from_path("User", e["listener_key_name"]))
+			
+			user_keys = list(set(user_extended_sessions))
 			
 			views = []
 			for user_key in user_keys:

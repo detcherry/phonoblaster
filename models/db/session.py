@@ -15,28 +15,27 @@ class Session(db.Model):
 	
 	@staticmethod
 	def get_extended_sessions(sessions):		
-		# Filter only sessions that have a user
-		keys = [Session.user.get_value_for_datastore(s) for s in sessions]
-		
 		user_keys = []
-		none_keys = []
-		for key in keys:
-			if key is not None:
-				user_keys.append(key)
-			else:
-				none_keys.append(key)
-				
-		users = User.get(user_keys)
-		
+		users = []
 		user_sessions = []
-		for s in sessions:
-			session_user_key = Session.user.get_value_for_datastore(s)
-			for u in users:
-				if u.key() == session_user_key:
-					user_sessions.append(s)
-					break
 		
-		extended_sessions = [Session.get_extended_session(s, u) for s, u in zip(user_sessions, users)]
+		anonymous_users = []
+		anonymous_sessions = []
+		
+		for s in sessions:
+			user_key = Session.user.get_value_for_datastore(s)
+			if user_key is not None:
+				user_keys.append(user_key)
+				user_sessions.append(s)
+			else:
+				anonymous_users.append(None)
+				anonymous_sessions.append(s)
+		
+		users = db.get(user_keys)
+		
+		user_extended_sessions = [Session.get_extended_session(s, u) for s, u in zip(user_sessions, users)]
+		anonymous_extended_sessions = [Session.get_extended_session(s, au) for s, au in zip(anonymous_sessions, anonymous_users)]
+		extended_sessions = user_extended_sessions + anonymous_extended_sessions
 		
 		return extended_sessions
 	
