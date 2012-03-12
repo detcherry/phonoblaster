@@ -55,6 +55,10 @@
 
 /* ----- HOME STATIONS ------ */
 
+#home-user-stations{
+	width:100%;
+}
+
 #home-user-stations img{
 	display:block;
 	float:left;
