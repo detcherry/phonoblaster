@@ -1,20 +1,62 @@
 {% extends "base.html" %}
 {% block style %}
-	<link type="text/css" rel="stylesheet" href="/static/css/station/create.css">
+	<link type="text/css" rel="stylesheet" href="/static/css/home.css">
 {% endblock %}
 
 {% block main %}
-<div id="create">
-	<h2>Broadcast <em>music</em> in one of your stations!</h2>
-	{% for station in user_stations %}
-		<div class="contribution">
-			<img src="https://graph.facebook.com/{{ station.key.name }}/picture" class="thumbnail"/>
-			<p class="page-name"><span class="middle">{{ station.name }}</span></p>
-			<p>
-				<img class="loader" src="/static/images/loader.gif" style="visibility:hidden;"/>
-				<a href="/{{ station.shortname }}" class="btn">Tune in!</a>
-			</p>
+<div id="left-column">
+	<div id="home-profile">
+		<a href="/user/{{ user_proxy.user.key.name }}">
+			<img src="https://graph.facebook.com/{{ user_proxy.user.key.name }}/picture?type=square"/>
+		</a>	
+		<p><a href="//user/{{ user_proxy.user.key.name }}">Damien Detcherry</a></p>
+		<div class="stat">
+			<span class="figure">{{ user_proxy.number_of_favorites }}</span>
+			<span class="title">Favorites</span>
 		</div>
-	{% endfor %}
+	</div>
+	<div id="home-user-stations">
+		{% if user_stations %}
+			{% for station in user_stations %}
+				<div class="home-user-station">
+					<a href="/{{ station.shortname }}">
+						<img src="https://graph.facebook.com/{{ station.key.name }}/picture"/>
+						<p><span class="middle">{{ station.name }}</span></p>
+					</a>
+				</div>
+			{% endfor %}
+		{% else %}	
+			<a href="/station/create" class="btn primary">Create your station!</a>
+		{% endif %}
+	</div>
+</div>
+<div id="right-column">
+	<div class="content">
+		{% for s, t, a in feed %}
+			<div class="home-feed-item">
+				<div class="home-feed-station">
+					<a href="/{{ s.shortname }}">
+						<img src="https://graph.facebook.com/{{ s.key.name }}/picture"/>
+					</a>
+					<p><a href="/{{ s.shortname }}"><span class="middle">{{ s.name }}</span></a></p>
+					<div class="home-feed-station-right">
+						{% if a %}
+						<div class="home-feed-status on"><a href="/{{ s.shortname }}">On Air</a></div>
+						{% else %}
+						<div class="home-feed-status off"><a href="/{{ s.shortname }}">Off Air</a></div>
+						{% endif %}
+						<div class="fb-like" data-href="{{ s.link }}" data-send="false" data-layout="button_count"  data-show-faces="false"></div>
+					</div>
+				</div>
+				<div class="home-feed-arrow"></div>
+				<div class="home-feed-track">
+					<div class="home-feed-track-picture">
+						<a href="/{{ s.shortname }}"><img src="http://i.ytimg.com/vi/{{ t.id }}/default.jpg"></a>
+					</div>
+					<p><a href="/{{ s.shortname }}"><span class="middle">{{ t.title }}</span></a></p>
+				</div>
+			</div>
+		{% endfor %}
+	</div>
 </div>
 {% endblock %}

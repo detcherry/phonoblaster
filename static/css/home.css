@@ -1,0 +1,207 @@
+/* ------ GENERAL ------- */
+
+#main .container{
+	width:670px;
+}
+
+#left-column{
+	width:180px;
+}
+
+#right-column{
+	margin-top:-15px;
+	margin-bottom:-15px;
+	padding-top:15px;
+	padding-bottom:15px;
+	width:488px;
+	min-height:800px;
+	border:1px solid #E1E1E1;
+	border-top:none;
+	background:url("/static/images/grid.png");
+}
+
+#right-column .content{
+	padding:15px;
+	width:458px;
+	background:#F1F1F1;
+	border-top:1px solid #E1E1E1;
+	border-bottom:1px solid #E1E1E1;
+}
+
+/* ------ HOME PROFILE ----- */
+
+#home-profile{
+	width:100%;
+	margin-bottom:10px;
+	padding-bottom:15px;
+	border-bottom:1px solid #E1E1E1;
+}
+
+#home-profile img{
+	display:block;
+	float:left;
+	margin-right:10px;
+}
+
+#home-profile p{
+	margin-bottom:10px;
+	width:110px;
+	line-height:13px;
+}
+
+#home-profile p a{
+	color:#333333;
+}
+
+/* ----- HOME STATIONS ------ */
+
+#home-user-stations img{
+	display:block;
+	float:left;
+	height:25px;
+}
+
+#home-user-stations p{
+	padding-left:5px;
+	height:25px;
+	width:135px;
+	overflow:hidden;
+	line-height:25px;
+}
+
+.home-user-station{
+	width:100%;
+	margin-bottom:5px;
+}
+
+#home-user-stations a.btn.primary{
+	float:left;
+}
+
+/* ------ FEED ------- */
+
+.home-feed-item{
+	padding-bottom:10px;
+	margin-bottom:10px;
+	border-bottom:1px solid #E1E1E1;
+}
+
+.home-feed-item:last-child{
+	padding-bottom:0px;
+	margin-bottom:0px;
+	border:none;
+}
+
+.home-feed-station{
+	width: 270px;
+	background:white;
+	padding:10px;
+}
+
+.home-feed-station img{
+	display:block;
+	float:left;
+	margin-right:5px;
+}
+
+.home-feed-station p{
+	width:140px;
+	height:50px;
+	overflow:hidden;
+}
+
+.home-feed-station p span{
+	height:50px;
+}
+
+.home-feed-station p a{
+	color:#333333;
+}
+
+.home-feed-station-right{
+	width:75px;
+	height:50px;
+}
+
+.home-feed-status{
+	margin-bottom:10px;
+	padding-top:3px;
+	padding-bottom:1px;
+	width:73px;
+	text-transform:uppercase;
+	text-align:center;
+	font-family:Futura;
+	letter-spacing:1px;
+}
+
+.home-feed-status.off{
+	color:#636363;
+	background:#C4C4C4;
+	border:1px solid #E1E1E1;
+}
+
+.home-feed-status.on{
+	color:white;
+	background:#D42222;
+	border:1px solid #DB7171;
+}
+
+.home-feed-status.off a, .home-feed-status.off a:hover{
+	color:#636363;
+}
+
+.home-feed-status.on a, .home-feed-status.on a:hover{
+	color:white;
+}
+
+.home-feed-arrow{
+	margin-top:30px;
+	margin-left:5px;
+	border-top:5px solid transparent;
+	border-bottom:5px solid transparent;
+	border-right:5px solid #E1E1E1;
+}
+
+.home-feed-track{
+	margin-top:-40px;
+	border:1px solid #E1E1E1;
+	margin-left:10px;
+	padding:10px;
+	width:136px;
+	height:50px;
+	background:white;
+}
+
+.home-feed-track-picture{
+	margin-right:5px;
+	float:left;
+	position:relative;
+	width:50px;
+	height:50px;
+	overflow:hidden;
+}
+
+.home-feed-track-picture img{
+	position:absolute;
+	top:-20px;
+	left:-35px;
+}
+
+.home-feed-track p{
+	height:50px;
+	width:81px;
+	overflow:hidden;
+}
+
+.home-feed-track p a{
+	color:#7F7F7F;
+}
+
+.home-feed-track p a:hover{
+	color:#636363;
+	text-decoration:none;
+}
+
+.home-feed-track p span{
+	height:50px;
+}

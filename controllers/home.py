@@ -1,28 +1,52 @@
 import logging
+from datetime import datetime
+from datetime import timedelta
+
+from google.appengine.ext import db
 
 from base import BaseHandler
 from controllers import facebook
 from models.db.station import Station
+from models.db.air import Air
+from models.db.track import Youtube
 
 class HomeHandler(BaseHandler):
 	def get(self):
 		if(self.user_proxy):
 			
-			stations = self.user_proxy.stations
-			if(len(stations) == 0):
-				# Redirect to the creation page
+			user = self.user_proxy.user
+			# User has been put less than 5 secs ago
+			if(user.created > datetime.utcnow() - timedelta(0,5)):
 				self.redirect("/station/create")
 			else:
-				if(len(stations) == 1):
-					# Redirect to the station
-					station = stations[0]
-					self.redirect("/" + station.shortname)
-				else:
-					# Display all the stations
-					template_values = {
-						"user_stations": stations,
-					}
-					self.render("home.html", template_values)
+				user_stations = self.user_proxy.stations
+			
+				q = Air.all()
+				q.order("-expired")
+				feed = q.fetch(50)
+			
+				youtube_ids = [Air.youtube_id.get_value_for_datastore(f) for f in feed]
+				extended_tracks = Youtube.get_extended_tracks(youtube_ids)
+			
+				on_air = []
+				stations = []
+				tracks = []
+				for f, e in zip(feed, extended_tracks):
+					# Check if Youtube track exists
+					if e:
+						stations.append(f)
+						tracks.append(e)
+						if(f.expired > datetime.utcnow()):
+							on_air.append(True)
+						else:
+							on_air.append(False)
+			
+				# Display all the user stations
+				template_values = {
+					"user_stations": user_stations,
+					"feed": zip(stations, tracks, on_air),
+				}
+				self.render("home.html", template_values)
 			
 		else:
 			self.render("welcome.html", None)
