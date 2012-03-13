@@ -1,4 +1,5 @@
 import re
+import logging
 
 from controllers.station.secondary import SecondaryHandler
 from models.db.broadcast import Broadcast
@@ -9,7 +10,6 @@ class BroadcastHandler(SecondaryHandler):
 		broadcast = Broadcast.get_by_key_name(key_name)
 		
 		if(broadcast):
-			
 			m = re.match(r"(\w+).(\w+)", key_name)
 			shortname = m.group(1)			
 			self.station_proxy = StationApi(shortname)
@@ -22,15 +22,30 @@ class BroadcastHandler(SecondaryHandler):
 			if(user_agent != facebook_agent and len(queue) > 0 and queue[0]["key_name"] == key_name):	
 				# Redirect to live
 				self.redirect("/" + shortname)
-			
 			else:
-				# Render the broadcast page
 				station = self.station_proxy.station
-				extended_broadcast = Broadcast.get_extended_broadcasts([broadcast], station)[0]
-				template_values = {
-					"broadcast": extended_broadcast,
-				}
-				self.render("station/broadcast.html", template_values)
+				broadcasts = [broadcast]
+				extended_broadcasts = Broadcast.get_extended_broadcasts(broadcasts, station)
+				
+				if extended_broadcasts:
+					logging.info("Youtube track exists")
+					
+					# Youtube track exists
+					extended_broadcast = extended_broadcasts[0]
+					template_values = {
+						"broadcast": extended_broadcast,
+					}
+					
+					if(user_agent == facebook_agent):
+						# Facebook linter
+						self.facebook_render("station/facebook/broadcast.html", template_values)
+					else:
+						# Not Facebook linter
+						self.render("station/broadcast.html", template_values)
+				
+				else:
+					logging.error("Youtube track does not exist anymore")
+					self.redirect("/" + shortname)
 		
 		else:
-			self.redirect("station/404.html", None)
+			self.render("station/404.html", None)

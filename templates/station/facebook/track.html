@@ -1,0 +1,20 @@
+{% extends "station/facebook/secondary.html" %}
+
+{% block meta %}
+	<title>{{ track.youtube_title }}</title>
+	<meta name="description" content="Broadcast on {{ station_proxy.station.name }}">
+{% endblock %}
+
+{% block facebook %}
+	<!-- Track Open Graph Tags -->
+	<meta property="fb:app_id" content="{{ facebook_app_id }}"/>
+	<meta property="og:type" content="{{ version }}:track"/> 
+	<meta property="og:url" content="{{ site_url }}/track/{{ track.track_id }}"/> 
+	<meta property="og:title" content="{{ track.youtube_title }}"/> 
+	<meta property="og:description" content="Broadcast on {{ station_proxy.station.name}}"/>
+	<meta property="og:image"  content="http://i.ytimg.com/vi/{{ track.youtube_id }}/hqdefault.jpg"/> 
+	<meta property="og:site_name" content="Phonoblaster"/>
+	<meta property="og:video:type" content="text/html"/>
+	<meta property="og:video" content="{{ site_url }}/track/{{ track.track_id }}"/>
+	<meta property="{{ version }}:station" content="{{ site_url }}/{{ station_proxy.station.shortname }}"/>
+{% endblock %}

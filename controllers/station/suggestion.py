@@ -1,4 +1,5 @@
 import re
+import logging
 
 from controllers.station.secondary import SecondaryHandler
 from models.db.suggestion import Suggestion
@@ -13,11 +14,30 @@ class SuggestionHandler(SecondaryHandler):
 			shortname = m.group(1)
 			self.station_proxy = StationApi(shortname)
 			
-			extended_suggestion = Suggestion.get_extended_suggestions([suggestion])[0]
-			template_values = {
-				"suggestion": extended_suggestion,
-			}
-			self.render("station/suggestion.html", template_values)
+			suggestions = [suggestion]
+			extended_suggestions = Suggestion.get_extended_suggestions(suggestions)
+			
+			if(extended_suggestions):
+				logging.info("Youtube track exists")
+				
+				extended_suggestion = extended_suggestions[0]
+				template_values = {
+					"suggestion": extended_suggestion,
+				}
+				
+				user_agent = self.request.headers["User-Agent"]
+				facebook_agent = "facebookexternalhit/1.1 (+http://www.facebook.com/externalhit_uatext.php)"
+			
+				if(user_agent == facebook_agent):
+					# Facebook linter 
+					self.facebook_render("station/facebook/suggestion.html", template_values)
+				else:
+					# Not facebook linter
+					self.render("station/suggestion.html", template_values)
+
+			else:
+				logging.error("Youtube track does not exist anymore.")
+				self.redirect("/" + shortname)
 			
 		else:
 			self.render("station/404.html", None)

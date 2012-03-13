@@ -17,4 +17,7 @@ class SecondaryHandler(RootHandler):
 			logging.info("No station proxy")
 		
 		super(SecondaryHandler, self).render(template_path, self._template_values)
-		
+	
+	# Render templates for Facebook linter
+	def facebook_render(self, template_path, template_values):
+		super(SecondaryHandler, self).render(template_path, template_values)
