@@ -25,7 +25,7 @@ class TrackHandler(SecondaryHandler):
 				user_agent = self.request.headers["User-Agent"]
 				facebook_agent = "facebookexternalhit/1.1 (+http://www.facebook.com/externalhit_uatext.php)"
 				
-				if(user_agent != facebook_agent):
+				if(user_agent == facebook_agent):
 					# Facebook linter 
 					self.facebook_render("station/facebook/track.html", template_values)
 				else:
