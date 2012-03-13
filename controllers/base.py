@@ -71,13 +71,13 @@ class BaseHandler(webapp.RequestHandler):
 							)
 							logging.info("New user: %s %s" %(user.first_name, user.last_name))
 						else:
-							logging.info("User does not share his email. Strange...")
+							logging.error("User does not share his email. Strange...")
 					
 					#self._user_proxy = user_proxy
 					
 					# patch below before login has gone full client
 					access_token = user_proxy.access_token
-					if access_token:
+					if user and access_token:
 						self._user_proxy = user_proxy
 		
 		return self._user_proxy
