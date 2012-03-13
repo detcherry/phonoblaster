@@ -50,7 +50,7 @@ class ApiCommentsHandler(BaseHandler):
 		# Put the new comment to the datastore
 		new_comment = Comment(
 			key_name = comment["key_name"],
-			message = comment["message"],
+			message = comment["message"][:500].replace("\n"," "),
 			station = self.station.key(),
 			user = self.user.key(),
 			admin = admin
