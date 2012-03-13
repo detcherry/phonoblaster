@@ -52,7 +52,6 @@ class Broadcast(db.Model):
 
 				# We check if the track is really on Youtube
 				if(extended_track):
-					logging.info(extended_track)
 					user_key = Broadcast.user.get_value_for_datastore(broadcast)
 					
 					# Broadcast suggested by a user
@@ -92,7 +91,6 @@ class Broadcast(db.Model):
 				extended_broadcast = Broadcast.get_extended_broadcast(broadcast, extended_track, station, None)
 				extended_broadcasts.append(extended_broadcast)
 			
-			logging.info(extended_broadcasts)
 			# Order the broadcasts that have been built from different sources (same order as the Datastore entities)
 			for b in broadcasts:
 				key_name = b.key().name()
@@ -101,8 +99,6 @@ class Broadcast(db.Model):
 						ordered_extended_broadcasts.append(e)
 						break
 			
-			logging.info(ordered_extended_broadcasts)
-
 		return ordered_extended_broadcasts	
 	
 	@staticmethod
