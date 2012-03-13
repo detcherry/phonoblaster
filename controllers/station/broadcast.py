@@ -28,7 +28,7 @@ class BroadcastHandler(SecondaryHandler):
 				extended_broadcasts = Broadcast.get_extended_broadcasts(broadcasts, station)
 				
 				if extended_broadcasts:
-					logging.info("Youtube track exists")
+					logging.info("Youtube track was found")
 					
 					# Youtube track exists
 					extended_broadcast = extended_broadcasts[0]
@@ -44,7 +44,7 @@ class BroadcastHandler(SecondaryHandler):
 						self.render("station/broadcast.html", template_values)
 				
 				else:
-					logging.error("Youtube track does not exist anymore")
+					logging.info("Youtube track was not found")
 					self.redirect("/" + shortname)
 		
 		else:
