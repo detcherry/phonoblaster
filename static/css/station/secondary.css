@@ -7,6 +7,7 @@
 }
 
 #main-right{
+	width:100%;
 	background:#F1F1F1;
 }
 
@@ -23,6 +24,7 @@
 }
 
 #main-right-latest{
+	clear:left;
 	margin-left:5px;
 	max-height:238px;
 	overflow:hidden;
