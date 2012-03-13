@@ -22,7 +22,7 @@ class HomeHandler(BaseHandler):
 				user_stations = self.user_proxy.stations
 			
 				q = Air.all()
-				q.order("-expired")
+				q.order("-created")
 				feed = q.fetch(50)
 			
 				youtube_ids = [Air.youtube_id.get_value_for_datastore(f) for f in feed]
