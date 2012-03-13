@@ -105,7 +105,14 @@ class BaseHandler(webapp.RequestHandler):
 	def handle_exception(self, exception, debug_mode):
 		logging.error(''.join(traceback.format_exception(*sys.exc_info())))
 		if self.request.method == "GET":
+			template_values = {
+				"domain": config.DOMAIN,
+				"google_analytics_id": config.GOOGLE_ANALYTICS_ID,
+				"facebook_app_id": config.FACEBOOK_APP_ID,
+				"site_url": config.SITE_URL,
+				"version": config.VERSION,
+			}
 			path = os.path.join(os.path.dirname(__file__), "../templates/error.html")
-			self.response.out.write(template.render(path, None))
+			self.response.out.write(template.render(path, template_values))
 		else:
 			self.response.out.write(json.dumps({"error":"An error occurred."}))
