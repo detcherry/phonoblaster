@@ -18,7 +18,7 @@ class SuggestionHandler(SecondaryHandler):
 			extended_suggestions = Suggestion.get_extended_suggestions(suggestions)
 			
 			if(extended_suggestions):
-				logging.info("Youtube track exists")
+				logging.info("Youtube track was found")
 				
 				extended_suggestion = extended_suggestions[0]
 				template_values = {
@@ -36,7 +36,7 @@ class SuggestionHandler(SecondaryHandler):
 					self.render("station/suggestion.html", template_values)
 
 			else:
-				logging.error("Youtube track does not exist anymore.")
+				logging.info("Youtube track was not found")
 				self.redirect("/" + shortname)
 			
 		else:

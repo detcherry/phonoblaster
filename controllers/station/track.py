@@ -16,7 +16,7 @@ class TrackHandler(SecondaryHandler):
 			extended_tracks = Track.get_extended_tracks(tracks)
 			
 			if extended_tracks:
-				logging.info("Youtube track exists")
+				logging.info("Youtube track was found")
 				extended_track = extended_tracks[0]
 				template_values = {
 					"track": extended_track,
@@ -33,7 +33,7 @@ class TrackHandler(SecondaryHandler):
 					self.render("station/track.html", template_values)
 				
 			else:
-				logging.error("Youtube track does not exist anymore")
+				logging.info("Youtube track was not found")
 				self.redirect("/" + shortname)
 			
 		else:
