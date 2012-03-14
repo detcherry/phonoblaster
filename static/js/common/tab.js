@@ -323,7 +323,7 @@ function ScrollTabManager(station_client){
 	// Additional attributes
 	this.offset = null;
 	this.load = false;
-	this.scrolling_on = true;
+	this.scrolling_on = true;	
 }
 
 // Lazy fetching
@@ -333,7 +333,7 @@ ScrollTabManager.prototype.getListen = function(){
 	$("#tabs a").click(function(){
 		if(that.items.length == 0){
 			that.offset = PHB.now();
-
+			
 			var active_tab_name = $("a.current").attr("href")
 			var tab_active = false;
 			if(that.name == active_tab_name){
@@ -341,12 +341,10 @@ ScrollTabManager.prototype.getListen = function(){
 			}
 
 			if(tab_active){
-				that.UIReset();
-				that.UIAppendLoader();
 				that.get();
 			}
 		}		
-	})	
+	})
 }
 
 ScrollTabManager.prototype.getData = function(){

@@ -418,7 +418,6 @@ ul#tabs{
 ul#tabs li{
 	width:72px;
 	line-height:16px;
-	margin-right:3px;
 }
 
 ul#tabs li a{
@@ -442,10 +441,6 @@ ul#tabs li a{
 	border-top:1px solid #F5F5F5;
 	border-right:1px solid #F5F5F5;
 	background:#F5F5F5;
-}
-
-ul#tabs li a#queue-header{
-	border-left:1px solid #E1E1E1;
 }
 
 ul#tabs li a.current{

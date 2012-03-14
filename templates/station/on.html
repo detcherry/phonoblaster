@@ -23,21 +23,24 @@
 
 {% block main-right %}
 <ul id="tabs">
-	<li class="tuto" data-original-title="Tracks soon on the air!">
-		<a href="#queue-tab" class="current" id="queue-header">
+	<li style="width:66px" class="tuto" data-original-title="Tracks soon on the air!">
+		<a style="width:52px" href="#queue-tab" class="current" id="queue-header" >
 			Queue
 			<span class="round"></span>
 		</a>
 	</li>
-	<li style="width:96px;" width="96px" class="tuto" data-original-title="Tracks suggested by listeners to the broadcaster">
-		<a href="#suggestions-tab" id="suggestions-header" style="width:84px">
+	<li style="width:94px;" class="tuto" data-original-title="Tracks suggested by listeners to the broadcaster">
+		<a style="width:80px" href="#suggestions-tab" id="suggestions-header">
 			Suggestions
 			<span class="round"></span>
 		</a>
 	</li>
 	{% if is_admin %}
-	<li class="tuto" data-original-title="Tracks you recently broadcast.">
-		<a href="#tracks-tab" id="tracks-header">Tracks</a>
+	<li style="width:68px" class="tuto" data-original-title="Tracks you recently broadcast.">
+		<a style="width:54px" href="#tracks-tab" id="tracks-header">Tracks</a>
+	</li>
+	<li style="width:52px" class="tuto" data-original-title="Tracks you favorited">
+		<a style="width:38px;" href="#favorites-tab" id="favorites-header"></a>
 	</li>
 	{% endif %}
 </ul>
@@ -58,11 +61,18 @@
 		<div class="init">No recent suggestion</div>
 	</div>		
 </div>
+{% if is_admin %}
+<div id="favorites-tab" class="tab-content">
+	<div class="tab-items">
+		<div class="init">No favorite</div>
+	</div>
+</div>
 <div id="tracks-tab" class="tab-content">
 	<div class="tab-items">
 		<div class="init">No past track for this station</div>
 	</div>
 </div>
+{% endif %}
 <!-- Recommandation popup -->
 <div class="popup" id="popup-recommendations">
 	<h2>Broadcast now!</h2>
@@ -146,6 +156,7 @@
 <script type="text/javascript" src="/static/js/station/on/suggestion.js"></script>
 <script type="text/javascript" src="/static/js/station/on/search.js"></script>
 <script type="text/javascript" src="/static/js/station/on/track.js"></script>
+<script type="text/javascript" src="/static/js/station/on/favorite.js"></script>
 <script type="text/javascript" src="/static/js/station/on/share.js"></script>
 <script type="text/javascript" src="/static/js/station/on/air.js"></script>
 <script type="text/javascript" src="/static/js/station/on/on.js"></script>

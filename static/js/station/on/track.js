@@ -7,11 +7,14 @@ TrackManager.prototype.constructor = TrackManager;
 
 function TrackManager(station_client){
 	ScrollTabManager.call(this, station_client);
-	
+	this.init();
+}
+
+TrackManager.prototype.init = function(){
 	// Settings
-	this.url = "api/tracks";
+	this.url = "/api/tracks";
 	this.data_type = "json";
-	this.offset = PHB.now();
+	this.offset = null;
 	
 	// UI Settings
 	this.name = "#tracks-tab";	
