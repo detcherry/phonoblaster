@@ -46,13 +46,12 @@ ShareManager.prototype = {
 		
 		// If UI live broadcast
 		if(this.station_client.queue_manager.UILive()){
-			var title = $("#media-title span.middle").html();
 			var station = this.station_client.station.name;
 			var people_listening = this.station_client.session_manager.sessions_counter.count;
 			
 			// If user is station admin (focus on content)
 			if(this.station_client.admin){
-				popup_content = "♬ Live broadcasting on Phonoblaster. Come now and enjoy: " + title +"! ♬";
+				popup_content = "♬ Live broadcasting now on Phonoblaster. Come and enjoy my set!  ♬";
 			}
 			// If user is basic listener (focus on social)
 			else{
