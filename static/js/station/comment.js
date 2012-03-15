@@ -40,23 +40,6 @@ CommentManager.prototype.inputListen = function(){
 		}
 	})
 	
-	// Listen to sync/ unsync comments with Facebook events
-	$("span#fb-sync").click(function(){
-		var sync = $(this).attr("class")
-		if(sync == "active tuto"){
-			new_sync = "inactive tuto"
-			data_original_title = "Comment on Facebook: OFF"
-		}
-		else{
-			new_sync = "active tuto"
-			data_original_title = "Comment on Facebook: ON"
-		}
-		$(this)
-			.removeClass(sync)
-			.addClass(new_sync)
-			.attr("data-original-title", data_original_title);
-	})
-	
 	// Listen to submit events in the comment form
 	$("form#comments-form").submit(function(){
 		var message = $("input[id='comments-input']").val();
@@ -78,11 +61,7 @@ CommentManager.prototype.inputListen = function(){
 			});
 			
 			// POST comment to Facebook
-			var sync = $("span#fb-sync").attr("class")
-			if(sync == "active tuto"){
-				that.facebook(message);
-			}
-
+			that.facebook(message);
 		}
 		
 		return false;

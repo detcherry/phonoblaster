@@ -317,7 +317,6 @@ input#comments-input{
 }
 
 span#fb-sync{
-	cursor:pointer;
 	display:block;
 	float:left;
 	height:28px;
@@ -328,11 +327,6 @@ span#fb-sync{
 span#fb-sync.active{
 	background:url("/static/images/phonoblaster-sprits.png");
 	background-position:-6px -143px;
-}
-
-span#fb-sync.inactive{
-	background:url("/static/images/phonoblaster-sprits.png");
-	background-position:-42px -143px;
 }
 
 input#comments-submit{
