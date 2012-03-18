@@ -245,13 +245,18 @@ CommentManager.prototype.facebook = function(message){
 			// Pick up the last one with url = station url
 			if(post.link == station_url){
 				var post_id = post.id;
-
-				// Add comment
-				if(that.station_client.station.admin){
-					FACEBOOK.putPageComment(page_id, post_id, message, function(response){})
-				}
-				else{
-					FACEBOOK.putComment(post_id, message, function(response){})
+				
+				var post_created_time = Date.parse(new Date(post.created_time))/1000
+				var one_day = 86400;
+				
+				if(PHB.now()- post_created_time < one_day){
+					// Add comment
+					if(that.station_client.station.admin){
+						FACEBOOK.putPageComment(page_id, post_id, message, function(response){})
+					}
+					else{
+						FACEBOOK.putComment(post_id, message, function(response){})
+					}
 				}
 				
 				return false
