@@ -247,9 +247,9 @@ CommentManager.prototype.facebook = function(message){
 				var post_id = post.id;
 				
 				var post_created_time = Date.parse(new Date(post.created_time))/1000
-				var one_day = 86400;
+				var two_hours = 7200;
 				
-				if(PHB.now()- post_created_time < one_day){
+				if(PHB.now() - post_created_time < two_hours){
 					// Add comment
 					if(that.station_client.station.admin){
 						FACEBOOK.putPageComment(page_id, post_id, message, function(response){})
