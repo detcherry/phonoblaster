@@ -59,9 +59,6 @@ CommentManager.prototype.inputListen = function(){
 			that.post(new_item, function(response){
 				that.postCallback(new_item, response);
 			});
-			
-			// POST comment to Facebook
-			that.facebook(message);
 		}
 		
 		return false;
@@ -232,39 +229,3 @@ CommentManager.prototype.UIBuild = function(item){
 	
 	return div
 }
-
-CommentManager.prototype.facebook = function(message){
-	var that = this;
-	var page_id = this.station_client.station.key_name;
-	
-	// Retrieve the latest station wall posts
- 	FACEBOOK.retrievePageWallPosts(page_id, function(posts){
-	
-		var station_url = PHB.site_url + "/" + that.station_client.station.shortname;
-		$.each(posts, function(index, post){
-			// Pick up the last one with url = station url
-			if(post.link == station_url){
-				var post_id = post.id;
-				
-				var post_created_time = Date.parse(new Date(post.created_time))/1000
-				var two_hours = 7200;
-				
-				if(PHB.now() - post_created_time < two_hours){
-					// Add comment
-					if(that.station_client.station.admin){
-						FACEBOOK.putPageComment(page_id, post_id, message, function(response){})
-					}
-					else{
-						FACEBOOK.putComment(post_id, message, function(response){})
-					}
-				}
-				
-				return false
-			}
-		})
-		
-	})
-	
-	
-}
-
