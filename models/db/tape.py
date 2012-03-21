@@ -28,7 +28,14 @@ class Tape(db.Model):
 
 	@staticmethod
 	def get_extended_tapes(tapes):
-		pass
+		extended_tapes = []
+
+		for t in tapes:
+			extended_tapes.append( Tape.get_extended_tape(t) )
+
+		return extended_tapes
+
+
 
 	@staticmethod
 	def get_extended_tape(tape):
@@ -47,7 +54,7 @@ class Tape(db.Model):
 		extended_tape = {
 			"key_name": tape.key().name(),
 			"created": timegm(tape.created.utctimetuple()),
-			"extended_tracks": extended_tracks
+			"extended_tracks": extended_tracks,
 		}
 
 		return extended_tape
