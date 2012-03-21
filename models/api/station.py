@@ -31,6 +31,7 @@ MEMCACHE_STATION_QUEUE_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".queue.stati
 MEMCACHE_STATION_SESSIONS_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".sessions.station."
 MEMCACHE_STATION_BROADCASTS_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".broadcasts.station."
 MEMCACHE_STATION_TRACKS_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".tracks.station."
+MEMCACHE_STATION_TAPES_PREFIX = os.environ["CURRENT_VERSION_ID"] + "tapes.station."
 COUNTER_OF_BROADCASTS_PREFIX = "station.broadcasts.counter."
 COUNTER_OF_VIEWS_PREFIX = "station.views.counter."
 COUNTER_OF_SUGGESTIONS_PREFIX = "station.suggestions.counter."
@@ -44,6 +45,7 @@ class StationApi():
 		self._memcache_station_sessions_id = MEMCACHE_STATION_SESSIONS_PREFIX + self._shortname
 		self._memcache_station_broadcasts_id = MEMCACHE_STATION_BROADCASTS_PREFIX + self._shortname
 		self._memcache_station_tracks_id = MEMCACHE_STATION_TRACKS_PREFIX + self._shortname
+		self._memcache_station_tapes_id = MEMCACHE_STATION_TAPES_PREFIX + self._shortname
 		self._counter_of_broadcasts_id = COUNTER_OF_BROADCASTS_PREFIX + self._shortname
 		self._counter_of_views_id = COUNTER_OF_VIEWS_PREFIX + self._shortname
 		self._counter_of_suggestions_id = COUNTER_OF_SUGGESTIONS_PREFIX + self._shortname
@@ -503,5 +505,7 @@ Global number of stations: %s
 	def increment_suggestions_counter(self):
 		shard_name = self._counter_of_suggestions_id
 		Shard.task(shard_name, "increment")
+
+	#Tapes
 		
 		
