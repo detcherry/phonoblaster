@@ -1,3 +1,6 @@
+import logging
+from calendar import timegm
+
 from google.appengine.ext import db
 
 from models.db.tracks import Track
@@ -26,3 +29,25 @@ class Tape(db.Model):
 	@staticmethod
 	def get_extended_tapes(tapes):
 		pass
+
+	@staticmethod
+	def get_extended_tape(tape):
+		track_keys = None
+		tracks = None
+		extended_tracks = None
+
+		track_keys = Tape.tracks.get_value_for_datastore(b)
+		logging.info("Tracks retrieved from datastore")
+		tracks = db.get(track_keys)
+		extended_tracks = Track.get_extended_tracks(tracks)
+		logging.info("Extended tracks generated from Youtube")
+		
+		extended_tape = None
+
+		extended_tape = {
+			"key_name": tape.key().name(),
+			"created": timegm(tape.created.utctimetuple()),
+			"extended_tracks": extended_tracks
+		}
+
+		return extended_tape
