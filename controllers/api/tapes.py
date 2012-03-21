@@ -1,6 +1,7 @@
 import logging
 
 from controllers.base import BaseHandler
+from controllers.base import login_required
 
 from models.api.station import StationApi
 
@@ -10,6 +11,7 @@ class ApiTapesHandeler(BaseHandler):
 		
 	"""
 
+	@login_required
 	def get(self):
 		shortname = self.request.get("shortname")
 		logging.info("Station shortname : "+shortname)
@@ -17,14 +19,19 @@ class ApiTapesHandeler(BaseHandler):
 		station = station_proxy.station
 
 		if(station):
-			logging.info("Station retrieved")
-			tapes = station_proxy.tapes
-			logging.info("Tapes retrieved")
-			self.response.out.write("Result : "+str(tapes[0]["key_name"])) #TESTING, TO BE REMOVED
+			if(self.user_proxy.is_admin_of(station.key().name())):
+				logging.info("Station retrieved")
+				tapes = station_proxy.tapes
+				logging.info("Tapes retrieved")
+				self.response.out.write("Result : "+str(tapes)) #TESTING, TO BE REMOVED
+			else:
+				logging.info("User not allowed")
+				self.redirect("/"+shortname)
 		else:
 			self.error(404)
 
+	@login_required
 	def post(self):
 		self.response.out.write("TO BE DONE")
-		pass
+		
 		
