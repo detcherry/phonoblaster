@@ -25,6 +25,7 @@ from controllers.api.comments import ApiCommentsHandler
 from controllers.api.recommendations import ApiRecommendationsHandler
 from controllers.api.air import ApiAirHandler
 from controllers.api.now import ApiNowHandler
+from controllers.api.tapes import ApiTapesHandeler
 from controllers.company.company import JobsHandler
 from controllers.company.company import TermsHandler
 from controllers.company.company import FaqHandler
@@ -44,6 +45,7 @@ application = webapp.WSGIApplication(
 		('/api/recommendations', ApiRecommendationsHandler),
 		('/api/air', ApiAirHandler),
 		('/api/now', ApiNowHandler),
+		('/api/tapes', ApiTapesHandeler),
 		('/admin/dashboard', AdminDashboardHandler),
 		('/', HomeHandler),
 		('/station/create', StationCreateHandler),

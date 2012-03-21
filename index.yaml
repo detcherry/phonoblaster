@@ -45,6 +45,11 @@ indexes:
   - name: user
   - name: created
 
+- kind: Tape
+  properties:
+  - name: station
+  - name: created
+
 - kind: Track
   properties:
   - name: station

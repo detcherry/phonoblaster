@@ -32,7 +32,7 @@ MEMCACHE_STATION_QUEUE_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".queue.stati
 MEMCACHE_STATION_SESSIONS_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".sessions.station."
 MEMCACHE_STATION_BROADCASTS_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".broadcasts.station."
 MEMCACHE_STATION_TRACKS_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".tracks.station."
-MEMCACHE_STATION_TAPES_PREFIX = os.environ["CURRENT_VERSION_ID"] + "tapes.station."
+MEMCACHE_STATION_TAPES_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".tapes.station."
 COUNTER_OF_BROADCASTS_PREFIX = "station.broadcasts.counter."
 COUNTER_OF_VIEWS_PREFIX = "station.views.counter."
 COUNTER_OF_SUGGESTIONS_PREFIX = "station.suggestions.counter."
@@ -517,15 +517,16 @@ Global number of stations: %s
 
 				q = Tape.all()
 				q.filter("station", self.station.key())
-				query.order('created')
+				q.order('created')
 				tapes = q.fetch(30)
 
 				extended_tapes = Tape.get_extended_tapes(tapes)
 				memcache.set(self._memcache_station_tapes_id, extended_tapes)
-				logging.info("Tapes put in memecache")
+				logging.info("Tapes put in memcache")
 
 				self._tapes = extended_tapes
 			else:
 				logging.info("Tapes already in memecache")
+				logging.info("Number of tapes in the memcache : "+ str(len(self._tapes)) )
 
 		return self._tapes
