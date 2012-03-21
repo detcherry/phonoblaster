@@ -22,3 +22,7 @@ class Tape(db.Model):
 	tracks = db.ListProperty(db.Key)
 	created = db.DateTimeProperty(auto_now_add = True)
 	updated = db.DateTimeProperty(auto_now = True)
+
+	@staticmethod
+	def get_extended_tapes(tapes):
+		pass
