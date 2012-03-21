@@ -518,7 +518,7 @@ Global number of stations: %s
 				q = Tape.all()
 				q.filter("station", self.station.key())
 				q.order('created')
-				tapes = q.fetch(30)
+				tapes = q.fetch(10)
 
 				extended_tapes = Tape.get_extended_tapes(tapes)
 				memcache.set(self._memcache_station_tapes_id, extended_tapes)

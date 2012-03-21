@@ -1,5 +1,7 @@
 import logging
 
+from django.utils import simplejson as json
+
 from controllers.base import BaseHandler
 from controllers.base import login_required
 
@@ -23,7 +25,8 @@ class ApiTapesHandeler(BaseHandler):
 				logging.info("Station retrieved")
 				tapes = station_proxy.tapes
 				logging.info("Tapes retrieved")
-				self.response.out.write("Result : "+str(tapes)) #TESTING, TO BE REMOVED
+				json_tapes = {"tapes":tapes}
+				self.response.out.write(json.dumps(str(json_tapes))) #TESTING, TO BE REMOVED
 			else:
 				logging.info("User not allowed")
 				self.redirect("/"+shortname)
