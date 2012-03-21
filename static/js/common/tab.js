@@ -147,12 +147,14 @@ TabManager.prototype = {
 	
 	// Add item to the list and display it in the UI
 	add: function(item_from_server){
-		var that = this;
-		var new_item = this.serverToLocalItem(item_from_server)
-		
-		this.addToItems(new_item, function(previous_item){
-			that.UIAdd(new_item, previous_item);
-		})
+		if(item_from_server){
+			var that = this;
+			var new_item = this.serverToLocalItem(item_from_server)
+
+			this.addToItems(new_item, function(previous_item){
+				that.UIAdd(new_item, previous_item);
+			})
+		}
 	},
 	
 	// Add new item to list items
