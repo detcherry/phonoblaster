@@ -22,6 +22,7 @@ from models.db.comment import Comment
 from models.db.broadcast import Broadcast
 from models.db.track import Track
 from models.db.counter import Shard
+from models.db.tape import Tape
 
 from models.api.user import UserApi
 from models.api.admin import AdminApi
@@ -506,6 +507,25 @@ Global number of stations: %s
 		shard_name = self._counter_of_suggestions_id
 		Shard.task(shard_name, "increment")
 
-	#Tapes
-		
-		
+	#Get all Tapes
+	@property
+	def tapes(self):
+		if not hasattr(self,"_tapes"):
+			self._tapes = memcache.get(self._memcache_station_tapes_id)
+			if self._tapes is None:
+				logging.info("Tapes not in memcache")
+
+				q = Tape.all()
+				q.filter("station", self.station.key())
+				query.order('created')
+				tapes = q.fetch(30)
+
+				extended_tapes = Tape.get_extended_tapes(tapes)
+				memcache.set(self._memcache_station_tapes_id, extended_tapes)
+				logging.info("Tapes put in memecache")
+
+				self._tapes = extended_tapes
+			else:
+				logging.info("Tapes already in memecache")
+
+		return self._tapes
