@@ -6,6 +6,7 @@ from controllers.base import BaseHandler
 from controllers.base import login_required
 
 from models.api.station import StationApi
+from models.db.tape import Tape
 
 
 class ApiTapesHandeler(BaseHandler):
@@ -22,10 +23,14 @@ class ApiTapesHandeler(BaseHandler):
 		station = station_proxy.station
 
 		if(station):
-			if(tape_id):
-				
-			else:
-				if(self.user_proxy.is_admin_of(station.key().name())):
+			if(self.user_proxy.is_admin_of(station.key().name())):
+				if(tape_id):
+					for tape in station_proxy.tapes:
+						logging.info("Tape id : "+ str(tape.key().id_or_name())+", tape to access : "+tape_id)
+						if ( tape_id == str(tape.key().id_or_name())):
+							self.response.out.write(json.dumps(Tape.get_extended_tape(tape)))
+							break
+				else:
 					logging.info("Station retrieved")
 					json_tapes = []
 					for tape in station_proxy.tapes:
@@ -34,11 +39,10 @@ class ApiTapesHandeler(BaseHandler):
 							"name" : tape.tape_name,
 							"thumbnail": tape.tape_thumbnail
 							})
-
 					self.response.out.write(json.dumps(json_tapes)) #TESTING, TO BE REMOVED
-				else:
-					logging.info("User not allowed")
-					self.redirect("/"+shortname)
+			else:
+				logging.info("User not allowed")
+				self.redirect("/"+shortname)
 		else:
 			self.error(404)
 
