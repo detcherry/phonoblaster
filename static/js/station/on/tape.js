@@ -101,7 +101,7 @@ TapeManager.prototype.processListen = function(){
 			}
 		}
 
-		this.process(btn, to_submit);
+		that.process(btn, to_submit);
 		return false;			
 	});
 }
