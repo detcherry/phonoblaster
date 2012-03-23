@@ -22,7 +22,6 @@ TapeManager.prototype.init = function(){
 	
 	// Init methods
 	this.getListen();
-	this.previewListen();
 	this.processListen();
 	this.scrollListen();
 }
@@ -36,7 +35,6 @@ TapeManager.prototype.getData = function(){
 }
 
 TapeManager.prototype.serverToLocalItem  = function(content){
-	console.log("In serverToLocalItem TapeManager");
 	var item = {
 		id: content.id,
 		name: content.name,
@@ -46,7 +44,6 @@ TapeManager.prototype.serverToLocalItem  = function(content){
 }
 
 TapeManager.prototype.UIBuild = function(item){
-	console.log("In UIBuild TapeManager");
 	var id = item.id;
 	var tape_name = item.name;
 	var content = item.content;
@@ -64,7 +61,64 @@ TapeManager.prototype.UIBuild = function(item){
 		$("<div/>")
 			.addClass("item-title")
 			.append($("<span/>").addClass("middle").html(tape_name))
+	)
+	.append(
+		$("<div/>")
+			.addClass("item-subtitle")
+				.append(
+						$("<div/>")
+							.addClass("item-process")
+							.append(
+								$("<a/>")
+									.addClass("btn")
+									.attr("name", id)
+									.html("Open")
+									.addClass("tuto")
+									.attr("data-original-title", "Open track list")
+								)
+
+					)
 	);
 					
 	return div;
+}
+
+TapeManager.prototype.processListen = function(){
+	var that = this;
+
+	var process_selector = this.selector + " .item-process a.btn";
+	$(process_selector).live("click", function(){			
+		var btn = $(this);
+		var item_id = btn.attr("name");
+
+		// Find the item the user has clicked on
+		var to_submit = null;
+		for(var i=0, c= that.items.length; i<c; i++){
+			var item = that.items[i];
+			if(item.id == item_id){ 
+				to_submit = item;
+				break;
+			}
+		}
+
+		this.process(btn, to_submit);
+		return false;			
+	});
+}
+
+TapeManager.prototype.process = function(btn, to_submit){
+	
+	$.ajax({
+		url: that.url,
+		type: "GET",
+		dataType: that.data_type,
+		timeout: 60000,
+		data: data,
+		error: function(xhr, status, error) {
+			callback(false)
+		},
+		success: function(json){
+			callback(json.response);
+		},
+	});
 }

@@ -23,27 +23,29 @@
 
 {% block main-right %}
 <ul id="tabs">
-	<li style="width:66px" class="tuto" data-original-title="Tracks soon on the air!">
-		<a style="width:52px" href="#queue-tab" class="current" id="queue-header" >
+	<li style="width:55px" class="tuto" data-original-title="Tracks soon on the air!">
+		<a style="width:41px" href="#queue-tab" class="current" id="queue-header" >
 			Queue
 			<span class="round"></span>
 		</a>
 	</li>
-	<li style="width:94px;" class="tuto" data-original-title="Tracks suggested by listeners to the broadcaster">
-		<a style="width:80px" href="#suggestions-tab" id="suggestions-header">
+	<li style="width:81px;" class="tuto" data-original-title="Tracks suggested by listeners to the broadcaster">
+		<a style="width:67px" href="#suggestions-tab" id="suggestions-header">
 			Suggestions
 			<span class="round"></span>
 		</a>
 	</li>
 	{% if is_admin %}
-	<li style="width:68px" class="tuto" data-original-title="Tracks you recently broadcast.">
-		<a style="width:54px" href="#tracks-tab" id="tracks-header">Tracks</a>
+	<li style="width:48px" class="tuto" data-original-title="Tracks you recently broadcast.">
+		<a style="width:34px" href="#tracks-tab" id="tracks-header"></a>
 	</li>
-	<li style="width:52px" class="tuto" data-original-title="Tracks you favorited">
-		<a style="width:38px;" href="#favorites-tab" id="favorites-header"></a>
+	<li style="width:48px" class="tuto" data-original-title="Tapes you created">
+		<a style="width:34px;" href="#tapes-tab" id="tapes-header"></a>
+	</li>
+	<li style="width:48px" class="tuto" data-original-title="Tracks you favorited">
+		<a style="width:34px;" href="#favorites-tab" id="favorites-header"></a>
 	</li>
 	<!-- TODO : fix width-->
-	
 	{% endif %}
 </ul>
 <div id="queue-tab" class="tab-content">

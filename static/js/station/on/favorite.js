@@ -101,7 +101,7 @@ FavoriteManager.prototype.UIBuild = function(item){
 							)
 					)
 			)
-	)
+	);
 	
 	return div;
 }
