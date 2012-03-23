@@ -1,11 +1,119 @@
-/* ------- CORRECTION ------- */
+/* ------- TEMPORARY TEMPLATES ------- */
 
-#main{
-	padding-top:60px;
-	padding-bottom:60px;
-}
-
-#main img{
+img.temporary{
 	display:block;
 	margin:auto;
+	margin-top:60px;
+	margin-bottom:60px;
+}
+
+/* ------- PRESS ------- */
+
+#press h1{
+	padding-top:60px;
+	height:100px;
+	width:100%;
+	text-indent:-10000px;
+	background-repeat:no-repeat;
+	background-position:center center;
+	background-image:url("/static/images/press/header.png");
+}
+
+#press h2{
+	padding:30px 70px 30px 70px;
+	text-align:center;
+	letter-spacing:0px;
+	font-size:23px;
+}
+
+#press .stroke{
+	float:none;
+	margin:auto;
+	margin-bottom:30px;
+}
+
+#press .tutorial{
+	margin-left:354px;
+	margin-bottom:20px;
+	clear:left;
+}
+
+#press .tutorial img{
+	display:block;
+	float:left;
+	margin-right:10px;
+}
+
+#press .tutorial span{
+	display:block;
+	width:200px;
+	font-size:13px;
+	padding:8px;
+	color:#636363;
+}
+
+#press .block{
+	width:100%;
+}
+
+#press .half{
+	width:40%;
+	min-height:230px;
+	background-repeat:no-repeat;
+	background-position:center center;
+}
+
+#press .half.left{
+	margin-left:10%;
+}
+
+#press .half.right{
+	margin-right:10%;
+}
+
+#press .half p{
+	margin-top:80px;
+	font-size:14px;
+	line-height:18px;
+	letter-spacing:0px;
+	font-family:Futura;
+	width:310px;
+}
+
+#press .half.left p{
+	margin-right:20px;
+	text-align:right;
+}
+
+#press .half.right p{
+	margin-left:20px;
+	text-align:left;
+}
+
+#press-computer-page .left{
+	background-image:url("/static/images/press/computer-page.png");
+}
+
+#press-artist-fans .right{
+	background-image:url("/static/images/press/artist-fans.png");
+}
+
+#press-ticker .left{
+	background-image:url("/static/images/press/ticker.png");
+}
+
+#press-apis .right{
+	background-image:url("/static/images/press/apis.png");
+}
+
+#press-like .left{
+	background-image:url("/static/images/press/like.png");
+}
+
+#press-stations .right{
+	background-image:url("/static/images/press/stations.png");
+}
+
+#press-paris .left{
+	background-image:url("/static/images/press/paris.png");
 }

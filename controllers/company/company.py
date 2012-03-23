@@ -11,3 +11,7 @@ class TermsHandler(BaseHandler):
 class FaqHandler(BaseHandler):
 	def get(self):
 		self.render("company/faq.html", None)
+		
+class PressHandler(BaseHandler):
+	def get(self):
+		self.render("company/press.html", None)
