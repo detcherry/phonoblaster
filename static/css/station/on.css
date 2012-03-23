@@ -19,6 +19,17 @@ ul#tabs li a#favorites-header.current{
 	background-position: -153px -112px;
 }
 
+ul#tabs li a#tapes-header{
+	background-image: url("/static/images/phonoblaster-sprits.png");
+	background-position: -153px -80px;
+	border-right:1px solid #E1E1E1;
+}
+
+ul#tabs li a#tapes-header.current{
+	background-image: url("/static/images/phonoblaster-sprits.png");
+	background-position: -153px -112px;
+}
+
 /* ------- ALERT --------- */
 
 span.round{

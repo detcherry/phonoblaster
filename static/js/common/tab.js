@@ -362,6 +362,7 @@ ScrollTabManager.prototype.get = function(){
 	var that = this;	
 	var data = this.getData();
 
+	PHB.log(that.data_type);
 	// GET items
 	$.ajax({
 		url: that.url,

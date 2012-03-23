@@ -26,7 +26,9 @@ class ApiTapesHandeler(BaseHandler):
 				json_tapes = []
 				for tape in station_proxy.tapes:
 					json_tapes.append({
-						"name" : tape.tape_name
+						"id": tape.key().id_or_name(),
+						"name" : tape.tape_name,
+						"thumbnail": tape.tape_thumbnail
 						})
 
 				self.response.out.write(json.dumps(json_tapes)) #TESTING, TO BE REMOVED
