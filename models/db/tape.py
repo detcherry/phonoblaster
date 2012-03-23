@@ -26,15 +26,6 @@ class Tape(db.Model):
 	created = db.DateTimeProperty(auto_now_add = True)
 	updated = db.DateTimeProperty(auto_now = True)
 
-	@staticmethod
-	def get_extended_tapes(tapes):
-		extended_tapes = []
-
-		for t in tapes:
-			extended_tapes.append( Tape.get_extended_tape(t) )
-
-		return extended_tapes
-
 
 
 	@staticmethod

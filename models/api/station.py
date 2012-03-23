@@ -520,11 +520,10 @@ Global number of stations: %s
 				q.order('created')
 				tapes = q.fetch(10)
 
-				extended_tapes = Tape.get_extended_tapes(tapes)
-				memcache.set(self._memcache_station_tapes_id, extended_tapes)
+				memcache.set(self._memcache_station_tapes_id, tapes)
 				logging.info("Tapes put in memcache")
 
-				self._tapes = extended_tapes
+				self._tapes = tapes
 			else:
 				logging.info("Tapes already in memecache")
 				logging.info("Number of tapes in the memcache : "+ str(len(self._tapes)) )

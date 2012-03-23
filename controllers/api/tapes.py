@@ -23,10 +23,13 @@ class ApiTapesHandeler(BaseHandler):
 		if(station):
 			if(self.user_proxy.is_admin_of(station.key().name())):
 				logging.info("Station retrieved")
-				tapes = station_proxy.tapes
-				logging.info("Tapes retrieved")
-				json_tapes = {"tapes":tapes}
-				self.response.out.write(json.dumps(str(json_tapes))) #TESTING, TO BE REMOVED
+				json_tapes = []
+				for tape in station_proxy.tapes:
+					json_tapes.append({
+						"name" : tape.tape_name
+						})
+
+				self.response.out.write(json.dumps(json_tapes)) #TESTING, TO BE REMOVED
 			else:
 				logging.info("User not allowed")
 				self.redirect("/"+shortname)
@@ -36,5 +39,3 @@ class ApiTapesHandeler(BaseHandler):
 	@login_required
 	def post(self):
 		self.response.out.write("TO BE DONE")
-		
-		
