@@ -1,10 +1,41 @@
-/* ------- TEMPORARY TEMPLATES ------- */
+/* -------- COMPANY PAGES -------- */
 
-img.temporary{
+#company img{
 	display:block;
 	margin:auto;
 	margin-top:60px;
-	margin-bottom:60px;
+	margin-bottom:60px;	
+}
+
+#company h1, #company h2, #company h3{
+	width:100%;
+	letter-spacing:0px;
+}
+
+#company h1{
+	margin-top:20px;
+	margin-bottom:20px;
+	font-size:24px;
+	font-style:italic;
+}
+
+#company h2{
+	margin-bottom:10px;	
+	font-size:20px;
+	color:#636363;
+}
+
+#company h3{
+	margin-bottom:5px;
+	font-size:16px;
+}
+
+#company p{
+	margin-bottom:15px;
+	padding:2%;
+	width:98%;
+	background:white;
+	border:1px solid #E1E1E1;
 }
 
 /* ------- PRESS ------- */
