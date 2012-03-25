@@ -81,7 +81,11 @@ TapeManager.prototype.UIBuild = function(item){
 				)
 	)
 	.append(
-		$("<div/>").addClass("tape-tracks").html("TEST")
+		$("<div/>")
+			.addClass("tape-tracks")
+				.append(
+					$("<ul/>").addClass("list-tracks")
+				)
 	);
 
 					
@@ -129,7 +133,7 @@ TapeManager.prototype.process = function(btn, to_submit){
 			PHB.log(error);
 		},
 		success: function(json){
-			PHB.log(json);
+			that.addTracksToTape(json.extended_tracks);
 		},
 	});
 }
@@ -150,36 +154,32 @@ TapeManager.prototype.processCreateTapeListen = function(){
 
 }
 
+TapeManager.prototype.UITrackTape = function(track){
+	var div = $("<div/>").addClass("track-in-tape").html(track.youtube_title);
+
+
+	return div;
+
+}
 
 TapeManager.prototype.addTracksToTape = function(tracks){
-	"""
-		Method to add tracks of a tape to the UI.
-
-		tracks - list of javascript objects with tracks information
-	"""
 	//Show Loading image
 	//TODO
 
 	//Adding tracks
-
-	for(track in tracks):
-
+	var tracks_section = $(this.name+" .tape-tracks .list-tracks").empty();
+	for(var i=0; i < tracks.length; i++){
+		track = tracks[i];
+		tracks_section.append( 
+			$("<li/>")
+				.addClass("track-in-list")
+					.append(
+						this.UITrackTape(track)
+					)
+		);
+	}
 
 	//Removing Loading image
 	//TODO
-
-}
-
-TapeManager.prototype.UITrackTape = function(track){
-	"""
-		Builds the UI to for a track in a tape.
-
-		track - javascript object with information about the track
-	"""
-
-	var div = $("<div/>").addClass("track-in-tape");
-
-
-	return div;
 
 }
