@@ -23,6 +23,7 @@ TapeManager.prototype.init = function(){
 	// Init methods
 	this.getListen();
 	this.processListen();
+	//this.processCreateTapeListen();
 	this.scrollListen();
 }
 
@@ -85,6 +86,7 @@ TapeManager.prototype.UIBuild = function(item){
 
 TapeManager.prototype.processListen = function(){
 	var that = this;
+	PHB.log(this.selector);
 
 	var process_selector = this.selector + " .item-process a.btn";
 	$(process_selector).live("click", function(){			
@@ -127,4 +129,11 @@ TapeManager.prototype.process = function(btn, to_submit){
 			PHB.log(json);
 		},
 	});
+}
+
+TapeManager.prototype.processCreateTape = function(){
+	var that = this;
+
+	var selector = this.selector + " ";
+
 }

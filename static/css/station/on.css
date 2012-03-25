@@ -121,7 +121,7 @@ input#search:focus{
 
 #new-tape-header{
 	margin:15px;
-	margin-bottom:25px;
+	margin-bottom:2px;
 	width:248px;
 	background:#FFFFFF;
 	display:block;
@@ -138,7 +138,7 @@ input#name-tape{
 }
 
 input#name-tape:focus{
-	background-color:white;
+
 }
 
 #new-tape-header a.btn{
