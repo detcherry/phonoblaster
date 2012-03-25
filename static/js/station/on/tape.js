@@ -67,19 +67,23 @@ TapeManager.prototype.UIBuild = function(item){
 		$("<div/>")
 			.addClass("item-subtitle")
 				.append(
-						$("<div/>")
-							.addClass("item-process")
-							.append(
-								$("<a/>")
-									.addClass("btn")
-									.attr("name", id)
-									.html("Open")
-									.addClass("tuto")
-									.attr("data-original-title", "Open track list")
-								)
+					$("<div/>")
+						.addClass("item-process")
+						.append(
+							$("<a/>")
+								.addClass("btn")
+								.attr("name", id)
+								.html("Open")
+								.addClass("tuto")
+								.attr("data-original-title", "Open track list")
+						)
 
-					)
+				)
+	)
+	.append(
+		$("<div/>").addClass("tape-tracks").html("TEST")
 	);
+
 					
 	return div;
 }
@@ -143,5 +147,39 @@ TapeManager.prototype.processCreateTapeListen = function(){
 	$(create_button_selector).click(function(){
 		//TODO : rederict to tape page
 	});
+
+}
+
+
+TapeManager.prototype.addTracksToTape = function(tracks){
+	"""
+		Method to add tracks of a tape to the UI.
+
+		tracks - list of javascript objects with tracks information
+	"""
+	//Show Loading image
+	//TODO
+
+	//Adding tracks
+
+	for(track in tracks):
+
+
+	//Removing Loading image
+	//TODO
+
+}
+
+TapeManager.prototype.UITrackTape = function(track){
+	"""
+		Builds the UI to for a track in a tape.
+
+		track - javascript object with information about the track
+	"""
+
+	var div = $("<div/>").addClass("track-in-tape");
+
+
+	return div;
 
 }
