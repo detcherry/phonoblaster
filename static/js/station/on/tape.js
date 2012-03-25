@@ -23,7 +23,7 @@ TapeManager.prototype.init = function(){
 	// Init methods
 	this.getListen();
 	this.processListen();
-	//this.processCreateTapeListen();
+	this.processCreateTapeListen();
 	this.scrollListen();
 }
 
@@ -86,7 +86,6 @@ TapeManager.prototype.UIBuild = function(item){
 
 TapeManager.prototype.processListen = function(){
 	var that = this;
-	PHB.log(this.selector);
 
 	var process_selector = this.selector + " .item-process a.btn";
 	$(process_selector).live("click", function(){			
@@ -131,9 +130,18 @@ TapeManager.prototype.process = function(btn, to_submit){
 	});
 }
 
-TapeManager.prototype.processCreateTape = function(){
+TapeManager.prototype.processCreateTapeListen = function(){
 	var that = this;
 
-	var selector = this.selector + " ";
+	var create_button_selector = this.name + " #new-tape-header a.btn";
+	var input_selector = this.name + " #new-tape-header input#name-tape";
+
+	$(input_selector).focus(function(){
+		$(input_selector).attr("value","");
+	});
+
+	$(create_button_selector).click(function(){
+		//TODO : rederict to tape page
+	});
 
 }
