@@ -107,7 +107,11 @@ TapeManager.prototype.processListen = function(){
 }
 
 TapeManager.prototype.process = function(btn, to_submit){
-	
+	var that = this;
+	var data = {
+		shortname: this.station_client.station.shortname,
+		id: to_submit.id,
+	};
 	$.ajax({
 		url: that.url,
 		type: "GET",
@@ -115,10 +119,12 @@ TapeManager.prototype.process = function(btn, to_submit){
 		timeout: 60000,
 		data: data,
 		error: function(xhr, status, error) {
-			callback(false)
+			PHB.log(status);
+			PHB.log(xhr);
+			PHB.log(error);
 		},
 		success: function(json){
-			callback(json.response);
+			PHB.log(json);
 		},
 	});
 }
