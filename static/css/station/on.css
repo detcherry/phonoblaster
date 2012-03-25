@@ -117,6 +117,34 @@ input#search:focus{
 	background-color:#F8F8F8;
 }
 
+/* ------ TAPES ------ */
+
+#new-tape-header{
+	margin:15px;
+	margin-bottom:25px;
+	width:248px;
+	background:#FFFFFF;
+	display:block;
+}
+
+input#name-tape{
+	position:absolute;
+	top:276px;
+	z-index:3;
+	float:left;
+	padding-right:5px;
+	width:190px;
+	background-color:white;
+}
+
+input#name-tape:focus{
+	background-color:white;
+}
+
+#new-tape-header a.btn{
+	float:right;
+}
+
 /* ------ ITEM WRAPPER (SUGGESTIONS & FAVORITES) ------ */
 
 .item-wrapper{
