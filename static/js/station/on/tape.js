@@ -116,11 +116,21 @@ TapeManager.prototype.processListen = function(){
 }
 
 TapeManager.prototype.process = function(btn, to_submit){
+	//adding load git while request is being processed 
+	var tracks_section = $(this.name+" .tape-tracks .list-tracks").empty();
+	tracks_section.append(
+		$("<li/>").append(
+			$("<img/>").addClass("loader").attr("src","/static/images/loader.gif")
+		)
+			
+	);
+
 	var that = this;
 	var data = {
 		shortname: this.station_client.station.shortname,
 		id: to_submit.id,
 	};
+
 	$.ajax({
 		url: that.url,
 		type: "GET",
