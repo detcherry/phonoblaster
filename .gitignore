@@ -2,4 +2,3 @@ app.yaml
 controllers/config.py
 *.pyc
 ENV/*
-disactivate/*
