@@ -26,7 +26,15 @@
 
 /* ----- TOP ---- */
 
-#top-left, #top-right{
+
+#top-left {
+	height:50px;
+	padding-bottom:15px;
+	/*border-bottom:3px solid #000000;*/
+	background-color: white;
+}
+
+#top-right{
 	height:130px;
 	padding-bottom:15px;
 	padding-right:15px;
@@ -36,12 +44,14 @@
 /* ---------------------------------------- TOP LEFT --------------------------------------------- */
 
 #top-left{
-	width:623px;
+	width:920px;
+	padding-top: 20px;
+	padding-left: 20px;
 }
 
 #top-left-picture{
-	height:130px;
-	width:110px;
+	height:50px;
+	width:50px;
 	margin-right:10px;
 	overflow:hidden;
 }
@@ -51,7 +61,8 @@
 }
 
 #top-left-description{
-	width:503px;
+	width:820px;
+	margin-top: 12px;
 }
 
 #top-left-title{
@@ -59,7 +70,7 @@
 }
 
 #top-left-description{
-	height:130px;
+	height:92px;
 }
 
 #top-left-title{
@@ -75,21 +86,24 @@
 }
 
 #top-left-figures{
-	clear:left;
+	/*clear:left;*/
 	margin-bottom:15px;
 	padding-bottom:15px;
 	padding-right:15px;
-	border-bottom:1px solid #E1E1E1;
+	padding-left: 15px;
+	/*border-bottom:1px solid #E1E1E1;*/
 }
 
 #top-left-figures .stat{
 	margin-right:15px;
+	margin-left: 15px;
 }
 
 #top-left-page{
-	clear:left;
-	height:16px;
-	width:348px;
+	/*clear:left;*/
+	height:50px;
+	width:50px;
+	margin-top:-12px;
 	overflow:hidden;
 }
 

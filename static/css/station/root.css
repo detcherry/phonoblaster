@@ -9,7 +9,7 @@
 /* ------- AIR STATUS ------- */
 
 #top-left-status{
-	float:right;
+	/*float:right;*/
 	margin-top:-8px;
 	padding:10px;
 	text-transform:uppercase;
