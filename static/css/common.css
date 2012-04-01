@@ -9,7 +9,7 @@
 	padding-bottom:15px;
 	width:638px;
 	margin-right:20px;
-	border:1px solid #E1E1E1;
+	border-left:1px solid #E1E1E1;
 	border-top:none;
 }
 
@@ -29,9 +29,8 @@
 
 #top-left {
 	height:50px;
-	padding-bottom:15px;
-	/*border-bottom:3px solid #000000;*/
-	background-color: white;
+	padding-bottom:30px;
+	border-bottom:3px solid #000000;
 }
 
 #top-right{
@@ -49,14 +48,12 @@
 
 #top-left{
 	width:920px;
-	padding-top: 20px;
-	padding-left: 20px;
 }
 
 #top-left-picture{
 	height:50px;
 	width:50px;
-	margin-right:10px;
+	margin:15px;
 	overflow:hidden;
 }
 
@@ -65,20 +62,23 @@
 }
 
 #top-left-description{
-	width:860px;
-	margin-top: 12px;
+	width:560px;
 }
 
 #top-left-title{
 	max-width:413px;
+	margin-right: 10px;
 }
 
 #top-left-description{
 	height:92px;
+	margin-bottom: 35px;
+	margin-top: 28px;
 }
 
 #top-left-title{
 	height:23px;
+	max-width: 240px;
 	overflow:hidden;
 }
 
@@ -90,6 +90,7 @@
 }
 
 #top-left-figures{
+	float:right;
 	/*clear:left;
 	margin-bottom:15px;
 	padding-bottom:15px;
@@ -100,7 +101,6 @@
 
 #top-left-figures .stat{
 	margin-right:15px;
-	margin-left: 15px;
 }
 
 #top-left-page{
@@ -125,7 +125,7 @@
 
 #main-left{
 	padding-top:15px;
-	border-top: 3px solid black;
+	border-right: 1px solid #E1E1E1;
 }
 
 #media{

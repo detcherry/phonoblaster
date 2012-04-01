@@ -81,7 +81,6 @@ input:focus, textarea:focus, input:active, textarea:active{
 #main{
 	float:left;
 	width:100%;
-	padding-top:15px;
 	padding-bottom:15px;
 	background-color:#F5F5F5;
 }
@@ -157,7 +156,7 @@ div.container{
 .stat .figure{
 	margin-right:2px;
 	font-family:Futura;
-	font-size:18px;
+	font-size:13px;
 }
 
 .stat .title{

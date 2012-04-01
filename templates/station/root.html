@@ -31,11 +31,6 @@
 		</div>
 		<div class="fb-like" data-href="{{ station_proxy.station.link }}" data-send="false" data-layout="button_count"  data-show-faces="false"></div>
 		<!-- <div class="stroke black"></div> -->
-		{% if on_air %}
-		<div id="top-left-status" class="on"><a href="/{{ station_proxy.station.shortname }}">on air</a></div>
-		{% else %}
-		<div id="top-left-status" class="off"><a href="/{{ station_proxy.station.shortname }}">off air</a></div>
-		{% endif %}
 		<div id="top-left-figures">
 			<div id="top-left-broadcasts" class="stat">
 				<span class="figure">{{ station_proxy.number_of_broadcasts }}</span>
@@ -50,12 +45,19 @@
 				<span class="title"> Suggestions</span>
 			</div>
 		</div>
+		<!-- 
+		{% if on_air %}
+		<div id="top-left-status" class="on"><a href="/{{ station_proxy.station.shortname }}">on air</a></div>
+		{% else %}
+		<div id="top-left-status" class="off"><a href="/{{ station_proxy.station.shortname }}">off air</a></div>
+		{% endif %}
+
 		<div id="top-left-page">
-			<!--<a href="{{ station_proxy.station.link }}" target="_blank">{{ station_proxy.station.link }}</a>-->
 			<a href="{{ station_proxy.station.link }}" target="_blank" >
 				<img src="/static/images/facebook-logo.png">
 			</a>
 		</div>
+		-->
 	</div>
 {% endblock %}
 
