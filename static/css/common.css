@@ -17,7 +17,7 @@
 	width:278px;
 	border-top:none;
 	background:url("/static/images/grid.png");
-	border-right: 1px solid #E1E1E1;
+	border: 1px solid #E1E1E1;
 }
 
 /* ----- TOP ---- */
@@ -38,7 +38,6 @@
 	padding-right: 20px;
 	padding-left: 20px;
 	border: 1px solid #E1E1E1;
-	border-bottom: 3px solid black;
 	background: whiteSmoke;
 	z-index: 10;
 }
