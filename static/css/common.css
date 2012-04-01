@@ -3,9 +3,9 @@
 /* ---- COLUMNS ------*/
 
 #left-column{
-	margin-top:-15px;
+	/*margin-top:-15px;*/
 	margin-bottom:-15px;
-	padding-top:15px;
+	padding-top:5px;
 	padding-bottom:15px;
 	width:638px;
 	margin-right:20px;
@@ -14,9 +14,9 @@
 }
 
 #right-column{
-	margin-top:-15px;
+	/*margin-top:-15px;*/
 	margin-bottom:-15px;
-	padding-top:15px;
+	padding-top:5px;
 	padding-bottom:15px;
 	width:278px;
 	border:1px solid #E1E1E1;
@@ -35,10 +35,14 @@
 }
 
 #top-right{
-	height:130px;
+	height:18px;
 	padding-bottom:15px;
 	padding-right:15px;
-	border-bottom:3px solid #000000;
+	padding-top: 10px;
+	border: 1px solid #E1E1E1;
+	position: fixed;
+	bottom:0px;
+	background-color:#F1F1F1;
 }
 
 /* ---------------------------------------- TOP LEFT --------------------------------------------- */
@@ -61,7 +65,7 @@
 }
 
 #top-left-description{
-	width:820px;
+	width:860px;
 	margin-top: 12px;
 }
 
@@ -86,12 +90,12 @@
 }
 
 #top-left-figures{
-	/*clear:left;*/
+	/*clear:left;
 	margin-bottom:15px;
 	padding-bottom:15px;
 	padding-right:15px;
 	padding-left: 15px;
-	/*border-bottom:1px solid #E1E1E1;*/
+	border-bottom:1px solid #E1E1E1;*/
 }
 
 #top-left-figures .stat{
@@ -103,7 +107,9 @@
 	/*clear:left;*/
 	height:50px;
 	width:50px;
+	float: right;
 	margin-top:-12px;
+	margin-right: 15px;
 	overflow:hidden;
 }
 
@@ -119,6 +125,7 @@
 
 #main-left{
 	padding-top:15px;
+	border-top: 3px solid black;
 }
 
 #media{
@@ -405,7 +412,7 @@ input#comments-submit{
 
 #top-right{
 	padding-left:15px;
-	width:248px;
+	width:910px;
 }
 
 /* --------------------------------------------- TABS --------------------------------------------- */
@@ -413,6 +420,7 @@ input#comments-submit{
 #main-right{
 	padding-top:15px;
 	background:#F5F5F5;
+	border-top: 3px solid black;
 	border-bottom:3px solid #000000;
 }
 
