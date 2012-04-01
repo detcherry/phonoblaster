@@ -44,12 +44,12 @@
 }
 
 #top-right {
-	width: 278px;
+	width: 279px;
 	height: 80px;
 	border-bottom: 3px solid black;
-	background: none;
 	background-color: whiteSmoke;
-
+	margin-left: -1px;
+	margin-top: -1px;
 }
 
 /* ---------------------------------------- TOP LEFT --------------------------------------------- */
@@ -428,8 +428,7 @@ input#comments-submit{
 #main-right{
 	padding-top:15px;
 	background:#F5F5F5;
-	border-bottom:3px solid #000000;
-	border: 1px solid #E1E1E1;
+	border-bottom: 1px solid #E1E1E1;
 }
 
 ul#tabs{
