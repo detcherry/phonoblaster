@@ -40,12 +40,11 @@
 
 /* ----------- SESSIONS ------------*/
 
-#top-right-sessions{
-	margin-bottom:10px;
-	margin-right: 10px;
+#social-block-sessions{
+	margin-bottom:20px;
 }
 
-#top-right-session-pictures{
+#social-block-session-pictures{
 	/*clear:left;*/
 	width:248px;
 	height:70px;
@@ -69,6 +68,7 @@ a.session-picture img{
 	width:28px;
 }
 
-a#top-right-share{
+a#social-block-share{
 	float:right;
+	margin-bottom: 15px;
 }

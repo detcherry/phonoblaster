@@ -155,7 +155,7 @@ RecommendationManager.prototype.closeListen = function(){
 		if(that.station_client.queue_manager.UILive()){
 			// Popup to share station delayed after 1 sec
 			setTimeout(function(){
-				$("#top-right-share").trigger("click");
+				$("#social-block-share").trigger("click");
 			}, 1000)
 		}
 	})

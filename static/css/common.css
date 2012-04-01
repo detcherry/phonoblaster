@@ -33,21 +33,23 @@
 	border-bottom:3px solid #000000;
 }
 
-#top-right{
-	height:18px;
-	padding-bottom:15px;
-	padding-right:15px;
-	padding-top: 10px;
+#social-block{
+	height: 90px;
+	width: 237px;
+	padding-top: 15px;
+	padding-bottom: 15px;
+	padding-right: 20px;
+	padding-left: 20px;
 	border: 1px solid #E1E1E1;
-	position: fixed;
-	bottom:0px;
-	background-color:#F1F1F1;
+	border-bottom: 3px solid black;
+	background: whiteSmoke;
+	z-index: 10;
 }
 
 /* ---------------------------------------- TOP LEFT --------------------------------------------- */
 
 #top-left{
-	width:920px;
+	width:660px;
 }
 
 #top-left-picture{
@@ -66,12 +68,10 @@
 }
 
 #top-left-title{
-	max-width:413px;
-	margin-right: 10px;
 }
 
 #top-left-description{
-	height:92px;
+	height:20px;
 	margin-bottom: 35px;
 	margin-top: 28px;
 }
@@ -84,7 +84,7 @@
 
 #top-left-description h1{
 	margin-right:10px;
-	max-width:408px;
+	max-width:240px;
 	height:23px;
 	text-transform:uppercase;
 }
@@ -410,9 +410,9 @@ input#comments-submit{
 
 /* ---------------------------------------- TOP RIGHT --------------------------------------------- */
 
-#top-right{
-	padding-left:15px;
-	width:910px;
+#social-block{
+	position: fixed;
+	bottom: 0px;
 }
 
 /* --------------------------------------------- TABS --------------------------------------------- */
