@@ -53,12 +53,12 @@
 
 {% block top-right %}
 	{% if on_air %}
-		<div id="top-left-status" class="on"><a href="/{{ station_proxy.station.shortname }}">on air</a></div>
+		<div id="top-right-status" class="on"><a href="/{{ station_proxy.station.shortname }}">on air</a></div>
 		{% else %}
-		<div id="top-left-status" class="off"><a href="/{{ station_proxy.station.shortname }}">off air</a></div>
+		<div id="top-right-status" class="off"><a href="/{{ station_proxy.station.shortname }}">off air</a></div>
 		{% endif %}
 
-		<div id="top-left-page">
+		<div id="top-right-page">
 			<a href="{{ station_proxy.station.link }}" target="_blank" >
 				<img src="/static/images/fb_page_button.png">
 			</a>

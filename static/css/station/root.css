@@ -8,7 +8,7 @@
 
 /* ------- AIR STATUS ------- */
 
-#top-left-status{
+#top-right-status{
 	/*float:right;*/
 	margin-top:18px;
 	margin-bottom:18px;
@@ -20,23 +20,23 @@
 	font-size:13px;
 }
 
-#top-left-status.on{
+#top-right-status.on{
 	color:white;
 	background:#D42222;
 	border:1px solid #DB7171;
 }
 
-#top-left-status.off{
+#top-right-status.off{
 	color:#636363;
 	background:#C4C4C4;
 	border:1px solid #E1E1E1;
 }
 
-#top-left-status.on a, #top-left-status.on a:hover{
+#top-right-status.on a, #top-right-status.on a:hover{
 	color:white;
 }
 
-#top-left-status.off a, #top-left-status.off a:hover{
+#top-right-status.off a, #top-right-status.off a:hover{
 	color:#636363;
 }
 

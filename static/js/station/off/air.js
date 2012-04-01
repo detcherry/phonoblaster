@@ -55,7 +55,7 @@ AirManager.prototype = {
 			this.air = true;
 			
 			// Display on air
-			$("#top-left-status").removeClass("off").addClass("on").html("On air")
+			$("#top-right-status").removeClass("off").addClass("on").html("On air")
 
 			// Update popup
 			var content = json.content;

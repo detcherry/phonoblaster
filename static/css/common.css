@@ -85,7 +85,7 @@
 
 #top-left-title{
 	height:23px;
-	max-width: 230px;
+	max-width: 229px;
 	overflow:hidden;
 }
 
@@ -110,7 +110,7 @@
 	margin-right:15px;
 }
 
-#top-left-page{
+#top-right-page{
 	/*clear:left;*/
 	height: 38px;
 	width: 47px;
@@ -121,11 +121,11 @@
 	margin-bottom: 17px;
 }
 
-#top-left-page a{
+#top-right-page a{
 	color:#636363;
 }
 
-#top-left-page a:hover{
+#top-right-page a:hover{
 	color:#333333;
 }
 
