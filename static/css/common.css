@@ -5,7 +5,6 @@
 #left-column{
 	/*margin-top:-15px;*/
 	margin-bottom:-15px;
-	padding-top:5px;
 	padding-bottom:15px;
 	width:638px;
 	margin-right:20px;
@@ -16,12 +15,11 @@
 #right-column{
 	/*margin-top:-15px;*/
 	margin-bottom:-15px;
-	padding-top:5px;
 	padding-bottom:15px;
 	width:278px;
-	border:1px solid #E1E1E1;
 	border-top:none;
 	background:url("/static/images/grid.png");
+	border-right: 1px solid #E1E1E1;
 }
 
 /* ----- TOP ---- */
@@ -44,6 +42,15 @@
 	border-bottom: 3px solid black;
 	background: whiteSmoke;
 	z-index: 10;
+}
+
+#top-right {
+	width: 279px;
+	height: 80px;
+	border-bottom: 3px solid black;
+	background: none;
+	background-color: whiteSmoke;
+
 }
 
 /* ---------------------------------------- TOP LEFT --------------------------------------------- */
@@ -78,7 +85,7 @@
 
 #top-left-title{
 	height:23px;
-	max-width: 240px;
+	max-width: 230px;
 	overflow:hidden;
 }
 
@@ -105,12 +112,13 @@
 
 #top-left-page{
 	/*clear:left;*/
-	height:50px;
-	width:50px;
+	height: 38px;
+	width: 47px;
 	float: right;
-	margin-top:-12px;
+	margin-top: 17px;
 	margin-right: 15px;
-	overflow:hidden;
+	overflow: hidden;
+	margin-bottom: 17px;
 }
 
 #top-left-page a{
@@ -420,8 +428,8 @@ input#comments-submit{
 #main-right{
 	padding-top:15px;
 	background:#F5F5F5;
-	border-top: 3px solid black;
 	border-bottom:3px solid #000000;
+	border: 1px solid #E1E1E1;
 }
 
 ul#tabs{
