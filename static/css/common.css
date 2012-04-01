@@ -8,9 +8,6 @@
 	padding-bottom:15px;
 	width:638px;
 	margin-right:20px;
-	border-left:1px solid #E1E1E1;
-	border-bottom:1px solid #E1E1E1;
-	border-top:none;
 }
 
 #right-column{
@@ -30,6 +27,7 @@
 	height:50px;
 	padding-bottom:30px;
 	border-bottom:3px solid #000000;
+	border-left: 1px solid #E1E1E1;
 }
 
 #social-block{
@@ -134,7 +132,8 @@
 
 #main-left{
 	padding-top:15px;
-	border-right: 1px solid #E1E1E1;
+	border: 1px solid #E1E1E1;
+	border-top: none;
 }
 
 #media{
