@@ -25,7 +25,7 @@
 {% block top-left %}
 	<div id="top-left-picture">
 		<a href="/user/{{ profile_proxy.user.key.name }}">
-			<img src="https://graph.facebook.com/{{ profile_proxy.user.key.name }}/picture?type=large"/>
+			<img src="https://graph.facebook.com/{{ profile_proxy.user.key.name }}/picture?type=square"/>
 		</a>
 	</div>
 	<div id="top-left-description">
@@ -86,5 +86,6 @@
 		"key_name": "{{ profile_proxy.user.key.name }}",
 		"name": "{{ profile_proxy.user.first_name }} {{ profile_proxy.user.last_name }}",
 	}
+	$("#social-block").hide(); //No need in profile
 </script>
 {% endblock %}
