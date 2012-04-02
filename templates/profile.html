@@ -34,7 +34,7 @@
 				<h1>{{ profile_proxy.user.first_name }} {{ profile_proxy.user.last_name }}</h1>
 			</a>
 		</div>
-		<div class="stroke black"></div>
+		<!--<div class="stroke black"></div> -->
 		<div id="top-left-figures">
 			<div id="top-left-favorites" class="stat">
 				<span class="figure">{{ number_of_favorites }}</span>
@@ -87,5 +87,7 @@
 		"name": "{{ profile_proxy.user.first_name }} {{ profile_proxy.user.last_name }}",
 	}
 	$("#social-block").hide(); //No need in profile
+	$("#bottom-bar").hide();
+	$("body").css("padding-bottom",0);
 </script>
 {% endblock %}
