@@ -482,19 +482,17 @@ ScrollTabManager.prototype.scrollListen = function(){
 		var active_tab_name = $("a.current").attr("href")
 		
 		var tab_active = false;
-		if(that.name == active_tab_name){
+		if(that.name === active_tab_name){
 			tab_active = true;
 		}
 		
 		if(tab_active){			
 			var above_tab_height = 248-80;
 			var tab_height = $(that.name).height();
-			
 			var scroll_height = $(this).scrollTop();
 			var window_height = $(this).height();
 			
 			var below_tab_height = scroll_height + window_height - above_tab_height - tab_height;
-			console.log(that);
 			if(below_tab_height > 100 && !that.load && that.scrolling_on){
 				var last_item = that.items[that.items.length -1];
 				that.offset = last_item.created;
