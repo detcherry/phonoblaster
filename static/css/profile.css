@@ -1,5 +1,29 @@
 @import url("common.css");
 
+body{
+	padding-bottom: 0px;
+}
+
+#bottom-bar{
+	display: none;
+}
+
+#social-block{
+	display: none;
+}
+
+#top-left-figures{
+	margin-top: 2px;
+	float: none;
+}
+
+#top-left-title{
+	height:23px;
+	margin-right: 10px;
+	max-width: 229px;
+	overflow:hidden;
+}
+
 /* ----- RIGHT COLUMN ----*/
 
 #right-column{
