@@ -96,6 +96,7 @@
 
 #top-left-figures{
 	float:right;
+	margin-top: 2px;
 	/*clear:left;
 	margin-bottom:15px;
 	padding-bottom:15px;

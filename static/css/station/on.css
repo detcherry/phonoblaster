@@ -2,6 +2,7 @@
 
 body{
 	padding-bottom: 0px;
+	min-height:800px;
 }
 
 #bottom-bar{
