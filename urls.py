@@ -28,6 +28,7 @@ from controllers.api.now import ApiNowHandler
 from controllers.company.company import TermsHandler
 from controllers.company.company import FaqHandler
 from controllers.company.company import PressHandler
+from controllers.company.company import PressFrHandler
 
 application = webapp.WSGIApplication(
 	[
@@ -57,6 +58,7 @@ application = webapp.WSGIApplication(
 		('/company/terms', TermsHandler),
 		('/company/faq', FaqHandler),
 		('/company/press', PressHandler),
+		('/company/press/fr', PressFrHandler),
 		('/.*', AllHandler),
 	],
     debug=True
