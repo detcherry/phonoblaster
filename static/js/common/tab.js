@@ -487,7 +487,7 @@ ScrollTabManager.prototype.scrollListen = function(){
 		}
 		
 		if(tab_active){			
-			var above_tab_height = 248-80;
+			var above_tab_height = 133;//248-80;
 			var tab_height = $(that.name).height();
 			var scroll_height = $(this).scrollTop();
 			var window_height = $(this).height();
