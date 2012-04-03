@@ -1,5 +1,13 @@
 @import url("root.css");
 
+body{
+	padding-bottom: 0px;
+}
+
+#bottom-bar{
+	display: none;
+}
+
 ul#tabs li a#queue-header{
 	border-left:1px solid #E1E1E1;
 }
@@ -51,7 +59,7 @@ ul#tabs li a.alert{
 
 input#search{
 	position:absolute;
-	top:276px;
+	top:195px;
 	z-index:3;
 	display:block;
 	float:left;

@@ -22,7 +22,7 @@
 {% block top-left %}
 	<div id="top-left-picture">
 		<a href="/{{ station_proxy.station.shortname }}">
-			<img src="https://graph.facebook.com/{{ station_proxy.station.key.name}}/picture?type=large"/>
+			<img src="https://graph.facebook.com/{{ station_proxy.station.key.name}}/picture?type=square"/>
 		</a>
 	</div>
 	<div id="top-left-description">
@@ -30,7 +30,7 @@
 			<a href="/{{ station_proxy.station.shortname }}"><h1>{{ station_proxy.station.name }}</h1></a>
 		</div>
 		<div class="fb-like" data-href="{{ station_proxy.station.link }}" data-send="false" data-layout="button_count"  data-show-faces="false"></div>
-		<div class="stroke black"></div>
+		<!-- <div class="stroke black"></div> -->
 		<div id="top-left-figures">
 			<div id="top-left-broadcasts" class="stat">
 				<span class="figure">{{ station_proxy.number_of_broadcasts }}</span>
@@ -45,15 +45,24 @@
 				<span class="title"> Suggestions</span>
 			</div>
 		</div>
-		<div id="top-left-page">
-			<a href="{{ station_proxy.station.link }}" target="_blank">{{ station_proxy.station.link }}</a>
-		</div>
-		{% if on_air %}
-		<div id="top-left-status" class="on"><a href="/{{ station_proxy.station.shortname }}">on air</a></div>
-		{% else %}
-		<div id="top-left-status" class="off"><a href="/{{ station_proxy.station.shortname }}">off air</a></div>
-		{% endif %}
+		<!-- 
+
+		-->
 	</div>
+{% endblock %}
+
+{% block top-right %}
+	{% if on_air %}
+		<div id="top-right-status" class="on"><a href="/{{ station_proxy.station.shortname }}">on air</a></div>
+		{% else %}
+		<div id="top-right-status" class="off"><a href="/{{ station_proxy.station.shortname }}">off air</a></div>
+		{% endif %}
+
+		<div id="top-right-page" class="tuto" data-original-title="{{ station_proxy.station.name }} : Facebook Page">
+			<a href="{{ station_proxy.station.link }}" target="_blank" >
+				<img src="/static/images/fb_page_button.png">
+			</a>
+		</div>
 {% endblock %}
 
 {% block main-left %}

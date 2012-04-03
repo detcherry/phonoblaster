@@ -4,21 +4,21 @@
 	<link type="text/css" rel="stylesheet" href="/static/css/station/on.css" />
 {% endblock %}
 
-{% block top-right %}
-<div id="top-right-sessions" class="stat tuto" data-original-title="Logged in listeners are displayed below">
+{% block social-block %}
+<div id="social-block-sessions" class="stat tuto" data-original-title="Logged in listeners are displayed below">
 	<span class="figure">0</span>
 	<span class="title">Listeners<span>
 </div>
-<div id="top-right-session-pictures"></div>
 {% if is_admin %}
-<a id="top-right-share" class="btn primary" href="#" class="tuto" data-original-title="Share your station on Facebook!">
+<a id="social-block-share" class="btn primary" href="#" class="tuto" data-original-title="Share your station on Facebook!">
 	Bring your fans!
 </a>
 {% else %}
-<a id="top-right-share" class="btn primary" href="#" class="tuto" data-original-title="Share this station on Facebook!">
+<a id="social-block-share" class="btn primary" href="#" class="tuto" data-original-title="Share this station on Facebook!">
 	Bring your friends!
 </a>
 {% endif %}
+<div id="social-block-session-pictures"></div>
 {% endblock %}
 
 {% block main-right %}
@@ -161,6 +161,9 @@
 <script type="text/javascript" src="/static/js/station/on/air.js"></script>
 <script type="text/javascript" src="/static/js/station/on/on.js"></script>
 <script type="text/javascript">
+	//Hiding footer and removing padding bottom
+	//$("#bottom-bar").hide();
+	//$("body").css("padding-bottom",0);
 	/*--- Reset ---*/
 	USER = null;
 	ADMIN = false;

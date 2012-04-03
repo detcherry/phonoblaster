@@ -34,8 +34,8 @@ SessionManager.prototype = {
 			},
 			success: function(json){
 				// Init sessions counter
-				$("#top-right-sessions span.figure").html(json.number)
-				that.sessions_counter = new Counter("#top-right-sessions");
+				$("#social-block-sessions span.figure").html(json.number)
+				that.sessions_counter = new Counter("#social-block-sessions");
 				
 				if(json.sessions){
 					var sessions = json.sessions;
@@ -98,7 +98,7 @@ SessionManager.prototype = {
 		var listener_name = session.listener_name;
 		var listener_url = session.listener_url;
 		
-		$("#top-right-session-pictures").append(
+		$("#social-block-session-pictures").append(
 			$("<a/>")
 				.attr("id", channel_id)
 				.attr("href", listener_url)

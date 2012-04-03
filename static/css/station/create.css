@@ -6,10 +6,11 @@
 
 #left-column{
 	width:180px;
+	padding-top: 15px;
 }
 
 #right-column{
-	margin-top:-15px;
+	/*margin-top:-15px;*/
 	margin-bottom:-15px;
 	padding-top:15px;
 	padding-bottom:15px;

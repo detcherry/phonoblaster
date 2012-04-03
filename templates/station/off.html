@@ -4,7 +4,7 @@
 	<link type="text/css" rel="stylesheet" href="/static/css/station/off.css" />
 {% endblock %}
 
-{% block top-right %}
+{% block social-block %}
 	<div class="fb-facepile" data-href="{{ station_proxy.station.link }}" data-max-rows="3" data-width="250"></div>
 {% endblock %}
 
@@ -48,6 +48,10 @@
 <script type="text/javascript" src="/static/js/station/off/air.js"></script>
 <script type="text/javascript" src="/static/js/station/off/off.js"></script>
 <script type="text/javascript">
+	//Removing social block
+	//$("#social-block").hide();
+	//$("#bottom-bar").hide();
+	//$("body").css("padding-bottom",0);
 	//--- Reset ---
 	USER = null;
 	ADMIN = false;

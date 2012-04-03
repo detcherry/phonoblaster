@@ -13,7 +13,7 @@ ShareManager.prototype = {
 		var that = this;
 		
 		// Listen to events to bring people inside station (from broadcaster or listener)
-		$("a#top-right-share").click(function(){
+		$("a#social-block-share").click(function(){
 			// User must be logged in to share the station
 			if(!that.station_client.user){
 				FACEBOOK.login()
@@ -32,7 +32,7 @@ ShareManager.prototype = {
 			var message = $("#popup-share textarea").val();
 			var link = PHB.site_url + "/" + that.station_client.station.shortname;
 			var picture = PHB.site_url + "/" + that.station_client.station.shortname + "/picture";
-			var btn = $("a#top-right-share");
+			var btn = $("a#social-block-share");
 			
 			that.shareSubmit(message, link, picture, function(response){
 				that.shareCallback(btn, response);

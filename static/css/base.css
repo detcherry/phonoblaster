@@ -81,7 +81,6 @@ input:focus, textarea:focus, input:active, textarea:active{
 #main{
 	float:left;
 	width:100%;
-	padding-top:15px;
 	padding-bottom:15px;
 	background-color:#F5F5F5;
 }

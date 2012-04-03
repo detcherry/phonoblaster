@@ -1,5 +1,17 @@
 @import url("root.css");
 
+body{
+	padding-bottom: 0px;
+}
+
+#bottom-bar{
+	display: none;
+}
+
+#social-block{
+	display: none;
+}
+
 /* ----- CORRECTIONS ------ */
 
 #media-monitoring{
