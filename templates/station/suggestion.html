@@ -3,6 +3,10 @@
 {% block meta %}
 	<title>{{ suggestion.youtube_title }}</title>
 	<meta name="description" content="Suggested to {{ station_proxy.station.name }} by {{ suggestion.track_submitter_name }}">
+	<!-- Clearing cache-->
+	<meta http-equiv="Cache-Control" content="no-cache">
+	<meta http-equiv="Pragma" content="no-cache">
+	<meta http-equiv="Expires" content="0">
 {% endblock %}
 
 {% block facebook %}

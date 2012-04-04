@@ -3,6 +3,10 @@
 {% block meta %}
 	<title>{{ profile_proxy.user.first_name }} {{ profile_proxy.user.last_name }}</title>
 	<meta name="description" content="{{ profile_proxy.user.first_name }} is using Phonoblaster, a social music platform to share and discover new music.">
+	<!-- Clearing cache-->
+	<meta http-equiv="Cache-Control" content="no-cache">
+	<meta http-equiv="Pragma" content="no-cache">
+	<meta http-equiv="Expires" content="0">
 {% endblock %}
 
 {% block facebook %}
