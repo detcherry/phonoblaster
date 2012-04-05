@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block style %}
-	<link type="text/css" rel="stylesheet" href="/static/css/station/create.css">
+	<link type="text/css" rel="stylesheet" href="{{site_tag_url}}/static/css/station/create.css">
 {% endblock %}
 
 {% block main %}
@@ -8,7 +8,7 @@
 	<div class="creation-step">
 		<h1>1.</h1>
 		<div class="creation-box">
-			<img src="/static/images/step-station-creation.png">
+			<img src="{{site_tag_url}}/static/images/step-station-creation.png">
 			<h2>Create</h2>
 			<p>your station on your Facebook page</p>
 		</div>
@@ -16,7 +16,7 @@
 	<div class="creation-step light">
 		<h1>2.</h1>
 		<div class="creation-box">
-			<img src="/static/images/step-broadcast-music.png">
+			<img src="{{site_tag_url}}/static/images/step-broadcast-music.png">
 			<h2>Broadcast</h2>
 			<p>your favorite music to your fans</p>
 		</div>
@@ -30,7 +30,7 @@
 					<img src="https://graph.facebook.com/{{ contribution.page_id }}/picture" class="thumbnail"/>
 					<p class="page-name"><span class="middle">{{ contribution.page_name }}</span></p>
 					<p>
-						<img class="loader" src="/static/images/loader.gif" style="visibility:hidden;"/>
+						<img class="loader" src="{{site_tag_url}}/static/images/loader.gif" style="visibility:hidden;"/>
 						<a href="#" class="btn" id="{{ contribution.page_id }}">Create now!</a>
 					</p>
 				</div>
@@ -82,5 +82,5 @@
 {% endblock %}
 
 {% block script %}
-	<script type="text/javascript" src="/static/js/station/create.js"></script>
+	<script type="text/javascript" src="{{site_tag_url}}/static/js/station/create.js"></script>
 {% endblock %}

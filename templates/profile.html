@@ -20,7 +20,7 @@
 {% endblock %}
 
 {% block style %}
-	<link type="text/css" rel="stylesheet" href="/static/css/profile.css" />
+	<link type="text/css" rel="stylesheet" href="{{site_tag_url}}/static/css/profile.css" />
 {% endblock %}
 
 {% block top-left %}
@@ -63,14 +63,14 @@
 {% endblock %}
 
 {% block script %}
-<script type="text/javascript" src="/static/js/common/tab.js"></script>
+<script type="text/javascript" src="{{site_tag_url}}/static/js/common/tab.js"></script>
 
-<script type="text/javascript" src="/static/js/player/favorite.js"></script>
-<script type="text/javascript" src="/static/js/player/swfobject.js"></script>
-<script type="text/javascript" src="/static/js/player/embedded.js"></script>
+<script type="text/javascript" src="{{site_tag_url}}/static/js/player/favorite.js"></script>
+<script type="text/javascript" src="{{site_tag_url}}/static/js/player/swfobject.js"></script>
+<script type="text/javascript" src="{{site_tag_url}}/static/js/player/embedded.js"></script>
 
-<script type="text/javascript" src="/static/js/profile/favorite.js"></script>
-<script type="text/javascript" src="/static/js/profile/profile.js"></script>
+<script type="text/javascript" src="{{site_tag_url}}/static/js/profile/favorite.js"></script>
+<script type="text/javascript" src="{{site_tag_url}}/static/js/profile/profile.js"></script>
 <script type="text/javascript">
 	//--- Reset ---
 	USER = null;

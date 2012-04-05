@@ -8,7 +8,7 @@
 				<img class="tuto" data-original-title="{{ user_proxy.user.first_name }} {{ user_proxy.user.last_name }}" src="https://graph.facebook.com/{{ user_proxy.user.key.name }}/picture?type=square">
 				{% endif %}
 			{% else %}
-			<img src="/static/images/unknown.png">
+			<img src="{{site_tag_url}}/static/images/unknown.png">
 			{% endif %}
 		</div>
 		<form method="post" action="" id="comments-form">

@@ -4,7 +4,7 @@
 {% endblock %}
 
 {% block style %}
-	<link type="text/css" rel="stylesheet" href="/static/css/station/page/root.css">
+	<link type="text/css" rel="stylesheet" href="{{site_tag_url}}/static/css/station/page/root.css">
 {% endblock %}
 
 {% block main %}
@@ -30,7 +30,7 @@
 	</div>
 	<!-- MEDIA -->
 	<div id="media">
-		<img src="/static/images/loader.gif" class="loader"/>
+		<img src="{{site_tag_url}}/static/images/loader.gif" class="loader"/>
 		<!--<div id="youtube-player"></div>-->
 	</div>
 	<div id="media-monitoring">
@@ -64,7 +64,7 @@
 				<img class="tuto" data-original-title="{{ user_proxy.user.first_name }} {{ user_proxy.user.last_name }}" src="https://graph.facebook.com/{{ user_proxy.user.key.name }}/picture?type=square">
 				{% endif %}
 			{% else %}
-			<img src="/static/images/unknown.png">
+			<img src="{{site_tag_url}}/static/images/unknown.png">
 			{% endif %}
 		</div>
 		<form method="post" action="" id="comments-form">
@@ -80,7 +80,7 @@
 {% block footer %}
 	<div id="bottom-bar">
 		<div class="container">
-			<a href="{{ site_url }}" target="_blank"><img src="/static/images/phonoblaster.png"></a>
+			<a href="{{ site_url }}" target="_blank"><img src="{{site_tag_url}}/static/images/phonoblaster.png"></a>
 		</div>
 	</div>
 {% endblock %}

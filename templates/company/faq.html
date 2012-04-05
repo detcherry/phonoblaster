@@ -1,12 +1,12 @@
 {% extends "base.html" %}
 
 {% block style %}
-	<link type="text/css" rel="stylesheet" href="/static/css/company/company.css" />
+	<link type="text/css" rel="stylesheet" href="{{site_tag_url}}/static/css/company/company.css" />
 {% endblock %}
 
 {% block main %}
 	<div id="company">
-		<img src="/static/images/company/faq.png">
+		<img src="{{site_tag_url}}/static/images/company/faq.png">
 		<h1>Help</h1>
 	
 		<h3>When I click on “create” to create a station for my Facebook page, it says “Error...”, why?</h3>
