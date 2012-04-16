@@ -134,9 +134,6 @@ SessionManager.prototype = {
 	},
 	
 	delete: function(session_gone){
-		console.log("In delete Session");
-		console.log(this.sessions);
-		console.log(this.duplicate_sessions);
 		// We gonna check first in the duplicate list
 		var that = this;
 		var was_duplicate = false;
