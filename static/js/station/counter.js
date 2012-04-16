@@ -11,12 +11,17 @@ Counter.prototype = {
 	
 	increment: function(){
 		this.count++;
-		this.display()
+		this.display();
 	},
 	
 	decrement: function(){
 		this.count--;
-		this.display()
+		this.display();
+	},
+
+	setCount: function(count){
+		this.count = count;
+		this.display();
 	},
 	
 	display: function(){

@@ -34,34 +34,31 @@ SessionManager.prototype = {
 			},
 			success: function(json){
 				// Init sessions counter
-				$("#social-block-sessions span.figure").html(json.number)
+				$("#social-block-sessions span.figure").html(that.sessions.length);
 				that.sessions_counter = new Counter("#social-block-sessions");
-				
+
 				if(json.sessions){
 					var sessions = json.sessions;
 					
 					// Add each new friend session to the DOM
 					$.each(sessions, function(index, value){
 						var session = value;
-						if(session.listener_key_name){
-							that.add(session);
-						}
-					})					
+						that.add(session);
+					})	
 				}
+
+				that.sessions_counter.setCount(that.sessions.length);
 			},
 		});
 	},
 	
 	// Incoming sessions received from PubNub
 	new: function(new_session){
-		// Session of a logged in listener
-		if(new_session.listener_key_name){
-			this.add(new_session)
-		}
+		this.add(new_session);
 		
 		// Increment sessions counter
 		if(this.sessions_counter){
-			this.sessions_counter.increment();
+			this.sessions_counter.setCount(this.sessions.length);
 		}
 	},
 	
@@ -71,34 +68,39 @@ SessionManager.prototype = {
 		
 		// Check if the new listener is not already listening
 		var duplicate = false;
-		for(var i=0, c=that.sessions.length; i<c; i++){
+		if(new_session.listener_key_name){
+			for(var i=0, c=that.sessions.length; i<c; i++){
 			var session = that.sessions[i];
 			if(session.listener_key_name == new_session.listener_key_name){
 				duplicate = true;
 				break;
 			}
 		}
+		}
 		
 		if(duplicate){
 			// Add session to the duplicate list
-			this.duplicate_sessions.push(new_session)
+			this.duplicate_sessions.push(new_session);
+
 		}
 		else{
 			// Add session to the list
-			this.sessions.push(new_session)
+			this.sessions.push(new_session);
 
 			// Add session to the UI
-			this.UIAdd(new_session)
+			this.UIAdd(new_session);
 		}
 	},
 	
 	UIAdd: function(session){
 		var channel_id = session.key_name;
-		var listener_picture_url = "https://graph.facebook.com/"+ session.listener_key_name + "/picture?type=square";
-		var listener_name = session.listener_name;
-		var listener_url = session.listener_url;
 		
-		$("#social-block-session-pictures").append(
+		
+		if(session.listener_key_name){
+			var listener_picture_url = "https://graph.facebook.com/"+ session.listener_key_name + "/picture?type=square";
+			var listener_name = session.listener_name;
+			var listener_url = session.listener_url;
+			$("#social-block-session-pictures").append(
 			$("<a/>")
 				.attr("id", channel_id)
 				.attr("href", listener_url)
@@ -106,23 +108,35 @@ SessionManager.prototype = {
 				.addClass("session-picture")
 				.attr("data-original-title", listener_name) // Twipsy
 				.append($("<img/>").attr("src", listener_picture_url))
-		)
+			);
+		}else{
+			var listener_picture_url = "/static/images/unknown.png";
+			var listener_name = "Unknown";
+			$("#social-block-session-pictures").append(
+			$("<a/>")
+				.attr("id", channel_id)
+				.addClass("tuto") // Twipsy
+				.addClass("session-picture")
+				.attr("data-original-title", listener_name) // Twipsy
+				.append($("<img/>").attr("src", listener_picture_url))
+			)
+		}
 		
 	},
 	
 	// Session left
-	remove: function(session_gone){				
-		if(session_gone.listener_key_name){
-			this.delete(session_gone)
-		}
+	remove: function(session_gone){
+		this.delete(session_gone);
 		
 		if(this.sessions_counter){
-			// Decrement sessions counter
-			this.sessions_counter.decrement();
+			this.sessions_counter.setCount(this.sessions.length);
 		}
 	},
 	
 	delete: function(session_gone){
+		console.log("In delete Session");
+		console.log(this.sessions);
+		console.log(this.duplicate_sessions);
 		// We gonna check first in the duplicate list
 		var that = this;
 		var was_duplicate = false;
@@ -161,6 +175,11 @@ SessionManager.prototype = {
 
 				// We put it into the main list
 				that.add(duplicate_session);
+
+				// Increment sessions counter
+				if(this.sessions_counter){
+					this.sessions_counter.setCount(this.sessions.length);
+				}
 
 				// Stop the loop
 				break;
