@@ -25,10 +25,9 @@ body{
 
 #top-left-description{
 	height:42px;
-}
-
-#top-left-description{
 	width:510px;
+	margin-bottom: 0px;
+	margin-top: 0px;
 }
 
 #top-left-title{
@@ -43,6 +42,14 @@ body{
 
 #top-right-status{
 	margin-top:-24px;
+	margin-bottom: 0px;
+	margin-left: 0px;
+	float: right;
+}
+
+#social-block-sessions{
+	margin-bottom: 0px;
+	padding-top: 0px;
 }
 
 /* ---- MAIN LEFT CORRECTIONS ----- */
@@ -166,6 +173,7 @@ input#comments-input{
 	min-height:250px;
 	border:1px solid #E1E1E1;
 	border-top:none;
+	clear: none;
 }
 
 .tab-content .tab-items{
