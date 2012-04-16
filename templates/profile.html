@@ -8,7 +8,7 @@
 
 {% block facebook %}
 	<!-- User Open Graph Tags -->
-	<meta property="fb:app_id" content="{{ facebo/ok_app_id }}"/>
+	<meta property="fb:app_id" content="{{ facebook_app_id }}"/>
 	<meta property="og:type" content="{{ version }}:user"/> 
 	<meta property="og:url" content="{{ site_url }}/user/{{ profile_proxy.user.key.name }}"/> 
 	<meta property="og:title" content="{{ profile_proxy.user.first_name }} {{ profile_proxy.user.last_name }}"/> 
@@ -20,7 +20,7 @@
 {% endblock %}
 
 {% block style %}
-	<link type="text/css" rel="stylesheet" href="/static/css/profile.css" />
+	<link type="text/css" rel="stylesheet" href="/{{tag}}/static/css/profile.css" />
 {% endblock %}
 
 {% block top-left %}
@@ -63,14 +63,14 @@
 {% endblock %}
 
 {% block script %}
-<script type="text/javascript" src="/static/js/common/tab.js"></script>
+<script type="text/javascript" src="/{{tag}}/static/js/common/tab.js"></script>
 
-<script type="text/javascript" src="/static/js/player/favorite.js"></script>
-<script type="text/javascript" src="/static/js/player/swfobject.js"></script>
-<script type="text/javascript" src="/static/js/player/embedded.js"></script>
+<script type="text/javascript" src="/{{tag}}/static/js/player/favorite.js"></script>
+<script type="text/javascript" src="/{{tag}}/static/js/player/swfobject.js"></script>
+<script type="text/javascript" src="/{{tag}}/static/js/player/embedded.js"></script>
 
-<script type="text/javascript" src="/static/js/profile/favorite.js"></script>
-<script type="text/javascript" src="/static/js/profile/profile.js"></script>
+<script type="text/javascript" src="/{{tag}}/static/js/profile/favorite.js"></script>
+<script type="text/javascript" src="/{{tag}}/static/js/profile/profile.js"></script>
 <script type="text/javascript">
 	//--- Reset ---
 	USER = null;

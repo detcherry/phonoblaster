@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block style %}
-	<link type="text/css" rel="stylesheet" href="/static/css/company/company.css" />
+	<link type="text/css" rel="stylesheet" href="/{{tag}}/static/css/company/company.css" />
 {% endblock %}
 
 {% block main %}
@@ -10,15 +10,15 @@
 		<h2>"Phonoblaster permet à tout artiste, label ou blogueur de diffuser à ses fans la musique qu'il aime!"</h2>
 		<div class="stroke black"></div>
 		<div class="tutorial">
-			<img src="/static/images/press/1.png">
+			<img src="/{{tag}}/static/images/press/1.png">
 			<span>Créer sa station.</span>
 		</div>
 		<div class="tutorial">
-			<img src="/static/images/press/2.png">
+			<img src="/{{tag}}/static/images/press/2.png">
 			<span>Jouer ses morceaux préférés.</span>
 		</div>
 		<div class="tutorial">
-			<img src="/static/images/press/3.png">
+			<img src="/{{tag}}/static/images/press/3.png">
 			<span>Et diffuser dans le monde entier!</span>
 		</div>
 		<div class="block" id="press-computer-page">

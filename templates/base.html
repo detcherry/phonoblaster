@@ -18,13 +18,13 @@
 			<meta property="og:site_name" content="Phonoblaster"/>
 		{% endblock %}
 		<!-- Standard stylesheet -->
-		<link rel="shortcut icon" href="/static/images/favicon.ico" type="image/x-icon" />
+		<link rel="shortcut icon" href="/{{tag}}/static/images/favicon.ico" type="image/x-icon" />
 		<!-- Bootstrap stylesheet -->
-		<link type="text/css" rel="stylesheet" href="/static/plugins/bootstrap/bootstrap.min.css">
+		<link type="text/css" rel="stylesheet" href="/{{tag}}/static/plugins/bootstrap/bootstrap.min.css">
 		<!-- Fancybox stylesheet -->
-		<link rel="stylesheet" href="/static/plugins/fancybox/source/jquery.fancybox.css" type="text/css" media="screen"/>
+		<link rel="stylesheet" href="/{{tag}}/static/plugins/fancybox/source/jquery.fancybox.css" type="text/css" media="screen"/>
 		<!-- Base stylesheet -->
-		<link type="text/css" rel="stylesheet" href="/static/css/base.css">
+		<link type="text/css" rel="stylesheet" href="/{{tag}}/static/css/base.css">
 		<!-- Additional stylesheets -->
 		{% block style %}
 		{% endblock %}
@@ -67,15 +67,15 @@
 			{% include "footer.html" %}
 		{% endblock %}
 		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.0/jquery.min.js"></script>
-		<script type="text/javascript" src="/static/plugins/fancybox/source/jquery.fancybox.pack.js"></script>
+		<script type="text/javascript" src="/{{tag}}/static/plugins/fancybox/source/jquery.fancybox.pack.js"></script>
 		<script type="text/javascript">
 			FACEBOOK_APP_ID = "{{ facebook_app_id }}";
 			VERSION = "{{ version }}";
 			SITE_URL = "{{ site_url }}";
 		</script>
-		<script type="text/javascript" src="/static/plugins/bootstrap/js/bootstrap-twipsy.js"></script>
-		<script type="text/javascript" src="/static/js/phb.js"></script>
-		<script type="text/javascript" src="/static/js/library/facebook.js"></script>
+		<script type="text/javascript" src="/{{tag}}/static/plugins/bootstrap/js/bootstrap-twipsy.js"></script>
+		<script type="text/javascript" src="/{{tag}}/static/js/phb.js"></script>
+		<script type="text/javascript" src="/{{tag}}/static/js/library/facebook.js"></script>
 		{% block script %}
 		{% endblock %}
 		{% block front %}

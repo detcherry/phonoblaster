@@ -1,7 +1,7 @@
 {% extends "station/root.html" %}
 
 {% block style %}
-	<link type="text/css" rel="stylesheet" href="/static/css/station/secondary.css" />
+	<link type="text/css" rel="stylesheet" href="/{{tag}}/static/css/station/secondary.css" />
 {% endblock %}
 
 {% block comment %}
@@ -29,8 +29,8 @@
 {% endblock %}
 
 {% block script %}
-	<script type="text/javascript" src="/static/js/player/swfobject.js"></script>
-	<script type="text/javascript" src="/static/js/player/embedded.js"></script>
+	<script type="text/javascript" src="/{{tag}}/static/js/player/swfobject.js"></script>
+	<script type="text/javascript" src="/{{tag}}/static/js/player/embedded.js"></script>
 	<script type="text/javascript">
 		//--- Reset ---
 		USER = null;

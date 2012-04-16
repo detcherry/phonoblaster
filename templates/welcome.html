@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block style %}
-	<link type="text/css" rel="stylesheet" href="/static/css/welcome.css">
+	<link type="text/css" rel="stylesheet" href="/{{tag}}/static/css/welcome.css">
 {% endblock %}
 
 {% block header %}
@@ -24,12 +24,12 @@
 
 {% block main %}
 	<div id="welcome">
-		<img src="/static/images/welcome/welcome.png">
+		<img src="/{{tag}}/static/images/welcome/welcome.png">
 		<div class="stroke black"></div>
 		<div id="welcome-title">
 			<h1>Broadcast your favorite music directly to your fans!</h1>
 			<a class="login" href="#">Login with Facebook</a>
-			<p><img src="/static/images/welcome/lock.png"/>We'll never post to your page without your permission.</p>
+			<p><img src="/{{tag}}/static/images/welcome/lock.png"/>We'll never post to your page without your permission.</p>
 		</div>
 	</div>
 	<div class="welcome-block" id="welcome-audience">

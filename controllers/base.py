@@ -96,6 +96,8 @@ class BaseHandler(webapp.RequestHandler):
 		self._template_values["facebook_app_id"] = config.FACEBOOK_APP_ID
 		self._template_values["site_url"] = config.SITE_URL
 		self._template_values["version"] = config.VERSION
+		self._template_values["tag"] = config.TAG
+
 		
 		relative_path = os.path.join("../templates/", template_path)
 		path = os.path.join(os.path.dirname(__file__), relative_path)
@@ -111,6 +113,7 @@ class BaseHandler(webapp.RequestHandler):
 				"facebook_app_id": config.FACEBOOK_APP_ID,
 				"site_url": config.SITE_URL,
 				"version": config.VERSION,
+				"tag": config.TAG,
 			}
 			path = os.path.join(os.path.dirname(__file__), "../templates/error.html")
 			self.response.out.write(template.render(path, template_values))
