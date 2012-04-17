@@ -14,10 +14,16 @@ COUNTER_OF_FAVORITES_PREFIX = "track.favorites."
 class Track(db.Model):
 	"""
 		youtube_id - ID of the track on Youtube
+		youtube_title - String video title
+		youtube_duration - Integer duration of the video in seconds
+		youtube_music - Boolen, indicates if the video category is music or not
 		station - 'owner' of the track
 	"""
 	
 	youtube_id = db.StringProperty(required = True)
+	youtube_title = db.StringProperty(required = True)
+	youtube_duration = db.IntegerProperty(required = True)
+	youtube_music = db.BooleanProperty(required = True)
 	station = db.ReferenceProperty(Station, required = True, collection_name = "trackStation")
 	created = db.DateTimeProperty(auto_now_add = True)
 

@@ -12,12 +12,18 @@ class Suggestion(db.Model):
 	"""
 		message (optional)- message added by the user with the suggestion
 		youtube_id - ID of the track on Youtube
+		youtube_title - String video title
+		youtube_duration - Integer duration of the video in seconds
+		youtube_music - Boolen, indicates if the video category is music or not
 		station - recipient of the suggestion
 		user - suggestion submitter	
 	"""
 	
 	message = db.StringProperty(required = False)
 	youtube_id = db.StringProperty(required = True)
+	youtube_title = db.StringProperty(required = True)
+	youtube_duration = db.IntegerProperty(required = True)
+	youtube_music = db.BooleanProperty(required = True)
 	station = db.ReferenceProperty(Station, required = True, collection_name = "suggestionStation")
 	user = db.ReferenceProperty(User, required = True, collection_name = "suggestionUser")
 	created = db.DateTimeProperty(auto_now_add = True)
