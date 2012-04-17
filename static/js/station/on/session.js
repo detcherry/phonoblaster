@@ -70,12 +70,12 @@ SessionManager.prototype = {
 		var duplicate = false;
 		if(new_session.listener_key_name){
 			for(var i=0, c=that.sessions.length; i<c; i++){
-			var session = that.sessions[i];
-			if(session.listener_key_name == new_session.listener_key_name){
-				duplicate = true;
-				break;
+				var session = that.sessions[i];
+				if(session.listener_key_name == new_session.listener_key_name){
+					duplicate = true;
+					break;
+				}
 			}
-		}
 		}
 		
 		if(duplicate){
@@ -84,8 +84,12 @@ SessionManager.prototype = {
 
 		}
 		else{
-			// Add session to the list
-			this.sessions.push(new_session);
+			// Add session to the list, first are the logged users then the unknown users.
+			if(new_session.listener_key_name){
+				this.sessions.unshift(new_session);
+			}else{
+				this.sessions.push(new_session);
+			}
 
 			// Add session to the UI
 			this.UIAdd(new_session);
@@ -100,7 +104,7 @@ SessionManager.prototype = {
 			var listener_picture_url = "https://graph.facebook.com/"+ session.listener_key_name + "/picture?type=square";
 			var listener_name = session.listener_name;
 			var listener_url = session.listener_url;
-			$("#social-block-session-pictures").append(
+			$("#social-block-session-pictures").prepend(
 			$("<a/>")
 				.attr("id", channel_id)
 				.attr("href", listener_url)
