@@ -59,10 +59,10 @@ class ApiSuggestionsHandler(BaseHandler):
 				logging.info("User did not submit a suggestion shortly")
 				
 				youtube_track = {
-									"id": suggestion["youtube_id"],
-									"title": suggestion["youtube_title"],
-									"duration": suggestion["youtube_duration"],
-								}
+					"id": suggestion["youtube_id"],
+					"title": suggestion["youtube_title"],
+					"duration": suggestion["youtube_duration"],
+				}
 								
 				if(youtube_track):
 					logging.info("Suggested track on Youtube")

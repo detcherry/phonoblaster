@@ -61,6 +61,8 @@ class ViewHandler(webapp.RequestHandler):
 				name = station_proxy.station.name,
 				link = station_proxy.station.link,
 				youtube_id = live_broadcast["youtube_id"],
+				youtube_duration = live_broadcast["youtube_duration"],
+				youtube_title = live_broadcast["youtube_title"].decode('utf-8'),
 				expired = datetime.utcfromtimestamp(int(live_broadcast["expired"]))
 			)
 			air.put()
