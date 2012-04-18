@@ -23,6 +23,9 @@ class ViewHandler(webapp.RequestHandler):
 			
 			live_broadcast = queue[0]
 			track_id = int(live_broadcast["track_id"])
+			youtube_id = live_broadcast["youtube_id"]
+			youtube_duration = int(live_broadcast["youtube_duration"])
+			youtube_title = live_broadcast["youtube_title"]
 			track_key = db.Key.from_path("Track", track_id)
 			
 			number_of_sessions = max(0,station_proxy.number_of_sessions)
@@ -60,9 +63,9 @@ class ViewHandler(webapp.RequestHandler):
 				shortname = station_proxy.station.shortname,
 				name = station_proxy.station.name,
 				link = station_proxy.station.link,
-				youtube_id = live_broadcast["youtube_id"],
-				youtube_duration = live_broadcast["youtube_duration"],
-				youtube_title = live_broadcast["youtube_title"].decode('utf-8'),
+				youtube_id = youtube_id,
+				youtube_duration = youtube_duration,
+				youtube_title = youtube_title,
 				expired = datetime.utcfromtimestamp(int(live_broadcast["expired"]))
 			)
 			air.put()
