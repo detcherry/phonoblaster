@@ -23,7 +23,6 @@ class Suggestion(db.Model):
 	youtube_id = db.StringProperty(required = True)
 	youtube_title = db.StringProperty()
 	youtube_duration = db.IntegerProperty()
-	youtube_music = db.BooleanProperty()
 	station = db.ReferenceProperty(Station, required = True, collection_name = "suggestionStation")
 	user = db.ReferenceProperty(User, required = True, collection_name = "suggestionUser")
 	created = db.DateTimeProperty(auto_now_add = True)

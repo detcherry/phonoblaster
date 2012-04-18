@@ -11,7 +11,6 @@ class Air(db.Model):
 	youtube_id = db.StringProperty(required = True)
 	youtube_title = db.StringProperty()
 	youtube_duration = db.IntegerProperty()
-	youtube_music = db.BooleanProperty()
 	expired = db.DateTimeProperty(required = True)
 	created = db.DateTimeProperty(auto_now_add = True)
 	
