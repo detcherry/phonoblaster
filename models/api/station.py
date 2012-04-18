@@ -261,19 +261,7 @@ Global number of stations: %s
 					# If track on Phonoblaster, get extended track from Youtube
 					if(track):
 						logging.info("Track on Phonoblaster")
-						
-						# Was the track created from the old database model?
-						if((not track.youtube_title) or (not track.youtube_duration)):
-							# old database model, we need to make a call to the Youtube API
-							extended_track = Track.get_extended_tracks([track])[0]
-						else:
-							extended_track = {
-								"track_id": track.key().id(),
-								"track_created": timegm(track.created.utctimetuple()),
-								"youtube_id": track.youtube_id,
-								"youtube_title": track.youtube_title,
-								"youtube_duration": track.youtube_duration,
-							}
+						extended_track = Track.get_extended_tracks([track])[0]
 
 				else:
 					# If obviously not, look for it though, save it otherwise and get extended track from Youtube
