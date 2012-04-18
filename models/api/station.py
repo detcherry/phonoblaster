@@ -266,7 +266,7 @@ Global number of stations: %s
 				else:
 					# If obviously not, look for it though, save it otherwise and get extended track from Youtube
 					if(broadcast["youtube_id"]):
-						track, extended_track = Track.get_or_insert_by_youtube_id(broadcast["youtube_id"], self.station)
+						track, extended_track = Track.get_or_insert_by_youtube_id(broadcast, self.station)
 
 				if(track and extended_track):
 

@@ -56,7 +56,10 @@ class Track(db.Model):
 		return extended_tracks
 
 	@staticmethod
-	def get_or_insert_by_youtube_id(youtube_id, station):
+	def get_or_insert_by_youtube_id(broadcast, station):
+		youtube_id = broadcast["youtube_id"]
+		youtube_duration = broadcast["youtube_duration"]
+		youtube_title = broadcast ["youtube_title"]
 		track = None
 		extended_track = None
 
@@ -74,25 +77,23 @@ class Track(db.Model):
 			# First time this track is submitted in this station
 			else:
 				logging.info("Track not on Phonoblaster")
-				youtube_track = Youtube.get_extended_tracks([youtube_id])[0] # TO BE REMOVED
 
-				# If track on Youtube, save the track on Phonoblaster, generate the extended track
-				if(youtube_track):
-					logging.info("Track on Youtube")
-					track = Track(
-						youtube_id = youtube_id,
-						station = station,
-					)
-					track.put()
-					logging.info("New track put in the datastore.")
+				track = Track(
+					youtube_id = youtube_id,
+					youtube_title = youtube_title,
+					youtube_duration = youtube_duration,
+					station = station,
+				)
+				track.put()
+				logging.info("New track put in the datastore.")
 
-					extended_track = {
-						"track_id": track.key().id(),
-						"track_created": timegm(track.created.utctimetuple()),
-						"youtube_id": youtube_track["id"],
-						"youtube_title": youtube_track["title"],
-						"youtube_duration": youtube_track["duration"],
-					}
+				extended_track = {
+					"track_id": track.key().id(),
+					"track_created": timegm(track.created.utctimetuple()),
+					"youtube_id": youtube_id,
+					"youtube_title": youtube_title,
+					"youtube_duration": youtube_duration,
+				}
 
 		return (track, extended_track)
 
