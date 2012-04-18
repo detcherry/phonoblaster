@@ -26,7 +26,7 @@ class HomeHandler(BaseHandler):
 				feed = q.fetch(50)
 			
 				youtube_ids = [Air.youtube_id.get_value_for_datastore(f) for f in feed]
-				extended_tracks = Youtube.get_extended_tracks(youtube_ids)
+				extended_tracks = Youtube.get_extended_tracks(youtube_ids) #TO BE REMOVED
 			
 				on_air = []
 				stations = []

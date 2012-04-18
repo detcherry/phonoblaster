@@ -21,9 +21,9 @@ class Track(db.Model):
 	"""
 	
 	youtube_id = db.StringProperty(required = True)
-	youtube_title = db.StringProperty(required = True)
-	youtube_duration = db.IntegerProperty(required = True)
-	youtube_music = db.BooleanProperty(required = True)
+	youtube_title = db.StringProperty()
+	youtube_duration = db.IntegerProperty()
+	youtube_music = db.BooleanProperty()
 	station = db.ReferenceProperty(Station, required = True, collection_name = "trackStation")
 	created = db.DateTimeProperty(auto_now_add = True)
 
@@ -40,7 +40,7 @@ class Track(db.Model):
 			for track in tracks:
 				youtube_ids.append(track.youtube_id)
 		
-			youtube_tracks = Youtube.get_extended_tracks(youtube_ids)
+			youtube_tracks = Youtube.get_extended_tracks(youtube_ids) #TO BE REMOVED
 
 			for track, youtube_track in zip(tracks, youtube_tracks):
 				if(youtube_track):
@@ -75,7 +75,7 @@ class Track(db.Model):
 			# First time this track is submitted in this station
 			else:
 				logging.info("Track not on Phonoblaster")
-				youtube_track = Youtube.get_extended_tracks([youtube_id])[0]
+				youtube_track = Youtube.get_extended_tracks([youtube_id])[0] # TO BE REMOVED
 
 				# If track on Youtube, save the track on Phonoblaster, generate the extended track
 				if(youtube_track):

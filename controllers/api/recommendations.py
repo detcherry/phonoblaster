@@ -13,7 +13,7 @@ class ApiRecommendationsHandler(BaseHandler):
 		yt = self.request.get("youtube_ids")
 		youtube_ids = yt.split(",")			 
 
-		raw_extended_tracks = Youtube.get_extended_tracks(youtube_ids)
+		raw_extended_tracks = Youtube.get_extended_tracks(youtube_ids) #TO BE REMOVED
 		extended_tracks = []
 		for e in raw_extended_tracks:
 			if e is not None and e["music"]:

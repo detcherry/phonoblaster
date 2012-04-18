@@ -21,9 +21,9 @@ class Suggestion(db.Model):
 	
 	message = db.StringProperty(required = False)
 	youtube_id = db.StringProperty(required = True)
-	youtube_title = db.StringProperty(required = True)
-	youtube_duration = db.IntegerProperty(required = True)
-	youtube_music = db.BooleanProperty(required = True)
+	youtube_title = db.StringProperty()
+	youtube_duration = db.IntegerProperty()
+	youtube_music = db.BooleanProperty()
 	station = db.ReferenceProperty(Station, required = True, collection_name = "suggestionStation")
 	user = db.ReferenceProperty(User, required = True, collection_name = "suggestionUser")
 	created = db.DateTimeProperty(auto_now_add = True)
@@ -42,7 +42,7 @@ class Suggestion(db.Model):
 				user_key = Suggestion.user.get_value_for_datastore(s)
 				user_keys.append(user_key)
 			
-			youtube_tracks = Youtube.get_extended_tracks(youtube_ids)
+			youtube_tracks = Youtube.get_extended_tracks(youtube_ids) #TO BE REMOVED
 			logging.info("Youtube tracks retrieved")
 			
 			users = db.get(user_keys)

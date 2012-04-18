@@ -59,7 +59,7 @@ class ApiSuggestionsHandler(BaseHandler):
 				logging.info("User did not submit a suggestion shortly")
 				
 				youtube_id = suggestion["youtube_id"]
-				youtube_track = Youtube.get_extended_tracks([youtube_id])[0]
+				youtube_track = Youtube.get_extended_tracks([youtube_id])[0] #TO BE REMOVED
 								
 				if(youtube_track):
 					logging.info("Suggested track on Youtube")

@@ -9,9 +9,9 @@ class Air(db.Model):
 	name = db.StringProperty(required = True)
 	link = db.StringProperty(required = True)
 	youtube_id = db.StringProperty(required = True)
-	youtube_title = db.StringProperty(required = True)
-	youtube_duration = db.IntegerProperty(required = True)
-	youtube_music = db.BooleanProperty(required = True)
+	youtube_title = db.StringProperty()
+	youtube_duration = db.IntegerProperty()
+	youtube_music = db.BooleanProperty()
 	expired = db.DateTimeProperty(required = True)
 	created = db.DateTimeProperty(auto_now_add = True)
 	
