@@ -54,7 +54,6 @@ class DBUpgradeHandler(webapp.RequestHandler):
 							track.youtube_title = youtube_title.decode("utf-8")
 							track.put()
 						except Exception, e:
-							logging.info("Task Upgrade put in the queue, with a delai of 10 minutes")
 							youtubeErrorRaied = True
 							break
 
@@ -73,7 +72,7 @@ class DBUpgradeHandler(webapp.RequestHandler):
 						countdown = countdown,
 					)
 				task.add(queue_name = "upgrade-queue")
-				logging.info("Task Upgrade put in the queue")
+				logging.info("Task Upgrade put in the queue, with a delai of "+str(countdown/60)+" minutes")
 
 
 application = webapp.WSGIApplication([
