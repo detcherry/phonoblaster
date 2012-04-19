@@ -18,6 +18,7 @@ class DBUpgradeHandler(webapp.RequestHandler):
 		time = self.request.get("time")
 
 		processData = False
+		youtubeErrorRaied = False
 
 		query = Track.all()
 		query.order("-created")
@@ -43,13 +44,33 @@ class DBUpgradeHandler(webapp.RequestHandler):
 					logging.info("Track Youtube id : "+track.youtube_id)
 					if((not track.youtube_duration) or (not track.youtube_title)):
 						logging.info("Youtube API Call is necessary")
+						try:
+							extended_track = Youtube.get_extended_tracks([track.youtube_id])[0]
+							youtube_duration = int(extended_track["duration"])
+							youtube_title = extended_track["title"]
+
+
+							track.youtube_duration = youtube_duration
+							track.youtube_title = youtube_title.decode("utf-8")
+							track.put()
+						except Exception, e:
+							logging.info("Task Upgrade put in the queue, with a delai of 10 minutes")
+							youtubeErrorRaied = True
+							break
+
 					else:
 						logging.info("Track up to date")
 
+				if(youtubeErrorRaied):
+					countdown = 10*60 # Wait 10 minutes before executing next element in queue
+				else:
+					countdown = 0
+				
 				cursor = query.cursor()
 				task = Task(
 						url = "/taskqueue/upgrade",
 						params = {'cursor':cursor, 'time':time},
+						countdown = countdown,
 					)
 				task.add(queue_name = "upgrade-queue")
 				logging.info("Task Upgrade put in the queue")

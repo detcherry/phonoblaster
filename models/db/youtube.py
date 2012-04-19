@@ -30,13 +30,14 @@ class Youtube():
 		# Send the batch query
 		uri = 'http://gdata.youtube.com/feeds/api/videos/batch'		
 		feed = client.Post(query, uri, converter=gdata.youtube.YouTubeVideoFeedFromString)
-
 		if(feed.entry):
 			for entry in feed.entry:
-
 				skip = False
 				for x in entry.extension_elements:
 					if x.tag == "status" and x.namespace == "http://schemas.google.com/gdata/batch" and x.attributes["code"] != "200":
+						logging.info("Feed Entry : ")
+						logging.info(x.attributes)
+						logging.info(entry)
 						skip = True
 
 				if(skip):
