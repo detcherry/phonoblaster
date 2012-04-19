@@ -22,12 +22,15 @@ class ViewHandler(webapp.RequestHandler):
 			logging.info("Station on air")
 			
 			live_broadcast = queue[0]
-			track_id = int(live_broadcast["track_id"])
-			youtube_id = live_broadcast["youtube_id"]
-			youtube_duration = int(live_broadcast["youtube_duration"])
-			youtube_title = live_broadcast["youtube_title"]
+			track_id = int(live_broadcast[u"track_id"])
 			track_key = db.Key.from_path("Track", track_id)
-			
+			youtube_id = live_broadcast[u"youtube_id"]
+			youtube_duration = int(live_broadcast[u"youtube_duration"])
+			youtube_title = live_broadcast[u"youtube_title"]
+			logging.info(youtube_id)
+			logging.info(youtube_duration)
+			logging.info(youtube_title)
+
 			number_of_sessions = max(0,station_proxy.number_of_sessions)
 			if(number_of_sessions):
 				# Increase the station views counter

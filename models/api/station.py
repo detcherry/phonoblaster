@@ -262,7 +262,7 @@ Global number of stations: %s
 					if(track):
 						logging.info("Track on Phonoblaster")
 						extended_track = Track.get_extended_tracks([track])[0]
-
+						
 				else:
 					# If obviously not, look for it though, save it otherwise and get extended track from Youtube
 					if(broadcast["youtube_id"]):

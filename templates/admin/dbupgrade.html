@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block style %}
+	<link type="text/css" rel="stylesheet" href="/{{tag}}/static/css/admin/dbupgrade.css" />
+{% endblock %}
+
+{% block main %}
+	<div id="dbupgrade">
+		<h1>Database Upgrade</h1>
+		<br/>
+
+		<div class="item-processing">
+			<a class="btn">Strat Upgrade</a>
+		</div>
+
+	</div>
+{% endblock %}
+
+{% block script %}
+	<script type="text/javascript" src="/{{tag}}/static/js/admin/dbupgrade.js"></script>
+{% endblock %}
