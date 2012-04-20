@@ -26,7 +26,7 @@ class ViewHandler(webapp.RequestHandler):
 			track_key = db.Key.from_path("Track", track_id)
 			youtube_id = live_broadcast[u"youtube_id"]
 			youtube_duration = int(live_broadcast[u"youtube_duration"])
-			youtube_title = live_broadcast[u"youtube_title"]
+			youtube_title = live_broadcast[u"youtube_title"].decode('utf-8')
 			logging.info(youtube_id)
 			logging.info(youtube_duration)
 			logging.info(youtube_title)
