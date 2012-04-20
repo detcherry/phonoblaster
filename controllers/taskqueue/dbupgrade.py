@@ -1,4 +1,6 @@
 import logging
+import traceback
+import sys
 
 from datetime import datetime
 
@@ -77,7 +79,7 @@ class DBUpgradeHandler(webapp.RequestHandler):
 						except Exception, e:
 							#If a problem occured, we skip the track
 							logging.error("A problem occured...")
-							logging.error(e)
+							logging.error(''.join(traceback.format_exception(*sys.exc_info())))
 							cursor = query.cursor()
 
 					else:

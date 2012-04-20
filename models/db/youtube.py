@@ -111,7 +111,7 @@ class Youtube():
 						"id": id,
 						"title": title,
 						"duration": duration,
-						"code":x.attributes["code"],
+						"code":'200',
 					}
 
 		return extended_track
