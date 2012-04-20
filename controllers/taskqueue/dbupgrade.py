@@ -40,7 +40,7 @@ class DBUpgradeHandler(webapp.RequestHandler):
 			processData = True
 
 		if(processData):
-			tracks = query.fetch(100)
+			tracks = query.fetch(1000)
 
 			if (tracks):
 				for track in tracks:
