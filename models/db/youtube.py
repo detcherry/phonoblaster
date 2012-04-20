@@ -65,10 +65,11 @@ class Youtube():
 
 
 	@staticmethod
-	def get_extended_track(youtube_id):
+	def get_extended_tracks_upgrade(youtube_ids):
 		"""
 			Method created in order to uniformise the database after model upgrade.
 		"""
+		extended_tracks = []
 
 		# Create a Youtube client and run it on App Engine
 		client = gdata.youtube.service.YouTubeService()
@@ -81,7 +82,8 @@ class Youtube():
 		query += " xmlns:yt=\"http://gdata.youtube.com/schemas/2007\">"
 		query += "<batch:operation type=\"query\"/>"
 
-		query += ("<entry><id>http://gdata.youtube.com/feeds/api/videos/%s</id></entry>" % youtube_id)
+		for youtube_id in youtube_ids:
+			query += ("<entry><id>http://gdata.youtube.com/feeds/api/videos/%s</id></entry>" % youtube_id)
 
 		query += "</feed>"
 
@@ -98,12 +100,15 @@ class Youtube():
 						logging.info(entry)
 						skip = True
 
+				id = re.sub(r"http://gdata.youtube.com/feeds/api/videos/","", entry.id.text)
 				if(skip):
 					extended_track = {
+						"id": id,
+						"title": None,
+						"duration": None,
 						"code":x.attributes["code"],
 					}
 				else:
-					id = re.sub(r"http://gdata.youtube.com/feeds/api/videos/","", entry.id.text)
 					title = entry.title.text
 					duration = int(entry.media.duration.seconds)
 
@@ -114,4 +119,6 @@ class Youtube():
 						"code":'200',
 					}
 
-		return extended_track
+				extended_tracks.append(extended_track)
+
+		return extended_tracks

@@ -21,17 +21,16 @@ class DBUpgradeHandler(webapp.RequestHandler):
 
 		processData = False
 		countdown = 0
-
 		query = Track.all()
 		query.order("-created")
 
+		#Setting the cursor and the query
 		if(cursor and time):
 			logging.info("Cursor found")
 			logging.info(cursor)
 			query.filter("created < ", time)
 			query.with_cursor(start_cursor = cursor)
 			processData = True
-
 		elif ((not cursor) and (not time)):
 			logging.info("No Cursor, Creating the query to fetch tracks")
 			time = datetime.now()
@@ -39,61 +38,82 @@ class DBUpgradeHandler(webapp.RequestHandler):
 			query.filter("created < ", time)
 			processData = True
 
+		#if the cursor was successfully set, start processing
 		if(processData):
-			tracks = query.fetch(1000)
+			#retriveing tracks
+			tracks = query.fetch(10)
 
 			if (tracks):
+				#Initialising list of youtube Ids to retrieve from Youtube using Youtube API
+				youtube_ids = []
+				tracks_to_fetch = []
+
 				for track in tracks:
-					logging.info("Track Youtube id : "+track.youtube_id)
-
 					if((not track.youtube_duration) or (not track.youtube_title)):
-						logging.info("Youtube API Call is necessary")
-						try:
-							extended_track = Youtube.get_extended_track(track.youtube_id)
-							
-							if(extended_track["code"] == '200'):
-								#Everything is OK, Youtube API access executed properly
-								youtube_duration = int(extended_track["duration"])
-								youtube_title = extended_track["title"]
-
-								track.youtube_duration = youtube_duration
-								track.youtube_title = youtube_title.decode("utf-8")
-								track.put()
-
-								cursor = query.cursor() 
-							elif (extended_track["code"] == '403'):
-								#Problem, to many queries, need to wait a bit to avoid quota limitation
-								countdown = 10*60 # Wait 10 minutes before executing next element in queue
-								break
-							elif (extended_track["code"] == '404'):
-								#Track removed from Youtube
-								logging.info("Track removed from Youtube")
-								track.youtube_duration = None
-								track.youtube_title = None
-								track.put()
-								cursor = query.cursor()
-							else:
-								#Other problem, we skip the track
-								cursor = query.cursor()
-
-						except Exception, e:
-							#If a problem occured, we skip the track
-							logging.error("A problem occured...")
-							logging.error(''.join(traceback.format_exception(*sys.exc_info())))
-							cursor = query.cursor()
-
+						#Adding track to tracks that have to be completeed by accessing youtube and retriving information
+						youtube_ids.append(track.youtube_id)
+						tracks_to_fetch.append(track)
 					else:
-						logging.info("Track up to date")
-						cursor = query.cursor() 
+						logging.info("Track with Youtube id "+track.youtube_id+" is up to date!")
 
+				#Initialising list of extended tracks retrieved from youtube
+				extended_tracks = []
+
+				if(len(youtube_ids) > 0):
+					try:
+						extended_tracks = Youtube.get_extended_tracks_upgrade(youtube_ids)
+					except Exception, e:
+						#If a problem occured, we skip the current batch
+						logging.error(''.join(traceback.format_exception(*sys.exc_info())))
+						cursor = query.cursor()
+
+					#Iterating over elements
+					for i in range(len(extended_tracks)):
+						extended_track = extended_tracks[i]
+						track = tracks_to_fetch[i]
+
+
+						if(extended_track["code"] == '200'):
+							#Everything is OK, Youtube API access executed properly
+							logging.info("Track successfully retrived from Youtube")
+							youtube_duration = int(extended_track["duration"])
+							youtube_title = extended_track["title"]
+
+							track.youtube_duration = youtube_duration
+							track.youtube_title = youtube_title.decode("utf-8")
+							track.put()
+
+						elif (extended_track["code"] == '403'):
+							#Problem, to many queries, need to wait a bit to avoid quota limitation
+							logging.info("Youtube API quota limitation")
+							countdown = 5*60 # Wait 10 minutes before executing next element in queue
+							cursor = query.cursor()
+							break
+						elif (extended_track["code"] == '404'):
+							#Track removed from Youtube
+							logging.info("Track removed from Youtube")
+
+							track.youtube_duration = None
+							track.youtube_title = None
+							track.put()
+						else:
+							#Other problem, we skip the track
+							cursor = query.cursor()
+							break
+
+						
+				else:
+					cursor = query.cursor()
+					logging.info("All tracks are Up to Date.")
 				
 				task = Task(
 						url = "/taskqueue/upgrade",
 						params = {'cursor':cursor, 'time':time},
-						countdown = countdown,
+						countdown = countdown +1 ,
 					)
 				task.add(queue_name = "upgrade-queue")
-				logging.info("Task Upgrade put in the queue, with a delai of "+str(countdown/60)+" minutes")
+				logging.info("Task Upgrade put in the queue, with a delai of "+str(countdown/60)+" minutes and 1 seconde")
+
 			else:
 				logging.info("No tracks found")
 				task = Task(
