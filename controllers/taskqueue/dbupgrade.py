@@ -67,6 +67,8 @@ class DBUpgradeHandler(webapp.RequestHandler):
 						logging.error(''.join(traceback.format_exception(*sys.exc_info())))
 						cursor = query.cursor()
 
+					success = True
+
 					#Iterating over elements
 					for i in range(len(extended_tracks)):
 						extended_track = extended_tracks[i]
@@ -87,7 +89,7 @@ class DBUpgradeHandler(webapp.RequestHandler):
 							#Problem, to many queries, need to wait a bit to avoid quota limitation
 							logging.info("Youtube API quota limitation")
 							countdown = 5*60 # Wait 10 minutes before executing next element in queue
-							cursor = query.cursor()
+							success = False
 							break
 						elif (extended_track["code"] == '404'):
 							#Track removed from Youtube
@@ -99,7 +101,11 @@ class DBUpgradeHandler(webapp.RequestHandler):
 						else:
 							#Other problem, we skip the track
 							cursor = query.cursor()
+							success = False
 							break
+
+					if(success):
+						cursor = query.cursor()
 
 						
 				else:
