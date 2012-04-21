@@ -12,11 +12,13 @@ class DBUpgradeHandler(BaseHandler):
 
 	@admin_required
 	def post(self):
-		logging.info("Upgrading database")
+		dbtype = self.request.get("type")
+		logging.info("Upgrading database "+dbtype)
+		logging.info(dbtype)
 
 		task = Task(
 				url = "/taskqueue/upgrade",
-				params = {},
+				params = {"type":dbtype},
 			)
 		task.add(queue_name = "upgrade-queue")
 		logging.info("Task Upgrade put in the queue")

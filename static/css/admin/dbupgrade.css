@@ -6,7 +6,15 @@
 	margin-top: 10px;
 }
 
-#dbupgrade .btn{
+#dbupgrade > .btn{
 	margin-left: 15px;
 	margin-top: 10px;
+}
+
+#dbupgrade table{
+	border:none;
+}
+
+#dbupgrade table > td + td{
+	border:none;
 }
