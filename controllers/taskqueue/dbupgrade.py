@@ -106,7 +106,7 @@ class DBUpgradeHandler(webapp.RequestHandler):
 									logging.debug(entity.youtube_title)
 									logging.info("Entity put in datastore (without need to decode)")
 								except Exception, e:
-									ogging.error(''.join(traceback.format_exception(*sys.exc_info())))
+									logging.error(''.join(traceback.format_exception(*sys.exc_info())))
 									entity.youtube_duration = youtube_duration
 									entity.youtube_title = youtube_title.decode("utf-8")
 									entity.put()
