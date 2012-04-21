@@ -1,4 +1,6 @@
 import logging
+import traceback
+import sys
 
 from datetime import datetime
 
@@ -22,11 +24,11 @@ class ViewHandler(webapp.RequestHandler):
 			logging.info("Station on air")
 			
 			live_broadcast = queue[0]
-			track_id = int(live_broadcast[u"track_id"])
+			track_id = int(live_broadcast["track_id"])
 			track_key = db.Key.from_path("Track", track_id)
-			youtube_id = live_broadcast[u"youtube_id"]
-			youtube_duration = int(live_broadcast[u"youtube_duration"])
-			youtube_title = live_broadcast[u"youtube_title"].decode('utf-8')
+			youtube_id = live_broadcast["youtube_id"]
+			youtube_duration = int(live_broadcast["youtube_duration"])
+			youtube_title = live_broadcast["youtube_title"].decode('utf-8')
 			logging.info(youtube_id)
 			logging.info(youtube_duration)
 			logging.info(youtube_title)
@@ -60,18 +62,34 @@ class ViewHandler(webapp.RequestHandler):
 			
 			db.put(views)
 			logging.info("Views put in the datastore")
-			
-			air = Air(
-				key_name = station_proxy.station.key().name(),
-				shortname = station_proxy.station.shortname,
-				name = station_proxy.station.name,
-				link = station_proxy.station.link,
-				youtube_id = youtube_id,
-				youtube_duration = youtube_duration,
-				youtube_title = youtube_title,
-				expired = datetime.utcfromtimestamp(int(live_broadcast["expired"]))
-			)
-			air.put()
+
+			try:
+				air = Air(
+					key_name = station_proxy.station.key().name(),
+					shortname = station_proxy.station.shortname,
+					name = station_proxy.station.name,
+					link = station_proxy.station.link,
+					youtube_id = youtube_id,
+					youtube_duration = youtube_duration,
+					youtube_title = youtube_title,
+					expired = datetime.utcfromtimestamp(int(live_broadcast["expired"]))
+				)
+				air.put()
+			except UnicodeEncodeError,e :
+				logging.error(''.join(traceback.format_exception(*sys.exc_info())))
+				youtube_title = live_broadcast["youtube_title"]
+				air = Air(
+					key_name = station_proxy.station.key().name(),
+					shortname = station_proxy.station.shortname,
+					name = station_proxy.station.name,
+					link = station_proxy.station.link,
+					youtube_id = youtube_id,
+					youtube_duration = youtube_duration,
+					youtube_title = youtube_title,
+					expired = datetime.utcfromtimestamp(int(live_broadcast["expired"]))
+				)
+				air.put()
+
 			logging.info("Air story put in datastore")
 			
 			# Start another task after this track has ended
