@@ -57,27 +57,23 @@ class ApiSuggestionsHandler(BaseHandler):
 				logging.info("User submitted a suggestion shortly")
 			else:
 				logging.info("User did not submit a suggestion shortly")
-								
-				if(youtube_track):
-					logging.info("Suggested track on Youtube")
-										
-					suggestion = Suggestion(
-						key_name = suggestion["key_name"],
-						message = suggestion["message"][:140].replace("\n"," "),
-						youtube_id = suggestion["youtube_id"],
-						youtube_title = suggestion["youtube_title"],
-						youtube_duration = suggestion["youtube_duration"],
-						station = station.key(),
-						user = user.key(),
-					)
-		
-					suggestion.put()
-					logging.info("New suggestion saved into the datastore")
-		
-					extended_suggestion = Suggestion.get_extended_suggestion(suggestion, user)
-					
-					# Increment the user number of suggestions
-					station_proxy.increment_suggestions_counter()
+				suggestion = Suggestion(
+					key_name = suggestion["key_name"],
+					message = suggestion["message"][:140].replace("\n"," "),
+					youtube_id = suggestion["youtube_id"],
+					youtube_title = suggestion["youtube_title"],
+					youtube_duration = suggestion["youtube_duration"],
+					station = station.key(),
+					user = user.key(),
+				)
+	
+				suggestion.put()
+				logging.info("New suggestion saved into the datastore")
+	
+				extended_suggestion = Suggestion.get_extended_suggestion(suggestion, user)
+				
+				# Increment the user number of suggestions
+				station_proxy.increment_suggestions_counter()
 		
 		response = False
 		if(extended_suggestion):

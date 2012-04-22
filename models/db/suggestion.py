@@ -32,12 +32,9 @@ class Suggestion(db.Model):
 		extended_suggestions = []
 		
 		if(suggestions):
-			youtube_ids = []
 			user_keys = []
 
 			for s in suggestions:
-				youtube_ids.append(s.youtube_id)
-				
 				user_key = Suggestion.user.get_value_for_datastore(s)
 				user_keys.append(user_key)
 			
