@@ -34,8 +34,15 @@ class Broadcast(db.Model):
 				
 			tracks = db.get(track_keys)
 			logging.info("Tracks retrieved from datastore")
-			extended_tracks = Track.get_extended_tracks(tracks)
-			logging.info("Extended tracks generated from Youtube")
+			extended_tracks = []
+			for track in tracks:
+				extended_tracks.append({
+					"track_id": track.key().id(),
+					"track_created": timegm(track.created.utctimetuple()),
+					"youtube_id": track.youtube_id,
+					"youtube_title": track.youtube_title,
+					"youtube_duration": track.youtube_duration,
+				})
 	
 			regular_broadcasts = []
 			regular_extended_tracks = []
