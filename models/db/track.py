@@ -60,6 +60,7 @@ class Track(db.Model):
 		youtube_id = broadcast["youtube_id"]
 		youtube_duration = broadcast["youtube_duration"]
 		youtube_title = broadcast ["youtube_title"]
+		
 		track = None
 		extended_track = None
 
@@ -72,7 +73,13 @@ class Track(db.Model):
 
 			if(track):
 				logging.info("Track on Phonoblaster")
-				extended_track = Track.get_extended_tracks([track])[0]
+				extended_track = {
+					"track_id": track.key().id(),
+					"track_created": timegm(track.created.utctimetuple()),
+					"youtube_id": youtube_id,
+					"youtube_title": youtube_title,
+					"youtube_duration": youtube_duration,
+				}
 
 			# First time this track is submitted in this station
 			else:

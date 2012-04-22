@@ -26,7 +26,7 @@ class ApiQueueHandler(BaseHandler):
 	def post(self):
 		shortname = self.request.get("shortname")
 		broadcast = json.loads(self.request.get("content"))
-		
+
 		station_proxy = StationApi(shortname)
 		station = station_proxy.station
 		

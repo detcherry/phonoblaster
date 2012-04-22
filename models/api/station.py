@@ -1,6 +1,7 @@
 import logging
 import os
 import re
+from calendar import timegm
 
 import gdata.youtube
 import gdata.youtube.service
@@ -261,7 +262,13 @@ Global number of stations: %s
 					# If track on Phonoblaster, get extended track from Youtube
 					if(track):
 						logging.info("Track on Phonoblaster")
-						extended_track = Track.get_extended_tracks([track])[0]
+						extended_track = {
+							"track_id": track.key().id(),
+							"track_created": timegm(track.created.utctimetuple()),
+							"youtube_id": track.youtube_id,
+							"youtube_title": track.youtube_title,
+							"youtube_duration": track.youtube_duration,
+						}
 						
 				else:
 					# If obviously not, look for it though, save it otherwise and get extended track from Youtube
@@ -474,8 +481,16 @@ Global number of stations: %s
 			tracks = self.tracks_query(offset)
 			logging.info("Past tracks retrieved from datastore")
 			
-			extended_tracks = Track.get_extended_tracks(tracks)
-			past_tracks = extended_tracks
+			past_tracks = []
+
+			for track in tracks:
+				past_tracks.append({
+					"track_id": track.key().id(),
+					"track_created": timegm(track.created.utctimetuple()),
+					"youtube_id": track.youtube_id,
+					"youtube_title": track.youtube_title,
+					"youtube_duration": track.youtube_duration,
+				})
 			
 			memcache.set(memcache_tracks_id, past_tracks)
 			logging.info("Extended tracks put in memcache")
