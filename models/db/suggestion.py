@@ -41,31 +41,26 @@ class Suggestion(db.Model):
 				user_key = Suggestion.user.get_value_for_datastore(s)
 				user_keys.append(user_key)
 			
-			youtube_tracks = Youtube.get_extended_tracks(youtube_ids) #TO BE REMOVED
-			logging.info("Youtube tracks retrieved")
-			
 			users = db.get(user_keys)
 			logging.info("Users retrieved from datastore")
 				
-			for suggestion, youtube_track, user in zip(suggestions, youtube_tracks, users):
-				# Check if the Youtube track exists
-				if(youtube_track):
-					extended_suggestion = Suggestion.get_extended_suggestion(suggestion, youtube_track, user)
-					extended_suggestions.append(extended_suggestion)
+			for suggestion, user in zip(suggestions, users):
+				extended_suggestion = Suggestion.get_extended_suggestion(suggestion, user)
+				extended_suggestions.append(extended_suggestion)
 
 		logging.info("Extended suggestions generated")
 		return extended_suggestions
 
 	@staticmethod
-	def get_extended_suggestion(suggestion, youtube_track, user):	
+	def get_extended_suggestion(suggestion, user):	
 		extended_suggestion = {
 			"key_name": suggestion.key().name(),
 			"message": suggestion.message,
 			"type": "suggestion",
 			"created": timegm(suggestion.created.utctimetuple()),
-			"youtube_id": youtube_track["id"],
-			"youtube_title": youtube_track["title"],
-			"youtube_duration": youtube_track["duration"],
+			"youtube_id": suggestion.youtube_id,
+			"youtube_title": suggestion.youtube_title,
+			"youtube_duration": suggestion.youtube_duration,
 			"track_submitter_key_name": user.key().name(),
 			"track_submitter_name": user.first_name + " " + user.last_name,
 			"track_submitter_url": "/user/" + user.key().name(),
