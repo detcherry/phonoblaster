@@ -24,14 +24,12 @@ class HomeHandler(BaseHandler):
 				q.order("-created")
 				feed = q.fetch(50)
 
-				youtube_ids = [Air.youtube_id.get_value_for_datastore(f) for f in feed]
-				extended_tracks = []
-				for air in feed:
-					extended_tracks.append({
+				extended_tracks = [
+					{
 						"id": air.youtube_id,
 						"title": air.youtube_title,
 						"duration": air.youtube_duration,
-					})
+					} for air in feed]
 
 				on_air = []
 				stations = []
