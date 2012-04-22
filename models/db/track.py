@@ -27,35 +27,6 @@ class Track(db.Model):
 	created = db.DateTimeProperty(auto_now_add = True)
 
 	@staticmethod
-	def get_extended_tracks(tracks):
-		"""
-			Returns a list of extended tracks - (Possibly None)
-		"""
-		
-		extended_tracks = []
-		youtube_ids = []
-		
-		if(tracks):
-			for track in tracks:
-				youtube_ids.append(track.youtube_id)
-		
-			youtube_tracks = Youtube.get_extended_tracks(youtube_ids) #TO BE REMOVED
-
-			for track, youtube_track in zip(tracks, youtube_tracks):
-				if(youtube_track):
-					extended_tracks.append({
-						"track_id": track.key().id(),
-						"track_created": timegm(track.created.utctimetuple()),
-						"youtube_id": youtube_track["id"],
-						"youtube_title": youtube_track["title"],
-						"youtube_duration": youtube_track["duration"],
-					})
-				else:
-					extended_tracks.append(None)
-
-		return extended_tracks
-
-	@staticmethod
 	def get_or_insert_by_youtube_id(broadcast, station):
 		youtube_id = broadcast["youtube_id"]
 		youtube_duration = broadcast["youtube_duration"]
