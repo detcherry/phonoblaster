@@ -1,4 +1,5 @@
 import logging
+from calendar import timegm
 
 from controllers.station.secondary import SecondaryHandler
 from models.db.track import Track
@@ -9,34 +10,30 @@ class TrackHandler(SecondaryHandler):
 		track = Track.get_by_id(int(track_id))
 		
 		if(track):
+			logging.info("Track found on Phonoblaster")
 			shortname = track.station.shortname
 			self.station_proxy = StationApi(shortname)
+			template_values = {
+					"track": {
+						"track_id": track.key().id(),
+						"track_created": timegm(track.created.utctimetuple()),
+						"youtube_id": track.youtube_id,
+						"youtube_title": track.youtube_title,
+						"youtube_duration": track.youtube_duration,
+					},
+			}
+			user_agent = self.request.headers["User-Agent"]
+			facebook_agent = "facebookexternalhit/1.1 (+http://www.facebook.com/externalhit_uatext.php)"
 			
-			tracks = [track]
-			extended_tracks = Track.get_extended_tracks(tracks)
-			
-			if extended_tracks:
-				logging.info("Youtube track was found")
-				extended_track = extended_tracks[0]
-				template_values = {
-					"track": extended_track,
-				}
-				
-				user_agent = self.request.headers["User-Agent"]
-				facebook_agent = "facebookexternalhit/1.1 (+http://www.facebook.com/externalhit_uatext.php)"
-				
-				if(user_agent == facebook_agent):
-					# Facebook linter 
-					self.facebook_render("station/facebook/track.html", template_values)
-				else:
-					# Not Facebook linter
-					self.render("station/track.html", template_values)
-				
+			if(user_agent == facebook_agent):
+				# Facebook linter 
+				self.facebook_render("station/facebook/track.html", template_values)
 			else:
-				logging.info("Youtube track was not found")
-				self.redirect("/" + shortname)
+				# Not Facebook linter
+				self.render("station/track.html", template_values)
 			
 		else:
+			logging.info("Track was not found on Phonoblaster")
 			self.render("station/404.html", None)
 		
 		

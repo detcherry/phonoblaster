@@ -31,13 +31,8 @@ class ApiFavoritesHandler(BaseHandler):
 			
 			# Check if the track exists on Phonoblaster
 			if(track):
-				
-				# Check if the track exists on Youtube
-				extended_track = Track.get_extended_tracks([track])[0]
-				
-				if(extended_track):
-					self.user_proxy.add_to_favorites(track)
-					response = True
+				self.user_proxy.add_to_favorites(track)
+				response = True
 		
 		self.response.out.write(json.dumps({ "response": response }))
 					
@@ -54,9 +49,3 @@ class ApiFavoritesDeleteHandler(BaseHandler):
 			response = True
 			
 		self.response.out.write(json.dumps({ "response": response }))
-				
-		
-		
-		
-		
-		
