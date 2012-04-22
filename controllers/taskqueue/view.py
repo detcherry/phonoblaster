@@ -26,12 +26,7 @@ class ViewHandler(webapp.RequestHandler):
 			live_broadcast = queue[0]
 			track_id = int(live_broadcast["track_id"])
 			track_key = db.Key.from_path("Track", track_id)
-			youtube_id = live_broadcast["youtube_id"]
-			youtube_duration = int(live_broadcast["youtube_duration"])
-			youtube_title = live_broadcast["youtube_title"].decode('utf-8')
-			logging.info(youtube_id)
-			logging.info(youtube_duration)
-			logging.info(youtube_title)
+			
 
 			number_of_sessions = max(0,station_proxy.number_of_sessions)
 			if(number_of_sessions):
@@ -64,6 +59,10 @@ class ViewHandler(webapp.RequestHandler):
 			logging.info("Views put in the datastore")
 
 			try:
+				youtube_id = live_broadcast["youtube_id"]
+				youtube_duration = int(live_broadcast["youtube_duration"])
+				youtube_title = live_broadcast["youtube_title"].decode('utf-8')
+				
 				air = Air(
 					key_name = station_proxy.station.key().name(),
 					shortname = station_proxy.station.shortname,
@@ -76,8 +75,12 @@ class ViewHandler(webapp.RequestHandler):
 				)
 				air.put()
 			except UnicodeEncodeError,e :
-				logging.error(''.join(traceback.format_exception(*sys.exc_info())))
+				youtube_id = live_broadcast["youtube_id"]
+				youtube_duration = int(live_broadcast["youtube_duration"])
 				youtube_title = live_broadcast["youtube_title"]
+				
+				logging.error(''.join(traceback.format_exception(*sys.exc_info())))
+
 				air = Air(
 					key_name = station_proxy.station.key().name(),
 					shortname = station_proxy.station.shortname,
