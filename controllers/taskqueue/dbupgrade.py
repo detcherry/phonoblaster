@@ -113,7 +113,7 @@ class DBUpgradeHandler(webapp.RequestHandler):
 									logging.info("Entity put in datastore")
 
 							elif (extended_track["code"] == '403'):
-								#Problem, to many queries, need to wait a bit to avoid quota limitation
+								#Problem, too many queries, need to wait a bit to avoid quota limitation
 								logging.info("Youtube API quota limitation")
 								countdown = 5*60 # Wait 10 minutes before executing next element in queue
 								success = False
@@ -146,7 +146,7 @@ class DBUpgradeHandler(webapp.RequestHandler):
 							countdown = countdown +1 ,
 						)
 					task.add(queue_name = "upgrade-queue")
-					logging.info("Task Upgrade put in the queue, with a delai of "+str(countdown/60)+" minutes and 1 seconde")
+					logging.info("Task Upgrade put in the queue, with a delay of "+str(countdown/60)+" minutes and 1 seconde")
 
 				else:
 					logging.info("No tracks found")

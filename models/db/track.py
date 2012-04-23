@@ -44,14 +44,7 @@ class Track(db.Model):
 
 			if(track):
 				logging.info("Track on Phonoblaster")
-				extended_track = {
-					"track_id": track.key().id(),
-					"track_created": timegm(track.created.utctimetuple()),
-					"youtube_id": youtube_id,
-					"youtube_title": youtube_title,
-					"youtube_duration": youtube_duration,
-				}
-
+				
 			# First time this track is submitted in this station
 			else:
 				logging.info("Track not on Phonoblaster")
@@ -65,13 +58,13 @@ class Track(db.Model):
 				track.put()
 				logging.info("New track put in the datastore.")
 
-				extended_track = {
-					"track_id": track.key().id(),
-					"track_created": timegm(track.created.utctimetuple()),
-					"youtube_id": youtube_id,
-					"youtube_title": youtube_title,
-					"youtube_duration": youtube_duration,
-				}
+			extended_track = {
+				"track_id": track.key().id(),
+				"track_created": timegm(track.created.utctimetuple()),
+				"youtube_id": youtube_id,
+				"youtube_title": youtube_title,
+				"youtube_duration": youtube_duration,
+			}
 
 		return (track, extended_track)
 

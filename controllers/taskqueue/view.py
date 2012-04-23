@@ -96,7 +96,7 @@ class ViewHandler(webapp.RequestHandler):
 			logging.info("Air story put in datastore")
 			
 			# Start another task after this track has ended
-			countdown = int(live_broadcast["youtube_duration"])
+			countdown = int(live_broadcast["youtube_duration"]) # TO BE CHANGED : expired-time.now()
 			
 			task = Task(
 				url = "/taskqueue/view",
