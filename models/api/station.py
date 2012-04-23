@@ -254,7 +254,6 @@ Global number of stations: %s
 				logging.info("Some room in the queue")
 
 				track = None
-				extended_track = None
 
 				if(broadcast["track_id"]):
 					track = Track.get_by_id(int(broadcast["track_id"]))
