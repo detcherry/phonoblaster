@@ -34,37 +34,28 @@ class Broadcast(db.Model):
 				
 			tracks = db.get(track_keys)
 			logging.info("Tracks retrieved from datastore")
-			extended_tracks = []
-			for track in tracks:
-				extended_tracks.append({
-					"track_id": track.key().id(),
-					"track_created": timegm(track.created.utctimetuple()),
-					"youtube_id": track.youtube_id,
-					"youtube_title": track.youtube_title,
-					"youtube_duration": track.youtube_duration,
-				})
 	
 			regular_broadcasts = []
-			regular_extended_tracks = []
+			regular_tracks = []
 
 			suggested_broadcasts = []
-			suggested_extended_tracks = []
+			suggested_tracks = []
 			user_keys = []
 	
 			favorited_broadcasts = []
-			favorited_extended_tracks = []
+			favorited_tracks = []
 			station_keys = []
 	
-			for broadcast, track, extended_track in zip(broadcasts, tracks, extended_tracks):
+			for broadcast, track in zip(broadcasts, tracks):
 
-				# We check if the track is really on Youtube
-				if(extended_track):
+				# We check if the track is really on Phonoblaster
+				if(track):
 					user_key = Broadcast.user.get_value_for_datastore(broadcast)
 					
 					# Broadcast suggested by a user
 					if(user_key):
 						suggested_broadcasts.append(broadcast)
-						suggested_extended_tracks.append(extended_track)
+						suggested_tracks.append(track)
 						
 						user_keys.append(user_key)
 					else:
@@ -73,29 +64,29 @@ class Broadcast(db.Model):
 						# Regular broadcast
 						if(station_key == current_station.key()):
 							regular_broadcasts.append(broadcast)
-							regular_extended_tracks.append(extended_track)
+							regular_tracks.append(track)
 						# Rebroadcast from another station
 						else:
 							favorited_broadcasts.append(broadcast)
-							favorited_extended_tracks.append(extended_track)
+							favorited_tracks.append(track)
 
 							station_keys.append(station_key)
 
 			# First let's format the regular broadcasts
-			for broadcast, extended_track in zip(regular_broadcasts, regular_extended_tracks):
-				extended_broadcast = Broadcast.get_extended_broadcast(broadcast, extended_track, current_station, None)
+			for broadcast, track in zip(regular_broadcasts, regular_tracks):
+				extended_broadcast = Broadcast.get_extended_broadcast(broadcast, track, current_station, None)
 				extended_broadcasts.append(extended_broadcast)
 
 			# Then retrieve users and format suggested broadcasts
 			users = db.get(user_keys)
-			for broadcast, extended_track, user in zip(suggested_broadcasts, suggested_extended_tracks, users):
-				extended_broadcast = Broadcast.get_extended_broadcast(broadcast, extended_track, None, user)
+			for broadcast, track, user in zip(suggested_broadcasts, suggested_tracks, users):
+				extended_broadcast = Broadcast.get_extended_broadcast(broadcast, track, None, user)
 				extended_broadcasts.append(extended_broadcast)
 
 			# Finally retrieve stations and format broadcasts from tracks favorited somewhere else
 			stations = db.get(station_keys)
-			for broadcast, extended_track, station in zip(favorited_broadcasts, favorited_extended_tracks, stations):
-				extended_broadcast = Broadcast.get_extended_broadcast(broadcast, extended_track, station, None)
+			for broadcast, track, station in zip(favorited_broadcasts, favorited_tracks, stations):
+				extended_broadcast = Broadcast.get_extended_broadcast(broadcast, track, station, None)
 				extended_broadcasts.append(extended_broadcast)
 			
 			# Order the broadcasts that have been built from different sources (same order as the Datastore entities)
@@ -109,18 +100,18 @@ class Broadcast(db.Model):
 		return ordered_extended_broadcasts	
 	
 	@staticmethod
-	def get_extended_broadcast(broadcast, extended_track, station, user):
+	def get_extended_broadcast(broadcast, track, station, user):
 		extended_broadcast = None
 
 		extended_broadcast = {
 			"key_name": broadcast.key().name(),
 			"created": timegm(broadcast.created.utctimetuple()),
 			"expired": timegm(broadcast.expired.utctimetuple()),	
-			"youtube_id": extended_track["youtube_id"],
-			"youtube_title": extended_track["youtube_title"],
-			"youtube_duration": extended_track["youtube_duration"],
-			"track_id": extended_track["track_id"],
-			"track_created": extended_track["track_created"],
+			"youtube_id": track.youtube_id,
+			"youtube_title": track.youtube_title,
+			"youtube_duration": track.youtube_duration,
+			"track_id": track.key().id(),
+			"track_created": timegm(track.created.utctimetuple()),
 		}
 		
 		# It's a suggested broadcast

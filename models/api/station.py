@@ -262,20 +262,13 @@ Global number of stations: %s
 					# If track on Phonoblaster, get extended track from Youtube
 					if(track):
 						logging.info("Track on Phonoblaster")
-						extended_track = {
-							"track_id": track.key().id(),
-							"track_created": timegm(track.created.utctimetuple()),
-							"youtube_id": track.youtube_id,
-							"youtube_title": track.youtube_title,
-							"youtube_duration": track.youtube_duration,
-						}
 						
 				else:
 					# If obviously not, look for it though, save it otherwise and get extended track from Youtube
 					if(broadcast["youtube_id"]):
-						track, extended_track = Track.get_or_insert_by_youtube_id(broadcast, self.station)
+						track = Track.get_or_insert_by_youtube_id(broadcast, self.station)
 
-				if(track and extended_track):
+				if(track):
 
 					user_key = None
 					if(broadcast["type"] == "suggestion"):
@@ -290,7 +283,7 @@ Global number of stations: %s
 						track = track.key(),
 						station = self.station.key(),
 						user = user_key,
-						expired = queue_expiration_time + timedelta(0, extended_track["youtube_duration"]),
+						expired = queue_expiration_time + timedelta(0, track.youtube_duration),
 					)
 					new_broadcast.put()
 					logging.info("New broadcast put in datastore")
@@ -298,17 +291,17 @@ Global number of stations: %s
 					# Suggested broadcast
 					if(user_key):
 						user = db.get(user_key)
-						extended_broadcast = Broadcast.get_extended_broadcast(new_broadcast, extended_track, None, user)
+						extended_broadcast = Broadcast.get_extended_broadcast(new_broadcast, track, None, user)
 					else:
 						station_key = Track.station.get_value_for_datastore(track)					
 						
 						# Regular broadcast
 						if(station_key == self.station.key()):
-							extended_broadcast = Broadcast.get_extended_broadcast(new_broadcast, extended_track, self.station, None)	
+							extended_broadcast = Broadcast.get_extended_broadcast(new_broadcast, track, self.station, None)	
 						# Rebroadcast
 						else:
 							station = db.get(station_key)
-							extended_broadcast = Broadcast.get_extended_broadcast(new_broadcast, extended_track, station, None)											
+							extended_broadcast = Broadcast.get_extended_broadcast(new_broadcast, track, station, None)											
 
 					# Put extended broadcasts in memcache
 					self._queue.append(extended_broadcast)

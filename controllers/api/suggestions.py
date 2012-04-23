@@ -58,11 +58,11 @@ class ApiSuggestionsHandler(BaseHandler):
 			else:
 				logging.info("User did not submit a suggestion shortly")
 				suggestion = Suggestion(
-					key_name = suggestion["key_name"],
-					message = suggestion["message"][:140].replace("\n"," "),
-					youtube_id = suggestion["youtube_id"],
-					youtube_title = suggestion["youtube_title"],
-					youtube_duration = suggestion["youtube_duration"],
+					key_name = suggestion_json["key_name"],
+					message = suggestion_json["message"][:140].replace("\n"," "),
+					youtube_id = suggestion_json["youtube_id"],
+					youtube_title = suggestion_json["youtube_title"],
+					youtube_duration = suggestion_json["youtube_duration"],
 					station = station.key(),
 					user = user.key(),
 				)

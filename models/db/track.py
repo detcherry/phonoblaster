@@ -33,7 +33,6 @@ class Track(db.Model):
 		youtube_title = broadcast ["youtube_title"]
 		
 		track = None
-		extended_track = None
 
 		if(youtube_id):
 			# We check if the track is already owned by this station
@@ -58,15 +57,7 @@ class Track(db.Model):
 				track.put()
 				logging.info("New track put in the datastore.")
 
-			extended_track = {
-				"track_id": track.key().id(),
-				"track_created": timegm(track.created.utctimetuple()),
-				"youtube_id": youtube_id,
-				"youtube_title": youtube_title,
-				"youtube_duration": youtube_duration,
-			}
-
-		return (track, extended_track)
+		return track
 
 	@staticmethod
 	def number_of_views(track_id):
