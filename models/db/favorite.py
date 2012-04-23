@@ -23,15 +23,6 @@ class Favorite(db.Model):
 		
 			tracks = db.get(track_keys)
 			logging.info("Tracks retrieved from datastore")
-			extended_tracks = []
-			for track in tracks:
-				extended_tracks.append({
-					"track_id": track.key().id(),
-					"track_created": timegm(track.created.utctimetuple()),
-					"youtube_id": track.youtube_id,
-					"youtube_title": track.youtube_title,
-					"youtube_duration": track.youtube_duration,
-				})
 			
 			station_keys = []
 			for t in tracks:
@@ -40,25 +31,23 @@ class Favorite(db.Model):
 			stations = db.get(station_keys)
 			logging.info("Stations retrieved from datastore")
 			
-			for favorite, extended_track, station in zip(favorites, extended_tracks, stations):
-				# Check if the track has not disappeared
-				if(extended_track):
-					extended_favorite = Favorite.get_extended_favorite(favorite, extended_track, station)
-					extended_favorites.append(extended_favorite)
+			for favorite, track, station in zip(favorites, tracks, stations):
+				extended_favorite = Favorite.get_extended_favorite(favorite, track, station)
+				extended_favorites.append(extended_favorite)
 		
 		logging.info("Extended favorites generated")
 		return extended_favorites
 		
 	@staticmethod
-	def get_extended_favorite(favorite, extended_track, station):
+	def get_extended_favorite(favorite, track, station):
 		extended_favorite = {
 			"type": "favorite",
 			"created":  timegm(favorite.created.utctimetuple()),
-			"youtube_id": extended_track["youtube_id"],
-			"youtube_title": extended_track["youtube_title"],
-			"youtube_duration": extended_track["youtube_duration"],
-			"track_id": extended_track["track_id"],
-			"track_created": extended_track["track_created"],
+			"youtube_id": track.youtube_id,
+			"youtube_title": track.youtube_title,
+			"youtube_duration": track.youtube_duration,
+			"track_id": track.key().id(),
+			"track_created": timegm(track.created.utctimetuple()),
 			"track_submitter_key_name": station.key().name(),
 			"track_submitter_name": station.name,
 			"track_submitter_url": "/" + station.shortname,
