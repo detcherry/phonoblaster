@@ -39,9 +39,9 @@ class ApiSuggestionsHandler(BaseHandler):
 		user = self.user_proxy.user
 		admin = self.user_proxy.is_admin_of(station.key().name())
 
-		suggestion = json.loads(self.request.get("content"))
+		suggestion_json = json.loads(self.request.get("content"))
 
-		if(suggestion and not admin):
+		if(suggestion_json and not admin):
 			track = None
 			extended_track = None
 
