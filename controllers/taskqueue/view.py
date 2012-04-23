@@ -58,40 +58,21 @@ class ViewHandler(webapp.RequestHandler):
 			db.put(views)
 			logging.info("Views put in the datastore")
 
-			try:
-				youtube_id = live_broadcast["youtube_id"]
-				youtube_duration = int(live_broadcast["youtube_duration"])
-				youtube_title = live_broadcast["youtube_title"].decode('utf-8')
-				
-				air = Air(
-					key_name = station_proxy.station.key().name(),
-					shortname = station_proxy.station.shortname,
-					name = station_proxy.station.name,
-					link = station_proxy.station.link,
-					youtube_id = youtube_id,
-					youtube_duration = youtube_duration,
-					youtube_title = youtube_title,
-					expired = datetime.utcfromtimestamp(int(live_broadcast["expired"]))
-				)
-				air.put()
-			except UnicodeEncodeError,e :
-				youtube_id = live_broadcast["youtube_id"]
-				youtube_duration = int(live_broadcast["youtube_duration"])
-				youtube_title = live_broadcast["youtube_title"]
-				
-				logging.error(''.join(traceback.format_exception(*sys.exc_info())))
-
-				air = Air(
-					key_name = station_proxy.station.key().name(),
-					shortname = station_proxy.station.shortname,
-					name = station_proxy.station.name,
-					link = station_proxy.station.link,
-					youtube_id = youtube_id,
-					youtube_duration = youtube_duration,
-					youtube_title = youtube_title,
-					expired = datetime.utcfromtimestamp(int(live_broadcast["expired"]))
-				)
-				air.put()
+			youtube_id = live_broadcast["youtube_id"]
+			youtube_duration = int(live_broadcast["youtube_duration"])
+			youtube_title = live_broadcast["youtube_title"]
+			
+			air = Air(
+				key_name = station_proxy.station.key().name(),
+				shortname = station_proxy.station.shortname,
+				name = station_proxy.station.name,
+				link = station_proxy.station.link,
+				youtube_id = youtube_id,
+				youtube_duration = youtube_duration,
+				youtube_title = youtube_title,
+				expired = datetime.utcfromtimestamp(int(live_broadcast["expired"]))
+			)
+			air.put()
 
 			logging.info("Air story put in datastore")
 			
