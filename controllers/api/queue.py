@@ -65,6 +65,9 @@ class ApiQueueDeleteHandler(BaseHandler):
 	def delete(self, key_name):
 		m = re.match(r"(\w+).(\w+).(\w+).(\w+)", key_name)
 		shortname = m.group(1)
+
+		logging.info("in ApiQueueDeleteHandler")
+		logging.info(shortname)
 		
 		station_proxy = StationApi(shortname)
 		station = station_proxy.station

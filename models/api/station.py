@@ -341,6 +341,8 @@ Global number of stations: %s
 	# Remove a broadcast from the queue
 	def remove_from_queue(self, key_name):
 		response = False
+		logging.info("Removing from queue")
+		logging.info(key_name)
 		
 		# If the queue has at least 2 broadcasts (given that the first one cannot be removed)
 		if(len(self.queue) > 1):
@@ -368,7 +370,8 @@ Global number of stations: %s
 				
 				# Retrieve broadcasts to edit datastore entities
 				broadcasts_to_edit = Broadcast.get_by_key_name(extended_broadcasts_to_edit_key_names)
-				
+				logging.info("Broadcat to edit")
+				logging.info(broadcasts_to_edit)
 				# The first broadcast to edit is the broadcast to delete
 				broadcast_to_delete = broadcasts_to_edit.pop(0)
 				extended_broadcast_to_delete = extended_broadcasts_to_edit.pop(0)
