@@ -1,6 +1,6 @@
 (function(){
 	$("#track-up").live("click",function(){
-		alert("Starting Track Unifomisation!");
+		alert("Starting Track Cleaning!");
 
 		$.ajax({
 			url: "/admin/upgrade",
@@ -19,7 +19,7 @@
 
 
 	$("#air-up").live("click",function(){
-		alert("Starting Air Unifomisation!");
+		alert("Starting Air Cleaning!");
 
 		$.ajax({
 			url: "/admin/upgrade",
@@ -38,7 +38,7 @@
 
 
 	$("#suggestion-up").live("click",function(){
-		alert("Starting Database Unifomisation!");
+		alert("Starting Database Cleaning!");
 
 		$.ajax({
 			url: "/admin/upgrade",
