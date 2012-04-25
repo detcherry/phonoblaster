@@ -25,6 +25,7 @@ TrackManager.prototype.init = function(){
 	this.previewListen();
 	this.processListen();
 	this.scrollListen();
+	this.deleteListen();
 }
 
 TrackManager.prototype.getData = function(){
@@ -50,4 +51,72 @@ TrackManager.prototype.serverToLocalItem = function(content){
 	}
 	
 	return item;
+}
+
+TrackManager.prototype.UIBuild = function(item){
+	var id = item.id;
+	var content = item.content;
+
+	var youtube_id = content.youtube_id;
+	var youtube_title = content.youtube_title;
+	var youtube_duration = PHB.convertDuration(content.youtube_duration)
+	var youtube_thumbnail = "https://i.ytimg.com/vi/" + youtube_id + "/default.jpg";
+	var preview = "https://www.youtube.com/embed/" + youtube_id + "?autoplay=1"
+	
+	var process_action = "Suggest"
+	var process_info = "Suggest this track to the broadcaster"
+	if(this.station_client.admin){
+		process_action = "Queue"
+		process_info = "Add this track to the queue"
+	}
+	
+	var div = $("<div/>").addClass("item").attr("id",id)
+	div.append(
+		$("<div/>")
+			.addClass("item-picture")
+			.append($("<img/>").attr("src", youtube_thumbnail))
+	)
+	.append(
+		$("<div/>")
+			.addClass("item-title")
+			.append($("<span/>").addClass("middle").html(youtube_title))
+	)
+
+	if(this.station_client.admin){
+		div.append(
+			$("<a/>")
+				.attr("href","#")
+				.addClass("item-cross")
+				.attr("name", id)
+				.html("X")
+		)
+	}
+	
+	div.append(
+		$("<div/>")
+			.addClass("item-subtitle")
+			.append($("<div/>").addClass("item-duration").html(youtube_duration))
+			.append(
+				$("<div/>")
+					.addClass("item-process")
+					.append(
+						$("<a/>")
+							.addClass("btn")
+							.attr("name", id)
+							.html(process_action)
+							.addClass("tuto")
+							.attr("data-original-title", process_info)
+					)
+					.append(
+						$("<a/>")
+							.addClass("preview")
+							.addClass("fancybox.iframe")
+							.attr("href", preview)
+							.addClass("tuto")
+							.attr("data-original-title", "Preview this track")
+					)
+			)
+	)
+					
+	return div;
 }

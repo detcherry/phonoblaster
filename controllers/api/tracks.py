@@ -9,6 +9,8 @@ from controllers.base import login_required
 
 from models.api.station import StationApi
 
+from controllers.base import login_required
+
 class ApiTracksHandler(BaseHandler):
 	def get(self):
 		shortname = self.request.get("shortname")
@@ -20,3 +22,5 @@ class ApiTracksHandler(BaseHandler):
 			self.response.out.write(json.dumps(extended_tracks))
 		else:
 			self.error(404)
+
+class ApiTracksHandler(Base)
