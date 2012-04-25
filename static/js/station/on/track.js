@@ -120,3 +120,13 @@ TrackManager.prototype.UIBuild = function(item){
 					
 	return div;
 }
+
+TrackManager.prototype.UIHide = function(id){
+	var selector = "#" + id;
+	$(selector).hide();
+}
+
+TrackManager.prototype.UIUnhide = function(id){
+		var selector = "#" + id;
+		$(selector).show();
+	}

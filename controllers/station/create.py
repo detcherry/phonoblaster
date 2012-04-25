@@ -56,10 +56,7 @@ class StationCreateHandler(BaseHandler):
 				page_information = graph.get_object(page_id)
 				
 				station_proxy = StationApi(page_shortname)
-				if("link" in page_information):
-					station_proxy.put_station(page_id, page_shortname, page_information["name"], page_information["link"])
-				else:
-					station_proxy.put_station(page_id, page_shortname, page_information["name"], "http://facebook.com/"+page_id)
+				station_proxy.put_station(page_id, page_shortname, page_information["name"], page_information["link"])
 			
 				self.redirect("/"+page_shortname)
 			

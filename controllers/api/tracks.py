@@ -7,6 +7,12 @@ from django.utils import simplejson as json
 from controllers.base import BaseHandler
 from controllers.base import login_required
 
+from google.appengine.ext import db
+
+from models.db.track import Track
+from models.db.broadcast import Broadcast
+from models.db.favorite import Favorite
+
 from models.api.station import StationApi
 
 from controllers.base import login_required
@@ -23,4 +29,38 @@ class ApiTracksHandler(BaseHandler):
 		else:
 			self.error(404)
 
-class ApiTracksHandler(Base)
+class ApiTracksDeleteHandler(BaseHandler):
+	@login_required
+	def delete(self, id):
+		logging.info("In ApiTracksDeleteHandler")
+		logging.info(id)
+
+		track = Track.get_by_id(int(id))
+
+		if(track):
+			#Deleting associated broadcasts
+			query = Broadcast.all().filter("track", track)
+			broadcasts = query.fetch(1000)
+
+			while(len(broadcasts)>0):
+				db.delete(broadcasts)
+				broadcasts = query.fetch(1000)
+
+			#Deleting associated favorites
+			query = Favorite.all().filter("track", track)
+			favorites = query.fetch(1000)
+
+			while(len(favorites)>0):
+				db.delete(favorites)
+				favorites = query.fetch(1000)
+
+			db.delete(track)
+
+			response = True
+		else:
+			response = False
+
+
+
+
+		self.response.out.write(json.dumps({ "response": response }))

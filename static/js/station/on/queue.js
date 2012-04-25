@@ -344,6 +344,7 @@ QueueManager.prototype.UIRoom = function(){
 
 // Before a track is submitted, we finish building it
 QueueManager.prototype.prePostBuild = function(item){
+	console.log(item);
 	var channel_id = this.station_client.channel_id;
 	var created = PHB.now();
 
@@ -353,7 +354,7 @@ QueueManager.prototype.prePostBuild = function(item){
 	content["created"] = null;
 	
 	var new_item = this.serverToLocalItem(content)
-	
+	console.log(new_item);
 	return new_item
 }
 
