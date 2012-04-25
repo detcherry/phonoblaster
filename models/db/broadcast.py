@@ -47,30 +47,27 @@ class Broadcast(db.Model):
 			station_keys = []
 	
 			for broadcast, track in zip(broadcasts, tracks):
-
-				# We check if the track is really on Phonoblaster
-				if(track):
-					user_key = Broadcast.user.get_value_for_datastore(broadcast)
+				user_key = Broadcast.user.get_value_for_datastore(broadcast)
+				
+				# Broadcast suggested by a user
+				if(user_key):
+					suggested_broadcasts.append(broadcast)
+					suggested_tracks.append(track)
 					
-					# Broadcast suggested by a user
-					if(user_key):
-						suggested_broadcasts.append(broadcast)
-						suggested_tracks.append(track)
-						
-						user_keys.append(user_key)
+					user_keys.append(user_key)
+				else:
+					station_key = Track.station.get_value_for_datastore(track)
+					
+					# Regular broadcast
+					if(station_key == current_station.key()):
+						regular_broadcasts.append(broadcast)
+						regular_tracks.append(track)
+					# Rebroadcast from another station
 					else:
-						station_key = Track.station.get_value_for_datastore(track)
-						
-						# Regular broadcast
-						if(station_key == current_station.key()):
-							regular_broadcasts.append(broadcast)
-							regular_tracks.append(track)
-						# Rebroadcast from another station
-						else:
-							favorited_broadcasts.append(broadcast)
-							favorited_tracks.append(track)
+						favorited_broadcasts.append(broadcast)
+						favorited_tracks.append(track)
 
-							station_keys.append(station_key)
+						station_keys.append(station_key)
 
 			# First let's format the regular broadcasts
 			for broadcast, track in zip(regular_broadcasts, regular_tracks):

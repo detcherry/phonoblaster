@@ -13,15 +13,8 @@ class TrackHandler(SecondaryHandler):
 			logging.info("Track found on Phonoblaster")
 			shortname = track.station.shortname
 			self.station_proxy = StationApi(shortname)
-			template_values = {
-					"track": {
-						"track_id": track.key().id(),
-						"track_created": timegm(track.created.utctimetuple()),
-						"youtube_id": track.youtube_id,
-						"youtube_title": track.youtube_title,
-						"youtube_duration": track.youtube_duration,
-					},
-			}
+			template_values = { "track": Track.get_extended_track(track), }
+			
 			user_agent = self.request.headers["User-Agent"]
 			facebook_agent = "facebookexternalhit/1.1 (+http://www.facebook.com/externalhit_uatext.php)"
 			

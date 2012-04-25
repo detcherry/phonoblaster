@@ -60,6 +60,23 @@ class Track(db.Model):
 		return track
 
 	@staticmethod
+	def get_extended_track(track):
+		return Track.get_extended_tracks([track])[0]
+
+	@staticmethod
+	def get_extended_tracks(tracks):
+		extended_tracks = [
+			{
+				"track_id": track.key().id(),
+				"track_created": timegm(track.created.utctimetuple()),
+				"youtube_id": track.youtube_id,
+				"youtube_title": track.youtube_title,
+				"youtube_duration": track.youtube_duration,
+			} for track in tracks]
+
+		return extended_tracks
+
+	@staticmethod
 	def number_of_views(track_id):
 		shard_name = COUNTER_OF_VIEWS_PREFIX + str(track_id)
 		count = Shard.get_count(shard_name)
