@@ -21,6 +21,11 @@ indexes:
   - name: station
   - name: expired
 
+- kind: Broadcast
+  properties:
+  - name: track
+  - name: expired
+
 - kind: Comment
   properties:
   - name: station

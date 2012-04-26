@@ -4,18 +4,17 @@ from datetime import datetime
 import django_setup
 from django.utils import simplejson as json
 
+from google.appengine.ext import db
+from google.appengine.api.taskqueue import Task
+
 from controllers.base import BaseHandler
 from controllers.base import login_required
-
-from google.appengine.ext import db
 
 from models.db.track import Track
 from models.db.broadcast import Broadcast
 from models.db.favorite import Favorite
 
 from models.api.station import StationApi
-
-from controllers.base import login_required
 
 class ApiTracksHandler(BaseHandler):
 	def get(self):
@@ -38,29 +37,19 @@ class ApiTracksDeleteHandler(BaseHandler):
 		track = Track.get_by_id(int(id))
 
 		if(track):
-			#Deleting associated broadcasts
-			query = Broadcast.all().filter("track", track)
-			broadcasts = query.fetch(1000)
-
-			while(len(broadcasts)>0):
-				db.delete(broadcasts)
-				broadcasts = query.fetch(1000)
-
 			#Deleting associated favorites
-			query = Favorite.all().filter("track", track)
-			favorites = query.fetch(1000)
-
-			while(len(favorites)>0):
-				db.delete(favorites)
-				favorites = query.fetch(1000)
-
-			db.delete(track)
+			task = Task(
+					method = 'DELETE',
+					url = "/taskqueue/deletetrack",
+					params = {
+						"track_id": id,
+						"type": "broadcast",
+					},
+				)
+			task.add(queue_name="worker-queue")
 
 			response = True
 		else:
 			response = False
-
-
-
 
 		self.response.out.write(json.dumps({ "response": response }))
