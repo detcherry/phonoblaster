@@ -129,4 +129,32 @@ TrackManager.prototype.UIHide = function(id){
 TrackManager.prototype.UIUnhide = function(id){
 		var selector = "#" + id;
 		$(selector).show();
+}
+
+TrackManager.prototype.deleteListen = function(){
+		var that = this;
+		var delete_selector = this.selector + " a.item-cross"
+		
+		$(delete_selector).live("click", function(){
+			var item_id = $(this).attr("name");
+			
+			var item_to_delete = null;
+			for(var i=0, c= that.items.length; i<c; i++){
+				var item = that.items[i];
+				if(item.id == item_id){
+					item_to_delete = item;
+					break;
+				}
+			}
+			
+			// We check if the item is in the list (sometimes it has not been received by PUBNUB yet...)
+			if(item_to_delete){
+				if (confirm("Do you want to delete the track : "+item_to_delete.content.youtube_title+" ?")) {
+					console.log("Deleting track");
+					that.deleteSubmit(item_to_delete);
+				}
+			}
+			
+			return false;
+		})
 	}
