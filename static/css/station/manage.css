@@ -22,6 +22,20 @@ p.page-name {
 	letter-spacing: 0px;
 }
 
-.title {
-	margin-left: 5px;
+div.title {
+	padding-left: 15px;
+	padding-bottom: 5px;
+}
+
+#manage-skip {
+	text-align: right;
+	padding: 15px;
+	width: 470px;
+	line-height: 30px;
+}
+
+#manage-skip a {
+	float: right;
+	padding: 7px;
+	margin-left: 10px;
 }
