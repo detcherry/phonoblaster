@@ -1,0 +1,27 @@
+@import url("create.css");
+
+p.page-name {
+	width: 275px;
+}
+
+#right-column{
+	width: 500px;
+}
+
+#right-column .content{
+	width: 470px;
+}
+
+.contribution {
+	width: 450px;
+}
+
+#right-column h1{
+	font-size: 18px;
+	line-height: 23px;
+	letter-spacing: 0px;
+}
+
+.title {
+	margin-left: 5px;
+}

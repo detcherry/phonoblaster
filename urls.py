@@ -6,6 +6,7 @@ from controllers.all import AllHandler
 from controllers.admin.dashboard import AdminDashboardHandler
 from controllers.profile import ProfileHandler
 from controllers.station.create import StationCreateHandler
+from controllers.station.manage import StationManagelHandler
 from controllers.station.check import StationCheckHandler
 from controllers.station.station import StationHandler
 from controllers.station.picture import StationPictureHandler
@@ -49,6 +50,7 @@ application = webapp.WSGIApplication(
 		('/admin/dashboard', AdminDashboardHandler),
 		('/', HomeHandler),
 		('/station/create', StationCreateHandler),
+		('/station/manage', StationManagelHandler),
 		('/station/check', StationCheckHandler),
 		('/(\w+)', StationHandler),
 		('/(\w+)/picture', StationPictureHandler),

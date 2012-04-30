@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% block style %}
+	<link type="text/css" rel="stylesheet" href="/{{tag}}/static/css/station/manage.css">
+{% endblock %}
+
+{% block main %}
+<div id="right-column">
+	<div class="title">
+		<h1>Facebook App Reinstall</h1>
+		<div class="stroke black"></div>
+	</div>
+	<div class="content">
+		{% if user_contributions %}
+			{% for contribution in user_contributions %}
+				<div class="contribution">
+					<img src="https://graph.facebook.com/{{ contribution.page_id }}/picture" class="thumbnail"/>
+					<p class="page-name"><span class="middle">{{ contribution.page_name }}</span></p>
+					<p>
+						<img class="loader" src="/{{tag}}/static/images/loader.gif" style="visibility:hidden;"/>
+						<a href="#" class="btn" id="{{ contribution.page_id }}">Reinstall !</a>
+					</p>
+				</div>
+			{% endfor %}
+		{% else %}
+			You don't have any Facebook page.<br/>
+			Create one <a href="https://www.facebook.com/pages/create.php">here</a> and then refresh this page.
+		{% endif %}
+	</div>
+	<div id="popup-contribution">
+		<div id="page-confirmation">
+			<h3>1. Successfully created!</h3>
+			<p>on your fan page</p>
+		</div>
+		<div id="page-screenshot">
+			<div class="facebook-tab">
+				<span class="facebook-sprit wall"></span>
+				<div>Wall</div>
+			</div>
+			<div class="facebook-tab">
+				<span class="facebook-sprit info"></span>
+				<div>Info</div>
+			</div>
+			<div class="facebook-tab">
+				<span class="facebook-sprit photos"></span>
+				<div>Photos</div>
+			</div>
+			<div class="facebook-tab" style="background-color:#D8DFEA;">
+				<span class="facebook-sprit phonoblaster"></span>
+				<div>Phonoblaster</div>
+			</div>
+		</div>
+		<div id="address-confirmation">
+			<form method="post" action="/station/create">
+				<input type="text" name="page-id" id="page-id" style="display:none;"/>
+				<h3>2. Confirm your address!</h3>
+				<p>http://www.phonoblaster.com/</p>
+				<input type="text" name="page-shortname" id="page-shortname" autocomplete="off"/>
+				<div id="shortname-status"></div>
+				<div class="modal-footer">
+					<input type="submit" class="btn primary" value="Go!"/>
+					<div id="shortname-warning">Choose an available address first. Thanks</div>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+{% endblock %}
+
+{% block script %}
+	<script type="text/javascript" src="/{{tag}}/static/js/station/manage.js"></script>
+{% endblock %}
