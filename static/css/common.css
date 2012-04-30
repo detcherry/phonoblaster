@@ -601,3 +601,30 @@ a.item-cross:hover{
 	float:right;
 	margin-right:-14px;
 }
+
+/* --------------------------------------------- STATION ADMINISTRATION --------------------------------------------- */
+
+a.create{
+	background:url("/static/images/phonoblaster-sprits.png");
+	background-position:-35px -85px;
+}
+
+a.manage{
+	background:url("/static/images/phonoblaster-sprits.png");
+	background-position:-35px -85px;
+}
+
+#station-admin-actions{
+	width:35px;
+	height:15px;
+}
+
+#action-create-station a{
+	width:15px;
+	height:15px;
+}
+
+#action-manage-station a{
+	width:15px;
+	height:15px;
+}

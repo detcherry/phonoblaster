@@ -35,7 +35,6 @@ class HomeHandler(BaseHandler):
 				stations = []
 				tracks = []
 				for f, e in zip(feed, extended_tracks):
-					# Check if Youtube track exists
 					if e:
 						stations.append(f)
 						tracks.append(e)

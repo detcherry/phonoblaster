@@ -219,3 +219,50 @@
 .home-feed-track p span{
 	height:50px;
 }
+
+/* --------------------------------------------- STATION ADMINISTRATION --------------------------------------------- */
+
+a.create{
+	background:url("/static/images/phonoblaster-sprits.png");
+	background-position:-150px -90px;
+	margin: 2px;
+}
+
+a.manage{
+	background:url("/static/images/phonoblaster-sprits.png");
+	background-position:-128px -90px;
+	margin: 2px;
+}
+
+.action{
+	width:15px;
+	height:15px;
+}
+
+#station-admin-actions{
+	width:35px;
+	height:15px;
+	float:right;
+	margin-right:2px;
+}
+
+.action a{
+	display: block;
+	width:100%;
+	height:100%;
+}
+
+
+#station-admin {
+	color:#7F7F7F;
+	margin-bottom: 5px;
+	width: 100%;
+}
+
+div#action-manage-station{
+	float:right;
+}
+
+div#action-create-station{
+	float:left;
+}
