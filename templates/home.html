@@ -20,6 +20,17 @@
 		</div>
 	</div>
 	<div id="home-user-stations">
+		<div id="station-admin">
+			<span class="title">Stations</span>
+			<div id="station-admin-actions">
+				<div id="action-create-station" class="action">
+					<a href="/station/create" class="create tuto" data-original-title="Create a new Station"></a>
+				</div>
+				<div id="action-manage-station" class="action">
+					<a href="/station/manage" class="manage tuto" data-original-title="Manage Stations"></a>
+				</div>
+			</div>
+		</div>
 		{% if user_stations %}
 			{% for station in user_stations %}
 				<div class="home-user-station">
@@ -29,7 +40,7 @@
 					</a>
 				</div>
 			{% endfor %}
-			<a href="/station/create" id="home-create-new-station">Create a new station</a>
+			<div id="home-create-new-station"></div>
 		{% else %}	
 			<a href="/station/create" class="btn primary">Create your station!</a>
 		{% endif %}
