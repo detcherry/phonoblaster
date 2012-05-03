@@ -10,8 +10,6 @@ from google.appengine.ext import db
 
 from google.appengine.api.taskqueue import Task
 
-from models.api.user import UserApi
-
 from models.db.user import User
 from models.db.station import Station
 from models.db.comment import Comment
@@ -32,10 +30,20 @@ class UpgradeHandler(webapp.RequestHandler):
 		if(comments):
 			logging.info("Comments found")
 			for comment in comments:
-				user_key = comment.user.key()
+				user = comment.user
 				station_key = comment.station.key()
-				user_proxy = UserApi(user_key.name())
-				user_proxy.add_contribution(station_key)
+				if(user.stations):
+					logging.info("%s %s already has a station list"%(user.first_name, user.last_name))
+				else:
+					user.stations = []
+					logging.info("Initialization : %s %s has a no station list"%(user.first_name, user.last_name))
+
+				if(station_key not in user.stations):
+					user.stations.append(station_key)
+					user.put()
+					logging.info("Adding %s to list station of %s %s"%(comment.station.shortname, user.first_name, user.last_name))
+				else:
+					logging.info("%s %s already admin of %s"%(user.first_name, user.last_name, comment.station.shortname))
 			cursor = query.cursor()
 		else:
 			logging.info("No More comments, terminating update")
