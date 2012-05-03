@@ -4,6 +4,7 @@ from google.appengine.ext.webapp.util import run_wsgi_app
 from controllers.home import HomeHandler
 from controllers.all import AllHandler
 from controllers.admin.dashboard import AdminDashboardHandler
+from controllers.admin.upgrade import UpgradeHandler
 from controllers.profile import ProfileHandler
 from controllers.station.create import StationCreateHandler
 from controllers.station.manage import StationManagelHandler
@@ -48,6 +49,7 @@ application = webapp.WSGIApplication(
 		('/api/air', ApiAirHandler),
 		('/api/now', ApiNowHandler),
 		('/admin/dashboard', AdminDashboardHandler),
+		('/admin/upgrade', UpgradeHandler),
 		('/', HomeHandler),
 		('/station/create', StationCreateHandler),
 		('/station/manage', StationManagelHandler),

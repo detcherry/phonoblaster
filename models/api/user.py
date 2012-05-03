@@ -113,6 +113,38 @@ Global number of users: %s
 			}
 		)
 		task.add(queue_name = "worker-queue")
+
+	#Adding Station to a user, means that he becoms an admin of that station
+	def add_contribution(self, station_key):
+		if(self.user.stations):
+			logging.info("Statons retrieved")
+		else:
+			self.user.stations = []
+			self.user.put()
+			logging.info("Station initialization")
+		if station_key not in self.user.stations:
+			logging.info("Station added to user stations")
+			self.user.stations.append(station_key)
+			self.user.put()
+		else:
+			logging.info("User already admin of station")
+
+	#Removing station from user stations
+	def remove_contribution(self, station_key):
+		if(self.user.stations):
+			logging.info("Statons retrieved")
+		else:
+			self.user.stations = []
+			self.user.put()
+			logging.info("Station initialization")
+		
+		if station_key in self.user.stations:
+			logging.info("Station removed from user stations")
+			self.user.stations.remove(station_key)
+			self.user.put()
+		else:
+			logging.info("Impossible to remove, user not admin of station.")
+
 	
 	# Return the user contributions (pages he's admin of)
 	@property

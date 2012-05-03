@@ -3,11 +3,18 @@
 {% block style %}
 	<link type="text/css" rel="stylesheet" href="/{{tag}}/static/css/admin/dashboard.css" />
 {% endblock %}
+{% block script %}
+	<script type="text/javascript" src="/{{tag}}/static/js/admin/dashboard.js"></script>
+{% endblock %}
 
 {% block main %}
 	<div id="admin">
 		<h1>Dashboard</h1>
 		<p><strong>{{ number_of_stations }}</strong> stations</p>
 		<p><strong>{{ number_of_users }}</strong> users</p>
+	</div>
+
+	<div id="else">
+		<a href="#" class="btn" id="put-admin">Put Admins of Stations</a>
 	</div>
 {% endblock %}
