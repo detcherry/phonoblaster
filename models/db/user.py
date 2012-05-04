@@ -6,4 +6,5 @@ class User(db.Model):
     last_name = db.StringProperty(required = True)
     email = db.EmailProperty(required = True)
     created = db.DateTimeProperty(auto_now_add = True)
+    updated = db.DateTimeProperty(auto_now = True)
     stations = db.ListProperty(db.Key)

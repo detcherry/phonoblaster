@@ -3,6 +3,7 @@ import os
 import re
 
 from datetime import datetime
+from datetime import timedelta
 from calendar import timegm
 
 from google.appengine.ext import db
@@ -140,10 +141,24 @@ Global number of users: %s
 							contributions.append(contribution)
 		
 				self._contributions = contributions
+
 				memcache.set(self._memcache_user_contributions_id, self._contributions)
 				logging.info("User contributions put in memcache")
 			else:
 				logging.info("User contributions already in memcache")
+
+		if(self.user.updated):
+			logging.info(self.user.updated)
+
+			if( self.user.updated < datetime.utcnow() - timedelta(1,0) ):
+				keys = [db.Key.from_path('Station', c["page_id"]) for c in self._contributions]
+				self.user.stations = keys
+				self.user.put()
+				logging.info("Updating stations filed")
+			else:
+				logging.info("Stations field up to date")
+
+
 		
 		return self._contributions
 	
