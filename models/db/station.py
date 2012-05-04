@@ -1,5 +1,6 @@
 from google.appengine.ext import db
 
+
 class Station(db.Model):
 	# key_name = facebook_id (page)
 	shortname = db.StringProperty(required = True)
