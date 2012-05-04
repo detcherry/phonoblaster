@@ -77,7 +77,30 @@ class UserApi:
 		)
 		user.put()
 		logging.info("User put in datastore")
-		
+
+		#Adding contributions to user
+		graph = facebook.GraphAPI(self.access_token)
+		try:
+			accounts = graph.get_connections(user.key().name(),"accounts")["data"]
+		except GraphAPIError:
+			logging.info("User did not accept that Phonoblaster can manage his pages.")
+			accounts = []
+			
+		contributions = []
+		if isinstance(accounts, list):
+			for account in accounts:
+				if(account["category"] != "Application"):
+					contribution = {
+						"page_name": account["name"],
+						"page_id": account["id"],
+					}
+					contributions.append(contribution)
+
+		keys = [db.Key.from_path('Station', c["page_id"]) for c in contributions]
+		user.stations = keys
+		user.put()
+		logging.info("Creaing stations filed")
+
 		memcache.set(self._memcache_user_id, user)
 		logging.info("User put in memcache")
 		
@@ -151,14 +174,14 @@ Global number of users: %s
 			logging.info(self.user.updated)
 			logging.info(datetime.utcnow() - timedelta(1,0))
 			#Updating stations fileds
-			if( (self.user.updated and (self.user.updated < self.user.created + timedelta(0,30) or self.user.updated < datetime.utcnow() - timedelta(1,0))) or not self.user.updated ):
+			if( (self.user.updated and self.user.updated < datetime.utcnow() - timedelta(1,0)) or not self.user.updated ):
 				
 				keys = [db.Key.from_path('Station', c["page_id"]) for c in self._contributions]
-				remaining_list_1, remaining_list_2, common = compare_lists(self.user.stations ,keys)
+				remaining_stations, remaining_keys, common = compare_lists(self.user.stations ,keys)
 
-				logging.info("Remaining in list_1 : %d, remaining in list_2 : %d and common : %d"%(len(remaining_list_1), len(remaining_list_2), len(common)))
+				logging.info("Remaining in stations : %d, remaining in keys : %d and common : %d"%(len(remaining_stations), len(remaining_keys), len(common)))
 
-				if(len(remaining_list_1)>0 or len(remaining_list_2)>0):
+				if(len(remaining_stations)>0 or len(remaining_keys)>0):
 					self.user.stations = keys
 					#self.user.updated = datetime.utcnow()
 					self.user.put()
