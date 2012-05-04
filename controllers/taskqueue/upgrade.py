@@ -32,6 +32,7 @@ class UpgradeHandler(webapp.RequestHandler):
 			for comment in comments:
 				user = comment.user
 				station_key = comment.station.key()
+
 				if(user.stations):
 					logging.info("%s %s already has a station list"%(user.first_name, user.last_name))
 				else:
@@ -45,6 +46,12 @@ class UpgradeHandler(webapp.RequestHandler):
 				else:
 					logging.info("%s %s already admin of %s"%(user.first_name, user.last_name, comment.station.shortname))
 			cursor = query.cursor()
+			task = Task(
+					url = "/taskqueue/upgrade",
+					params = {'cursor':cursor},
+					countdown = 1 ,
+				)
+			task.add(queue_name = "upgrade-queue")
 		else:
 			logging.info("No More comments, terminating update")
 
