@@ -147,12 +147,11 @@ Global number of users: %s
 			else:
 				logging.info("User contributions already in memcache")
 
-		if(self.user.updated):
-			logging.info(self.user.updated)
-
-			if( self.user.updated < datetime.utcnow() - timedelta(1,0) ):
+			#Updating stations fileds
+			if( (self.user.last_stations_update and self.user.last_stations_update < datetime.utcnow() - timedelta(1,0)) or not self.user.last_stations_update ):
 				keys = [db.Key.from_path('Station', c["page_id"]) for c in self._contributions]
 				self.user.stations = keys
+				self.user.last_stations_update = datetime.utcnow()
 				self.user.put()
 				logging.info("Updating stations filed")
 			else:
