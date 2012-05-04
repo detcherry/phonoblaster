@@ -41,6 +41,9 @@
 
 
 /* ----- BOOTSTRAP OVERWRITE ----- */
+html{
+	background:#000000;
+}
 
 body{
 	float:left;
