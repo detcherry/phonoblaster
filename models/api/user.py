@@ -174,6 +174,10 @@ Global number of users: %s
 			logging.info(self.user.updated)
 			logging.info(datetime.utcnow() - timedelta(1,0))
 			#Updating stations fileds
+			if(self.user.stations):
+				logging.info(self.user.stations)
+			else:
+				logging.info('No stations!')
 			if( (self.user.updated and self.user.updated < datetime.utcnow() - timedelta(1,0)) or not self.user.updated ):
 				
 				keys = [db.Key.from_path('Station', c["page_id"]) for c in self._contributions]
@@ -183,7 +187,6 @@ Global number of users: %s
 
 				if(len(remaining_stations)>0 or len(remaining_keys)>0):
 					self.user.stations = keys
-					#self.user.updated = datetime.utcnow()
 					self.user.put()
 					memcache.set(self._memcache_user_id, self.user)
 					logging.info("Updating stations filed")
