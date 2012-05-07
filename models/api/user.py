@@ -171,14 +171,25 @@ Global number of users: %s
 				logging.info("User contributions already in memcache")
 
 
-			logging.info(self.user.updated)
-			logging.info(datetime.utcnow() - timedelta(1,0))
 			#Updating stations fileds
+			doStationUpdate = False # boolean that will let the system know if it has to perform an update
 			if(self.user.stations):
-				logging.info(self.user.stations)
+				logging.info('Stations found!')
+				logging.info(self.user.updated)
+				logging.info(datetime.utcnow() - timedelta(1,0))
+
+				if(self.user.updated < datetime.utcnow() - timedelta(1,0)):
+					logging.info('An update is needed!')
+					doStationUpdate = True
+				else:
+					logging.info('No update needed')
+					doStationUpdate = False
 			else:
-				logging.info('No stations!')
-			if( (self.user.updated and self.user.updated < datetime.utcnow() - timedelta(1,0)) or not self.user.updated ):
+				logging.info('No stations, need to create the stations field in user entity')
+				doStationUpdate = True
+
+			#Performing update or not depending on doStationUpdate
+			if( doStationUpdate ):
 				
 				keys = [db.Key.from_path('Station', c["page_id"]) for c in self._contributions]
 				remaining_stations, remaining_keys, common = compare_lists(self.user.stations ,keys)
