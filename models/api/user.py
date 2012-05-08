@@ -198,9 +198,11 @@ Global number of users: %s
 
 				if(len(remaining_stations)>0 or len(remaining_keys)>0):
 					self.user.stations = keys
-					self.user.put()
-					memcache.set(self._memcache_user_id, self.user)
 					logging.info("Updating stations filed")
+
+				#Even when they are no changes, we need to put user in datastore in order to update the updated field
+				self.user.put()
+				memcache.set(self._memcache_user_id, self.user)
 			else:
 				logging.info("Stations field up to date")
 
