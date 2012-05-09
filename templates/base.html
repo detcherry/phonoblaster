@@ -90,6 +90,9 @@
 					xfbml: true,
 					oauth: true,
 				});
+
+				// Check if the current user is logged in and has authorized the app
+				FB.getLoginStatus(checkLoginStatus);
 				
 				// Login events
 				$("a.login").click(function(){
@@ -101,6 +104,19 @@
 					FACEBOOK.logout();
 					return false;
 				})
+
+				// Check the result of the user status and display login button if necessary
+				function checkLoginStatus(response) {
+					if(response && response.status == 'connected') {
+						console.log('User is authorized');
+						if ($("a.login").length > 0) {
+							//Login user if the button a.login exists
+							FACEBOOK.login();
+						};
+					} else {
+						console.log('User is not authorized');
+					}
+				}
 				
 	      	};
 	      	(function() {
