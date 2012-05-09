@@ -18,33 +18,25 @@ class UpgradeHandler(webapp.RequestHandler):
 	def post(self):
 		cursor = self.request.get("cursor")
 
-		query = Comment.all().filter("admin = ", True)
+		query = User.all()
 		if(cursor):
 			logging.info("Cursor found")
 			query.with_cursor(start_cursor = cursor)
 		else:
 			logging.info("No cursor")
 
-		comments = query.fetch(100)
+		users = query.fetch(100)
 
-		if(comments):
-			logging.info("Comments found")
-			for comment in comments:
-				user = comment.user
-				station_key = comment.station.key()
-
+		if(users):
+			logging.info("Users found")
+			for user in users:
 				if(user.stations):
-					logging.info("%s %s already has a station list"%(user.first_name, user.last_name))
+					logging.info("Stations found for %s %s"%(user.first_name, user.last_name))
 				else:
+					logging.info("Stations not found for %s %s"%(user.first_name, user.last_name))
 					user.stations = []
-					logging.info("Initialization : %s %s has a no station list"%(user.first_name, user.last_name))
-
-				if(station_key not in user.stations):
-					user.stations.append(station_key)
 					user.put()
-					logging.info("Adding %s to list station of %s %s"%(comment.station.shortname, user.first_name, user.last_name))
-				else:
-					logging.info("%s %s already admin of %s"%(user.first_name, user.last_name, comment.station.shortname))
+
 			cursor = query.cursor()
 			task = Task(
 					url = "/taskqueue/upgrade",
@@ -53,7 +45,7 @@ class UpgradeHandler(webapp.RequestHandler):
 				)
 			task.add(queue_name = "upgrade-queue")
 		else:
-			logging.info("No More comments, terminating update")
+			logging.info("No More users, terminating update")
 
 
 
