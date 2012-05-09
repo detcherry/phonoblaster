@@ -190,7 +190,9 @@ Global number of users: %s
 
 			#Performing update or not depending on doStationUpdate
 			if( doStationUpdate ):
-				
+				if(not self.user.stations):
+					self.user.stations = []
+
 				keys = [db.Key.from_path('Station', c["page_id"]) for c in self._contributions]
 				remaining_stations, remaining_keys, common = compare_lists(self.user.stations ,keys)
 
@@ -199,7 +201,7 @@ Global number of users: %s
 				if(len(remaining_stations)>0 or len(remaining_keys)>0):
 					self.user.stations = keys
 					logging.info("Updating stations filed")
-
+				
 				#Even when they are no changes, we need to put user in datastore in order to update the updated field
 				self.user.put()
 				memcache.set(self._memcache_user_id, self.user)
