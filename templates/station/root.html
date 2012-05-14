@@ -57,13 +57,13 @@
 		<div id="top-right-status" class="on"><a href="/{{ station_proxy.station.shortname }}">on air</a></div>
 		{% else %}
 		<div id="top-right-status" class="off"><a href="/{{ station_proxy.station.shortname }}">off air</a></div>
-		{% endif %}
+	{% endif %}
 
-		<div id="top-right-page" class="tuto" data-original-title="{{ station_proxy.station.name }} Facebook Page">
-			<a href="{{ station_proxy.station.link }}" target="_blank" >
-				<img src="/{{tag}}/static/images/fb_page_button.png">
-			</a>
-		</div>
+	<div id="top-right-page" class="tuto" data-original-title="{{ station_proxy.station.name }} Facebook Page">
+		<a href="{{ station_proxy.station.link }}" target="_blank" >
+			<img src="/{{tag}}/static/images/fb_page_button.png">
+		</a>
+	</div>
 {% endblock %}
 
 {% block main-left %}
