@@ -28,6 +28,7 @@ MEMCACHE_STATION_QUEUE_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".queue.stati
 MEMCACHE_STATION_SESSIONS_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".sessions.station."
 MEMCACHE_STATION_BROADCASTS_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".broadcasts.station."
 MEMCACHE_STATION_TRACKS_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".tracks.station."
+MEMCACHE_STATION_BUFFER_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".buffer.station."
 COUNTER_OF_BROADCASTS_PREFIX = "station.broadcasts.counter."
 COUNTER_OF_VIEWS_PREFIX = "station.views.counter."
 COUNTER_OF_SUGGESTIONS_PREFIX = "station.suggestions.counter."
@@ -41,6 +42,7 @@ class StationApi():
 		self._memcache_station_sessions_id = MEMCACHE_STATION_SESSIONS_PREFIX + self._shortname
 		self._memcache_station_broadcasts_id = MEMCACHE_STATION_BROADCASTS_PREFIX + self._shortname
 		self._memcache_station_tracks_id = MEMCACHE_STATION_TRACKS_PREFIX + self._shortname
+		self._memcache_station_buffer_id = MEMCACHE_STATION_BUFFER_PREFIX + self._shortname
 		self._counter_of_broadcasts_id = COUNTER_OF_BROADCASTS_PREFIX + self._shortname
 		self._counter_of_views_id = COUNTER_OF_VIEWS_PREFIX + self._shortname
 		self._counter_of_suggestions_id = COUNTER_OF_SUGGESTIONS_PREFIX + self._shortname
@@ -201,7 +203,25 @@ Global number of stations: %s
 		logging.info("Session removed from memcache")
 		
 		return extended_session
-	
+	# Returns the current buffer of the station
+	@property
+	def buffer_and_timestamp(self):
+		if not hasattr(self, "_buffer_and_timestamp"):
+			self._buffer_and_timestamp = memcache.get(self._memcache_station_buffer_id)
+			if self._buffer_and_timestamp is None:
+				station = self.station
+				buffer = self.station.buffer
+				timestamp = self.station.timestamp
+
+				self._buffer_and_timestamp = {'buffer':buffer, 'timestamp':timestamp}
+				
+				memcache.add(self._memcache_station_buffer_id, self._buffer_and_timestamp)
+				logging.info("Buffer and timestamp put in memcache")
+			else:
+				logging.info("Buffer and timestamp retrieved from memcache")
+		
+		return self._buffer_and_timestamp
+
 	# Returns the current station queue
 	@property
 	def queue(self):
