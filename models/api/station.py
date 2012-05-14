@@ -1,7 +1,6 @@
 import logging
 import os
 import re
-from calendar import timegm
 
 from datetime import datetime
 from datetime import timedelta
@@ -203,6 +202,7 @@ Global number of stations: %s
 		logging.info("Session removed from memcache")
 		
 		return extended_session
+
 	# Returns the current buffer of the station
 	@property
 	def buffer_and_timestamp(self):
@@ -222,6 +222,7 @@ Global number of stations: %s
 		
 		return self._buffer_and_timestamp
 
+	#TO BE REMOVED AT THE END OF V4 DEV
 	# Returns the current station queue
 	@property
 	def queue(self):
@@ -258,7 +259,49 @@ Global number of stations: %s
 					logging.info("Queue already in memcache and no need to clean up")
 
 		return self._queue		
+
+
+
+	def get_buffer_duration(self):
+		"""
+			Returns the length in seconds of the buffer.
+		"""
+		buffer = self.buffer_and_timestamp['buffer']
+		buffer_duration = 0
+		if buffer:
+			tracks = db.get(buffer)
+			buffer_duration = sum([t.youtube_duration for t in tracks])
+
+		return buffer_duration
 	
+	def get_index_current_track(self):
+		"""
+			Returns the index in the buffer of the current track. If buffer empty, returns None
+		"""
+		buffer_and_timestamp = self.buffer_and_timestamp
+		buffer = buffer_and_timestamp['buffer']
+		timestamp = buffer_and_timestamp['timestamp']
+
+		now = datetime.utcnow()
+		buffer_duration = self.get_buffer_duration()
+		
+		if(buffer_duration == 0):
+			#buffer empty
+			return None
+
+		now_broadcast_time = (now - timestamp).total_seconds() % buffer_duration
+
+		tracks = db.get(buffer)
+		current_duration = 0
+
+		for i in len(tracks):
+			track = tracks[i]
+			current_duration += track.youtube_duration
+			if(current_duration>now_broadcast_time):
+				#Current track found, return its position in buffer
+				return i
+
+	#TO BE REMOVED AT THE END OF V4 DEV
 	# Add a new broadcast to the queue
 	def add_to_queue(self, broadcast):
 		extended_broadcast = None
@@ -351,6 +394,7 @@ Global number of stations: %s
 		)
 		task.add(queue_name = "worker-queue")
 	
+	#TO BE REMOVED AT THE END OF V4 DEV
 	# Remove a broadcast from the queue
 	def remove_from_queue(self, key_name):
 		response = False
@@ -419,6 +463,7 @@ Global number of stations: %s
 		
 		return response
 	
+	#TO BE REMOVED AT THE END OF V4 DEV
 	@property
 	def number_of_broadcasts(self):
 		if not hasattr(self, "_number_of_broadcasts"):
@@ -426,16 +471,19 @@ Global number of stations: %s
 			self._number_of_broadcasts = Shard.get_count(shard_name)
 		return self._number_of_broadcasts
 	
+	#TO BE REMOVED AT THE END OF V4 DEV
 	# Starts a task that will increment the number of broadcasts
 	def increment_broadcasts_counter(self):
 		shard_name = self._counter_of_broadcasts_id
 		Shard.task(shard_name, "increment")
 	
+	#TO BE REMOVED AT THE END OF V4 DEV
 	# Starts a task that will decrement the number of broadcasts
 	def decrement_broadcasts_counter(self):
 		shard_name = self._counter_of_broadcasts_id
 		Shard.task(shard_name, "decrement")
 	
+
 	@property
 	def number_of_views(self):
 		if not hasattr(self, "_number_of_views"):
@@ -447,6 +495,7 @@ Global number of stations: %s
 		shard_name = self._counter_of_views_id
 		Shard.increase(shard_name, value)
 	
+	#TO BE REMOVED AT THE END OF V4 DEV
 	def get_broadcasts(self, offset):
 		timestamp = timegm(offset.utctimetuple())
 		memcache_broadcasts_id = self._memcache_station_broadcasts_id + "." + str(timestamp)
@@ -469,6 +518,7 @@ Global number of stations: %s
 			
 		return past_broadcasts
 	
+	#TO BE REMOVED AT THE END OF V4 DEV
 	def broadcasts_query(self, offset):
 		q = Broadcast.all()
 		q.filter("station", self.station.key())
