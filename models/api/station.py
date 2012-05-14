@@ -301,6 +301,15 @@ Global number of stations: %s
 				#Current track found, return its position in buffer
 				return i
 
+	def add_tracks_to_buffer(youtube_ids):
+		pass
+
+	def remove_track_from_buffer(youtube_id):
+		pass
+
+	def move_tack_in_buffer(youtube_id_before, youtube_track_after):
+		pass
+
 	#TO BE REMOVED AT THE END OF V4 DEV
 	# Add a new broadcast to the queue
 	def add_to_queue(self, broadcast):
