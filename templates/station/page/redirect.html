@@ -1,0 +1,62 @@
+{% extends "station/root.html" %}
+
+{% block style %}
+	<link type="text/css" rel="stylesheet" href="/{{tag}}/static/css/station/page/root.css">
+	<style>
+		#redirection{text-align:center; margin-top:100px; width:100%;}
+		.container{background:none;}
+		img{display:block; height:150px; margin:auto; margin-bottom:20px;}
+		img.loader{display:inline; height:20px; margin:0px; margin-right:10px;}
+	</style>
+{% endblock %}
+
+{% block header %}
+{% endblock %}
+
+{% block main %}
+ 	<div id="redirection">
+		<img src="/{{ tag }}/static/images/icon.png" id="icon">
+		<img src="/{{ tag}}/static/images/loader.gif" class="loader"/>
+		Redirecting to <a href="{{ site_url }}/{{ station_proxy.station.shortname }}">
+			{{ station_proxy.station.name }} station on Phonoblaster
+		</a>
+	</div>
+{% endblock %}
+
+{% block footer %}
+{% endblock %}
+
+{% block script %}
+<script type="text/javascript">
+	$(function(){
+		var shortname = "{{ station_proxy.station.shortname }}";
+		var url = "{{ site_url }}/" + shortname;
+		window.open(url, "_top");
+	})
+</script>
+{% endblock %}
+
+{% block front %}
+<!-- Facebook -->
+<div id="fb-root"></div>
+<script type="text/javascript">
+  	window.fbAsyncInit = function() {
+        FB.init({
+			appId: '{{ facebook_app_id }}',
+ 			status: true,
+ 			cookie: true,
+			xfbml: true,
+			oauth: true,
+		});
+		
+		FB.Canvas.setAutoGrow();		
+  	};
+  	(function() {
+		var e = document.createElement('script');
+		e.type = 'text/javascript';
+		e.src = document.location.protocol + '//connect.facebook.net/en_US/all.js';
+		e.async = true;
+		document.getElementById('fb-root').appendChild(e);
+	}());
+</script>
+{% endblock %}
