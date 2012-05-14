@@ -35,9 +35,6 @@ class Youtube():
 				skip = False
 				for x in entry.extension_elements:
 					if x.tag == "status" and x.namespace == "http://schemas.google.com/gdata/batch" and x.attributes["code"] != "200":
-						logging.info("Feed Entry : ")
-						logging.info(x.attributes)
-						logging.info(entry)
 						skip = True
 
 				if(skip):
