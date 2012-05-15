@@ -29,6 +29,8 @@ class StationPageHandler(RootHandler):
 			self.render("station/page/redirect.html", None)
 			
 			"""
+			TO BE REMOVED
+			
 			on_air = self.station_proxy.on_air()
 			
 			if(not on_air):
