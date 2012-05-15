@@ -304,8 +304,8 @@ Global number of stations: %s
 		self.station.buffer = buffer
 		self.station.put()
 		memcache.set(self._memcache_station_buffer_id, {'buffer':buffer, 'timestamp': self.station.timestamp})
-		
-		this.set_new_timestamp()
+
+		this.set_new_timestamp(current_index + len(youtube_tracks))
 
 	def remove_track_from_buffer(youtube_track):
 		pass
