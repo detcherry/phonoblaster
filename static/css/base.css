@@ -41,6 +41,11 @@
 
 
 /* ----- BOOTSTRAP OVERWRITE ----- */
+
+html, body{
+	height:100%;
+}
+
 html{
 	background:#000000;
 }

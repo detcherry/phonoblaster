@@ -1,0 +1,127 @@
+{% extends "base.html" %}
+
+{% block meta %}
+	<title>{{ station_proxy.station.name }}</title>
+	<meta name="description" content="Listen now to {{ station_proxy.station.name }} station on Phonoblaster.">
+{% endblock %}
+
+{% block facebook %}
+	<!-- Station Open Graph Tags -->
+	<meta property="fb:app_id" content="{{ facebook_app_id }}"/>
+	<meta property="og:type" content="{{ version }}:station"/> 
+	<meta property="og:url" content="{{ site_url }}/{{ station_proxy.station.shortname }}"/> 
+	<meta property="og:title" content="{{ station_proxy.station.name }}"/> 
+	<meta property="og:description" content="Listen now to {{ station_proxy.station.name }} on Phonoblaster."/>
+	<meta property="og:image"  content="https://graph.facebook.com/{{ station_proxy.station.key.name }}/picture?type=large"/> 
+	<meta property="og:site_name" content="Phonoblaster"/>
+	<meta property="og:video:type" content="text/html"/>
+	<meta property="og:video" content="{{ site_url }}/{{ station_proxy.station.shortname }}"/>
+	<meta property="{{ version }}:page" content="{{ station_proxy.station.link }}"/>
+{% endblock %}
+
+{% block style %}
+	<link type="text/css" rel="stylesheet" href="/{{tag}}/static/css/station/station.css">
+{% endblock %}
+
+{% block main %}
+	<!-- Background -->
+	<div id="background" class="stretch">
+		<!-- Example -->
+		<!-- <img src="/{{tag}}/static/images/smoking.jpg" class="stretch"/> -->
+	</div>
+	<!-- Left column -->
+	<div id="left-column" class="stretch">
+		<!-- Station Information -->
+		<div id="left-station-information">
+			<div id="left-picture">
+				<img src="https://graph.facebook.com/{{ station_proxy.station.key.name }}/picture?type=square">
+			</div>
+			<div id="left-shortname">@{{ station_proxy.station.shortname }}</div>
+			<div id="left-name">
+				<p>{{ station_proxy.station.name }}</p>
+				<a href="{{ station_proxy.station.link }}" class="fb-page"></a>
+				<div class="fb-like" data-href="{{ station_proxy.station.link }}" data-send="false" data-layout="button_count"  data-show-faces="false"></div>
+			</div>
+		</div>
+		<!-- Media -->
+		<div id="media">
+			<div id="youtube-player">
+				<img src="/{{tag}}/static/images/loader.gif" class="loader"/>
+			</div>
+		</div>
+		<div id="media-bar">
+			<div id="media-bar-filler"></div>
+		</div>
+		<div id="media-details">
+			<div id="media-id"><!-- Div necessary for JS --></div>
+			<div id="media-picture">
+				<!--  Example: -->
+				<!-- <img src="http://i1.ytimg.com/vi/yBP_Re9r9MI/default.jpg"/> -->
+			</div>
+			<div id="media-info">
+				<div id="media-info-top">
+					<h3>Current track</h3>
+					<div id="media-submitter">
+						<!--  Example: -->
+						<!--
+							<img src="http://graph.facebook.com/damien.detcherry/picture?type=square">
+							<span>Rebroadcast of</span> 
+						-->
+					</div>
+				</div>
+				<div class="stroke grey"></div>
+				<div id="media-title">Loading...</div>
+				<div id="media-fav">
+					<!-- Example: -->
+				 	<!-- <a class="fav tuto" data-original-title="Favorite this track!" href="#"></a> -->
+				</div>
+				<div id="media-volume" class="unmuted"></div>
+			</div>
+		</div>
+		<!-- Listeners counter -->
+		<div id="sessions">
+			<div class="stat">
+				<span class="figure">0</span>
+				<span class="title">Listeners<span>
+			</div>
+			<div id="listeners">
+				<!-- Example -->
+				<!--
+					<a href="" class="tuto listener" data-original-title="Damien Detcherry">
+						<img src="http://graph.facebook.com/damien.detcherry/picture?type=square">
+					</a>
+				-->
+			</div>
+			{% if is_admin %}
+			<a id="share" class="btn primary" href="#" class="tuto" data-original-title="Share your station on Facebook!">
+				Bring your fans!
+			</a>
+			{% else %}
+			<a id="share" class="btn primary" href="#" class="tuto" data-original-title="Share this station on Facebook!">
+				Bring your friends!
+			</a>
+			{% endif %}
+		</div>
+		<!-- Broadcasts counter -->
+		<div id="broadcasts" class="stat">
+			<span class="figure">{{ station_proxy.number_of_broadcasts }}</span>
+			<span class="title">Broadcasts</span>
+		</div>
+		<!-- Views counter -->
+		<div id="views" class="stat">
+			<span class="figure">{{ station_proxy.number_of_views }}</span>
+			<span class="title"> Views</span>
+		</div>
+		<!-- Suggestions counter -->
+		<div id="suggestions" class="stat">
+			<span class="figure">{{ station_proxy.number_of_suggestions }}</span>
+			<span class="title"> Suggestions</span>
+		</div>
+	</div>
+	<div id="right-column" class="stretch">
+		bkabkajb
+	</div>
+{% endblock %}
+
+{% block footer %}
+{% endblock %}
