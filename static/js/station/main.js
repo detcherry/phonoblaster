@@ -18,7 +18,7 @@ StationClient.prototype = {
 		this.views_counter = new Counter("#views");
 
 		this.session_manager = null;
-		this.comment_manager = null;
+		this.chat_manager = null;
 		this.suggestion_manager = null;
 		this.queue_manager = null;
 		this.search_manager = null;
@@ -102,34 +102,8 @@ StationClient.prototype = {
 			//that.queue_manager = new QueueManager(that); // Fetching
 			//that.search_manager = new SearchManager(that); // No Fetching
 			
-			//that.comment_manager = new CommentManager(that); // Pubnub Fetching
-			//that.suggestion_manager = new SuggestionManager(that); // Pubnub Fetching
-			
-			// Fetch latest comments and suggestions via PUBNUB
-			PUBNUB.history({
-					channel: pubnub_channel,
-					limit: 100,
-				},
-				function(messages){
-					$.each(messages, function(index, value){
-						var message = JSON.parse(value);
-						var entity = message.entity;
-						var event = message.event;
-						var content = message.content;
-						
-						if(entity == "comment"){
-							// Event is "new"
-							that.comment_manager.add(content);
-						}
-						
-						if(entity == "suggestion"){
-							// Event is "new"
-							that.suggestion_manager.add(content);
-						}
-					})
-				}
-			)	
-			
+			that.chat_manager = new ChatManager(that); // Fetching
+			//that.suggestion_manager = new SuggestionManager(that); // Lazy Fetching	
 			//that.track_manager = new TrackManager(that); // Lazy fetching
 			//that.favorite_manager = new FavoriteManager(that); // Lazy fetching
 			that.share_manager = new ShareManager(that);
@@ -156,7 +130,7 @@ StationClient.prototype = {
 			manager = this.queue_manager;
 		}
 		if(entity == "comment"){
-			manager = this.comment_manager;
+			manager = this.chat_manager;
 		}
 		if(entity == "suggestion"){
 			manager = this.suggestion_manager;

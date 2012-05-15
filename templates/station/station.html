@@ -123,7 +123,47 @@
 		bkabkajb
 	</div>
 	<!-- Chat -->
+
 	<div id="chat">
+		<div id="chat-header">
+			<span class="round"></span>
+			<span id="chat-title">Chat</span>
+		</div>
+		<div id="chat-content">
+			<div id="chat-wrapper">
+				<div id="chat-feed">
+					<!-- Example -->
+					<!--
+					<div class="im">
+						<div class="im-picture">
+							<img src="https://graph.facebook.com/{{ station_proxy.station.key.name }}/picture?type=square">
+						</div>
+						<div class="im-content">
+							<div class="im-text"><a href="">Randomblaster </a>It's absolutely amazing blablablabla</div>
+							<div class="im-time">18:18</div>
+						</div>
+					</div>
+					-->
+				</div>
+			</div>
+			<div id="chat-field">
+				<div id="chat-picture">
+					{% if user_proxy %}
+						{% if is_admin %}
+						<img class="tuto" data-original-title="{{ station_proxy.station.name }}" src="https://graph.facebook.com/{{ station_proxy.station.key.name }}/picture?type=square">
+						{% else %}
+						<img class="tuto" data-original-title="{{ user_proxy.user.first_name }} {{ user_proxy.user.last_name }}" src="https://graph.facebook.com/{{ user_proxy.user.key.name }}/picture?type=square">
+						{% endif %}
+					{% else %}
+					<img src="/{{tag}}/static/images/unknown.png">
+					{% endif %}
+				</div>
+				<form method="post" action="" id="chat-form">
+					<input type="text" name="chat" id="chat-input" value="Share the love..." autocomplete="off"/>
+					<input type="submit"id="chat-submit" value="Send"/>
+				</form>
+			</div>
+		</div>
 	</div>
 	<!-- Share popup -->
 	<div class="popup" id="popup-share">
@@ -161,6 +201,8 @@
 <script type="text/javascript" src="/{{tag}}/static/js/station/counter.js"></script>
 <script type="text/javascript" src="/{{tag}}/static/js/station/share.js"></script>
 <script type="text/javascript" src="/{{tag}}/static/js/station/session.js"></script>
+<script type="text/javascript" src="/{{tag}}/static/js/station/tab.js"></script>
+<script type="text/javascript" src="/{{tag}}/static/js/station/chat.js"></script>
 <script type="text/javascript" src="/{{tag}}/static/js/station/main.js"></script>
 <script type="text/javascript">
 	/*--- Reset ---*/
