@@ -232,8 +232,7 @@ Global number of stations: %s
 		buffer = self.buffer_and_timestamp['buffer']
 		buffer_duration = 0
 		if buffer:
-			tracks = db.get(buffer)
-			buffer_duration = sum([t.youtube_duration for t in tracks])
+			buffer_duration = sum([t.youtube_duration for t in buffer])
 
 		return buffer_duration
 	
@@ -254,11 +253,10 @@ Global number of stations: %s
 
 		now_broadcast_time = (now - timestamp).total_seconds() % buffer_duration
 
-		tracks = db.get(buffer)
 		current_duration = 0
 
-		for i in xrange(len(tracks)):
-			track = tracks[i]
+		for i in xrange(len(buffer)):
+			track = buffer[i]
 			current_duration += track.youtube_duration
 			if(current_duration>now_broadcast_time):
 				#Current track found, return its position in buffer
@@ -273,12 +271,11 @@ Global number of stations: %s
 
 		now = datetime.utcnow()
 		current_index = this.get_current_track()[0]
-		tracks = db.get(buffer)
 		duration_before = 0
 
-		if current_index >= 0 and current_index < len(tracks):
+		if current_index >= 0 and current_index < len(buffer):
 			for i in xrange(current_index):
-				track = tracks[i]
+				track = buffer[i]
 				duration_before += track.youtube_duration
 
 		#Setting new timestamp
@@ -290,7 +287,7 @@ Global number of stations: %s
 
 		#updating memcache
 		memcache.set(self._memcache_station_id, self.station)
-		memcache.(self._memcache_station_buffer_id, {'buffer':buffer, 'timestamp': new_timestamp})
+		memcache.set(self._memcache_station_buffer_id, {'buffer':buffer, 'timestamp': new_timestamp})
 
 
 	def add_tracks_to_buffer(youtube_tracks):
@@ -320,12 +317,12 @@ Global number of stations: %s
 		"""
 			Removing track at position youtube_track_index from buffer.
 		"""
-		buffer = self._buffer_and_timestamp['buffer']
+		buffer = self.buffer_and_timestamp['buffer']
 		
 		if(youtube_track_index>=0 and youtube_track_index<len(buffer)):
 			current_index = self.get_current_track()[0]
 
-			if(current_index != youtube_track_index)
+			if(current_index != youtube_track_index):
 				buffer.pop(old_index)
 
 				#Putting change in datastore

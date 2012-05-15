@@ -14,28 +14,35 @@ from models.api.station import StationApi
 class ApiBufferHandler(BaseHandler):
 	def get(self, key_name):
 		#return buffer and timestamp of station
-		m = re.match(r"(\w+).(\w+).(\w+).(\w+)", key_name)
+		m = re.match(r"(\w+)", key_name)
 		shortname = m.group(1)
 
-		logging.info("in ApiQueueDeleteHandler")
+		logging.info("in get ApiBufferHandler")
 		logging.info(shortname)
 
 		station_proxy = StationApi(shortname)
 
 		
 		if(station_proxy.station):
-			buffer, timestamp = station_proxy.buffer_and_timestamp
+			buffer = station_proxy.buffer_and_timestamp['buffer']
+			timestamp = station_proxy.buffer_and_timestamp['timestamp']
+
 			bufferJSON = []
 
-			if buffer:
-				for track in tracks:
-					bufferJSON.append({
-							'id': track.youtube_id,
-							'title': track.youtube_title,
-							'duration': track.youtube_duration,
-						})
+			logging.info(buffer)
+			logging.info(timestamp)
 
-				self.response.out.write(json.dumps(bufferJSON))
+			for track in buffer:
+				bufferJSON.append({
+						'id': track.youtube_id,
+						'title': track.youtube_title,
+						'duration': track.youtube_duration,
+					})
+
+			buffer_and_timestamp = {'buffer':bufferJSON, 'timestamp': timestamp.strftime('%Y-%m-%dT%H:%M:%S')}
+
+			self.response.out.write(json.dumps(buffer_and_timestamp))
+
 		else:
 			self.error(404)
 
@@ -47,7 +54,7 @@ class ApiBufferHandler(BaseHandler):
 		m = re.match(r"(\w+).(\w+).(\w+).(\w+)", key_name)
 		shortname = m.group(1)
 
-		logging.info("in ApiQueueDeleteHandler")
+		logging.info("in put ApiBufferHandler")
 		logging.info(shortname)
 
 		station_proxy = StationApi(shortname)
@@ -59,7 +66,7 @@ class ApiBufferHandler(BaseHandler):
 		m = re.match(r"(\w+).(\w+).(\w+).(\w+)", key_name)
 		shortname = m.group(1)
 
-		logging.info("in ApiQueueDeleteHandler")
+		logging.info("in post ApiBufferHandler")
 		logging.info(shortname)
 
 		station_proxy = StationApi(shortname)
@@ -70,7 +77,7 @@ class ApiBufferHandler(BaseHandler):
 		m = re.match(r"(\w+).(\w+).(\w+).(\w+)", key_name)
 		shortname = m.group(1)
 
-		logging.info("in ApiQueueDeleteHandler")
+		logging.info("in delete ApiBufferHandler")
 		logging.info(shortname)
 
 		station_proxy = StationApi(shortname)
