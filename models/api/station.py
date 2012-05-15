@@ -272,7 +272,7 @@ Global number of stations: %s
 		buffer = self.buffer_and_timestamp['buffer']
 
 		now = datetime.utcnow()
-		current_index, current_track = this.get_current_track()
+		current_index = this.get_current_track()[0]
 		tracks = db.get(buffer)
 		duration_before = 0
 
@@ -283,15 +283,18 @@ Global number of stations: %s
 
 		#Setting new timestamp
 		new_timestamp = datetime.utcnow()-timedelta(0,duration_before)
+
+		#updating datastore
 		self.station.timestamp = new_timestamp
 		self.station.put()
 
+		#updating memcache
 		memcache.set(self._memcache_station_id, self.station)
 		memcache.(self._memcache_station_buffer_id, {'buffer':buffer, 'timestamp': new_timestamp})
 
 
 	def add_tracks_to_buffer(youtube_tracks):
-		current_index, current_track = self.get_current_track()
+		current_index = self.get_current_track()[0]
 		buffer = self.buffer_and_timestamp['buffer']
 
 		if not current_index:
@@ -302,19 +305,44 @@ Global number of stations: %s
 			track = Track.get_or_insert_by_youtube_id(youtube_tracks[i])
 			buffer.insert(current_index, track.key_name())
 
+		#Putting change in datastore
 		self.station.buffer = buffer
 		self.station.put()
 
+		#updating memcache
 		memcache.set(self._memcache_station_id, station)
 		memcache.set(self._memcache_station_buffer_id, {'buffer':buffer, 'timestamp': self.station.timestamp})
 
-		this.set_new_timestamp()
+		#updating timestamp
+		self.set_new_timestamp()
 
 	def remove_track_from_buffer(youtube_track_index):
+		"""
+			Removing track at position youtube_track_index from buffer.
+		"""
 		buffer = self._buffer_and_timestamp['buffer']
 		
 		if(youtube_track_index>=0 and youtube_track_index<len(buffer)):
+			current_index = self.get_current_track()[0]
 
+			if(current_index != youtube_track_index)
+				buffer.pop(old_index)
+
+				#Putting change in datastore
+				self.station.buffer = buffer
+				self.station.put()
+
+				#updating memcache
+				memcache.set(self._memcache_station_id, station)
+				memcache.set(self._memcache_station_buffer_id, {'buffer':buffer, 'timestamp': self.station.timestamp})
+
+				#updating timestamp
+				self.set_new_timestamp()
+
+				return True
+			else:
+				#Requesting current track to be removed from buffer
+				return False
 
 
 	def move_tack_in_buffer(old_index, new_index):
@@ -325,13 +353,16 @@ Global number of stations: %s
 		if(old_index>=0 and new_index>=0 and new_index<len(buffer) and old_index < len(buffer)):
 			buffer.insert(new_index, buffer.pop(old_index))
 			
+			#Putting change in datastore
 			self.station.buffer = buffer
 			self.station.put()
-			
-			memcache.set(self._memcache_station_id, station)
-			memcache.set(self._memcache_station_buffer_id, {'buffer'; buffer, 'timestamp':self.station.timestamp})
 
-			this.set_new_timestamp()
+			#updating memcache
+			memcache.set(self._memcache_station_id, station)
+			memcache.set(self._memcache_station_buffer_id, {'buffer':buffer, 'timestamp': self.station.timestamp})
+
+			#updating timestamp
+			self.set_new_timestamp()
 
 
 
