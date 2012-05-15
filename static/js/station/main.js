@@ -24,7 +24,7 @@ StationClient.prototype = {
 		this.search_manager = null;
 		this.track_manager = null;
 		this.favorite_manager = null;
-		this.viral_manager = null;
+		this.share_manager = null;
 
 		this.favorite_sdk = null;
 
@@ -132,7 +132,7 @@ StationClient.prototype = {
 			
 			//that.track_manager = new TrackManager(that); // Lazy fetching
 			//that.favorite_manager = new FavoriteManager(that); // Lazy fetching
-			//that.viral_manager = new ShareManager(that);
+			that.share_manager = new ShareManager(that);
 			
 			//that.favorite_sdk = new FavoriteSDK(that.queue_manager)
 			

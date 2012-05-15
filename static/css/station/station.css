@@ -319,8 +319,6 @@ a#share:hover{
 	background:rgba(0,0,0,0.8);
 }
 
-
-
 /* -------- RIGHT COLUMN --------- */
 
 #right-column{
@@ -330,3 +328,66 @@ a#share:hover{
 	padding:20px;
 	width:500px;
 }
+
+/* ------- POPUP SHARE -------*/
+
+#popup-share{
+	width:440px;
+}
+
+#popup-share form{
+	margin-top:16px;
+	margin-bottom:0px;
+	float:left;
+}
+
+#popup-share img.thumbnail{
+	display:block;
+	float:left;
+	margin-left:24px;
+	margin-right:8px;
+	height:37px;
+}
+
+#popup-share textarea{
+	display:block;
+	width:324px;
+	min-height:37px;
+}
+
+#popup-share img.station{
+	display:block;
+	float:left;
+	height:50px;
+	margin:8px;
+	margin-left:88px;
+	margin-bottom:24px;
+}
+
+#popup-share .facebook-link{
+	float:left;
+	width:268px;
+	margin-top:8px;
+	font-family:'Lucida Grande';
+	font-size:11px;
+}
+
+#popup-share .facebook-link span{
+	display:block;
+	padding:4px;
+}
+
+#popup-share .facebook-link span.link{
+	color:#3B5998;
+	font-weight:bold;
+}
+
+#popup-share .facebook-link span.description{
+	color: #999;
+}
+
+#popup-share .modal-footer{
+	float:left;
+	width:410px;
+}
+
