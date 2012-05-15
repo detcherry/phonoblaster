@@ -12,11 +12,8 @@ from controllers.base import login_required
 from models.api.station import StationApi
 
 class ApiBufferHandler(BaseHandler):
-	def get(self, key_name):
+	def get(self, shortname):
 		#return buffer and timestamp of station
-		m = re.match(r"(\w+)", key_name)
-		shortname = m.group(1)
-
 		logging.info("in get ApiBufferHandler")
 		logging.info(shortname)
 
@@ -39,7 +36,7 @@ class ApiBufferHandler(BaseHandler):
 						'duration': track.youtube_duration,
 					})
 
-			buffer_and_timestamp = {'buffer':bufferJSON, 'timestamp': timestamp.strftime('%Y-%m-%dT%H:%M:%S')}
+			buffer_and_timestamp = {'buffer':bufferJSON, 'timestamp': timestamp.isoformat()}
 
 			self.response.out.write(json.dumps(buffer_and_timestamp))
 
@@ -49,11 +46,8 @@ class ApiBufferHandler(BaseHandler):
 		
 
 	@login_required
-	def put(self, key_name):
+	def put(self, shortname):
 		#put new track in buffer
-		m = re.match(r"(\w+).(\w+).(\w+).(\w+)", key_name)
-		shortname = m.group(1)
-
 		logging.info("in put ApiBufferHandler")
 		logging.info(shortname)
 
@@ -61,22 +55,16 @@ class ApiBufferHandler(BaseHandler):
 		
 
 	@login_required
-	def post(self, key_name):
+	def post(self, shortname):
 		#change position of a track from old_position to new position
-		m = re.match(r"(\w+).(\w+).(\w+).(\w+)", key_name)
-		shortname = m.group(1)
-
 		logging.info("in post ApiBufferHandler")
 		logging.info(shortname)
 
 		station_proxy = StationApi(shortname)
 
 	@login_required
-	def delete(self, key_name):
+	def delete(self, shortname):
 		#delete track from buffer at position track_position
-		m = re.match(r"(\w+).(\w+).(\w+).(\w+)", key_name)
-		shortname = m.group(1)
-
 		logging.info("in delete ApiBufferHandler")
 		logging.info(shortname)
 

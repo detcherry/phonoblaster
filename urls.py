@@ -5,6 +5,7 @@ from controllers.home import HomeHandler
 from controllers.all import AllHandler
 from controllers.admin.dashboard import AdminDashboardHandler
 from controllers.admin.upgrade import UpgradeHandler
+from controllers.buffer_test import BufferHandler
 from controllers.profile import ProfileHandler
 from controllers.station.create import StationCreateHandler
 from controllers.station.manage import StationManagelHandler
@@ -59,6 +60,7 @@ application = webapp.WSGIApplication(
 		('/(\w+)', StationHandler),
 		('/(\w+)/picture', StationPictureHandler),
 		('/broadcast/([\w.]+)', BroadcastHandler),
+		('/buffer/test/([\w.]+)',BufferHandler),
 		('/track/([0-9]+)', TrackHandler),
 		('/suggestion/([\w.]+)', SuggestionHandler),
 		('/station/page', StationPageHandler),
