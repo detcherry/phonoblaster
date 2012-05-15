@@ -12,21 +12,65 @@ from controllers.base import login_required
 from models.api.station import StationApi
 
 class ApiBufferHandler(BaseHandler):
-	def get(self):
+	def get(self, key_name):
 		#return buffer and timestamp of station
-		pass
+		m = re.match(r"(\w+).(\w+).(\w+).(\w+)", key_name)
+		shortname = m.group(1)
+
+		logging.info("in ApiQueueDeleteHandler")
+		logging.info(shortname)
+
+		station_proxy = StationApi(shortname)
+
+		
+		if(station_proxy.station):
+			buffer, timestamp = station_proxy.buffer_and_timestamp
+			bufferJSON = []
+
+			if buffer:
+				for track in tracks:
+					bufferJSON.append({
+							'id': track.youtube_id,
+							'title': track.youtube_title,
+							'duration': track.youtube_duration,
+						})
+
+				self.response.out.write(json.dumps(bufferJSON))
+		else:
+			self.error(404)
+
+		
 
 	@login_required
-	def put(self):
+	def put(self, key_name):
 		#put new track in buffer
-		pass
+		m = re.match(r"(\w+).(\w+).(\w+).(\w+)", key_name)
+		shortname = m.group(1)
+
+		logging.info("in ApiQueueDeleteHandler")
+		logging.info(shortname)
+
+		station_proxy = StationApi(shortname)
+		
 
 	@login_required
-	def post(self):
+	def post(self, key_name):
 		#change position of a track from old_position to new position
-		pass
+		m = re.match(r"(\w+).(\w+).(\w+).(\w+)", key_name)
+		shortname = m.group(1)
+
+		logging.info("in ApiQueueDeleteHandler")
+		logging.info(shortname)
+
+		station_proxy = StationApi(shortname)
 
 	@login_required
-	def delete(self):
+	def delete(self, key_name):
 		#delete track from buffer at position track_position
-		pass
+		m = re.match(r"(\w+).(\w+).(\w+).(\w+)", key_name)
+		shortname = m.group(1)
+
+		logging.info("in ApiQueueDeleteHandler")
+		logging.info(shortname)
+
+		station_proxy = StationApi(shortname)

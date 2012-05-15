@@ -17,6 +17,7 @@ from controllers.station.suggestion import SuggestionHandler
 from controllers.station.page import StationPageHandler
 from controllers.api.queue import ApiQueueHandler
 from controllers.api.queue import ApiQueueDeleteHandler
+from controllers.api.buffer import ApiBufferHandler
 from controllers.api.suggestions import ApiSuggestionsHandler
 from controllers.api.favorites import ApiFavoritesHandler
 from controllers.api.favorites import ApiFavoritesDeleteHandler
@@ -35,6 +36,7 @@ from controllers.company.company import PressFrHandler
 
 application = webapp.WSGIApplication(
 	[
+		('/api/buffer/([\w.]+)',ApiBufferHandler),
 		('/api/queue', ApiQueueHandler),
 		('/api/queue/([\w.]+)', ApiQueueDeleteHandler),
 		('/api/suggestions', ApiSuggestionsHandler),
