@@ -276,7 +276,7 @@ Global number of stations: %s
 		tracks = db.get(buffer)
 		duration_before = 0
 
-		if current_index > 0 and current_index < len(tracks):
+		if current_index >= 0 and current_index < len(tracks):
 			for i in xrange(current_index):
 				track = tracks[i]
 				duration_before += track.youtube_duration
@@ -310,15 +310,19 @@ Global number of stations: %s
 
 		this.set_new_timestamp()
 
-	def remove_track_from_buffer(youtube_track):
-		pass
+	def remove_track_from_buffer(youtube_track_index):
+		buffer = self._buffer_and_timestamp['buffer']
+		
+		if(youtube_track_index>=0 and youtube_track_index<len(buffer)):
+
+
 
 	def move_tack_in_buffer(old_index, new_index):
 		"""
 			Moving track from position old_index to position new_index
 		"""
 		buffer = self._buffer_and_timestamp['buffer']
-		if(old_index>0 and new_index>0 and new_index<len(buffer) and old_index < len(buffer)):
+		if(old_index>=0 and new_index>=0 and new_index<len(buffer) and old_index < len(buffer)):
 			buffer.insert(new_index, buffer.pop(old_index))
 			
 			self.station.buffer = buffer
