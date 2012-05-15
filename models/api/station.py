@@ -203,6 +203,9 @@ Global number of stations: %s
 		
 		return extended_session
 
+	########################################################################################################################################
+	#													BUFFER
+	########################################################################################################################################
 	# Returns the current buffer of the station
 	@property
 	def buffer_and_timestamp(self):
@@ -221,6 +224,98 @@ Global number of stations: %s
 				logging.info("Buffer and timestamp retrieved from memcache")
 		
 		return self._buffer_and_timestamp
+
+	def get_buffer_duration(self):
+		"""
+			Returns the length in seconds of the buffer.
+		"""
+		buffer = self.buffer_and_timestamp['buffer']
+		buffer_duration = 0
+		if buffer:
+			tracks = db.get(buffer)
+			buffer_duration = sum([t.youtube_duration for t in tracks])
+
+		return buffer_duration
+	
+	def get_current_track(self):
+		"""
+			Returns the current track and the corresponding index in the buffer. If buffer empty, returns None
+		"""
+		buffer_and_timestamp = self.buffer_and_timestamp
+		buffer = buffer_and_timestamp['buffer']
+		timestamp = buffer_and_timestamp['timestamp']
+
+		now = datetime.utcnow()
+		buffer_duration = self.get_buffer_duration()
+		
+		if(buffer_duration == 0):
+			#buffer empty
+			return None, None
+
+		now_broadcast_time = (now - timestamp).total_seconds() % buffer_duration
+
+		tracks = db.get(buffer)
+		current_duration = 0
+
+		for i in xrange(len(tracks)):
+			track = tracks[i]
+			current_duration += track.youtube_duration
+			if(current_duration>now_broadcast_time):
+				#Current track found, return its position in buffer
+				return i, track
+
+	def set_new_timestamp(index_curent_track):
+		"""
+			Setting new timestamp with this formula:
+				new_timestamp = old_timestamp + sum(all track_duration before index_curent_track)
+		"""
+		buffer = self.buffer_and_timestamp['buffer']
+
+		now = datetime.utcnow()
+		tracks = db.get(buffer)
+		duration_before = 0
+
+		if index_curent_track > 0 and index_curent_track < len(tracks):
+			for i in xrange(index_curent_track):
+				track = tracks[i]
+				duration_before += track.youtube_duration
+
+		#Setting new timestamp
+		new_timestamp = datetime.utcnow()-timedelta(0,duration_before)
+		self.station.timestamp = new_timestamp
+		self.station.put()
+
+		memcache.set(self._memcache_station_id, self.station)
+		memcache.(self._memcache_station_buffer_id, {'buffer':buffer, 'timestamp': new_timestamp})
+
+
+	def add_tracks_to_buffer(youtube_tracks):
+		current_index, current_track = self.get_current_track()
+		buffer = self.buffer_and_timestamp['buffer']
+
+		if not current_index:
+			#Nothing on the buffer
+			current_index = 0
+
+		for i in xrange(0,len(youtube_tracks)):
+			track = Track.get_or_insert_by_youtube_id(youtube_tracks[i])
+			buffer.insert(current_index, track.key_name())
+
+		self.station.buffer = buffer
+		self.station.put()
+		memcache.set(self._memcache_station_buffer_id, {'buffer':buffer, 'timestamp': self.station.timestamp})
+		
+		this.set_new_timestamp()
+
+	def remove_track_from_buffer(youtube_track):
+		pass
+
+	def move_tack_in_buffer(youtube_track, youtube_track_before):
+		pass
+
+	########################################################################################################################################
+	#													END BUFFER
+	########################################################################################################################################
 
 	#TO BE REMOVED AT THE END OF V4 DEV
 	# Returns the current station queue
@@ -259,56 +354,6 @@ Global number of stations: %s
 					logging.info("Queue already in memcache and no need to clean up")
 
 		return self._queue		
-
-
-
-	def get_buffer_duration(self):
-		"""
-			Returns the length in seconds of the buffer.
-		"""
-		buffer = self.buffer_and_timestamp['buffer']
-		buffer_duration = 0
-		if buffer:
-			tracks = db.get(buffer)
-			buffer_duration = sum([t.youtube_duration for t in tracks])
-
-		return buffer_duration
-	
-	def get_index_current_track(self):
-		"""
-			Returns the index in the buffer of the current track. If buffer empty, returns None
-		"""
-		buffer_and_timestamp = self.buffer_and_timestamp
-		buffer = buffer_and_timestamp['buffer']
-		timestamp = buffer_and_timestamp['timestamp']
-
-		now = datetime.utcnow()
-		buffer_duration = self.get_buffer_duration()
-		
-		if(buffer_duration == 0):
-			#buffer empty
-			return None
-
-		now_broadcast_time = (now - timestamp).total_seconds() % buffer_duration
-
-		tracks = db.get(buffer)
-		current_duration = 0
-
-		for i in len(tracks):
-			track = tracks[i]
-			current_duration += track.youtube_duration
-			if(current_duration>now_broadcast_time):
-				#Current track found, return its position in buffer
-				return i
-
-	def add_tracks_to_buffer(youtube_ids):
-		pass
-
-	def remove_track_from_buffer(youtube_id):
-		pass
-
-	def move_tack_in_buffer(youtube_id_before, youtube_track_after):
-		pass
 
 	#TO BE REMOVED AT THE END OF V4 DEV
 	# Add a new broadcast to the queue
@@ -417,7 +462,7 @@ Global number of stations: %s
 			live_extended_broadcast = self.queue[0]
 			extended_broadcasts_to_edit = self.queue[:][1:] # Copy the array
 			
-			for i in range(len(self.queue[1:])): 
+			for i in xrange(len(self.queue[1:])): 
 				extended_broadcast = self.queue[1:][i]
 				if(extended_broadcast["key_name"] != key_name):
 					# Broadcasts must be be featured in the unchanged list and be removed from the list to edit

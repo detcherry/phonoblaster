@@ -22,7 +22,7 @@ class StationCreateHandler(BaseHandler):
 			results = Station.get_by_key_name(user_page_ids)
 						
 			contributions_left = []
-			for i in range(len(results)):
+			for i in xrange(len(results)):
 				result = results[i]
 				if result is None:
 					contributions_left.append(user_contributions[i])

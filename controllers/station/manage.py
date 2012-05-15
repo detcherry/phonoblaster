@@ -22,7 +22,7 @@ class StationManagelHandler(BaseHandler):
 			results = Station.get_by_key_name(user_page_ids)
 						
 			contributions_installed = []
-			for i in range(len(results)):
+			for i in xrange(len(results)):
 				result = results[i]
 				if result is not None:
 					contributions_installed.append(user_contributions[i])
