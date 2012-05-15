@@ -27,7 +27,7 @@
 	<!-- Background -->
 	<div id="background" class="stretch">
 		<!-- Example -->
-		<!-- <img src="/{{tag}}/static/images/smoking.jpg" class="stretch"/> -->
+	 	<!-- <img src="/{{tag}}/static/images/smoking.jpg" class="stretch"/> -->
 	</div>
 	<!-- Left column -->
 	<div id="left-column" class="stretch">
@@ -73,7 +73,7 @@
 				<div id="media-title">Loading...</div>
 				<div id="media-fav">
 					<!-- Example: -->
-				 	<!-- <a class="fav tuto" data-original-title="Favorite this track!" href="#"></a> -->
+				  	<!-- <a class="fav tuto" data-original-title="Favorite this track!" href="#"></a> -->
 				</div>
 				<div id="media-volume" class="unmuted"></div>
 			</div>
@@ -121,7 +121,45 @@
 	<div id="right-column" class="stretch">
 		bkabkajb
 	</div>
+	<div id="chat">
+	</div>
 {% endblock %}
 
 {% block footer %}
+{% endblock %}
+
+{% block script %}
+<!-- Pubnub -->
+<div sub-key="sub-aa6b101e-24e9-11e1-ab04-3b69d50a7fd4" ssl="off" origin="pubsub.pubnub.com" id="pubnub"></div>
+<script src="https://pubnub.s3.amazonaws.com/pubnub-3.1.min.js"></script>
+<!-- App Engine -->
+<script type="text/javascript" src="/_ah/channel/jsapi"></script>
+<!-- Station -->
+<script type="text/javascript" src="/{{tag}}/static/js/library/json2.js"></script>
+<script type="text/javascript" src="/{{tag}}/static/js/station/counter.js"></script>
+<script type="text/javascript" src="/{{tag}}/static/js/station/session.js"></script>
+<script type="text/javascript" src="/{{tag}}/static/js/station/main.js"></script>
+<script type="text/javascript">
+	/*--- Reset ---*/
+	USER = null;
+	ADMIN = false;
+ 	STATION = null;
+	/*--- User Initialization ---*/
+	{% if user_proxy %} 
+	USER = {
+		"key_name": "{{ user_proxy.user.key.name }}",
+		"name": "{{ user_proxy.user.first_name }} {{ user_proxy.user.last_name }}",
+	}
+	{% endif %}
+	/*--- Admin Initialization ---*/
+	{% if is_admin %} 
+	ADMIN = true;
+	{% endif %}
+	/*--- Station Initialization ---*/
+	STATION = {
+		"key_name": "{{ station_proxy.station.key.name }}",
+		"shortname": "{{ station_proxy.station.shortname }}",
+		"name": "{{ station_proxy.station.name}}",
+	}
+</script>
 {% endblock %}
