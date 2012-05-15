@@ -264,7 +264,7 @@ Global number of stations: %s
 				#Current track found, return its position in buffer
 				return i, track
 
-	def set_new_timestamp(index_curent_track):
+	def set_new_timestamp():
 		"""
 			Setting new timestamp with this formula:
 				new_timestamp = old_timestamp + sum(all track_duration before index_curent_track)
@@ -272,11 +272,12 @@ Global number of stations: %s
 		buffer = self.buffer_and_timestamp['buffer']
 
 		now = datetime.utcnow()
+		current_index, current_track = this.get_current_track()
 		tracks = db.get(buffer)
 		duration_before = 0
 
-		if index_curent_track > 0 and index_curent_track < len(tracks):
-			for i in xrange(index_curent_track):
+		if current_index > 0 and current_index < len(tracks):
+			for i in xrange(current_index):
 				track = tracks[i]
 				duration_before += track.youtube_duration
 
@@ -303,15 +304,33 @@ Global number of stations: %s
 
 		self.station.buffer = buffer
 		self.station.put()
+
+		memcache.set(self._memcache_station_id, station)
 		memcache.set(self._memcache_station_buffer_id, {'buffer':buffer, 'timestamp': self.station.timestamp})
 
-		this.set_new_timestamp(current_index + len(youtube_tracks))
+		this.set_new_timestamp()
 
 	def remove_track_from_buffer(youtube_track):
 		pass
 
-	def move_tack_in_buffer(youtube_track, youtube_track_before):
-		pass
+	def move_tack_in_buffer(old_index, new_index):
+		"""
+			Moving track from position old_index to position new_index
+		"""
+		buffer = self._buffer_and_timestamp['buffer']
+		if(old_index>0 and new_index>0 and new_index<len(buffer) and old_index < len(buffer)):
+			buffer.insert(new_index, buffer.pop(old_index))
+			
+			self.station.buffer = buffer
+			self.station.put()
+			
+			memcache.set(self._memcache_station_id, station)
+			memcache.set(self._memcache_station_buffer_id, {'buffer'; buffer, 'timestamp':self.station.timestamp})
+
+			this.set_new_timestamp()
+
+
+
 
 	########################################################################################################################################
 	#													END BUFFER
