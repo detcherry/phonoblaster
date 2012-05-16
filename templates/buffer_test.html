@@ -5,7 +5,7 @@
 <p>Station : {{ shortname }}</p>
 <br/>
 <br/>
-<p id="buffer">Buffer : {{ buffer }}</p>
+<p id="buffer"></p>
 <br/>
 <br/>
 <p id="duration">Buffer duration : {{ duration }}</p>
@@ -14,4 +14,57 @@
 <p id="timestamp">Timestamp : {{ timestamp }}</p>
 <br/>
 <br/>
+{% endblock %}
+
+{% block script %}
+<script type="text/javascript">
+	$(function(){
+		var buffer = new BufferHandler();
+		buffer.refresh();
+
+	});
+
+	function BufferHandler (){
+		buffer = {{buffer}};
+		timestamp = new Date("{{timestamp}}");
+
+		this.getBuffer = function(){
+			return buffer;
+		};
+
+		this.setBuffer = function(new_buffer){
+			buffer = new_buffer;
+		};
+
+		this.getTimestamp = function(){
+			return timestamp;
+		};
+	};
+
+	BufferHandler.prototype.getDuration = function() {
+		duration = 0;
+		for (track in buffer){
+			duration += track.youtube_duration;
+		}
+		return duration;
+	};
+
+	BufferHandler.prototype.setTimestamp = function() {
+		
+	};
+
+	BufferHandler.prototype.getCurrentTrack = function() {
+		var now = PHB.now();
+
+	};
+
+	BufferHandler.prototype.refresh = function(){
+		$('#buffer').text("Buffer : "+this.getBuffer());
+		$('#timestamp').text("Timestamp : "+this.getTimestamp());
+		$('#duration').text("Buffer duration : "+this.getDuration());
+	};
+</script>
+
+{{ buffer }}
+
 {% endblock %}

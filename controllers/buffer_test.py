@@ -13,6 +13,7 @@ class BufferHandler(BaseHandler):
 		if(station_proxy):
 			buffer = station_proxy.buffer_and_timestamp
 			duration = station_proxy.get_buffer_duration()
+			logging.info(buffer['timestamp'].isoformat())
 
-		template_values = {'shortname': shortname, 'buffer':buffer['buffer'], 'timestamp': buffer['timestamp'], 'duration':duration }
+		template_values = {'shortname': shortname, 'buffer':buffer['buffer'], 'timestamp': buffer['timestamp'].isoformat() }
 		self.render("buffer_test.html",template_values)
