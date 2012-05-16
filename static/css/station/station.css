@@ -406,10 +406,6 @@ a#share:hover{
 	border-bottom:none;
 }
 
-#chat.unread{
-	border-top:1px solid #D42222;
-}
-
 #chat-header{
 	padding:10px;
 	width:280px;
@@ -420,8 +416,12 @@ a#share:hover{
 	cursor:pointer;
 }
 
+#chat-header span{
+	display:block;
+	float:left;
+}
+
 #chat-header span.round{
-	display:inline-block;
 	margin-bottom:6px;
 	margin-right:6px;
 	height:6px;
@@ -430,6 +430,37 @@ a#share:hover{
 	-moz-border-radius:6px;
 	-webkit-border-radius:6px;
 	background:#6ABC6A;
+}
+
+span#chat-alert{
+	display:none;
+	cursor:pointer;
+	position:relative;
+	margin-top:-25px;
+	margin-left:15px;
+	padding-top:7px;
+	padding-bottom:5px;
+	padding-right:8px;
+	padding-left:8px;	
+	height:17px;
+	color:white;
+	text-align:center;
+	background:#D42222;
+}
+
+#chat-alert-number{
+	width:100%;
+}
+
+#chat-alert-arrow{
+	position:relative;
+	top:6px;
+	left:-2px;
+	width:0px;
+	height:0px;
+	border-right:5px solid transparent ;	
+	border-left:5px solid transparent;
+	border-top:5px solid #D42222;
 }
 
 #chat.opened #chat-header{

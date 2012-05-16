@@ -32,7 +32,7 @@ ChatManager.prototype.toggleListen = function(){
 	var that = this;
 	
 	// Toggle chat interface
-	$("#chat-header").click(function(){
+	$("#chat-header, #chat-alert").click(function(){
 		var chat = $(this).parent();
 		var status = chat.hasClass("opened")
 		
@@ -45,7 +45,10 @@ ChatManager.prototype.toggleListen = function(){
 			chat.addClass("opened")
 			
 			// Hide and reset notifications
-			this.unread_messages = 0;
+			that.unread_messages = 0;
+			$("#chat-alert").hide();
+			$("#chat-alert-number").html(that.unread_messages);
+			
 			chat.removeClass("unread");
 			$("#chat-title").html("Chat");
 			
@@ -107,16 +110,16 @@ ChatManager.prototype.inputListen = function(){
 }
 
 ChatManager.prototype.newEvent = function(){
-	var chat = $("#chat");
-	var status = chat.hasClass("opened");
+	var status = $("#chat").hasClass("opened");
 	
 	if(status){
 		// do nothing
 	}
 	else{
+		// display notification
 		this.unread_messages += 1;
-		chat.addClass("unread")
-		$("#chat-title").html("Chat ("+ this.unread_messages +")" );
+		$("#chat-alert-number").html(this.unread_messages);
+		$("#chat-alert").show();
 	}
 }
 
