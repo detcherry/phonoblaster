@@ -99,7 +99,7 @@ class UserApi:
 		keys = [db.Key.from_path('Station', c["page_id"]) for c in contributions]
 		user.stations = keys
 		user.put()
-		logging.info("Creaing stations filed")
+		logging.info("Creating stations field")
 
 		memcache.set(self._memcache_user_id, user)
 		logging.info("User put in memcache")
@@ -194,15 +194,9 @@ Global number of users: %s
 					self.user.stations = []
 
 				keys = [db.Key.from_path('Station', c["page_id"]) for c in self._contributions]
-				remaining_stations, remaining_keys, common = compare_lists(self.user.stations ,keys)
-
-				logging.info("Remaining in stations : %d, remaining in keys : %d and common : %d"%(len(remaining_stations), len(remaining_keys), len(common)))
-
-				if(len(remaining_stations)>0 or len(remaining_keys)>0):
-					self.user.stations = keys
-					logging.info("Updating stations filed")
+				self.user.stations = keys
+				logging.info("Updating stations filed")
 				
-				#Even when they are no changes, we need to put user in datastore in order to update the updated field
 				self.user.put()
 				memcache.set(self._memcache_user_id, self.user)
 			else:
@@ -325,32 +319,6 @@ Global number of users: %s
 	def decrement_favorites_counter(self):
 		shard_name = self._counter_of_favorites_id
 		Shard.task(shard_name, "decrement")
-
-def compare_lists(list_to_compare, base_list):
-	"""
-		Compares 2 lists in order to know which elements are in both lists.
-
-		Arguments:
-			- list_to_compare, base_list : list of elements
-		Return:
-			- common : list of elements present in both lists
-			- remaining_list_to_compare : elements only in list_to_compare
-			- remaining_base_list : elements only in base_list
-	"""
-	remaining_list_1 = []
-	remaining_base_list = base_list
-	common = []
-
-	while(len(list_to_compare)>0):
-		element = list_to_compare[0]
-		if(element in base_list and element not in common):
-			common.append(element)
-			remaining_base_list.remove(element)
-		else:
-			remaining_list_1.append(element)
-		list_to_compare.pop(0)
-
-	return remaining_list_1, remaining_base_list, common
 
 	
 		
