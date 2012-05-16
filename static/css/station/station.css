@@ -1,3 +1,15 @@
+/* ------- LEVELS ------- */
+
+/*
+	z-index:
+	- background: 0
+	- header: 10 000
+	- front-office: 5 000
+	- back-office: 10 000
+	- chat: 100 000
+
+*/
+
 /* ------ STYLE CORRECTIONS ------ */
 
 .topbar{
@@ -49,26 +61,28 @@ body{
 
 /* --------- LEFT COLUMN --------- */
 
-#left-column{
+
+#station-column{
 	float:left;
-	position:absolute;
+	position:relative;
+	z-index:0;
 	padding:20px;
 	width:400px;
 	color:#F5F5F5;
-	background:rgba(0,0,0,0.5);
+	background:none;
 }
 
-#left-station-information{
+#station-information{
 	width:100%;
 	margin-bottom:20px;
 }
 
-#left-picture{
+#station-picture{
 	width:50px;
 	height:50px;
 }
 
-#left-shortname{
+#station-shortname{
 	margin-left:15px;
 	padding-bottom:5px;
 	width:335px;
@@ -78,13 +92,13 @@ body{
 	border-bottom:1px solid white;
 }
 
-#left-name{
+#station-name{
 	margin-left:15px;
 	padding-top:5px;
 	width:335px;
 }
 
-#left-name a{
+#station-name a{
 	display:block;
 	float:right;
 	height:25px;
@@ -93,17 +107,17 @@ body{
 	background-position:-7px -112px;
 }
 
-#left-name a:hover{
+#station-name a:hover{
 	background:url("/static/images/new-sprits.png");
 	background-position:-39px -112px;
 }
 
-#left-name .fb-like{
+#station-name .fb-like{
 	float:right;
 	padding-top:3px;
 }
 
-#left-name p{
+#station-name p{
 	padding-top:3px;
 	width:205px;
 	height:20px;
@@ -321,14 +335,42 @@ a#share:hover{
 	background:rgba(0,0,0,0.8);
 }
 
-/* -------- RIGHT COLUMN --------- */
+/* ------- OVERLAY -------- */
 
-#right-column{
-	float:left;
+#overlay{
 	position:absolute;
-	margin-left:440px;
-	padding:20px;
-	width:500px;
+	z-index:-1;
+	width:100%;
+	top:0px;
+	left:0px;
+	background:rgba(0, 0, 0, 0.5);
+}
+
+/* ------ FRONT OFFICE ------ */
+
+#front-office{
+	position:absolute;
+	z-index:-1;
+	top:40px;
+	left:480px;
+	height:100px;
+	width:460px;
+	background:white;
+	border:1px solid #E1E1E1;	
+}
+
+/* -------- BACK OFFICE --------*/
+
+#back-office{
+	display:none;
+	position:relative;
+	top:0px;
+	left:440px;
+	width:539px;
+	min-height:700px;
+	color:black;
+	background:#F1F1F1;
+	border-right:1px solid #E1E1E1;
 }
 
 /* ------- POPUP SHARE -------*/
