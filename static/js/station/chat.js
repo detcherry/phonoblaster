@@ -221,6 +221,10 @@ ChatManager.prototype.UIAdd = function(new_item, previous_item){
 		// Else, we have to append the item at the top
 		this.UIPrepend(new_item_div);
 	}
+	
+	// Scroll to the bottom
+	var height = $(this.selector).height();
+	$(this.selector).parent().scrollTop(height);
 }
 
 ChatManager.prototype.UIInsert = function(new_item_div, previous_item_selector){
