@@ -2,10 +2,11 @@
 
 /*
 	z-index:
+	- overlay: -1
+	- panel-box: -1
 	- background: 0
 	- header: 10 000
-	- front-office: 5 000
-	- back-office: 10 000
+	- panel: 0
 	- chat: 100 000
 
 */
@@ -343,25 +344,155 @@ a#share:hover{
 	width:100%;
 	top:0px;
 	left:0px;
-	background:rgba(0, 0, 0, 0.5);
+	background:rgba(0,0,0,0.5);
 }
 
 /* ------ FRONT OFFICE ------ */
 
-#front-office{
+#panel-box{
 	position:absolute;
 	z-index:-1;
 	top:40px;
 	left:480px;
-	height:100px;
-	width:460px;
+	padding:15px;
+	height:60px;
+	width:420px;
 	background:white;
-	border:1px solid #E1E1E1;	
+	border:1px solid #E1E1E1;
 }
+
+#panel-outer-circle{
+	cursor:pointer;
+	position:relative;
+	top:-32px;
+	left:-32px;
+	height:18px;
+	width:18px;
+	padding:6px;
+	-webkit-border-radius:33px;
+	   -moz-border-radius:33px;
+		    border-radius:33px;
+	background:#7A7A7A;
+	border:1px solid #7A7A7A;
+}
+
+#panel-inner-circle{
+	cursor:pointer;
+	height:18px;
+	width:18px;
+	-webkit-border-radius:18px;
+	   -moz-border-radius:18px;
+		    border-radius:18px;
+	background:white;
+}
+
+#panel-outer-circle:hover{
+	background:white;
+	border:1px solid #E1E1E1;
+}
+
+#panel-outer-circle:hover #panel-inner-circle{
+	background:#7A7A7A;
+}
+
+#panel-box-content{
+	margin-left:-32px;
+	width:100%;
+	height:60px;
+}
+
+#panel-box-picture{
+	position:relative;
+	height:60px;
+	width:68px;
+	overflow:hidden;
+}
+
+#panel-box-picture img{
+	position:absolute;
+	top:-15px;
+	left:-26px;
+}
+
+#panel-box-track{
+	float:left;
+	margin-left:15px;
+	font-size:15px;
+	width:184px;
+	overflow:hidden;
+}
+
+#panel-box-content h3.logged{
+	text-transform:uppercase;
+	font-style:italic;
+	margin-top:4px;
+}
+
+#panel-box-content .stroke{
+	margin-top:6px;
+	margin-bottom:6px;
+	height:3px;
+	width:20px;
+	background:#333;
+}
+
+#panel-box-content p.logged{
+	clear:left;
+	padding-right:4px;
+	color:#C4C4C4;
+	height:20px;
+	line-height:20px;
+	overflow:hidden;
+	width:180px;
+}
+
+#panel-box-content a.btn{
+	float:right;
+	text-transform:uppercase;
+	font-family:Futura;
+	letter-spacing:0px;
+	padding-top:8px;
+	font-size:13px;
+	margin-top:32px;
+	color:#7A7A7A;
+}
+
+#panel-box-content a.btn:hover{
+	background:#7A7A7A;
+	color:#F5F5F5;
+}
+
+#panel-box-content h3.unlogged{
+	letter-spacing:-1px;
+	margin-left:12px;
+	font-size:17px;
+}
+
+#panel-box-content p.unlogged{
+	margin-left:12px;
+	margin-top:10px;
+	width:215px;
+	font-size:11px;
+	color:#7A7A7A;
+}
+
+#panel-box-content a.login{
+	float:right;
+	display:block;
+	margin-top:2px;
+	width:184px;
+	height:40px;
+	text-indent:-3000px;
+	background-image:url("/static/images/phonoblaster-sprits.png");
+	background-position:0px -225px;
+}
+
+
+
 
 /* -------- BACK OFFICE --------*/
 
-#back-office{
+#panel{
 	display:none;
 	position:relative;
 	top:0px;
@@ -468,9 +599,9 @@ a#share:hover{
 	margin-right:6px;
 	height:6px;
 	width:6px;
-	border-radius:6px;
-	-moz-border-radius:6px;
 	-webkit-border-radius:6px;
+	   -moz-border-radius:6px;
+		    border-radius:6px;
 	background:#6ABC6A;
 }
 
