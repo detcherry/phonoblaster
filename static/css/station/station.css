@@ -387,11 +387,11 @@ a#share:hover{
 #panel-box{
 	position:absolute;
 	z-index:-1;
-	top:40px;
-	left:480px;
+	top:35px;
+	left:470px;
 	padding:15px;
 	height:60px;
-	width:420px;
+	width:450px;
 	background:white;
 	border:1px solid #E1E1E1;
 }
@@ -453,7 +453,7 @@ a#share:hover{
 	float:left;
 	margin-left:15px;
 	font-size:15px;
-	width:184px;
+	width:214px;
 	overflow:hidden;
 }
 
@@ -478,7 +478,7 @@ a#share:hover{
 	height:20px;
 	line-height:20px;
 	overflow:hidden;
-	width:180px;
+	width:210px;
 }
 
 #panel-box-content a.btn{
@@ -522,7 +522,7 @@ a#share:hover{
 	background-position:0px -225px;
 }
 
-/* -------- BACK OFFICE --------*/
+/* -------- PANEL --------*/
 
 #panel{
 	display:none;
@@ -530,12 +530,19 @@ a#share:hover{
 	top:0px;
 	left:440px;
 	padding:20px;
-	width:539px;
+	width:499px;
 	min-height:700px;
 	color:black;
 	background:#F1F1F1;
 	border-right:1px solid #E1E1E1;
 }
+
+#panel-content-wrapper{
+	width:500px;
+	min-height:700px;
+}
+
+
 
 /* ------- POPUP SHARE -------*/
 
