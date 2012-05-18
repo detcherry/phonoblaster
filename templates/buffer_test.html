@@ -1,32 +1,35 @@
 {% extends "base.html" %}
 
 {% block main %}
-
-<p>Station : {{ shortname }}</p>
 <br/>
+<p>Buffer :</p>
 <br/>
 <p id="buffer"></p>
 <br/>
 <br/>
-<p id="duration">Buffer duration : {{ duration }}</p>
+<p id="duration">Buffer duration : </p>
 <br/>
 <br/>
-<p id="timestamp">Timestamp : {{ timestamp }}</p>
+<p id="timestamp">Timestamp : </p>
 <br/>
 <br/>
+<p id="add">Add Tracks to buffer</p>
 {% endblock %}
 
 {% block script %}
 <script type="text/javascript">
 	$(function(){
-		var buffer = new BufferHandler();
-		buffer.refresh();
+		var buffer = new BufferHandler('{{shortname}}');
+		buffer.get_buffer_and_timestamp();
+		$("#add").click(buffer.add_tracks_to_buffer());
 
 	});
 
-	function BufferHandler (){
-		buffer = {{buffer}};
-		timestamp = new Date("{{timestamp}}");
+	function BufferHandler (station_shortname){
+		buffer = [];
+		shortname = station_shortname;
+		timestamp = new Date();
+		//timestamp = new Date("{{timestamp}}");
 
 		this.getBuffer = function(){
 			return buffer;
@@ -39,18 +42,22 @@
 		this.getTimestamp = function(){
 			return timestamp;
 		};
+
+		this.setTimestamp = function(new_timestamp) {
+			timestamp = new_timestamp;
+		};
+
+		this.getShortname = function(){
+			return shortname;
+		};
 	};
 
 	BufferHandler.prototype.getDuration = function() {
 		duration = 0;
-		for (track in buffer){
-			duration += track.youtube_duration;
-		}
+		for (var i = 0; i < this.getBuffer().length; i++) {
+			duration += this.getBuffer()[i].youtube_duration;
+		};
 		return duration;
-	};
-
-	BufferHandler.prototype.setTimestamp = function() {
-		
 	};
 
 	BufferHandler.prototype.getCurrentTrack = function() {
@@ -59,10 +66,67 @@
 	};
 
 	BufferHandler.prototype.refresh = function(){
-		$('#buffer').text("Buffer : "+this.getBuffer());
+		var tracks = $('<ol>');
+		for (var i = 0; i < this.getBuffer().length; i++) {
+			track = this.getBuffer()[i]
+			tracks.append($('<li>').text('id : '+track['youtube_id']+', title : '+track.youtube_title+', duration : '+track.youtube_duration));
+		};
+		$('#buffer').html(tracks);
+
 		$('#timestamp').text("Timestamp : "+this.getTimestamp());
 		$('#duration').text("Buffer duration : "+this.getDuration());
 	};
+
+	BufferHandler.prototype.get_buffer_and_timestamp = function(callback){
+		var that = this;
+		$.ajax({
+			url: "/api/buffer/"+that.getShortname(),
+			type: "GET",
+			dataType: "json",
+			timeout: 60000,
+			error: function(xhr, status, error){
+				that.log(error);
+			},
+			success: function(json){
+				PHB.log(json);
+				that.setTimestamp(new Date(json['timestamp']));
+				that.setBuffer(json['buffer']);
+				that.refresh();
+			},
+		});
+	};
+
+	BufferHandler.prototype.add_tracks_to_buffer = function(callback){
+		var that = this;
+		tracks = [{
+				'youtube_id':'Q7lInSt2Xgs',
+				'youtube_title':'1995 - Flava In Ya Ear (Remix)',
+				'youtube_duration':210,
+			},{
+				'youtube_id':'blWw7bM6TS0',
+				'youtube_title':"1995 - La Suite - Clip (Prod. DJ Lo' / Réalisation : Le Garage)",
+				'youtube_duration':295,
+			},{
+				'youtube_id':'l0qs_VmTlGY',
+				'youtube_title':"Nekfeu/Alpha Wann (1995) - Dans Ta Réssoi",
+				'youtube_duration':275,
+			}
+		];
+		$.ajax({
+			url: "/api/buffer/"+that.getShortname(),
+			type: "PUT",
+			data: JSON.stringify({'tracks':tracks}),
+			dataType: "json",
+			timeout: 60000,
+			error: function(xhr, status, error){
+				PHB.log(error);
+			},
+			success: function(json){
+				PHB.log(json);
+			},
+		});
+	};
+
 </script>
 
 {{ buffer }}

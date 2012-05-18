@@ -10,6 +10,7 @@ from controllers.base import BaseHandler
 from controllers.base import login_required
 
 from models.api.station import StationApi
+from models.db.station import Station
 
 class ApiBufferHandler(BaseHandler):
 	def get(self, shortname):
@@ -23,27 +24,19 @@ class ApiBufferHandler(BaseHandler):
 		if(station_proxy.station):
 			buffer = station_proxy.buffer_and_timestamp['buffer']
 			timestamp = station_proxy.buffer_and_timestamp['timestamp']
+			extended_buffer = Station.get_extended_buffer(buffer)
 
 			bufferJSON = []
 
-			logging.info(buffer)
+			logging.info(extended_buffer)
 			logging.info(timestamp)
 
-			for track in buffer:
-				bufferJSON.append({
-						'id': track.youtube_id,
-						'title': track.youtube_title,
-						'duration': track.youtube_duration,
-					})
-
-			buffer_and_timestamp = {'buffer':bufferJSON, 'timestamp': timestamp.isoformat()}
+			buffer_and_timestamp = {'buffer':extended_buffer, 'timestamp': timestamp.isoformat()}
 
 			self.response.out.write(json.dumps(buffer_and_timestamp))
 
 		else:
 			self.error(404)
-
-		
 
 	@login_required
 	def put(self, shortname):
@@ -51,7 +44,18 @@ class ApiBufferHandler(BaseHandler):
 		logging.info("in put ApiBufferHandler")
 		logging.info(shortname)
 
+		youtube_tracks = (self.request.get('tracks'))
+		logging.info(youtube_tracks)
+
 		station_proxy = StationApi(shortname)
+
+		if(station_proxy.station):
+			station_proxy.add_tracks_to_buffer(youtube_tracks)
+
+			self.response.out.write(json.dumps({'response':True}))
+
+		else:
+			self.error(404)
 		
 
 	@login_required
