@@ -7,13 +7,13 @@ $(function(){
 	// Show panel
 	$(".show-panel").click(function(){
 		$("#panel").show();
-		$(this).blur();
+		return false;
 	})
 	
 	// Hide panel
 	$(".hide-panel").click(function(){
 		$("#panel").hide();
-		$(this).blur();
+		return false;
 	})
 	
 })
