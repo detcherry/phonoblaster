@@ -47,7 +47,7 @@
 		<!-- Station Information -->
 		<div id="station-information">
 			<div id="station-picture">
-				<img src="https://graph.facebook.com/{{ station_proxy.station.key.name }}/picture?type=square">
+				<img src="https://graph.facebook.com/{{ station_proxy.station.key.name }}/picture?type=normal">
 			</div>
 			<div id="station-shortname">@{{ station_proxy.station.shortname }}</div>
 			<div id="station-name">
@@ -77,18 +77,23 @@
 					<div id="media-submitter">
 						<!--  Example: -->
 						<!--
-							<img src="http://graph.facebook.com/damien.detcherry/picture?type=square">
+							<a href="" data-original-title="Damien Detcherry">
+								<img src="http://graph.facebook.com/damien.detcherry/picture?type=square">
+							</a>
 							<span>Rebroadcast of</span> 
 						-->
 					</div>
 				</div>
 				<div class="stroke grey"></div>
 				<div id="media-title">Loading...</div>
-				<div id="media-fav">
-					<!-- Example: -->
-				  	<!-- <a class="fav tuto" data-original-title="Favorite this track!" href="#"></a> -->
+				<div id="media-actions">
+					<div id="media-fav">
+					  	<a class="fav tuto" data-original-title="Favorite this track!" href="#"></a>
+					</div>
+					<div id="media-volume">
+						<a href="#" class="unmuted tuto" data-original-title="Mute the player"></a>
+					</div>
 				</div>
-				<div id="media-volume" class="unmuted"></div>
 			</div>
 		</div>
 		<!-- Listeners counter -->
