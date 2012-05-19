@@ -226,11 +226,11 @@ Global number of stations: %s
 		
 		return self._buffer_and_timestamp
 
-	def put_buffer_and_timestamp(self, buffer, timestamp):
+	def put_buffer(self, buffer):
 		station = self.station
 		#Putting data in datastore
+		station.timestamp = self.get_new_timestamp(buffer)
 		station.buffer = json.dumps(buffer)
-		station.timestamp = timestamp
 		station.put()
 
 		#Updating memcache
@@ -275,27 +275,28 @@ Global number of stations: %s
 				#Current track found, return its position in buffer adn the corresponding track
 				return i, track, now_broadcast_time - current_duration + track['youtube_duration'], now_broadcast_time
 
-	def set_new_timestamp(self):
+	def get_new_timestamp(self, new_buffer, old_timestamp):
 		"""
 			Setting new timestamp with this formula:
 				new_timestamp = old_timestamp + sum(all track_duration before index_curent_track)
 		"""
-		buffer = self.buffer_and_timestamp['buffer']
-
 		now = datetime.utcnow()
-		current_index = self.get_current_track()[0]
-		duration_before = 0
+		current_track_infos = self.get_current_track()
+		current_track = current_track_infos[1]
+		now_time_in_current_track = current_track_infos[2]
+		duration_before_current_track = 0
 
-		if current_index >= 0 and current_index < len(buffer):
-			for i in xrange(current_index):
-				track = buffer[i]
-				duration_before += track['youtube_duration']
+		for i in xrange(len(new_buffer)):
+			track = new_buffer[i]
+			if current_track['id'] != track['id']:
+				duration_before_current_track += track['youtube_duration']
+			else:
+				break
 
 		#Setting new timestamp
-		new_timestamp = datetime.utcnow()-timedelta(0,duration_before)
+		new_timestamp = datetime.utcnow()-timedelta(0,duration_before_current_track + now_time_in_current_track)
 
-		#Saving data
-		self.put_buffer_and_timestamp(self.buffer_and_timestamp['buffer'], new_timestamp)
+		return new_timestamp
 
 
 	def add_tracks_to_buffer(self,youtube_tracks):
@@ -318,9 +319,8 @@ Global number of stations: %s
 				}
 			)
 
-		#Saving data and updating timestamp
-		self.put_buffer_and_timestamp(buffer, self.station.timestamp)
-		self.set_new_timestamp()
+		#Saving data
+		self.put_buffer(buffer)
 
 	def remove_track_from_buffer(self,track_in_buffer_id):
 		"""
@@ -349,9 +349,8 @@ Global number of stations: %s
 				# index retrieved and not corresponding to the current played track
 				buffer.pop(index_track_to_find)
 
-				# Saving data and updating timestamp
-				self.put_buffer_and_timestamp(buffer, self.station.timestamp)
-				self.set_new_timestamp()
+				# Saving data
+				self.put_buffer(buffer)
 				return (True, track_in_buffer_id)
 			else:
 				# index retrived and corresponding to the currently plyayed track
@@ -361,7 +360,6 @@ Global number of stations: %s
 			return (False, None)
 
 
-	#TO DO
 	def move_tack_in_buffer(self,old_index, new_index):
 		"""
 			Moving track from position old_index to position new_index
@@ -370,9 +368,8 @@ Global number of stations: %s
 		if(old_index>=0 and new_index>=0 and new_index<len(buffer) and old_index < len(buffer)):
 			buffer.insert(new_index, buffer.pop(old_index))
 
-			# Saving data and updating timestamp
-			self.put_buffer_and_timestamp(buffer, self.station.timestamp)
-			self.set_new_timestamp()
+			# Saving data
+			self.put_buffer(buffer)
 
 
 	########################################################################################################################################
