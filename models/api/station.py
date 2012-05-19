@@ -1,6 +1,7 @@
 import logging
 import os
 import re
+from django.utils import simplejson as json
 
 from datetime import datetime
 from datetime import timedelta
@@ -213,7 +214,7 @@ Global number of stations: %s
 			self._buffer_and_timestamp = memcache.get(self._memcache_station_buffer_id)
 			if self._buffer_and_timestamp is None:
 				station = self.station
-				buffer = self.station.buffer
+				buffer = json.loads(self.station.buffer)
 				timestamp = self.station.timestamp
 
 				self._buffer_and_timestamp = {'buffer':buffer, 'timestamp':timestamp}
@@ -225,24 +226,35 @@ Global number of stations: %s
 		
 		return self._buffer_and_timestamp
 
+	def put_buffer_and_timestamp(self, buffer, timestamp):
+		station = self.station
+		#Putting data in datastore
+		station.buffer = json.dumps(buffer)
+		station.timestamp = timestamp
+		station.put()
+
+		#Updating memcache
+		memcache.set(self._memcache_station_id, station)
+		memcache.add(self._memcache_station_buffer_id, {'buffer':station.buffer, 'timestamp':station.timestamp} )
+
 	def get_buffer_duration(self):
 		"""
 			Returns the length in seconds of the buffer.
 		"""
-		extended_buffer = Station.get_extended_buffer(self.buffer_and_timestamp['buffer'])
+		buffer = self.buffer_and_timestamp['buffer']
 		buffer_duration = 0
-		if extended_buffer:
-			buffer_duration = sum([t['youtube_duration'] for t in extended_buffer])
+		if buffer:
+			buffer_duration = sum([t['youtube_duration'] for t in buffer])
 
 		return buffer_duration
 	
 	def get_current_track(self):
 		"""
 			Returns :
-				- (index_curent_track, {'youtube_id':id, 'youtube_title':title, 'youtube_duration':duration}, now_time_in_track, now_time_in_buffer)
+				- (index_curent_track, {'id':id_of_track_in_buffer ,'youtube_id':youtube_id, 'youtube_title':youtube_title, 'youtube_duration':youtube_duration}, now_time_in_track, now_time_in_buffer)
 		"""
 		buffer_and_timestamp = self.buffer_and_timestamp
-		extended_buffer = Station.get_extended_buffer(buffer_and_timestamp['buffer'])
+		buffer = buffer_and_timestamp['buffer']
 		timestamp = buffer_and_timestamp['timestamp']
 
 		now = datetime.utcnow()
@@ -256,8 +268,8 @@ Global number of stations: %s
 
 		current_duration = 0
 
-		for i in xrange(len(extended_buffer)):
-			track = extended_buffer[i]
+		for i in xrange(len(buffer)):
+			track = buffer[i]
 			current_duration += track['youtube_duration']
 			if(current_duration>now_broadcast_time):
 				#Current track found, return its position in buffer adn the corresponding track
@@ -268,28 +280,22 @@ Global number of stations: %s
 			Setting new timestamp with this formula:
 				new_timestamp = old_timestamp + sum(all track_duration before index_curent_track)
 		"""
-		extended_buffer = Station.get_extended_buffer(self.buffer_and_timestamp['buffer'])
+		buffer = self.buffer_and_timestamp['buffer']
 
 		now = datetime.utcnow()
 		current_index = self.get_current_track()[0]
 		duration_before = 0
 
-		if current_index >= 0 and current_index < len(extended_buffer):
+		if current_index >= 0 and current_index < len(buffer):
 			for i in xrange(current_index):
-				track = extended_buffer[i]
+				track = buffer[i]
 				duration_before += track['youtube_duration']
 
 		#Setting new timestamp
 		new_timestamp = datetime.utcnow()-timedelta(0,duration_before)
 
-		#updating datastore
-		station = self.station
-		station.timestamp = new_timestamp
-		station.put()
-
-		#updating memcache
-		memcache.set(self._memcache_station_id, station)
-		memcache.set(self._memcache_station_buffer_id, {'buffer':self.buffer_and_timestamp['buffer'], 'timestamp': new_timestamp})
+		#Saving data
+		self.put_buffer_and_timestamp(self.buffer_and_timestamp['buffer'], new_timestamp)
 
 
 	def add_tracks_to_buffer(self,youtube_tracks):
@@ -302,49 +308,60 @@ Global number of stations: %s
 
 		for i in xrange(0,len(youtube_tracks)):
 			track = Track.get_or_insert_by_youtube_id(youtube_tracks[i], self.station)
-			buffer.insert(current_index, track.key())
+			buffer.insert(
+				current_index,
+				{
+					'id': youtube_tracks[i]['id'], 
+					'youtube_id': youtube_tracks[i]['youtube_id'], 
+					'youtube_title': youtube_tracks[i]['youtube_title'],
+					'youtube_duration': youtube_tracks[i]['youtube_duration']
+				}
+			)
 
-		#Putting change in datastore
-		self.station.buffer = buffer
-		self.station.put()
-
-		#updating memcache
-		memcache.set(self._memcache_station_id, self.station)
-		memcache.set(self._memcache_station_buffer_id, {'buffer':buffer, 'timestamp': self.station.timestamp})
-
-		#updating timestamp
+		#Saving data and updating timestamp
+		self.put_buffer_and_timestamp(buffer, self.station.timestamp)
 		self.set_new_timestamp()
 
-	def remove_track_from_buffer(self,youtube_track_index):
+	def remove_track_from_buffer(self,track_in_buffer_id):
 		"""
-			Removing track at position youtube_track_index from buffer.
+			track_in_buffer_id is the id of the track in the buffer that has to be removed. This methods returns a tuple, the first argument i a boolean,
+			it tells if the remove was successfull, the second argument is an integer or None.
+
+			If the remove was successfull : (True, track_in_buffer_id).
+			If track_in_buffer_id does not correspond to anny track, this method returns (False, None).
+			If track_in_buffer_id is OK but represents the track that is being played : (False, track_in_buffer_id)
+
 		"""
 		buffer = self.buffer_and_timestamp['buffer']
-		
-		if(youtube_track_index>=0 and youtube_track_index<len(buffer)):
+		index_track_to_find = None
+
+		# Retrieving index corresponding to id
+		for i in xrange(0,len(buffer)):
+			track = buffer[i]
+			if track['id'] == track_in_buffer_id:
+				index_track_to_find = i
+				break
+
+		if index_track_to_find:
 			current_index = self.get_current_track()[0]
 
-			if(current_index != youtube_track_index):
-				buffer.pop(youtube_track_index)
+			if(current_index != index_track_to_find):
+				# index retrieved and not corresponding to the current played track
+				buffer.pop(index_track_to_find)
 
-				#Putting change in datastore
-				station = self.station
-				station.buffer = buffer
-				station.put()
-
-				#updating memcache
-				memcache.set(self._memcache_station_id, station)
-				memcache.set(self._memcache_station_buffer_id, {'buffer':buffer, 'timestamp': self.station.timestamp})
-
-				#updating timestamp
+				# Saving data and updating timestamp
+				self.put_buffer_and_timestamp(buffer, self.station.timestamp)
 				self.set_new_timestamp()
-
-				return True
+				return (True, track_in_buffer_id)
 			else:
-				#Requesting current track to be removed from buffer
-				return False
+				# index retrived and corresponding to the currently plyayed track
+				return (False, track_in_buffer_id)
+		else:
+			# index not retrieved, the id is not valid
+			return (False, None)
 
 
+	#TO DO
 	def move_tack_in_buffer(self,old_index, new_index):
 		"""
 			Moving track from position old_index to position new_index
@@ -352,20 +369,10 @@ Global number of stations: %s
 		buffer = self._buffer_and_timestamp['buffer']
 		if(old_index>=0 and new_index>=0 and new_index<len(buffer) and old_index < len(buffer)):
 			buffer.insert(new_index, buffer.pop(old_index))
-			
-			#Putting change in datastore
-			station = self.station
-			station.buffer = buffer
-			station.put()
 
-			#updating memcache
-			memcache.set(self._memcache_station_id, station)
-			memcache.set(self._memcache_station_buffer_id, {'buffer':buffer, 'timestamp': self.station.timestamp})
-
-			#updating timestamp
+			# Saving data and updating timestamp
+			self.put_buffer_and_timestamp(buffer, self.station.timestamp)
 			self.set_new_timestamp()
-
-
 
 
 	########################################################################################################################################
