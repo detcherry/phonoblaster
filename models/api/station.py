@@ -214,7 +214,10 @@ Global number of stations: %s
 			self._buffer_and_timestamp = memcache.get(self._memcache_station_buffer_id)
 			if self._buffer_and_timestamp is None:
 				station = self.station
-				buffer = json.loads(self.station.buffer)
+				if self.station.buffer:
+					buffer = json.loads(self.station.buffer)
+				else:
+					buffer = []
 				timestamp = self.station.timestamp
 
 				self._buffer_and_timestamp = {'buffer':buffer, 'timestamp':timestamp}
@@ -238,7 +241,7 @@ Global number of stations: %s
 
 		#Updating memcache
 		memcache.set(self._memcache_station_id, station)
-		memcache.add(self._memcache_station_buffer_id, {'buffer':station.buffer, 'timestamp':station.timestamp} )
+		memcache.set(self._memcache_station_buffer_id, {'buffer':new_buffer, 'timestamp':station.timestamp} )
 
 	def get_buffer_duration(self):
 		"""
@@ -311,6 +314,7 @@ Global number of stations: %s
 			current_index = 0
 
 		for i in xrange(0,len(youtube_tracks)):
+			logging.info(youtube_tracks[i])
 			track = Track.get_or_insert_by_youtube_id(youtube_tracks[i], self.station)
 			buffer.insert(
 				current_index,
@@ -345,7 +349,7 @@ Global number of stations: %s
 				index_track_to_find = i
 				break
 
-		if index_track_to_find:
+		if index_track_to_find is not None:
 			current_index = self.get_current_track()[0]
 
 			if(current_index != index_track_to_find):

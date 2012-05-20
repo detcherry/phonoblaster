@@ -24,14 +24,11 @@ class ApiBufferHandler(BaseHandler):
 		if(station_proxy.station):
 			buffer = station_proxy.buffer_and_timestamp['buffer']
 			timestamp = station_proxy.buffer_and_timestamp['timestamp']
-			extended_buffer = Station.get_extended_buffer(buffer)
 
-			bufferJSON = []
-
-			logging.info(extended_buffer)
+			logging.info(buffer)
 			logging.info(timestamp)
 
-			buffer_and_timestamp = {'buffer':extended_buffer, 'timestamp': timestamp.isoformat()}
+			buffer_and_timestamp = {'buffer':buffer, 'timestamp': timestamp.isoformat()}
 
 			self.response.out.write(json.dumps(buffer_and_timestamp))
 
@@ -39,12 +36,12 @@ class ApiBufferHandler(BaseHandler):
 			self.error(404)
 
 	@login_required
-	def put(self, shortname):
+	def post(self, shortname):
 		#put new track in buffer
 		logging.info("in put ApiBufferHandler")
 		logging.info(shortname)
 
-		youtube_tracks = (self.request.get('tracks'))
+		youtube_tracks = json.loads(self.request.get('tracks'))
 		logging.info(youtube_tracks)
 
 		station_proxy = StationApi(shortname)
@@ -59,7 +56,7 @@ class ApiBufferHandler(BaseHandler):
 		
 
 	@login_required
-	def post(self, shortname):
+	def put(self, shortname):
 		#change position of a track from old_position to new position
 		logging.info("in post ApiBufferHandler")
 		logging.info(shortname)
