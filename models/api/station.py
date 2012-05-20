@@ -214,8 +214,8 @@ Global number of stations: %s
 			self._buffer_and_timestamp = memcache.get(self._memcache_station_buffer_id)
 			if self._buffer_and_timestamp is None:
 				station = self.station
-				if self.station.buffer:
-					buffer = json.loads(self.station.buffer)
+				if self.station.buffer is not None:
+					buffer = [json.loads(t) for t in self.station.buffer]
 				else:
 					buffer = []
 				timestamp = self.station.timestamp
@@ -236,7 +236,7 @@ Global number of stations: %s
 
 		#Putting data in datastore
 		station.timestamp = new_timestamp
-		station.buffer = json.dumps(new_buffer)
+		station.buffer = [json.dumps(t) for t in new_buffer]
 		station.put()
 
 		#Updating memcache

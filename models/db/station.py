@@ -8,5 +8,5 @@ class Station(db.Model):
 	link = db.StringProperty(required = True) # Link of the facebook page
 	created = db.DateTimeProperty(auto_now_add = True)
 	updated = db.DateTimeProperty(auto_now = True)
-	buffer = db.StringProperty(default = '[]') #buffer is stored as a string, this string being a json object that holds the information about the tracks.
+	buffer = db.StringListProperty()
 	timestamp = db.DateTimeProperty(auto_now_add=True)
