@@ -13,7 +13,15 @@
 <p id="timestamp">Timestamp : </p>
 <br/>
 <br/>
-<p id="add">Add Tracks to buffer</p>
+<p id="now">Now Playing : </p>
+<br/>
+<br/>
+<p id="add" class="btn">Add Tracks to buffer</p>
+<br/>
+<br/>
+<p id="remove" class="btn">Remove First Track from buffer</p>
+<br/>
+<br/>
 {% endblock %}
 
 {% block script %}
@@ -21,7 +29,12 @@
 	$(function(){
 		var buffer = new BufferHandler('{{shortname}}');
 		buffer.get_buffer_and_timestamp();
-		$("#add").click(buffer.add_tracks_to_buffer());
+		$("#add").click(function(){
+			buffer.add_tracks_to_buffer();
+		});
+		$("#remove").click(function(){
+			buffer.remove_first_track_from_buffer();
+		});
 
 	});
 
@@ -29,7 +42,6 @@
 		buffer = [];
 		shortname = station_shortname;
 		timestamp = new Date();
-		//timestamp = new Date("{{timestamp}}");
 
 		this.getBuffer = function(){
 			return buffer;
@@ -62,26 +74,49 @@
 
 	BufferHandler.prototype.getCurrentTrack = function() {
 		var now = PHB.now();
+		var timestamp = Date.parse(this.getTimestamp())/1000;
+		var buffer = this.getBuffer();
+		var buffer_duration = this.getDuration();
+
+		if (buffer_duration === 0) {
+			return [undefined,undefined, 0,0];
+		};
+
+		now_broadcast_time = (now - timestamp) % buffer_duration;
+
+		current_duration = 0;
+
+		for (var i =  0; i < buffer.length; i++) {
+			track = buffer[i];
+			current_duration += track['youtube_duration'];
+			if(current_duration>now_broadcast_time){
+				return [i, track, now_broadcast_time - current_duration + track['youtube_duration'], now_broadcast_time];
+			}
+
+		};
 
 	};
 
 	BufferHandler.prototype.refresh = function(){
-		var tracks = $('<ol>');
+		var current_track_info = this.getCurrentTrack();
+		var tracks = $('<ol style="float:none;">');
 		for (var i = 0; i < this.getBuffer().length; i++) {
 			track = this.getBuffer()[i]
-			tracks.append($('<li>').text('id : '+track['youtube_id']+', title : '+track.youtube_title+', duration : '+track.youtube_duration));
+			tracks.append($('<li style="float:none;">').text('id : '+track['youtube_id']+', title : '+track.youtube_title+', duration : '+track.youtube_duration));
 		};
 		$('#buffer').html(tracks);
 
 		$('#timestamp').text("Timestamp : "+this.getTimestamp());
 		$('#duration').text("Buffer duration : "+this.getDuration());
+		$('#now').text("Now Playing : "+current_track_info[1]['youtube_title']+" at "+current_track_info[2]+" s. Seconds in buffer : "+current_track_info[3]);
 	};
 
 	BufferHandler.prototype.get_buffer_and_timestamp = function(callback){
 		var that = this;
 		$.ajax({
-			url: "/api/buffer/"+that.getShortname(),
+			url: "/api/buffer/",
 			type: "GET",
+			data: {'shortname':this.getShortname()},
 			dataType: "json",
 			timeout: 60000,
 			error: function(xhr, status, error){
@@ -99,26 +134,27 @@
 	BufferHandler.prototype.add_tracks_to_buffer = function(callback){
 		var that = this;
 		tracks = [{
-				'id':this.getShortname()+'.buffer.'+(Math.random()),
+				'id':this.getShortname()+'.'+(Math.random())+'.buffer.'+(Math.random()),
 				'youtube_id':'Q7lInSt2Xgs',
 				'youtube_title':'1995 - Flava In Ya Ear (Remix)',
 				'youtube_duration':210,
 			},{
-				'id':this.getShortname()+'.buffer.'+(Math.random()),
+				'id':this.getShortname()+'.'+(Math.random())+'.buffer.'+(Math.random()),
 				'youtube_id':'blWw7bM6TS0',
 				'youtube_title':"1995 - La Suite - Clip (Prod. DJ Lo' / Réalisation : Le Garage)",
 				'youtube_duration':295,
 			},{
-				'id':this.getShortname()+'.buffer.'+(Math.random()),
+				'id':this.getShortname()+'.'+(Math.random())+'.buffer.'+(Math.random()),
 				'youtube_id':'l0qs_VmTlGY',
 				'youtube_title':"Nekfeu/Alpha Wann (1995) - Dans Ta Réssoi",
 				'youtube_duration':275,
 			}
 		];
+
 		$.ajax({
 			url: "/api/buffer/"+that.getShortname(),
 			type: "POST",
-			data: {'tracks' :JSON.stringify( tracks)},
+			data: {'shortname':this.getShortname(),'tracks' :JSON.stringify( tracks)},
 			dataType: "json",
 			timeout: 60000,
 			error: function(xhr, status, error){
@@ -128,6 +164,27 @@
 				PHB.log(json);
 			},
 		});
+	};
+
+	BufferHandler.prototype.remove_first_track_from_buffer = function(){
+		var buffer = this.getBuffer();
+		var that = this;
+		if (buffer.length >0) {
+			track_to_remove_id = buffer[0]['id'];
+			$.ajax({
+				url: "/api/buffer/"+track_to_remove_id,
+				type: "DELETE",
+				data: {},
+				dataType: "json",
+				timeout: 60000,
+				error: function(xhr, status, error){
+					PHB.log(error);
+				},
+				success: function(json){
+					PHB.log(json);
+				},
+			});
+		};
 	};
 
 </script>
