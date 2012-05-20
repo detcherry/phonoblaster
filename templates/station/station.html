@@ -54,7 +54,7 @@
 	<!-- Background -->
 	<div id="background" class="stretch">
 		<!-- Example -->
-	 	<img src="/{{tag}}/static/images/smoking.jpg" class="stretch"/>
+	 	<!-- <img src="/{{tag}}/static/images/smoking.jpg" class="stretch"/> -->
 	</div>
 	<!-- Station column (left)-->
 	<div id="station-column" class="stretch">
@@ -180,25 +180,52 @@
 		<div id="overlay" class="stretch">
 			<!-- Panel for back office (right) -->
 			<div id="panel" class="stretch">
-				<div id="panel-content-wrapper" class="stretch">					
-					{% if is_admin %}
-					<!-- Broadcaster tabs -->
-					<div id="tabs">
-					</div>
-					{% endif %}
-					<div id="panel-tab-wrapper">
-						{% if is_admin %}
-						<!-- Broadcaster tabs content -->
-						
-						{% else %}
-						<!-- Listener tab content -->
-						<div class="panel-tab" id="suggestions-tab">
-							<div class="panel-tab-header"></div>
-							<div class="panel-tab-content"></div>
+				{% if is_admin %}
+				<!-- Broadcaster tabs header -->
+				<ul id="tabs">
+					<li><a href="#buffer-tab" class="current"></a></li>
+					<li><a href="#suggestions-tab"></a></li>
+					<li><a href="#favorite-tab"></a></li>
+					<li><a href="#library-tab"></a></li>
+				</ul>
+				<!-- Broadcaster tabs content -->
+				<div id="tabs-wrapper" class="admin">
+					<div class="tab" id="buffer-tab">
+						<div class="tab-header">
+							<a href="#" class="hide-panel">X</a>
 						</div>
-						{% endif %}
+						<div class="tab-content"></div>
+					</div>
+					<div class="tab" id="suggestions-tab" style="display:none;">
+						<div class="tab-header">
+							<a href="#" class="hide-panel">X</a>
+						</div>
+						<div class="tab-content"></div>
+					</div>
+					<div class="tab" id="favorite-tab" style="display:none;">
+						<div class="tab-header">
+							<a href="#" class="hide-panel">X</a>
+						</div>
+						<div class="tab-content"></div>
+					</div>
+					<div class="tab" id="library-tab" style="display:none;">
+						<div class="tab-header">
+							<a href="#" class="hide-panel">X</a>
+						</div>
+						<div class="tab-content"></div>
 					</div>
 				</div>
+				{% else %}
+				<!-- Listener tab content -->
+				<div id="tabs-wrapper">
+					<div class="tab" id="suggestions-tab">
+						<div class="tab-header">
+							<a href="#" class="hide-panel" style="display:block; margin-top:10px; margin-left:10px">X</a>
+						</div>
+						<div class="tab-content"></div>
+					</div>
+				</div>
+				{% endif %}
 			</div>
 		</div> 
 	</div>

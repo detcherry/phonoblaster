@@ -530,6 +530,7 @@ a#share:hover{
 	top:0px;
 	left:440px;
 	padding:20px;
+	padding-bottom:0px;
 	width:499px;
 	min-height:700px;
 	color:black;
@@ -537,12 +538,53 @@ a#share:hover{
 	border-right:1px solid #E1E1E1;
 }
 
-#panel-content-wrapper{
-	width:500px;
-	min-height:700px;
+ul#tabs{
+	margin-top:42px;
+	width:40px;
+	border-top:1px solid #E1E1E1;
+	border-left:1px solid #E1E1E1;
+	border-bottom:none;
 }
 
+ul#tabs li a{
+	display:block;
+	height:40px;
+	width:40px;
+	background:#F5F5F5;
+	border-bottom:1px solid #E1E1E1;
+}
 
+ul#tabs li a:hover{
+	background:#F8F8F8;
+}
+
+ul#tabs li a.current{
+	width:41px;
+	background:white;
+}
+
+#tabs-wrapper{
+	width:498px;
+	min-height:700px;
+	padding-bottom:40px;
+	background:white;
+	border:1px solid #E1E1E1;
+}
+
+#tabs-wrapper a.hide-panel{
+	display:block;
+	margin-top:7px;
+	margin-left:6px;
+}
+
+#tabs-wrapper.admin{
+	width:456px;
+}
+
+#tabs-wrapper.admin a.hide-panel{
+	margin-top:5px;
+	margin-left:-35px;
+}
 
 /* ------- POPUP SHARE -------*/
 
