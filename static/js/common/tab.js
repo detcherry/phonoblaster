@@ -232,7 +232,7 @@ TabManager.prototype = {
 		var that = this;
 		this.delete(item, function(response){
 			that.deleteCallback(item, response)
-		})
+		});
 	},
 	
 	delete: function(item, callback){

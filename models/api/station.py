@@ -226,11 +226,14 @@ Global number of stations: %s
 		
 		return self._buffer_and_timestamp
 
-	def put_buffer(self, buffer):
+	def put_buffer(self, new_buffer):
 		station = self.station
+		old_timestamp = station.timestamp
+		new_timestamp = self.get_new_timestamp(new_buffer, old_timestamp)
+
 		#Putting data in datastore
-		station.timestamp = self.get_new_timestamp(buffer)
-		station.buffer = json.dumps(buffer)
+		station.timestamp = new_timestamp
+		station.buffer = json.dumps(new_buffer)
 		station.put()
 
 		#Updating memcache
@@ -272,12 +275,12 @@ Global number of stations: %s
 			track = buffer[i]
 			current_duration += track['youtube_duration']
 			if(current_duration>now_broadcast_time):
-				#Current track found, return its position in buffer adn the corresponding track
+				#Current track found, return its position in buffer and the corresponding track
 				return i, track, now_broadcast_time - current_duration + track['youtube_duration'], now_broadcast_time
 
 	def get_new_timestamp(self, new_buffer, old_timestamp):
 		"""
-			Setting new timestamp with this formula:
+			Calculating new timestamp with this formula:
 				new_timestamp = old_timestamp + sum(all track_duration before index_curent_track)
 		"""
 		now = datetime.utcnow()
