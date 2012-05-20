@@ -111,12 +111,12 @@ body{
 	height:25px;
 	width:25px;
 	background:url("/static/images/new-sprits.png");
-	background-position:-7px -112px;
+	background-position:0px -109px;
 }
 
 #station-name a:hover{
 	background:url("/static/images/new-sprits.png");
-	background-position:-39px -112px;
+	background-position:-25px -109px;
 }
 
 #station-name .fb-like{
