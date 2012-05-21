@@ -105,7 +105,7 @@ StationClient.prototype = {
 			that.chat_manager = new ChatManager(that); // Fetching
 			that.suggestion_manager = new SuggestionManager(that); // Fetching	
 			that.track_manager = new TrackManager(that); // Lazy fetching
-			//that.favorite_manager = new FavoriteManager(that); // Lazy fetching
+			that.favorite_manager = new FavoriteManager(that); // Lazy fetching
 			that.share_manager = new ShareManager(that);
 			
 			//that.favorite_sdk = new FavoriteSDK(that.queue_manager)
