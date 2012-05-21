@@ -592,6 +592,10 @@ a#share:hover{
 	display:block;
 }
 
+.tab-content .init{
+	padding:15px;
+}
+
 /* ------ TAB HEADERS ----- */
 
 ul#tabs{
@@ -667,7 +671,7 @@ ul#tabs a#sets-header{
 
 ul#tabs a#sets-header.current{
 	background-image:url("/static/images/new-sprits.png");
-	background-position:-72px -446px;
+	background-position:-71px -446px;
 }
 
 

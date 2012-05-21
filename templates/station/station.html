@@ -207,7 +207,9 @@
 							<h4>{% if is_admin %}On air{% else %}Wall{% endif %}</h4>
 						</div>
 						<!-- {% if is_admin %}Buffer{% else %}Suggestion{% endif %} feed -->
-						<div class="tab-content"></div>
+						<div class="tab-content">
+							<div class="init">{% if is_admin %}Nothing on the air{% else %}Post a suggestion{% endif %}</div>
+						</div>
 					</div>
 					{% if is_admin %}
 					<!-- Suggestions tab -->
@@ -218,6 +220,7 @@
 						</div>
 						<!-- Suggestions feed -->
 						<div class="tab-content">
+							<div class="init">No suggestion</div>
 						</div>
 					</div>
 					<!-- Favorites tab -->
@@ -227,7 +230,9 @@
 							<h4>Your favorite tracks</h4>
 						</div>
 						<!-- Favorites feed -->
-						<div class="tab-content"></div>
+						<div class="tab-content">
+							<div class="init">No favorite</div>
+						</div>
 					</div>
 					<!-- Library tab -->
 					<div class="tab" id="library-tab" style="display:none;">
@@ -236,7 +241,9 @@
 							<h4>All of your tracks</h4>
 						</div>
 						<!-- Library feed -->
-						<div class="tab-content"></div>
+						<div class="tab-content">
+							<div class="init">No track</div>
+						</div>
 					</div>
 					<!-- Sets tab -->
 					<div class="tab" id="sets-tab" style="display:none;">
@@ -245,7 +252,9 @@
 							<h4>Your recorded sets</h4>
 						</div>
 						<!-- Sets feed -->
-						<div class="tab-content"></div>
+						<div class="tab-content">
+							<div class="init">Soon available</div>
+						</div>
 					</div>
 					{% endif %}
 				</div>
