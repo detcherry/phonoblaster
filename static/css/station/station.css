@@ -5,15 +5,18 @@
 	- overlay: -1
 	- panel-box: -1
 	- background: 0
-	- header: 10 000
 	- panel: 0
-	- chat: 100 000
+	- header: 1 000
+	- chat: 2 000
+	- search overlay: 3 000
+	- search input and results: 4 000
 
 */
 
 /* ------ STYLE CORRECTIONS ------ */
 
 .topbar{
+	z-index:1000;
 	position:relative;
 }
 
@@ -301,20 +304,6 @@ a.unfav{
 	background-position:-171px -84px;
 }
 
-/*
-#media-volume.unmuted{
-	background-position:-125px -84px;
-}
-
-#media-volume.unmuted:hover{
-	background-position:-149px -84px;
-}
-
-#media-volume.muted{
-	background-position:-171px -84px;
-}
-*/
-
 /* ------------ SESSIONS ------------ */
 
 .stat{
@@ -518,8 +507,8 @@ a#share:hover{
 	width:184px;
 	height:40px;
 	text-indent:-3000px;
-	background-image:url("/static/images/phonoblaster-sprits.png");
-	background-position:0px -225px;
+	background-image:url("/static/images/new-sprits.png");
+	background-position:-3px -308px;
 }
 
 /* -------- PANEL --------*/
@@ -538,8 +527,75 @@ a#share:hover{
 	border-right:1px solid #E1E1E1;
 }
 
+#tabs-wrapper{
+	width:468px;
+	padding:15px;
+	padding-bottom:0px;
+	min-height:700px;
+	background:white;
+	border:1px solid #E1E1E1;
+}
+
+#tabs-wrapper a.hide-panel{
+	display:block;
+	margin-top:-9px;
+	margin-left:-9px;
+}
+
+#tabs-wrapper a.hide-panel:hover{
+	color:black;
+	text-decoration:none;
+}
+
+#tabs-wrapper.admin a.hide-panel{
+	margin-top:-9px;
+	margin-left:-50px;
+}
+
+.tab{
+	width:100%;
+}
+
+#tabs-wrapper.admin .tab{
+	width:427px;
+}
+
+.tab-header{
+	width:100%;
+	height:37px;
+}
+
+.tab-header h4{
+	float:right;
+	margin-top:-7px;
+	margin-right:14px;
+	font-weight:normal;
+	font-style:italic;
+	font-family:Futura;
+	letter-spacing:0px;
+}
+
+.tab-content{
+	padding-bottom:40px;
+	width:100%;
+	min-height:700px;
+	border-top:1px solid #E1E1E1;
+}
+
+#tabs-wrapper.admin .tab-content{
+	width:425px;
+	border:1px solid #E1E1E1;
+	border-bottom:none;
+}
+
+.tab-content > div{
+	display:block;
+}
+
+/* ------ TAB HEADERS ----- */
+
 ul#tabs{
-	margin-top:42px;
+	margin-top:37px;
 	width:40px;
 	border-top:1px solid #E1E1E1;
 	border-left:1px solid #E1E1E1;
@@ -555,35 +611,301 @@ ul#tabs li a{
 }
 
 ul#tabs li a:hover{
-	background:#F8F8F8;
+	background:#E9E9E9;
 }
 
 ul#tabs li a.current{
+	position:relative;
 	width:41px;
 	background:white;
 }
 
-#tabs-wrapper{
-	width:498px;
-	min-height:700px;
-	padding-bottom:40px;
-	background:white;
-	border:1px solid #E1E1E1;
+ul#tabs a#buffer-header{
+	background-image:url("/static/images/new-sprits.png");
+	background-position:-39px -406px;
 }
 
-#tabs-wrapper a.hide-panel{
+ul#tabs a#buffer-header.current{
+	background-image:url("/static/images/new-sprits.png");
+	background-position:-2px -406px;
+}
+
+ul#tabs a#suggestions-header{
+	background-image:url("/static/images/new-sprits.png");
+	background-position:-104px -406px;
+}
+
+ul#tabs a#suggestions-header.current{
+	background-image:url("/static/images/new-sprits.png");
+	background-position:-71px -406px;
+}
+
+ul#tabs a#favorites-header{
+	background-image:url("/static/images/new-sprits.png");
+	background-position:-170px -406px;
+}
+
+ul#tabs a#favorites-header.current{
+	background-image:url("/static/images/new-sprits.png");
+	background-position:-137px -406px;
+}
+
+ul#tabs a#library-header{
+	background-image:url("/static/images/new-sprits.png");
+	background-position:-34px -444px;
+}
+
+ul#tabs a#library-header.current{
+	background-image:url("/static/images/new-sprits.png");
+	background-position:-2px -444px;
+}
+
+ul#tabs a#sets-header{
+	background-image:url("/static/images/new-sprits.png");
+	background-position:-104px -446px;
+}
+
+ul#tabs a#sets-header.current{
+	background-image:url("/static/images/new-sprits.png");
+	background-position:-72px -446px;
+}
+
+
+/* --------- SEARCH -----------*/
+
+#search-box{
+	float:right;
+	margin-top:-9px;
+	padding:9px;
+	width:267px;
+	background:#F5F5F5;
+}
+
+input#search{
+	position:absolute;
+	z-index:4000;
 	display:block;
-	margin-top:6px;
-	margin-left:6px;
+	float:left;
+	width:230px;
+	height:13px;
+	font-style:italic;
+	color:#C4C4C4;
+	border:none;
 }
 
-#tabs-wrapper.admin{
-	width:456px;
+input#search:focus{
+	font-style:normal;
+	color:#7F7F7F;
 }
 
-#tabs-wrapper.admin a.hide-panel{
-	margin-top:5px;
-	margin-left:-35px;
+#search-icon{
+	float:right;
+	height:21px;
+	width:21px;
+	background:url("/static/images/new-sprits.png");
+	background-position:-53px -111px;
+}
+
+#search-overlay{
+	display:none;
+	position:fixed;
+	z-index:3000;
+	top:0px;
+	bottom:0px;
+	right:0px;
+	left:0px;
+}
+
+#search-tab{
+	display:none;
+	position:absolute;
+	z-index:4000;
+	margin-top:30px;
+	margin-left:-36px;
+	height:290px;
+	width:310px;
+	border:1px solid #E1E1E1;
+	overflow-y:scroll;
+	background:#F5F5F5;
+}
+
+#tabs-wrapper #search-tab .tab-content{
+	padding:4%;
+	width:92%;
+	min-height:290px;
+	border:none;
+}
+
+/* ---------- ITEMS ----------- */
+
+.item{
+	margin-bottom:15px;
+	padding:10px;
+	background:#FFFFFF;
+}
+
+.item-picture{	
+	display:block;
+	float:left;
+	position:relative;
+	height:60px;
+	width:68px;
+	overflow:hidden;
+	margin-right:10px;
+}
+
+.item-picture img{
+	height:90px;
+	position:absolute;
+	top:-15px;
+	left:-26px;
+}
+
+.item-title{
+	padding-top:4px;
+	padding-right:4px;
+	width:169px;
+	height:32px;
+	overflow:hidden;
+}
+
+.item-title span{
+	height:34px;
+	line-height:15px;
+}
+
+a.item-cross{
+	display:block;
+	float:left;
+	margin-right:-14px;
+	padding:6px;
+	padding-right:4px;
+	padding-top:2px;
+	height:12px;
+	width:10px;
+	color:#333333;
+	background:#E1E1E1;
+}
+
+a.item-cross:hover{
+	color:#F5F5F5;
+	background:#333333;
+	text-decoration:none;
+}
+
+.item-subtitle{
+	height:22px;
+	width:173px;
+}
+
+.item-duration{
+	padding-top:6px;
+	color:#7F7F7F;
+}
+
+.item-submitter{
+	float:right;
+	margin-right:-4px;
+	padding-top:4px;
+}
+
+.item-submitter img{
+	display:block;
+	float:right;
+	margin-left:8px;
+	height:22px;
+}
+
+.item-submitter span{
+	display:block;
+	float:right;
+	padding-top:2px;
+	color:#C4C4C4;
+}
+
+.item-process{
+	float:right;
+	margin-top:2px;
+}
+
+.item a.preview{
+	display:block;
+	float:right;
+	margin-right:8px;
+	height:22px;
+	width:22px;
+	background:url("/static/images/phonoblaster-sprits.png");
+	background-position: -32px -117px;
+}
+
+.item a.preview:hover{
+	background-position: -5px -117px;
+}
+
+.item a.btn{
+	float:right;
+	margin-right:-14px;
+}
+
+.item-wrapper{
+	padding:10px;
+	border-bottom:1px solid #E1E1E1;
+}
+
+.item-wrapper-submitter{
+	width:35px;
+	height:35px;
+	padding-right:10px;
+	overflow:hidden;
+}
+
+.item-wrapper-submitter img{
+	display:block;
+	float:left;
+	height:35px;
+}
+
+.item-wrapper-content{
+	padding-left:10px;
+	width:392px;
+	border-left:1px solid #E1E1E1;
+}
+
+#tabs-wrapper.admin .item-wrapper-content{
+	width:349px;
+}
+
+.item-wrapper-content p{
+	width:100%;
+	font-size:11px;
+	line-height:15px;
+	overflow:hidden;
+}
+
+.item-wrapper-content p a:hover{
+	color:#7F7F7F;
+}
+
+.item-wrapper .item{
+	margin-top:10px;
+	margin-bottom:0px;
+	padding:0px;
+}
+
+.item-wrapper .item-title{
+	width:310px;
+}
+
+#tabs-wrapper.admin .item-wrapper .item-title{
+	width:267px;
+}
+
+.item-wrapper .item-subtitle{
+	width:314px;
+}
+
+#tabs-wrapper.admin .item-wrapper .item-subtitle{
+	width:271px;
 }
 
 /* ------- POPUP SHARE -------*/
@@ -648,11 +970,49 @@ ul#tabs li a.current{
 	width:410px;
 }
 
+/* ------- POPUP SUGGESTION ------- */
+
+#popup-suggestion{
+	width:394px;
+}
+
+#popup-suggestion h2{
+	width:354px;
+}
+
+#popup-suggestion .item, #popup-suggestion textarea, #popup-suggestion h3{
+	margin-top:15px;
+	margin-left:24px;
+}
+
+#popup-suggestion h3{
+	clear:left;
+	padding:0px;
+}
+
+#popup-suggestion textarea{
+	width:347px;
+}
+
+#popup-suggestion .warning{
+	display:none;
+	float:right;
+	padding:7px;
+	text-align:right;
+	color:#C43C35;
+}
+
+#popup-suggestion .modal-footer{
+	width:364px;
+	margin-top:15px;
+}
+
+
 /* -------- CHAT --------- */
 
 #chat{
 	position:fixed;
-	z-index:100000;
+	z-index:2000;
 	bottom:0px;
 	margin-left:580px;
 	width:307px;
@@ -669,6 +1029,7 @@ ul#tabs li a.current{
 	font-size:14px;
 	letter-spacing:0px;
 	cursor:pointer;
+	background:#F1F1F1;
 }
 
 #chat-header span{
@@ -722,7 +1083,6 @@ span#chat-alert{
 }
 
 #chat.opened #chat-header{
-	background:#F1F1F1;
 	border-bottom:1px solid #E1E1E1;
 }
 
@@ -730,7 +1090,7 @@ span#chat-alert{
 
 #chat-content{
 	display:none;
-	height:267px;
+	height:260px;
 	width:100%;
 }
 

@@ -56,7 +56,7 @@
 		<!-- Example -->
 	 	<!-- <img src="/{{tag}}/static/images/smoking.jpg" class="stretch"/> -->
 	</div>
-	<!-- Station column (left)-->
+	<!-- Station column (Left)-->
 	<div id="station-column" class="stretch">
 		<!-- Station Information -->
 		<div id="station-information">
@@ -149,7 +149,7 @@
 			<span class="figure">{{ station_proxy.number_of_suggestions }}</span>
 			<span class="title"> Suggestions</span>
 		</div>
-		<!-- Panel box (upper right) -->
+		<!-- Panel box (Upper right) -->
 		<div id="panel-box">
 			<div id="panel-outer-circle" class="show-panel">
 				<div id="panel-inner-circle" class="show-panel">
@@ -178,54 +178,77 @@
 		</div>
 		<!-- Overlay (left) -->
 		<div id="overlay" class="stretch">
-			<!-- Panel for back office (right) -->
+			<!-- Panel for back office (Right) -->
 			<div id="panel" class="stretch">
-				{% if is_admin %}
-				<!-- Broadcaster tabs header -->
-				<ul id="tabs">
-					<li><a href="#buffer-tab" class="current"></a></li>
-					<li><a href="#suggestions-tab"></a></li>
-					<li><a href="#favorite-tab"></a></li>
-					<li><a href="#library-tab"></a></li>
-				</ul>
-				<!-- Broadcaster tabs content -->
-				<div id="tabs-wrapper" class="admin">
-					<div class="tab" id="buffer-tab">
+				<div id="tabs-wrapper" class="{% if is_admin %}admin{% endif %}">
+					{% if is_admin %}
+					<!-- Broadcaster tabs header -->
+					<ul id="tabs">
+						<li><a href="#buffer-tab" class="current" id="buffer-header"></a></li>
+						<li><a href="#suggestions-tab" id="suggestions-header"></a></li>
+						<li><a href="#favorites-tab" id="favorites-header"></a></li>
+						<li><a href="#library-tab" id="library-header"></a></li>
+						<li><a href="#sets-tab" id="sets-header"></a></li>
+					</ul>
+					{% endif %}
+					<!-- {% if is_admin %}Buffer{% else %}Suggestion{% endif %} tab -->
+					<div class="tab" id="{% if is_admin %}buffer-tab{% else %}suggestions-tab{% endif%}">
 						<div class="tab-header">
 							<a href="#" class="hide-panel">X</a>
+							<!-- Search box -->
+							<div id="search-box">
+								<input type="text" value="{% if is_admin %}Add a track to your selection{% else %}Suggest a track to the broadcaster{% endif %}" id="search" autocomplete="off" class="tuto" data-original-title="Search and {% if is_admin %}add{% else %}suggest{% endif %} tracks from Youtube (soon: Soundcloud)"/>
+								<div id="search-icon"></div>
+								<div id="search-overlay"></div>
+								<div id="search-tab">
+									<div class="tab-content"><!-- Search results --></div>
+								</div>
+							</div>
+							<h4>{% if is_admin %}On air{% else %}Wall{% endif %}</h4>
 						</div>
+						<!-- {% if is_admin %}Buffer{% else %}Suggestion{% endif %} feed -->
 						<div class="tab-content"></div>
 					</div>
+					{% if is_admin %}
+					<!-- Suggestions tab -->
 					<div class="tab" id="suggestions-tab" style="display:none;">
 						<div class="tab-header">
 							<a href="#" class="hide-panel">X</a>
+							<h4>Your listeners suggestions</h4>
 						</div>
-						<div class="tab-content"></div>
+						<!-- Suggestions feed -->
+						<div class="tab-content">
+						</div>
 					</div>
-					<div class="tab" id="favorite-tab" style="display:none;">
+					<!-- Favorites tab -->
+					<div class="tab" id="favorites-tab" style="display:none;">
 						<div class="tab-header">
 							<a href="#" class="hide-panel">X</a>
+							<h4>Your favorite tracks</h4>
 						</div>
+						<!-- Favorites feed -->
 						<div class="tab-content"></div>
 					</div>
+					<!-- Library tab -->
 					<div class="tab" id="library-tab" style="display:none;">
 						<div class="tab-header">
 							<a href="#" class="hide-panel">X</a>
+							<h4>All of your tracks</h4>
 						</div>
+						<!-- Library feed -->
 						<div class="tab-content"></div>
 					</div>
-				</div>
-				{% else %}
-				<!-- Listener tab content -->
-				<div id="tabs-wrapper">
-					<div class="tab" id="suggestions-tab">
+					<!-- Sets tab -->
+					<div class="tab" id="sets-tab" style="display:none;">
 						<div class="tab-header">
 							<a href="#" class="hide-panel">X</a>
+							<h4>Your recorded sets</h4>
 						</div>
+						<!-- Sets feed -->
 						<div class="tab-content"></div>
 					</div>
+					{% endif %}
 				</div>
-				{% endif %}
 			</div>
 		</div> 
 	</div>
@@ -295,6 +318,23 @@
 			</div>
 		</form>
 	</div>
+	<!-- Suggestion popup -->
+	<div class="popup" id="popup-suggestion">
+		<h2>Suggest now!</h2>
+		<div class="item">
+			<div class="item-picture"><!-- No image yet --></div>
+			<div class="item-title">
+				<span class="middle"><!-- No title yet --></span>
+			</div>
+		</div>
+		<h3>If you wanna say something cool, do it below:</h3>
+		<form action="#" method="post">
+			<textarea></textarea>
+			<div class="modal-footer">
+				<input type="submit" class="btn primary" value="Suggest!"/>
+			</div>
+		</form>
+	</div>
 {% endblock %}
 
 {% block footer %}
@@ -313,6 +353,8 @@
 <script type="text/javascript" src="/{{tag}}/static/js/station/session.js"></script>
 <script type="text/javascript" src="/{{tag}}/static/js/station/tab.js"></script>
 <script type="text/javascript" src="/{{tag}}/static/js/station/chat.js"></script>
+<script type="text/javascript" src="/{{tag}}/static/js/station/search.js"></script>
+<script type="text/javascript" src="/{{tag}}/static/js/station/suggestions.js"></script>
 <script type="text/javascript" src="/{{tag}}/static/js/station/main.js"></script>
 <script type="text/javascript">
 	/*--- Reset ---*/

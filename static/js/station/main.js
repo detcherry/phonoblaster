@@ -100,10 +100,10 @@ StationClient.prototype = {
 		
 		PHB.time(function(){
 			//that.queue_manager = new QueueManager(that); // Fetching
-			//that.search_manager = new SearchManager(that); // No Fetching
+			that.search_manager = new SearchManager(that); // No Fetching
 			
 			that.chat_manager = new ChatManager(that); // Fetching
-			//that.suggestion_manager = new SuggestionManager(that); // Lazy Fetching	
+			that.suggestion_manager = new SuggestionManager(that); // Fetching	
 			//that.track_manager = new TrackManager(that); // Lazy fetching
 			//that.favorite_manager = new FavoriteManager(that); // Lazy fetching
 			that.share_manager = new ShareManager(that);

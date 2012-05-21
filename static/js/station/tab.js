@@ -74,7 +74,7 @@ function TabManager(station_client){
 	
 	// UI Settings
 	this.name = null;
-	this.selector = this.name + " .tab-items";
+	this.selector = this.name + " .tab-content";
 }
 
 TabManager.prototype = {
@@ -446,8 +446,8 @@ ScrollTabManager.prototype.UIBuild = function(item){
 	var process_action = "Suggest"
 	var process_info = "Suggest this track to the broadcaster"
 	if(this.station_client.admin){
-		process_action = "Queue"
-		process_info = "Add this track to the queue"
+		process_action = "Add"
+		process_info = "Add this track to your selection"
 	}
 	
 	var div = $("<div/>").addClass("item").attr("id",id)
