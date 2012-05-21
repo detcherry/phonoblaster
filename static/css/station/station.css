@@ -778,22 +778,25 @@ input#search:focus{
 	line-height:15px;
 }
 
-a.item-cross{
-	display:block;
+.item a.item-cross{
+	display:none;
 	float:left;
-	margin-right:-14px;
+	margin-right:-6px;
+	margin-top:-2px;
 	padding:6px;
 	padding-right:4px;
-	padding-top:2px;
+	padding-top:0px;
 	height:12px;
 	width:10px;
-	color:#333333;
-	background:#E1E1E1;
+	color:#7F7F7F;
 }
 
-a.item-cross:hover{
-	color:#F5F5F5;
-	background:#333333;
+.item:hover a.item-cross{
+	display:block;
+}
+
+.item:hover a.item-cross:hover{
+	color:#333;
 	text-decoration:none;
 }
 
@@ -833,7 +836,7 @@ a.item-cross:hover{
 }
 
 .item a.preview{
-	display:block;
+	display:none;
 	float:right;
 	margin-right:8px;
 	height:22px;
@@ -842,13 +845,19 @@ a.item-cross:hover{
 	background-position: -32px -117px;
 }
 
-.item a.preview:hover{
+.item:hover a.preview{
+	display:block;
+}
+
+.item:hover a.preview:hover{
 	background-position: -5px -117px;
 }
 
 .item a.btn{
 	float:right;
 	margin-right:-14px;
+	min-width:70px;
+	text-align:center;
 }
 
 /* ------ ITEM (SEARCH) ------ */
@@ -930,7 +939,7 @@ a.item-cross:hover{
 }
 
 #tracks-tab .item-title{
-	width:317px;
+	width:309px;
 }
 
 #tracks-tab .item-subtitle{
