@@ -230,12 +230,12 @@ TabManager.prototype = {
 		this.UIHide(item.id)
 		
 		var that = this;
-		this.delete(item, function(response){
+		this.delete_item(item, function(response){
 			that.deleteCallback(item, response)
 		});
 	},
 	
-	delete: function(item, callback){
+	delete_item: function(item, callback){
 		var that = this;
 		var delete_url = that.url + "/" + item.id
 		
@@ -792,7 +792,7 @@ RealtimeTabManager.prototype.prePostBuild = function(item){}
 RealtimeTabManager.prototype.postSubmit = function(btn, item){}
 
 // Item to add received from PUBNUB
-RealtimeTabManager.prototype.new = function(content){	
+RealtimeTabManager.prototype.new_from_pubnub = function(content){	
 	this.add(content);
 	
 	// Event callback

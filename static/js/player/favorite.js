@@ -112,7 +112,7 @@ FavoriteSDK.prototype = {
 			var btn = $(this)
 			that.toggle(btn)
 
-			that.delete(item, function(response){
+			that.delete_item(item, function(response){
 				that.deleteCallback(btn, response)
 			})
 
@@ -121,7 +121,7 @@ FavoriteSDK.prototype = {
 		})
 	},
 	
-	delete: function(item, callback){
+	delete_item: function(item, callback){
 		var that = this;
 		var delete_url = that.url + "/" + item.content.track_id
 		
