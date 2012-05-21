@@ -655,12 +655,12 @@ ul#tabs a#favorites-header.current{
 	background-position:-137px -406px;
 }
 
-ul#tabs a#library-header{
+ul#tabs a#tracks-header{
 	background-image:url("/static/images/new-sprits.png");
 	background-position:-34px -444px;
 }
 
-ul#tabs a#library-header.current{
+ul#tabs a#tracks-header.current{
 	background-image:url("/static/images/new-sprits.png");
 	background-position:-2px -444px;
 }

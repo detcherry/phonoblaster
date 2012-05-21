@@ -349,7 +349,7 @@ function ScrollTabManager(station_client){
 ScrollTabManager.prototype.getListen = function(){
 	var that = this;
 	
-	$("#tabs a").click(function(){
+	$("#tabs a").click(function(){		
 		if(that.items.length == 0){
 			that.offset = PHB.now();
 			
@@ -504,13 +504,11 @@ ScrollTabManager.prototype.scrollListen = function(){
 		}
 		
 		if(tab_active){			
-			var above_tab_height = 133;//248-80;
-			var tab_height = $(that.name).height();
 			var scroll_height = $(this).scrollTop();
 			var window_height = $(this).height();
+			var not_scrolled_height = window_height - scroll_height;
 			
-			var below_tab_height = scroll_height + window_height - above_tab_height - tab_height;
-			if(below_tab_height > 100 && !that.load && that.scrolling_on){
+			if(not_scrolled_height < 100 && !that.load && that.scrolling_on){
 				var last_item = that.items[that.items.length -1];
 				that.offset = last_item.created;
 				that.load = true;
