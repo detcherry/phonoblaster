@@ -130,14 +130,14 @@ SessionManager.prototype = {
 	
 	// Session left
 	remove: function(session_gone){
-		this.delete(session_gone);
+		this.delete_item(session_gone);
 		
 		if(this.sessions_counter){
 			this.sessions_counter.setCount(this.sessions.length);
 		}
 	},
 	
-	delete: function(session_gone){
+	delete_item: function(session_gone){
 		// We gonna check first in the duplicate list
 		var that = this;
 		var was_duplicate = false;
