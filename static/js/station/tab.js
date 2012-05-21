@@ -504,11 +504,8 @@ ScrollTabManager.prototype.scrollListen = function(){
 		}
 		
 		if(tab_active){			
-			var scroll_height = $(this).scrollTop();
-			var window_height = $(this).height();
-			var not_scrolled_height = window_height - scroll_height;
-			
-			if(not_scrolled_height < 100 && !that.load && that.scrolling_on){
+			var bottom = $(document).height() - $(this).height() - $(this).scrollTop();			
+			if(bottom < 100 && !that.load && that.scrolling_on){
 				var last_item = that.items[that.items.length -1];
 				that.offset = last_item.created;
 				that.load = true;
