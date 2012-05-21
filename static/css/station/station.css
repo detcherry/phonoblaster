@@ -577,7 +577,7 @@ a#share:hover{
 }
 
 .tab-content{
-	padding-bottom:40px;
+	padding-bottom:50px;
 	width:100%;
 	min-height:700px;
 	border-top:1px solid #E1E1E1;
@@ -744,7 +744,6 @@ input#search:focus{
 /* ---------- ITEMS ----------- */
 
 .item{
-	margin-bottom:15px;
 	padding:10px;
 	background:#FFFFFF;
 }
@@ -852,6 +851,14 @@ a.item-cross:hover{
 	margin-right:-14px;
 }
 
+/* ------ ITEM (SEARCH) ------ */
+
+#search-tab .item{
+	margin-bottom:15px;
+}
+
+/* ------- ITEM WRAPPER (SUGGESTIONS & FAVORITES) ----- */
+
 .item-wrapper{
 	padding:10px;
 	border-bottom:1px solid #E1E1E1;
@@ -876,10 +883,6 @@ a.item-cross:hover{
 	border-left:1px solid #E1E1E1;
 }
 
-#tabs-wrapper.admin .item-wrapper-content{
-	width:349px;
-}
-
 .item-wrapper-content p{
 	width:100%;
 	font-size:11px;
@@ -901,16 +904,37 @@ a.item-cross:hover{
 	width:310px;
 }
 
-#tabs-wrapper.admin .item-wrapper .item-title{
-	width:267px;
-}
-
 .item-wrapper .item-subtitle{
 	width:314px;
 }
 
+/* ------- ITEM WRAPPER (SUGGESTIONS - ADMIN) -------- */
+
+#tabs-wrapper.admin .item-wrapper-content{
+	width:349px;
+}
+
+#tabs-wrapper.admin .item-wrapper .item-title{
+	width:267px;
+}
+
 #tabs-wrapper.admin .item-wrapper .item-subtitle{
 	width:271px;
+}
+
+/* ------ ITEM (TRACKS) ------ */
+
+#tracks-tab .item{
+	height:61px;
+	border-bottom:1px solid #E1E1E1;
+}
+
+#tracks-tab .item-title{
+	width:317px;
+}
+
+#tracks-tab .item-subtitle{
+	width:327px;
 }
 
 /* ------- POPUP SHARE -------*/
