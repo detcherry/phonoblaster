@@ -792,7 +792,7 @@ RealtimeTabManager.prototype.prePostBuild = function(item){}
 RealtimeTabManager.prototype.postSubmit = function(btn, item){}
 
 // Item to add received from PUBNUB
-RealtimeTabManager.prototype.new = function(content){	
+RealtimeTabManager.prototype.new_from_pubnub = function(content){	
 	this.add(content);
 	
 	// Event callback

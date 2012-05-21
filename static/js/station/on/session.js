@@ -53,7 +53,7 @@ SessionManager.prototype = {
 	},
 	
 	// Incoming sessions received from PubNub
-	new: function(new_session){
+	new_from_pubnub: function(new_session){
 		this.add(new_session);
 		
 		// Increment sessions counter

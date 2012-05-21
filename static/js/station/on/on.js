@@ -163,7 +163,7 @@ StationClient.prototype = {
 		}
 		
 		if(event == "new"){
-			manager.new(content);
+			manager.new_from_pubnub(content);
 		}
 		else{
 			manager.remove(content);

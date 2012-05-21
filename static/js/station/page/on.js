@@ -120,7 +120,7 @@ StationClient.prototype.dispatch = function(data){
 	
 	if(manager){
 		if(event == "new"){
-			manager.new(content);
+			manager.new_from_pubnub(content);
 		}
 		else{
 			manager.remove(content);
