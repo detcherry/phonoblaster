@@ -87,7 +87,8 @@ TabManager.prototype = {
 				catch(e){PHB.log(e);}
 			},
 			afterClose: function(){
-				if(VOLUME){
+				//if(VOLUME){
+				if(false){
 					try{ytplayer.unMute();}
 					catch(e){PHB.log(e);}
 				}

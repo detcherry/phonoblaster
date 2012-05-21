@@ -8,8 +8,8 @@
 	- panel: 0
 	- header: 1 000
 	- chat: 2 000
-	- search overlay: 3 000
-	- search input and results: 4 000
+	- search overlay, input and results: 3 000 -> 3001
+	- fancy box: 5000 -> 5004
 
 */
 
@@ -566,9 +566,10 @@ a#share:hover{
 }
 
 .tab-header h4{
-	float:right;
+	float:left;
 	margin-top:-7px;
-	margin-right:14px;
+	margin-left:15px;
+	color:#333;
 	font-weight:normal;
 	font-style:italic;
 	font-family:Futura;
@@ -687,7 +688,7 @@ ul#tabs a#sets-header.current{
 
 input#search{
 	position:absolute;
-	z-index:4000;
+	z-index:3001;
 	display:block;
 	float:left;
 	width:230px;
@@ -723,7 +724,7 @@ input#search:focus{
 #search-tab{
 	display:none;
 	position:absolute;
-	z-index:4000;
+	z-index:3001;
 	margin-top:30px;
 	margin-left:-36px;
 	height:290px;

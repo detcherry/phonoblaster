@@ -195,6 +195,7 @@
 					<div class="tab" id="{% if is_admin %}buffer-tab{% else %}suggestions-tab{% endif%}">
 						<div class="tab-header">
 							<a href="#" class="hide-panel">X</a>
+							<h4>{% if is_admin %}On air{% else %}Wall{% endif %}</h4>
 							<!-- Search box -->
 							<div id="search-box">
 								<input type="text" value="{% if is_admin %}Add a track to your selection{% else %}Suggest a track to the broadcaster{% endif %}" id="search" autocomplete="off" class="tuto" data-original-title="Search and {% if is_admin %}add{% else %}suggest{% endif %} tracks from Youtube (soon: Soundcloud)"/>
@@ -204,7 +205,6 @@
 									<div class="tab-content"><!-- Search results --></div>
 								</div>
 							</div>
-							<h4>{% if is_admin %}On air{% else %}Wall{% endif %}</h4>
 						</div>
 						<!-- {% if is_admin %}Buffer{% else %}Suggestion{% endif %} feed -->
 						<div class="tab-content">
