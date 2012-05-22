@@ -144,17 +144,17 @@
 	BufferHandler.prototype.add_tracks_to_buffer = function(callback){
 		var that = this;
 		tracks = [{
-				'id':this.getShortname()+'.'+(Math.random())+'.buffer.'+(Math.random()),
+				'client_id':this.getShortname()+'.'+(Math.random())+'.buffer.'+(Math.random()),
 				'youtube_id':'Q7lInSt2Xgs',
 				'youtube_title':'1995 - Flava In Ya Ear (Remix)',
 				'youtube_duration':210,
 			},{
-				'id':this.getShortname()+'.'+(Math.random())+'.buffer.'+(Math.random()),
+				'client_id':this.getShortname()+'.'+(Math.random())+'.buffer.'+(Math.random()),
 				'youtube_id':'blWw7bM6TS0',
 				'youtube_title':"1995 - La Suite - Clip (Prod. DJ Lo' / Réalisation : Le Garage)",
 				'youtube_duration':295,
 			},{
-				'id':this.getShortname()+'.'+(Math.random())+'.buffer.'+(Math.random()),
+				'client_id':this.getShortname()+'.'+(Math.random())+'.buffer.'+(Math.random()),
 				'youtube_id':'l0qs_VmTlGY',
 				'youtube_title':"Nekfeu/Alpha Wann (1995) - Dans Ta Réssoi",
 				'youtube_duration':275,
@@ -180,7 +180,7 @@
 		var buffer = this.getBuffer();
 		var that = this;
 		if (buffer.length >0) {
-			track_to_remove_id = buffer[0]['id'];
+			track_to_remove_id = buffer[0]['client_id'];
 			$.ajax({
 				url: "/api/buffer/"+track_to_remove_id,
 				type: "DELETE",

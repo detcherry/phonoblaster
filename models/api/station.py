@@ -230,6 +230,10 @@ Global number of stations: %s
 		return self._buffer_and_timestamp
 
 	def put_buffer(self, new_buffer):
+		logging.info("Putting new buffer")
+		logging.info(len(new_buffer))
+		logging.info(len(self.buffer_and_timestamp['buffer']))
+		logging.info(self.buffer_and_timestamp['timestamp'])
 		station = self.station
 		new_timestamp = self.calculate_new_timestamp(new_buffer)
 
@@ -241,12 +245,13 @@ Global number of stations: %s
 		#Updating memcache
 		memcache.set(self._memcache_station_id, station)
 		memcache.set(self._memcache_station_buffer_id, {'buffer':new_buffer, 'timestamp':new_timestamp} )
+		logging.info("Finished putting new buffer")
 
 	def get_buffer_duration(self):
 		"""
 			Returns the length in seconds of the buffer.
 		"""
-		buffer = self.buffer_and_timestamp['buffer']
+		buffer = self.buffer_and_timestamp['buffer'][::] # Copy the array
 		buffer_duration = 0
 		if buffer:
 			buffer_duration = sum([t['youtube_duration'] for t in buffer])
@@ -259,7 +264,7 @@ Global number of stations: %s
 				- (index_curent_track, {'track_id':track id in datastore, 'client_id':id_of_track_in_buffer ,'youtube_id':youtube_id, 'youtube_title':youtube_title, 'youtube_duration':youtube_duration}, now_time_in_track, now_time_in_buffer)
 		"""
 		buffer_and_timestamp = self.buffer_and_timestamp
-		buffer = buffer_and_timestamp['buffer']
+		buffer = buffer_and_timestamp['buffer'][::] # Copy the array
 		timestamp = buffer_and_timestamp['timestamp']
 
 		now = datetime.utcnow()
@@ -284,13 +289,19 @@ Global number of stations: %s
 		"""
 			Calculating new timestamp.
 		"""
+		logging.info('Calculating new timestamp')
+		logging.info(len(new_buffer))
+		logging.info(len(self.buffer_and_timestamp['buffer']))
+
 		now = datetime.utcnow()
 		current_track_infos = self.get_current_track()
 		current_track = current_track_infos[1]
 		now_time_in_current_track = current_track_infos[2]
 		duration_before_current_track = 0
+		logging.info(current_track['client_id'])
 
 		for i in xrange(len(new_buffer)):
+			logging.info(duration_before_current_track)
 			track = new_buffer[i]
 			if current_track['client_id'] != track['client_id']:
 				duration_before_current_track += track['youtube_duration']
@@ -299,13 +310,17 @@ Global number of stations: %s
 
 		#Setting new timestamp
 		new_timestamp = now-timedelta(0,duration_before_current_track + now_time_in_current_track)
+		logging.info(new_timestamp)
+		logging.info('Finished calculating new timestamp')
 
 		return new_timestamp
 
 
 	def add_tracks_to_buffer(self,youtube_tracks):
 		current_index = self.get_current_track()[0]
-		buffer = self.buffer_and_timestamp['buffer']
+		buffer = self.buffer_and_timestamp['buffer'][::]  # Copy the array
+		logging.info('Adding tracks')
+		logging.info(len(buffer))
 		room = self.room_in_buffer()
 		track_to_add = youtube_tracks[:room]
 		rejected_tracks = youtube_tracks[room:]
@@ -315,20 +330,21 @@ Global number of stations: %s
 			#Nothing on the buffer
 			current_index = 0
 
+		logging.info(current_index)
 		for i in xrange(0,len(track_to_add)):
-			logging.info(track_to_add[i])
 			track = Track.get_or_insert_by_youtube_id(track_to_add[i], self.station)
 			buffer.insert(
 				current_index,
 				{
 					'track_id': track.key().id(),
-					'client_id': track_to_add[i]['id'], 
+					'client_id': track_to_add[i]['client_id'], 
 					'youtube_id': track_to_add[i]['youtube_id'], 
 					'youtube_title': track_to_add[i]['youtube_title'],
 					'youtube_duration': track_to_add[i]['youtube_duration']
 				}
 			)
-
+		logging.info('Tracks added')
+		logging.info(len(self.buffer_and_timestamp['buffer']))
 		#Saving data
 		self.put_buffer(buffer)
 		return track_to_add, rejected_tracks
@@ -343,13 +359,13 @@ Global number of stations: %s
 			If client_id is OK but represents the track that is being played : (False, client_id)
 
 		"""
-		buffer = self.buffer_and_timestamp['buffer']
+		buffer = self.buffer_and_timestamp['buffer'][::] # Copy the array
 		index_track_to_find = None
 
 		# Retrieving index corresponding to id
 		for i in xrange(0,len(buffer)):
 			track = buffer[i]
-			if track['id'] == client_id:
+			if track['client_id'] == client_id:
 				index_track_to_find = i
 				break
 

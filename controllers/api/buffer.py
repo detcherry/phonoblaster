@@ -103,24 +103,24 @@ class ApiBufferDeleteHandler(BaseHandler):
 				else:
 					response = {'response':False, 'message':"Track with id = "+key_name+" not found."}
 
+			if notify_listeners:
+				# Add a taskqueue to warn everyone
+				data = {
+					"entity": "buffer",
+					"event": "remove",
+					"content": key_name,
+				}
+
+				task = Task(
+					url = "/taskqueue/multicast",
+					params = {
+						"station": config.VERSION + "-" + shortname,
+						"data": json.dumps(data)
+					}
+				)
+				task.add(queue_name="buffer-queue")
 		else:
 			response = {'response':False, 'message':"Station with shortname = "+shortname+" not found."}
 
-		if notify_listeners:
-			# Add a taskqueue to warn everyone
-			data = {
-				"entity": "buffer",
-				"event": "remove",
-				"content": key_name,
-			}
-
-			task = Task(
-				url = "/taskqueue/multicast",
-				params = {
-					"station": config.VERSION + "-" + shortname,
-					"data": json.dumps(data)
-				}
-			)
-			task.add(queue_name="buffer-queue")
 
 		self.response.out.write(json.dumps(response))
