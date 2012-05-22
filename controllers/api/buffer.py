@@ -90,7 +90,7 @@ class ApiBufferDeleteHandler(BaseHandler):
 					# The current track is the one beeing deleted, need to start a task and delete the track after the end of the track
 					current_track = station_proxy.get_current_track()
 					countdown = current_track[1]["youtube_duration"] - current_track[2]
-					response = {'response':False, 'message':"Track with id = "+key_name+" will be deleted in : "+str(countdown)+" s, because it is currenlty playing."}
+					response = {'response':True, 'message':"Track with id = "+key_name+" will be deleted in : "+str(countdown)+" s, because it is currenlty playing."}
 					task = Task(
 						url = "/taskqueue/buffer/delete",
 						params = {

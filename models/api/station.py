@@ -397,7 +397,6 @@ Global number of stations: %s
 		buffer = self.buffer_and_timestamp['buffer'][::] ## Copy the array
 		doChange = False
 		taskqueue = False
-		logging.info((len(buffer),old_index, new_index))
 		if old_index>=0 and new_index>=0 and new_index<len(buffer) and old_index < len(buffer):
 			current_track_infos = self.get_current_track()
 
@@ -418,9 +417,6 @@ Global number of stations: %s
 		else:
 			logging.info("In StationApi.move_tack_in_buffer, One of the index is not in the range [0,"+str(len(buffer))+"[")
 			pass
-
-
-		logging.info((doChange, taskqueue))
 
 		return doChange, taskqueue
 

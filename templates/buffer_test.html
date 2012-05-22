@@ -170,7 +170,7 @@
 		$.ajax({
 			url: "/api/buffer/",
 			type: "POST",
-			data: {'shortname':this.getShortname(),'tracks' :JSON.stringify( tracks)},
+			data: {'shortname':this.getShortname(),'tracks' :JSON.stringify(tracks)},
 			dataType: "json",
 			timeout: 60000,
 			error: function(xhr, status, error){
