@@ -20,6 +20,7 @@ from controllers.api.queue import ApiQueueHandler
 from controllers.api.queue import ApiQueueDeleteHandler
 from controllers.api.buffer import ApiBufferHandler
 from controllers.api.buffer import ApiBufferDeleteHandler
+from controllers.api.buffer import ApiBufferChangeHandler
 from controllers.api.suggestions import ApiSuggestionsHandler
 from controllers.api.favorites import ApiFavoritesHandler
 from controllers.api.favorites import ApiFavoritesDeleteHandler
@@ -40,6 +41,7 @@ application = webapp.WSGIApplication(
 	[
 		('/api/buffer/',ApiBufferHandler),
 		('/api/buffer/([\w.]+)', ApiBufferDeleteHandler),
+		('/api/buffer/change/',ApiBufferChangeHandler),
 		('/api/queue', ApiQueueHandler),
 		('/api/queue/([\w.]+)', ApiQueueDeleteHandler),
 		('/api/suggestions', ApiSuggestionsHandler),

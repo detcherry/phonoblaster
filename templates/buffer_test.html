@@ -22,6 +22,9 @@
 <p id="remove" class="btn">Remove First Track from buffer</p>
 <br/>
 <br/>
+<p id="change" class="btn">Change position between first track and last track</p>
+<br/>
+<br/>
 {% endblock %}
 
 {% block script %}
@@ -34,6 +37,9 @@
 		});
 		$("#remove").click(function(){
 			buffer.remove_first_track_from_buffer();
+		});
+		$("#change").click(function(){
+			buffer.change_tracks_position();
 		});
 
 		window.setInterval(function(){
@@ -185,6 +191,29 @@
 				url: "/api/buffer/"+track_to_remove_id,
 				type: "DELETE",
 				data: {},
+				dataType: "json",
+				timeout: 60000,
+				error: function(xhr, status, error){
+					PHB.log(error);
+				},
+				success: function(json){
+					PHB.log(json);
+				},
+			});
+		};
+	};
+
+	BufferHandler.prototype.change_tracks_position = function(){
+		var buffer = this.getBuffer();
+		var that = this;
+		if (buffer.length >2) {
+			old_index = 0;
+			new_index = buffer.length-1;
+
+			$.ajax({
+				url: "/api/buffer/change/",
+				type: "POST",
+				data: {'shortname':that.getShortname(), 'old_index' :old_index, 'new_index': new_index},
 				dataType: "json",
 				timeout: 60000,
 				error: function(xhr, status, error){

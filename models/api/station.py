@@ -395,24 +395,34 @@ Global number of stations: %s
 			Otherwise return (False, False)
 		"""
 		buffer = self.buffer_and_timestamp['buffer'][::] ## Copy the array
-		if(old_index>=0 and new_index>=0 and new_index<len(buffer) and old_index < len(buffer)):
-			doChange = True
-			taskqueue = False
+		doChange = False
+		taskqueue = False
+		logging.info((len(buffer),old_index, new_index))
+		if old_index>=0 and new_index>=0 and new_index<len(buffer) and old_index < len(buffer):
 			current_track_infos = self.get_current_track()
-			if(current_track_infos[0] == old_index or current_track_infos[0] == new_index):
-				#The current track is being moved, need to start task_queue
-				doChange = False
-				taskqueue = True
+
+			if(current_track_infos[0] is not None):
+				if(current_track_infos[0] == old_index or current_track_infos[0] == new_index):
+					#The current track is being moved, need to start task_queue
+					doChange = False
+					taskqueue = True
+				else:
+					doChange = True
+					taskqueue = False
 
 			if doChange:
 				buffer.insert(new_index, buffer.pop(old_index))
 				# Saving data
 				self.put_buffer(buffer)
-				
-			return doChange, taskqueue
-		else:
-			return False, False
 
+		else:
+			logging.info("In StationApi.move_tack_in_buffer, One of the index is not in the range [0,"+str(len(buffer))+"[")
+			pass
+
+
+		logging.info((doChange, taskqueue))
+
+		return doChange, taskqueue
 
 	# Returns the room in the queue
 	def room_in_buffer(self):
