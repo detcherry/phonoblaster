@@ -108,8 +108,7 @@ StationClient.prototype = {
 			that.favorite_manager = new FavoriteManager(that); // Lazy fetching
 			that.share_manager = new ShareManager(that);
 			
-			//that.favorite_sdk = new FavoriteSDK(that.queue_manager)
-			
+			//that.favorite_sdk = new FavoriteSDK(that.queue_manager)	
 		})
 	},
 	
