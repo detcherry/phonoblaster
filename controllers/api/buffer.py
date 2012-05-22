@@ -38,13 +38,13 @@ class ApiBufferHandler(BaseHandler):
 		station_proxy = StationApi(shortname)
 
 		if(station_proxy.station):
-			station_proxy.add_tracks_to_buffer(youtube_tracks)
+			added_tracks, rejected_tracks = station_proxy.add_tracks_to_buffer(youtube_tracks)
 
 			# Add a taskqueue to warn everyone
 			data = {
 				"entity": "buffer",
 				"event": "add",
-				"content": youtube_tracks,
+				"content": added_tracks,
 			}
 
 			task = Task(
@@ -56,7 +56,7 @@ class ApiBufferHandler(BaseHandler):
 			)
 			task.add(queue_name="buffer-queue")
 
-			self.response.out.write(json.dumps({'response':True, 'message': 'Tracks added to buffer and listeners notified.'}))
+			self.response.out.write(json.dumps({'response':True, 'message': 'Tracks added to buffer, in the limits of the buffer. Listeners were notified.', 'rejected_tracks': rejected_tracks}))
 
 		else:
 			self.error(404)

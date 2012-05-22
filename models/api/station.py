@@ -256,7 +256,7 @@ Global number of stations: %s
 	def get_current_track(self):
 		"""
 			Returns :
-				- (index_curent_track, {'id':id_of_track_in_buffer ,'youtube_id':youtube_id, 'youtube_title':youtube_title, 'youtube_duration':youtube_duration}, now_time_in_track, now_time_in_buffer)
+				- (index_curent_track, {'track_id':track id in datastore, 'client_id':id_of_track_in_buffer ,'youtube_id':youtube_id, 'youtube_title':youtube_title, 'youtube_duration':youtube_duration}, now_time_in_track, now_time_in_buffer)
 		"""
 		buffer_and_timestamp = self.buffer_and_timestamp
 		buffer = buffer_and_timestamp['buffer']
@@ -292,7 +292,7 @@ Global number of stations: %s
 
 		for i in xrange(len(new_buffer)):
 			track = new_buffer[i]
-			if current_track['id'] != track['id']:
+			if current_track['client_id'] != track['client_id']:
 				duration_before_current_track += track['youtube_duration']
 			else:
 				break
@@ -306,36 +306,41 @@ Global number of stations: %s
 	def add_tracks_to_buffer(self,youtube_tracks):
 		current_index = self.get_current_track()[0]
 		buffer = self.buffer_and_timestamp['buffer']
+		room = self.room_in_buffer()
+		track_to_add = youtube_tracks[:room]
+		rejected_tracks = youtube_tracks[room:]
+
 
 		if not current_index:
 			#Nothing on the buffer
 			current_index = 0
 
-		for i in xrange(0,len(youtube_tracks)):
-			logging.info(youtube_tracks[i])
-			track = Track.get_or_insert_by_youtube_id(youtube_tracks[i], self.station)
+		for i in xrange(0,len(track_to_add)):
+			logging.info(track_to_add[i])
+			track = Track.get_or_insert_by_youtube_id(track_to_add[i], self.station)
 			buffer.insert(
 				current_index,
 				{
 					'track_id': track.key().id(),
-					'client_id': youtube_tracks[i]['id'], 
-					'youtube_id': youtube_tracks[i]['youtube_id'], 
-					'youtube_title': youtube_tracks[i]['youtube_title'],
-					'youtube_duration': youtube_tracks[i]['youtube_duration']
+					'client_id': track_to_add[i]['id'], 
+					'youtube_id': track_to_add[i]['youtube_id'], 
+					'youtube_title': track_to_add[i]['youtube_title'],
+					'youtube_duration': track_to_add[i]['youtube_duration']
 				}
 			)
 
 		#Saving data
 		self.put_buffer(buffer)
+		return track_to_add, rejected_tracks
 
-	def remove_track_from_buffer(self,track_in_buffer_id):
+	def remove_track_from_buffer(self,client_id):
 		"""
-			track_in_buffer_id is the id of the track in the buffer that has to be removed. This methods returns a tuple, the first argument i a boolean,
+			client_id is the id of the track in the buffer that has to be removed. This methods returns a tuple, the first argument i a boolean,
 			it tells if the remove was successfull, the second argument is an integer or None.
 
-			If the remove was successfull : (True, track_in_buffer_id).
-			If track_in_buffer_id does not correspond to anny track, this method returns (False, None).
-			If track_in_buffer_id is OK but represents the track that is being played : (False, track_in_buffer_id)
+			If the remove was successfull : (True, client_id).
+			If client_id does not correspond to anny track, this method returns (False, None).
+			If client_id is OK but represents the track that is being played : (False, client_id)
 
 		"""
 		buffer = self.buffer_and_timestamp['buffer']
@@ -344,7 +349,7 @@ Global number of stations: %s
 		# Retrieving index corresponding to id
 		for i in xrange(0,len(buffer)):
 			track = buffer[i]
-			if track['id'] == track_in_buffer_id:
+			if track['id'] == client_id:
 				index_track_to_find = i
 				break
 
@@ -357,10 +362,10 @@ Global number of stations: %s
 
 				# Saving data
 				self.put_buffer(buffer)
-				return (True, track_in_buffer_id)
+				return (True, client_id)
 			else:
 				# index retrived and corresponding to the currently plyayed track
-				return (False, track_in_buffer_id)
+				return (False, client_id)
 		else:
 			# index not retrieved, the id is not valid
 			return (False, None)
@@ -377,6 +382,9 @@ Global number of stations: %s
 			# Saving data
 			self.put_buffer(buffer)
 
+	# Returns the room in the queue
+	def room_in_buffer(self):
+		return(30 - len(self.buffer_and_timestamp['buffer']))
 
 	########################################################################################################################################
 	#													END BUFFER
