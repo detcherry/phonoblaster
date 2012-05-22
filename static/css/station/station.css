@@ -68,7 +68,7 @@ body{
 
 #station-column{
 	float:left;
-	position:relative;
+	position:absolute;
 	z-index:0;
 	padding:20px;
 	width:400px;
