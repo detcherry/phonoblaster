@@ -329,6 +329,35 @@ a.unfav{
 	width:100%;
 }
 
+#sessions .stat a{
+	float:right;
+	display:inline-block;
+	margin-bottom:-6px;
+	margin-left:10px;
+	height:21px;
+	width:70px;
+}
+
+a#fb-share{
+	background-image:url("/static/images/new-sprits.png");
+	background-position:-2px -489px;
+}
+
+a#fb-share:hover{
+	background-image:url("/static/images/new-sprits.png");
+	background-position:-2px -517px;	
+}
+
+a#tw-share{
+	background-image:url("/static/images/new-sprits.png");
+	background-position:-79px -489px;
+}
+
+a#tw-share:hover{
+	background-image:url("/static/images/new-sprits.png");
+	background-position:-79px -517px;
+}
+
 #listeners{
 	width:100%;
 }
@@ -345,19 +374,6 @@ a.listener img{
 	float:left;
 	height:35px;
 	width:35px;
-}
-
-a#share{
-	float:left;
-	margin-top:10px;
-	margin-bottom:10px;
-	padding:8px;
-	padding-bottom:6px;
-	background:rgba(255,255,255,0.8);
-}
-
-a#share:hover{
-	background:rgba(0,0,0,0.8);
 }
 
 /* ------- OVERLAY -------- */

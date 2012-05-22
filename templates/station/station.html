@@ -114,7 +114,9 @@
 		<div id="sessions">
 			<div class="stat">
 				<span class="figure">0</span>
-				<span class="title">Listeners<span>
+				<span class="title">Listeners</span>
+				<a id="tw-share" class="tuto" data-original-title="Share {% if is_admin %}your{% else%}this{% endif %} station on Twitter!"></a>
+				<a id="fb-share" class="tuto" data-original-title="Share {% if is_admin %}your{% else%}this{% endif %} station on Facebook!"></a>
 			</div>
 			<div id="listeners">
 				<!-- Example -->
@@ -124,15 +126,6 @@
 					</a>
 				-->
 			</div>
-			{% if is_admin %}
-			<a id="share" class="btn primary" href="#" class="tuto" data-original-title="Share your station on Facebook!">
-				Bring your fans!
-			</a>
-			{% else %}
-			<a id="share" class="btn primary" href="#" class="tuto" data-original-title="Share this station on Facebook!">
-				Bring your friends!
-			</a>
-			{% endif %}
 		</div>
 		<!-- Broadcasts counter -->
 		<div id="broadcasts" class="stat">
