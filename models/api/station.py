@@ -231,8 +231,7 @@ Global number of stations: %s
 
 	def put_buffer(self, new_buffer):
 		station = self.station
-		old_timestamp = station.timestamp
-		new_timestamp = self.get_new_timestamp(new_buffer, old_timestamp)
+		new_timestamp = self.calculate_new_timestamp(new_buffer)
 
 		#Putting data in datastore
 		station.timestamp = new_timestamp
@@ -241,7 +240,7 @@ Global number of stations: %s
 
 		#Updating memcache
 		memcache.set(self._memcache_station_id, station)
-		memcache.set(self._memcache_station_buffer_id, {'buffer':new_buffer, 'timestamp':station.timestamp} )
+		memcache.set(self._memcache_station_buffer_id, {'buffer':new_buffer, 'timestamp':new_timestamp} )
 
 	def get_buffer_duration(self):
 		"""
@@ -281,10 +280,9 @@ Global number of stations: %s
 				#Current track found, return its position in buffer and the corresponding track
 				return i, track, now_broadcast_time - current_duration + track['youtube_duration'], now_broadcast_time
 
-	def get_new_timestamp(self, new_buffer, old_timestamp):
+	def calculate_new_timestamp(self, new_buffer):
 		"""
-			Calculating new timestamp with this formula:
-				new_timestamp = old_timestamp + sum(all track_duration before index_curent_track)
+			Calculating new timestamp.
 		"""
 		now = datetime.utcnow()
 		current_track_infos = self.get_current_track()
@@ -300,7 +298,7 @@ Global number of stations: %s
 				break
 
 		#Setting new timestamp
-		new_timestamp = datetime.utcnow()-timedelta(0,duration_before_current_track + now_time_in_current_track)
+		new_timestamp = now-timedelta(0,duration_before_current_track + now_time_in_current_track)
 
 		return new_timestamp
 
@@ -319,7 +317,8 @@ Global number of stations: %s
 			buffer.insert(
 				current_index,
 				{
-					'id': youtube_tracks[i]['id'], 
+					'track_id': track.key().id(),
+					'client_id': youtube_tracks[i]['id'], 
 					'youtube_id': youtube_tracks[i]['youtube_id'], 
 					'youtube_title': youtube_tracks[i]['youtube_title'],
 					'youtube_duration': youtube_tracks[i]['youtube_duration']

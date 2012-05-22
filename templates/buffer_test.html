@@ -36,6 +36,10 @@
 			buffer.remove_first_track_from_buffer();
 		});
 
+		window.setInterval(function(){
+			buffer.displayNowTime();
+		}, 1000);
+
 	});
 
 	function BufferHandler (station_shortname){
@@ -98,7 +102,6 @@
 	};
 
 	BufferHandler.prototype.refresh = function(){
-		var current_track_info = this.getCurrentTrack();
 		var tracks = $('<ol style="float:none;">');
 		for (var i = 0; i < this.getBuffer().length; i++) {
 			track = this.getBuffer()[i]
@@ -108,8 +111,15 @@
 
 		$('#timestamp').text("Timestamp : "+this.getTimestamp());
 		$('#duration').text("Buffer duration : "+this.getDuration());
-		$('#now').text("Now Playing : "+current_track_info[1]['youtube_title']+" at "+current_track_info[2]+" s. Seconds in buffer : "+current_track_info[3]);
+		
 	};
+
+	BufferHandler.prototype.displayNowTime = function(){
+		var current_track_info = this.getCurrentTrack();
+		if(current_track_info[0] !== undefined){
+			$('#now').text("Now Playing : "+current_track_info[1]['youtube_title']+" at "+current_track_info[2]+" s. Seconds in buffer : "+current_track_info[3]);
+		};
+	}
 
 	BufferHandler.prototype.get_buffer_and_timestamp = function(callback){
 		var that = this;
@@ -120,7 +130,7 @@
 			dataType: "json",
 			timeout: 60000,
 			error: function(xhr, status, error){
-				that.log(error);
+				PHB.log(error);
 			},
 			success: function(json){
 				PHB.log(json);
@@ -152,7 +162,7 @@
 		];
 
 		$.ajax({
-			url: "/api/buffer/"+that.getShortname(),
+			url: "/api/buffer/",
 			type: "POST",
 			data: {'shortname':this.getShortname(),'tracks' :JSON.stringify( tracks)},
 			dataType: "json",

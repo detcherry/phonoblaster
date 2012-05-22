@@ -20,3 +20,6 @@ queue:
 - name: upgrade-queue
   rate: 500/s
   bucket_size: 100
+- name: buffer-queue
+  rate: 500/s
+  bucket_size: 100
