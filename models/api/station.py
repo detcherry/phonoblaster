@@ -389,14 +389,30 @@ Global number of stations: %s
 
 	def move_tack_in_buffer(self,old_index, new_index):
 		"""
-			Moving track from position old_index to position new_index
+			Moving track from position old_index to position new_index.
+			If everything went well : retrun (True,False)
+			If the current track corresponds to a track which position has to change : return (False, True)
+			Otherwise return (False, False)
 		"""
-		buffer = self._buffer_and_timestamp['buffer']
+		buffer = self.buffer_and_timestamp['buffer'][::] ## Copy the array
 		if(old_index>=0 and new_index>=0 and new_index<len(buffer) and old_index < len(buffer)):
-			buffer.insert(new_index, buffer.pop(old_index))
+			doChange = True
+			taskqueue = False
+			current_track_infos = self.get_current_track()
+			if(current_track_infos[0] == old_index or current_track_infos[0] == new_index):
+				#The current track is being moved, need to start task_queue
+				doChange = False
+				taskqueue = True
 
-			# Saving data
-			self.put_buffer(buffer)
+			if doChange:
+				buffer.insert(new_index, buffer.pop(old_index))
+				# Saving data
+				self.put_buffer(buffer)
+				
+			return doChange, taskqueue
+		else:
+			return False, False
+
 
 	# Returns the room in the queue
 	def room_in_buffer(self):
