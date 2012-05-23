@@ -230,10 +230,6 @@ Global number of stations: %s
 		return self._buffer_and_timestamp
 
 	def put_buffer(self, new_buffer):
-		logging.info("Putting new buffer")
-		logging.info(len(new_buffer))
-		logging.info(len(self.buffer_and_timestamp['buffer']))
-		logging.info(self.buffer_and_timestamp['timestamp'])
 		station = self.station
 		new_timestamp = self.calculate_new_timestamp(new_buffer)
 
@@ -245,7 +241,21 @@ Global number of stations: %s
 		#Updating memcache
 		memcache.set(self._memcache_station_id, station)
 		memcache.set(self._memcache_station_buffer_id, {'buffer':new_buffer, 'timestamp':new_timestamp} )
-		logging.info("Finished putting new buffer")
+
+	def reset_buffer(self):
+		buffer = self.buffer_and_timestamp['buffer'][::] # Copy the array
+		current_track_infos = self.get_current_track()
+		i = current_track_infos[0]
+
+		if i is not None:
+			new_buffer = buffer[:i]
+			new_buffer.extended[i:]
+			put_buffer(new_buffer)
+			return True
+		else:
+			return False
+
+
 
 	def get_buffer_duration(self):
 		"""

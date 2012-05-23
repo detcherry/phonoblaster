@@ -72,120 +72,47 @@ class ApiBufferDeleteHandler(BaseHandler):
 		response = {}
 
 		if(station_proxy.station):
-			notify_listeners = False # We'll need to tell everyone if there is a change, but not in every case
-			countdown = 0
+			# Resetting buffer
+			station_proxy.reset_buffer()
 
-			if len(station_proxy.buffer_and_timestamp['buffer']) == 1:
-				# Only one track left in the buffer
-				response = {'response':False, 'message': 'You cannot delete this track because it is the last one in the buffer and a buffer cannot be empty.'}
-			else:
-				# More than one track left in the buffer
-				result = station_proxy.remove_track_from_buffer(key_name)
+			buffer = station_proxy.buffer_and_timestamp['buffer'][::]
+			
+			if len(buffer) < 2:
+				response = {'response': False, 'error':0, 'message': 'A buffer cannot be empty.'}
+			else :
+				# Deleting track
+				deletion_result, client_id = station_proxy.remove_track_from_buffer(key_name)
 
-				if result[0] :
-					response = {'response':True, 'message':"Track with id = "+key_name+" deleted successfully!."}
-					notify_listeners = True
-
-				elif result[1]:
-					# The current track is the one beeing deleted, need to start a task and delete the track after the end of the track
-					current_track = station_proxy.get_current_track()
-					countdown = current_track[1]["youtube_duration"] - current_track[2]
-					response = {'response':True, 'message':"Track with id = "+key_name+" will be deleted in : "+str(countdown)+" s, because it is currenlty playing."}
-					task = Task(
-						url = "/taskqueue/buffer/delete",
-						params = {
-							"station": shortname,
-							"id": key_name,
-						},
-						countdown = countdown,
-					)
-					task.add(queue_name="worker-queue")
-					notify_listeners = True
+				if not deletion_result:
+					# The deletion was not successful
+					
+					if client_id:
+						# Track client id corresponds to the currently played track
+						response = {'response': False, 'error':1, 'message': 'You cannot delete the currently played track.'}
+					else:
+						# Track client id does not appear in the buffer
+						response = {'response': False, 'error':2, 'message': 'Track with id : '+key_name+' not found!'}
 				else:
-					response = {'response':False, 'message':"Track with id = "+key_name+" not found."}
+					# Deletion OK
+					response = {'response': True, 'message': 'Deletion of track successful'}
 
-			if notify_listeners:
-				# Add a taskqueue to warn everyone
-				data = {
-					"entity": "buffer",
-					"event": "remove",
-					"content": key_name,
-				}
+					# Add a taskqueue to warn everyone
+					data = {
+						"entity": "buffer",
+						"event": "remove",
+						"content": key_name,
+					}
 
-				task = Task(
-					url = "/taskqueue/multicast",
-					params = {
-						"station": config.VERSION + "-" + shortname,
-						"data": json.dumps(data)
-					},
-					countdown = countdown,
-				)
-				task.add(queue_name="buffer-queue")
+					task = Task(
+						url = "/taskqueue/multicast",
+						params = {
+							"station": config.VERSION + "-" + shortname,
+							"data": json.dumps(data),
+							"server_time": station_proxy.station.updated
+						},
+					)
+					task.add(queue_name="buffer-queue")
 		else:
-			response = {'response':False, 'message':"Station with shortname = "+shortname+" not found."}
-
+			response = {'response':False, error:'-1', 'message': 'Station with shortname : '+shortname+' not found.'}
 
 		self.response.out.write(json.dumps(response))
-
-class ApiBufferChangeHandler(BaseHandler):
-	@login_required
-	def post(self):
-		shortname = self.request.get("shortname")
-		old_index = int(self.request.get("old_index"))
-		new_index = int(self.request.get("new_index"))
-
-		logging.info("Change : "+str(old_index)+" to "+str(new_index))
-
-		station_proxy = StationApi(shortname)
-		response = {}
-		notify_listeners = True
-		countdown = 0
-
-		if station_proxy:
-			result = station_proxy.move_tack_in_buffer(old_index, new_index)
-
-			if result == (True, False):
-				response = {'response':True, 'delay':False, 'message': 'Change done successfully!'}
-
-			elif result == (False, True):
-				current_track = station_proxy.get_current_track()
-				countdown = current_track[1]["youtube_duration"] - current_track[2]
-				response = {'response':False, 'delay':True, 'message': 'Change will be done in :'+str(countdown)}
-
-				task = Task(
-					url = "/taskqueue/buffer/change",
-					params = {
-						"station": shortname,
-						"old_index":old_index,
-						"new_index": new_index,
-					},
-					countdown = countdown-1,
-				)
-				task.add(queue_name="worker-queue")
-
-			else:
-				response = {'response':False, 'delay':False, 'message': 'An error occured during position change'}
-				notify_listeners = False
-
-
-			if notify_listeners:
-				# Add a taskqueue to warn everyone
-				data = {
-					"entity": "buffer",
-					"event": "change",
-					"content": {'old_index':old_index, 'new_index': new_index},
-				}
-
-				task = Task(
-					url = "/taskqueue/multicast",
-					params = {
-						"station": config.VERSION + "-" + shortname,
-						"data": json.dumps(data)
-					},
-					countdown = countdown-1,
-				)
-				task.add(queue_name="buffer-queue")
-
-			self.response.out.write(json.dumps(response))
-		else:
-			self.error(404)
