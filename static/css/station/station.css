@@ -537,7 +537,6 @@ a.listener img{
 	padding:20px;
 	padding-bottom:0px;
 	width:499px;
-	min-height:700px;
 	color:black;
 	background:#F1F1F1;
 	border-right:1px solid #E1E1E1;
@@ -547,7 +546,6 @@ a.listener img{
 	width:468px;
 	padding:15px;
 	padding-bottom:0px;
-	min-height:700px;
 	background:white;
 	border:1px solid #E1E1E1;
 }
@@ -595,7 +593,7 @@ a.listener img{
 .tab-content{
 	padding-bottom:50px;
 	width:100%;
-	min-height:700px;
+	min-height:1000px;
 	border-top:1px solid #E1E1E1;
 }
 
