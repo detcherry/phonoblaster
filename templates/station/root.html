@@ -3,7 +3,6 @@
 {% block meta %}
 	<title>{{ station_proxy.station.name }}</title>
 	<meta name="description" content="Listen now to {{ station_proxy.station.name }} station on Phonoblaster.">
-	 
 {% endblock %}
 
 {% block facebook %}
@@ -31,7 +30,6 @@
 			<a href="/{{ station_proxy.station.shortname }}"><h1>{{ station_proxy.station.name }}</h1></a>
 		</div>
 		<div class="fb-like" data-href="{{ station_proxy.station.link }}" data-send="false" data-layout="button_count"  data-show-faces="false"></div>
-		<!-- <div class="stroke black"></div> -->
 		<div id="top-left-figures">
 			<div id="top-left-broadcasts" class="stat">
 				<span class="figure">{{ station_proxy.number_of_broadcasts }}</span>
@@ -46,9 +44,6 @@
 				<span class="title"> Suggestions</span>
 			</div>
 		</div>
-		<!-- 
-
-		-->
 	</div>
 {% endblock %}
 
@@ -57,13 +52,13 @@
 		<div id="top-right-status" class="on"><a href="/{{ station_proxy.station.shortname }}">on air</a></div>
 		{% else %}
 		<div id="top-right-status" class="off"><a href="/{{ station_proxy.station.shortname }}">off air</a></div>
-		{% endif %}
+	{% endif %}
 
-		<div id="top-right-page" class="tuto" data-original-title="{{ station_proxy.station.name }} Facebook Page">
-			<a href="{{ station_proxy.station.link }}" target="_blank" >
-				<img src="/{{tag}}/static/images/fb_page_button.png">
-			</a>
-		</div>
+	<div id="top-right-page" class="tuto" data-original-title="{{ station_proxy.station.name }} Facebook Page">
+		<a href="{{ station_proxy.station.link }}" target="_blank" >
+			<img src="/{{tag}}/static/images/fb_page_button.png">
+		</a>
+	</div>
 {% endblock %}
 
 {% block main-left %}

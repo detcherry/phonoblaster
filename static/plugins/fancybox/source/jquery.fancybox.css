@@ -9,7 +9,7 @@
 	position: absolute;
 	top: 0;
 	left: 0;
-	z-index: 1002;
+	z-index: 5001;
 }
 
 .fancybox-outer {
@@ -24,7 +24,7 @@
 }
 
 .fancybox-opened {
-	z-index: 1003;	
+	z-index: 5002;	
 }
 
 .fancybox-opened .fancybox-outer {
@@ -76,7 +76,7 @@
 	background: url('fancybox_loading.gif');
 	opacity: 0.8;
 	cursor: pointer;
-	z-index: 1010;
+	z-index: 5010;
 }
 
 .fancybox-close, .fancybox-prev span, .fancybox-next span {
@@ -90,7 +90,7 @@
 	width: 36px;
 	height: 36px;
 	cursor: pointer;
-	z-index: 1004;
+	z-index: 5003;
 }
 
 .fancybox-prev, .fancybox-next {
@@ -100,7 +100,7 @@
 	height: 100%;
 	cursor: pointer;
 	background: transparent url('blank.gif'); /* helps IE */
-	z-index: 1003;
+	z-index: 5002;
 }
 
 .fancybox-prev {
@@ -119,7 +119,7 @@
 	height: 36px;
 	margin-top: -18px;
 	cursor: pointer;
-	z-index: 1003;
+	z-index: 5002;
 }
 
 .fancybox-prev span {
@@ -160,7 +160,7 @@
 	left: 0;
 	overflow: hidden;
 	display: none;
-	z-index: 1001;
+	z-index: 5000;
 	background: #000;
 }
 
@@ -171,7 +171,7 @@
 	font: normal 13px/20px "Helvetica Neue",Helvetica,Arial,sans-serif;
 	position: relative;
 	text-shadow: none;
-	z-index: 1005;
+	z-index: 5004;
 }
 
 .fancybox-opened .fancybox-title {
@@ -183,7 +183,7 @@
 	bottom: 0;
 	right: 50%;
 	margin-bottom: -35px;
-	z-index: 1003;
+	z-index: 5002;
 	text-align: center;
 }
 

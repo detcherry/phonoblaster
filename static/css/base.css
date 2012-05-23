@@ -41,6 +41,11 @@
 
 
 /* ----- BOOTSTRAP OVERWRITE ----- */
+
+html, body{
+	height:100%;
+}
+
 html{
 	background:#000000;
 }
@@ -63,19 +68,19 @@ body{
 
 input, textarea{
 	-webkit-box-shadow:none;
-	-moz-box-shadow:none;
-	box-shadow:none;
+	   -moz-box-shadow:none;
+	        box-shadow:none;
 	color:#7F7F7F;
 	-webkit-border-radius:0px;
-	-moz-border-radius:0px;
-	border-radius:0px;
+	   -moz-border-radius:0px;
+	        border-radius:0px;
 	border:1px solid #E1E1E1;
 }
 
 input:focus, textarea:focus, input:active, textarea:active{
 	-webkit-box-shadow:none;
-	-moz-box-shadow:none;
-	box-shadow:none;
+	   -moz-box-shadow:none;
+	        box-shadow:none;
 	color:#636363;
 }
 

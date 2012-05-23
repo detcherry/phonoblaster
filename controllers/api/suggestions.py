@@ -49,7 +49,7 @@ class ApiSuggestionsHandler(BaseHandler):
 			q = Suggestion.all()
 			q.filter("user", user)
 			q.filter("station", station)
-			q.filter("created >", datetime.utcnow() - timedelta(0,180))
+			q.filter("created >", datetime.utcnow() - timedelta(0,30))
 			user_last_suggestion = q.get()
 
 			if(user_last_suggestion):

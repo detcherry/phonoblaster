@@ -1,0 +1,567 @@
+{% extends "base.html" %}
+
+{% block meta %}
+	<title>{{ station_proxy.station.name }}</title>
+	<meta name="description" content="Listen now to {{ station_proxy.station.name }} station on Phonoblaster.">
+{% endblock %}
+
+{% block facebook %}
+	<!-- Station Open Graph Tags -->
+	<meta property="fb:app_id" content="{{ facebook_app_id }}"/>
+	<meta property="og:type" content="{{ version }}:station"/> 
+	<meta property="og:url" content="{{ site_url }}/{{ station_proxy.station.shortname }}"/> 
+	<meta property="og:title" content="{{ station_proxy.station.name }}"/> 
+	<meta property="og:description" content="Listen now to {{ station_proxy.station.name }} on Phonoblaster."/>
+	<meta property="og:image"  content="https://graph.facebook.com/{{ station_proxy.station.key.name }}/picture?type=large"/> 
+	<meta property="og:site_name" content="Phonoblaster"/>
+	<meta property="og:video:type" content="text/html"/>
+	<meta property="og:video" content="{{ site_url }}/{{ station_proxy.station.shortname }}"/>
+	<meta property="{{ version }}:page" content="{{ station_proxy.station.link }}"/>
+{% endblock %}
+
+{% block style %}
+	<link type="text/css" rel="stylesheet" href="/{{tag}}/static/css/station/station.css">
+{% endblock %}
+
+{% if not user_proxy %}
+	{% block header %}
+	<div class="topbar">
+		<div class="topbar-inner">
+			<div class="container">
+				<h1>Phonoblaster</h1>
+				<a id="logo" href="/"></a>
+				<div id="menu">
+				{% if user_proxy %}
+					<div>
+						<a href="/">Home</a>
+					</div>
+					<div>
+						<a href="/user/{{ user_proxy.user.key.name }}" class="profile">
+							<img src="https://graph.facebook.com/{{ user_proxy.user.key.name }}/picture?type=square"/>
+							<span>Profile</span>
+						</a>
+					</div>
+					<div><a href="#" class="logout">Logout</a></div>
+				{% endif %}
+				</div>
+			</div>
+		</div>
+	</div>
+	{% endblock %}
+{% endif %}
+
+{% block main %}
+	<!-- Background -->
+	<div id="background" class="stretch">
+		<!-- Example -->
+	 	<!-- <img src="/{{tag}}/static/images/smoking.jpg" class="stretch"/> -->
+	</div>
+	<!-- Station column (Left)-->
+	<div id="station-column" class="stretch">
+		<!-- Station Information -->
+		<div id="station-information">
+			<div id="station-picture">
+				<img src="https://graph.facebook.com/{{ station_proxy.station.key.name }}/picture?type=normal">
+			</div>
+			<div id="station-shortname">@{{ station_proxy.station.shortname }}</div>
+			<div id="station-name">
+				<p>{{ station_proxy.station.name }}</p>
+				<a href="{{ station_proxy.station.link }}" class="fb-page" target="_blank"></a>
+				<div class="fb-like" data-href="{{ station_proxy.station.link }}" data-send="false" data-layout="button_count"  data-show-faces="false"></div>
+			</div>
+		</div>
+		<!-- Media -->
+		<div id="media">
+			<div id="youtube-player">
+				<img src="/{{tag}}/static/images/loader.gif" class="loader"/>
+			</div>
+		</div>
+		<div id="media-bar">
+			<div id="media-bar-filler"></div>
+		</div>
+		<div id="media-details">
+			<div id="media-id"><!-- Div necessary for JS --></div>
+			<div id="media-picture">
+				<!--  Example: -->
+				<!-- <img src="http://i1.ytimg.com/vi/yBP_Re9r9MI/default.jpg"/> -->
+			</div>
+			<div id="media-info">
+				<div id="media-info-top">
+					<h3>Current track</h3>
+					<div id="media-submitter">
+						<!--  Example: -->
+						<!--
+							<a href="" data-original-title="Damien Detcherry">
+								<img src="http://graph.facebook.com/damien.detcherry/picture?type=square">
+							</a>
+							<span>Rebroadcast of</span> 
+						-->
+					</div>
+				</div>
+				<div class="stroke grey"></div>
+				<div id="media-title">Loading...</div>
+				<div id="media-actions">
+					<div id="media-fav">
+					  	<a class="fav tuto" data-original-title="Favorite this track!" href="#"></a>
+					</div>
+					<div id="media-volume">
+						<a href="#" class="unmuted tuto" data-original-title="Mute the player"></a>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- Listeners counter -->
+		<div id="sessions">
+			<div class="stat">
+				<span class="figure">0</span>
+				<span class="title">Listeners</span>
+				<a id="tw-share" href="https://twitter.com/share?url={{ site_url }}/randomblaster&text=♫ Listening to {{ station_proxy.station.name }} radio on @phonoblaster ♫&hashtags=nowplaying" target="_blank" class="tuto" data-original-title="Share {% if is_admin %}your{% else%}this{% endif %} station on Twitter!"></a>
+				<a id="fb-share" href="#" class="tuto" data-original-title="Share {% if is_admin %}your{% else%}this{% endif %} station on Facebook!"></a>
+			</div>
+			<div id="listeners">
+				<!-- Example -->
+				<!--
+					<a href="" class="tuto listener" data-original-title="Damien Detcherry">
+						<img src="http://graph.facebook.com/damien.detcherry/picture?type=square">
+					</a>
+				-->
+			</div>
+		</div>
+		<!-- Views counter -->
+		<div id="views" class="stat">
+			<span class="figure">{{ station_proxy.number_of_views }}</span>
+			<span class="title"> Views</span>
+		</div>
+		<!-- Suggestions counter -->
+		<div id="suggestions" class="stat">
+			<span class="figure">{{ station_proxy.number_of_suggestions }}</span>
+			<span class="title"> Suggestions</span>
+		</div>
+		<!-- Panel box (Upper right) -->
+		<div id="panel-box">
+			<div id="panel-outer-circle" class="show-panel">
+				<div id="panel-inner-circle" class="show-panel">
+				</div>
+			</div>
+			<div id="panel-box-content">
+			{% if user_proxy %}
+				<div id="panel-box-picture">
+					<!-- Example -->
+					<!-- <img src="http://i1.ytimg.com/vi/yBP_Re9r9MI/default.jpg"/> -->
+				</div>
+				<div id="panel-box-track">
+					<h3 class="logged">Next track</h3>
+					<div class="stroke black"></div>
+					<p class="logged">
+						Loading...
+					</p>
+				</div>
+				<a href="#" class="btn show-panel">{% if is_admin %}Add{% else %}Suggest{% endif %} new tracks!</a>
+			{% else %}
+				<h3 class="unlogged">Broadcast your music!</h3>
+				<p class="unlogged">With Phonoblaster, live broadcast your favorite music to your friends or fans</p>
+				<a href="#" class="login">Login with Facebook</a>
+			{% endif %}
+			</div>
+		</div>
+		<!-- Overlay (left) -->
+		<div id="overlay" class="stretch">
+			<!-- Panel for back office (Right) -->
+			<div id="panel" class="stretch">
+				<div id="tabs-wrapper" class="{% if is_admin %}admin{% endif %}">
+					{% if is_admin %}
+					<!-- Broadcaster tabs header -->
+					<ul id="tabs">
+						<li><a href="#buffer-tab" class="current" id="buffer-header"></a></li>
+						<li><a href="#suggestions-tab" id="suggestions-header"></a></li>
+						<li><a href="#favorites-tab" id="favorites-header"></a></li>
+						<li><a href="#tracks-tab" id="tracks-header"></a></li>
+						<li><a href="#sets-tab" id="sets-header"></a></li>
+					</ul>
+					{% endif %}
+					<!-- {% if is_admin %}Buffer{% else %}Suggestion{% endif %} tab -->
+					<div class="tab" id="{% if is_admin %}buffer-tab{% else %}suggestions-tab{% endif%}">
+						<div class="tab-header">
+							<a href="#" class="hide-panel">X</a>
+							<h4>{% if is_admin %}On air{% else %}Wall{% endif %}</h4>
+							<!-- Search box -->
+							<div id="search-box">
+								<input type="text" value="{% if is_admin %}Add a track to your selection{% else %}Suggest a track to the broadcaster{% endif %}" id="search" autocomplete="off" class="tuto" data-original-title="Search and {% if is_admin %}add{% else %}suggest{% endif %} tracks from Youtube (soon: Soundcloud)"/>
+								<div id="search-icon"></div>
+								<div id="search-overlay"></div>
+								<div id="search-tab">
+									<div class="tab-content"><!-- Search results --></div>
+								</div>
+							</div>
+						</div>
+						<!-- {% if is_admin %}Buffer{% else %}Suggestion{% endif %} feed -->
+						<div class="tab-content">
+							<!-- Example -->
+							<!--
+								<div class="item" id="live">
+									<div class="item-picture">
+										<img src="http://i1.ytimg.com/vi/yBP_Re9r9MI/default.jpg">
+									</div>
+									<div class="item-title">
+										<span class="middle">Breakbot - Lazy Sunday Selecta</span>
+									</div>
+									<a href="#" class="item-cross">X</a>
+									<div class="item-subtitle">
+											<div class="item-duration">3:24</div>
+										<div class="item-submitter">
+											<a href="" class="tuto" data-original-title="Damien Detcherry">
+												<img src="http://graph.facebook.com/damien.detcherry/picture?type=square">
+											</a>
+		                    					<span>Rebroadcast of</span>
+										</div>
+									</div>
+								</div>
+								<div class="item">
+									<div class="item-picture">
+										<img src="http://i1.ytimg.com/vi/vSkLl7vuOJA/default.jpg">
+									</div>
+									<div class="item-title">
+										<span class="middle">Bag Raiders - Way Back Home</span>
+									</div>
+									<a href="#" class="item-cross">X</a>
+									<div class="item-subtitle">
+											<div class="item-duration">3:24</div>
+										<div class="item-submitter">
+										</div>
+									</div>
+								</div>
+								<div class="item">
+									<div class="item-picture">
+										<img src="http://i1.ytimg.com/vi/gXNVwg-rzV8/default.jpg">
+									</div>
+									<div class="item-title">
+										<span class="middle">Breakbot - Baby I'm yours (Siriusmo remix)</span>
+									</div>
+									<a href="#" class="item-cross">X</a>
+									<div class="item-subtitle">
+											<div class="item-duration">3:24</div>
+										<div class="item-submitter">
+											<a href="" class="tuto" data-original-title="Damien Detcherry">
+												<img src="http://graph.facebook.com/damien.detcherry/picture?type=square">
+											</a>
+		                    					<span>Rebroadcast of</span>
+										</div>
+									</div>
+								</div>
+								<div class="item">
+									<div class="item-picture">
+										<img src="http://i1.ytimg.com/vi/yBP_Re9r9MI/default.jpg">
+									</div>
+									<div class="item-title">
+										<span class="middle">Breakbot - Lazy Sunday Selecta</span>
+									</div>
+									<a href="#" class="item-cross">X</a>
+									<div class="item-subtitle">
+											<div class="item-duration">3:24</div>
+										<div class="item-submitter">
+											<a href="" class="tuto" data-original-title="Damien Detcherry">
+												<img src="http://graph.facebook.com/damien.detcherry/picture?type=square">
+											</a>
+		                    					<span>Rebroadcast of</span>
+										</div>
+									</div>
+								</div>
+								<div class="item">
+									<div class="item-picture">
+										<img src="http://i1.ytimg.com/vi/vSkLl7vuOJA/default.jpg">
+									</div>
+									<div class="item-title">
+										<span class="middle">Bag Raiders - Way Back Home</span>
+									</div>
+									<a href="#" class="item-cross">X</a>
+									<div class="item-subtitle">
+											<div class="item-duration">3:24</div>
+										<div class="item-submitter">
+										</div>
+									</div>
+								</div>
+								<div class="item">
+									<div class="item-picture">
+										<img src="http://i1.ytimg.com/vi/gXNVwg-rzV8/default.jpg">
+									</div>
+									<div class="item-title">
+										<span class="middle">Breakbot - Baby I'm yours (Siriusmo remix)</span>
+									</div>
+									<a href="#" class="item-cross">X</a>
+									<div class="item-subtitle">
+											<div class="item-duration">3:24</div>
+										<div class="item-submitter">
+											<a href="" class="tuto" data-original-title="Damien Detcherry">
+												<img src="http://graph.facebook.com/damien.detcherry/picture?type=square">
+											</a>
+		                    					<span>Rebroadcast of</span>
+										</div>
+									</div>
+								</div>
+								<div class="item">
+									<div class="item-picture">
+										<img src="http://i1.ytimg.com/vi/yBP_Re9r9MI/default.jpg">
+									</div>
+									<div class="item-title">
+										<span class="middle">Breakbot - Lazy Sunday Selecta</span>
+									</div>
+									<a href="#" class="item-cross">X</a>
+									<div class="item-subtitle">
+											<div class="item-duration">3:24</div>
+										<div class="item-submitter">
+											<a href="" class="tuto" data-original-title="Damien Detcherry">
+												<img src="http://graph.facebook.com/damien.detcherry/picture?type=square">
+											</a>
+		                    					<span>Rebroadcast of</span>
+										</div>
+									</div>
+								</div>
+								<div class="item">
+									<div class="item-picture">
+										<img src="http://i1.ytimg.com/vi/vSkLl7vuOJA/default.jpg">
+									</div>
+									<div class="item-title">
+										<span class="middle">Bag Raiders - Way Back Home</span>
+									</div>
+									<a href="#" class="item-cross">X</a>
+									<div class="item-subtitle">
+											<div class="item-duration">3:24</div>
+										<div class="item-submitter">
+										</div>
+									</div>
+								</div>
+								<div class="item">
+									<div class="item-picture">
+										<img src="http://i1.ytimg.com/vi/gXNVwg-rzV8/default.jpg">
+									</div>
+									<div class="item-title">
+										<span class="middle">Breakbot - Baby I'm yours (Siriusmo remix)</span>
+									</div>
+									<a href="#" class="item-cross">X</a>
+									<div class="item-subtitle">
+											<div class="item-duration">3:24</div>
+										<div class="item-submitter">
+											<a href="" class="tuto" data-original-title="Damien Detcherry">
+												<img src="http://graph.facebook.com/damien.detcherry/picture?type=square">
+											</a>
+		                    					<span>Rebroadcast of</span>
+										</div>
+									</div>
+								</div>
+								<div class="item">
+									<div class="item-picture">
+										<img src="http://i1.ytimg.com/vi/yBP_Re9r9MI/default.jpg">
+									</div>
+									<div class="item-title">
+										<span class="middle">Breakbot - Lazy Sunday Selecta</span>
+									</div>
+									<a href="#" class="item-cross">X</a>
+									<div class="item-subtitle">
+											<div class="item-duration">3:24</div>
+										<div class="item-submitter">
+											<a href="" class="tuto" data-original-title="Damien Detcherry">
+												<img src="http://graph.facebook.com/damien.detcherry/picture?type=square">
+											</a>
+		                    					<span>Rebroadcast of</span>
+										</div>
+									</div>
+								</div>
+								<div class="item">
+									<div class="item-picture">
+										<img src="http://i1.ytimg.com/vi/vSkLl7vuOJA/default.jpg">
+									</div>
+									<div class="item-title">
+										<span class="middle">Bag Raiders - Way Back Home</span>
+									</div>
+									<a href="#" class="item-cross">X</a>
+									<div class="item-subtitle">
+											<div class="item-duration">3:24</div>
+										<div class="item-submitter">
+										</div>
+									</div>
+								</div>
+								<div class="item">
+									<div class="item-picture">
+										<img src="http://i1.ytimg.com/vi/gXNVwg-rzV8/default.jpg">
+									</div>
+									<div class="item-title">
+										<span class="middle">Breakbot - Baby I'm yours (Siriusmo remix)</span>
+									</div>
+									<a href="#" class="item-cross">X</a>
+									<div class="item-subtitle">
+											<div class="item-duration">3:24</div>
+										<div class="item-submitter">
+											<a href="" class="tuto" data-original-title="Damien Detcherry">
+												<img src="http://graph.facebook.com/damien.detcherry/picture?type=square">
+											</a>
+		                    					<span>Rebroadcast of</span>
+										</div>
+									</div>
+								</div>
+							-->
+							<div class="init">{% if is_admin %}Nothing on the air{% else %}Post a suggestion{% endif %}</div>
+						</div>
+					</div>
+					{% if is_admin %}
+					<!-- Suggestions tab -->
+					<div class="tab" id="suggestions-tab" style="display:none;">
+						<div class="tab-header">
+							<a href="#" class="hide-panel">X</a>
+							<h4>Your listeners suggestions</h4>
+						</div>
+						<!-- Suggestions feed -->
+						<div class="tab-content">
+							<div class="init">No suggestion</div>
+						</div>
+					</div>
+					<!-- Favorites tab -->
+					<div class="tab" id="favorites-tab" style="display:none;">
+						<div class="tab-header">
+							<a href="#" class="hide-panel">X</a>
+							<h4>Your favorite tracks</h4>
+						</div>
+						<!-- Favorites feed -->
+						<div class="tab-content">
+							<div class="init">No favorite</div>
+						</div>
+					</div>
+					<!-- Library tab -->
+					<div class="tab" id="tracks-tab" style="display:none;">
+						<div class="tab-header">
+							<a href="#" class="hide-panel">X</a>
+							<h4>All of your tracks</h4>
+						</div>
+						<!-- Library feed -->
+						<div class="tab-content">
+							<div class="init">No track</div>
+						</div>
+					</div>
+					<!-- Sets tab -->
+					<div class="tab" id="sets-tab" style="display:none;">
+						<div class="tab-header">
+							<a href="#" class="hide-panel">X</a>
+							<h4>Your recorded sets</h4>
+						</div>
+						<!-- Sets feed -->
+						<div class="tab-content">
+							<div class="init">Soon available</div>
+						</div>
+					</div>
+					{% endif %}
+				</div>
+			</div>
+		</div> 
+	</div>
+	<!-- Chat -->
+	<div id="chat">
+		<div id="chat-header">
+			<span class="round"></span>
+			<span id="chat-title">Chat</span>
+			<span id="chat-alert">
+				<span id="chat-alert-number">0</span>
+				<span id="chat-alert-arrow"></span>
+			</span>
+		</div>
+		<div id="chat-content">
+			<div id="chat-wrapper">
+				<div id="chat-feed">
+					<!-- Example -->
+					<!--
+					<div class="im">
+						<div class="im-picture">
+							<img src="https://graph.facebook.com/{{ station_proxy.station.key.name }}/picture?type=square">
+						</div>
+						<div class="im-content">
+							<div class="im-text"><a href="">Randomblaster </a>It's absolutely amazing blablablabla</div>
+							<div class="im-time">18:18</div>
+						</div>
+					</div>
+					-->
+				</div>
+			</div>
+			<div id="chat-field">
+				<div id="chat-picture">
+					{% if user_proxy %}
+						{% if is_admin %}
+						<img class="tuto" data-original-title="{{ station_proxy.station.name }}" src="https://graph.facebook.com/{{ station_proxy.station.key.name }}/picture?type=square">
+						{% else %}
+						<img class="tuto" data-original-title="{{ user_proxy.user.first_name }} {{ user_proxy.user.last_name }}" src="https://graph.facebook.com/{{ user_proxy.user.key.name }}/picture?type=square">
+						{% endif %}
+					{% else %}
+					<img src="/{{tag}}/static/images/unknown.png">
+					{% endif %}
+				</div>
+				<form method="post" action="" id="chat-form">
+					<input type="text" name="chat" id="chat-input" value="Share the love..." autocomplete="off"/>
+					<input type="submit"id="chat-submit" value="Send"/>
+				</form>
+			</div>
+		</div>
+	</div>
+	<!-- Suggestion popup -->
+	<div class="popup" id="popup-suggestion">
+		<h2>Suggest now!</h2>
+		<div class="item">
+			<div class="item-picture"><!-- No image yet --></div>
+			<div class="item-title">
+				<span class="middle"><!-- No title yet --></span>
+			</div>
+		</div>
+		<h3>If you wanna say something cool, do it below:</h3>
+		<form action="#" method="post">
+			<textarea></textarea>
+			<div class="modal-footer">
+				<input type="submit" class="btn primary" value="Suggest!"/>
+			</div>
+		</form>
+	</div>
+{% endblock %}
+
+{% block footer %}
+{% endblock %}
+
+{% block script %}
+<!-- Jquery UI -->
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js"></script>
+<!-- Pubnub -->
+<div sub-key="sub-aa6b101e-24e9-11e1-ab04-3b69d50a7fd4" ssl="off" origin="pubsub.pubnub.com" id="pubnub"></div>
+<script src="https://pubnub.s3.amazonaws.com/pubnub-3.1.min.js"></script>
+<!-- App Engine -->
+<script type="text/javascript" src="/_ah/channel/jsapi"></script>
+<!-- Station -->
+<script type="text/javascript" src="/{{tag}}/static/js/library/json2.js"></script>
+<script type="text/javascript" src="/{{tag}}/static/js/station/counter.js"></script>
+<script type="text/javascript" src="/{{tag}}/static/js/station/share.js"></script>
+<script type="text/javascript" src="/{{tag}}/static/js/station/session.js"></script>
+<script type="text/javascript" src="/{{tag}}/static/js/station/tab.js"></script>
+<script type="text/javascript" src="/{{tag}}/static/js/station/chat.js"></script>
+<script type="text/javascript" src="/{{tag}}/static/js/station/search.js"></script>
+<script type="text/javascript" src="/{{tag}}/static/js/station/suggestions.js"></script>
+<script type="text/javascript" src="/{{tag}}/static/js/station/favorites.js"></script>
+<script type="text/javascript" src="/{{tag}}/static/js/station/tracks.js"></script>
+<script type="text/javascript" src="/{{tag}}/static/js/station/buffer.js"></script>
+<script type="text/javascript" src="/{{tag}}/static/js/station/main.js"></script>
+<script type="text/javascript">
+	/*--- Reset ---*/
+	USER = null;
+	ADMIN = false;
+ 	STATION = null;
+	/*--- User Initialization ---*/
+	{% if user_proxy %} 
+	USER = {
+		"key_name": "{{ user_proxy.user.key.name }}",
+		"name": "{{ user_proxy.user.first_name }} {{ user_proxy.user.last_name }}",
+	}
+	{% endif %}
+	/*--- Admin Initialization ---*/
+	{% if is_admin %} 
+	ADMIN = true;
+	{% endif %}
+	/*--- Station Initialization ---*/
+	STATION = {
+		"key_name": "{{ station_proxy.station.key.name }}",
+		"shortname": "{{ station_proxy.station.shortname }}",
+		"name": "{{ station_proxy.station.name}}",
+	}
+</script>
+{% endblock %}

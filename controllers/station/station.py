@@ -10,6 +10,11 @@ class StationHandler(RootHandler):
 		
 		if(self.station_proxy.station):
 			admin = self.is_admin
+			self.render("station/station.html", None)
+			
+			"""
+			TO BE REMOVED
+			
 			on_air = self.station_proxy.on_air()
 			
 			# If station not on air and user not admin, redirect to the broadcasts page
@@ -17,6 +22,6 @@ class StationHandler(RootHandler):
 				self.render("station/off.html", None)
 			else:
 				self.render("station/on.html", None)
-
+			"""
 		else:
 			self.render("station/404.html", None)

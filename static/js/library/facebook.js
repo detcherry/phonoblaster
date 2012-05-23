@@ -171,5 +171,20 @@ Facebook.prototype = {
 			})
 		}
 
-	},	
+	},
+	
+	shareStation: function(from, link, picture, name){
+		var obj = {
+			method: "feed",
+			link: link,
+			picture: picture,
+			name: name,
+		}
+		
+		if(from){
+			obj["from"] = from;
+		}
+		
+		FB.ui(obj, function(response){})
+	},
 }
