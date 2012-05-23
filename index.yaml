@@ -47,6 +47,12 @@ indexes:
 - kind: Suggestion
   properties:
   - name: station
+  - name: created
+    direction: desc
+
+- kind: Suggestion
+  properties:
+  - name: station
   - name: user
   - name: created
 
