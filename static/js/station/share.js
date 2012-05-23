@@ -31,4 +31,5 @@ ShareManager.prototype = {
 			
 			return false;
 		})
+	}
 }
