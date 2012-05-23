@@ -128,11 +128,11 @@ body{
 }
 
 #station-name p{
-	padding-top:3px;
+	padding-top:1px;
 	width:205px;
-	height:20px;
+	height:25px;
 	overflow:hidden;
-	line-height: 25px;
+	line-height:25px;
 	font-style:italic;
 	font-family:Futura;
 	font-size:20px;
@@ -691,7 +691,6 @@ ul#tabs a#sets-header.current{
 	background-position:-71px -446px;
 }
 
-
 /* --------- SEARCH -----------*/
 
 #search-box{
@@ -761,7 +760,9 @@ input#search:focus{
 
 .item{
 	padding:10px;
+	height:61px;
 	background:#FFFFFF;
+	border-bottom:1px solid #E1E1E1;
 }
 
 .item-picture{	
@@ -784,7 +785,7 @@ input#search:focus{
 .item-title{
 	padding-top:4px;
 	padding-right:4px;
-	width:169px;
+	width:309px;
 	height:32px;
 	overflow:hidden;
 }
@@ -818,7 +819,7 @@ input#search:focus{
 
 .item-subtitle{
 	height:22px;
-	width:173px;
+	width:327px;
 }
 
 .item-duration{
@@ -828,8 +829,12 @@ input#search:focus{
 
 .item-submitter{
 	float:right;
-	margin-right:-4px;
-	padding-top:4px;
+	padding-top:3px;
+}
+
+.item-submitter a{
+	display:block;
+	float:right;
 }
 
 .item-submitter img{
@@ -842,7 +847,7 @@ input#search:focus{
 .item-submitter span{
 	display:block;
 	float:right;
-	padding-top:2px;
+	padding-top:4px;
 	color:#C4C4C4;
 }
 
@@ -876,10 +881,19 @@ input#search:focus{
 	text-align:center;
 }
 
-/* ------ ITEM (SEARCH) ------ */
+/* -------- ITEMS (SEARCH) -------- */
 
 #search-tab .item{
 	margin-bottom:15px;
+	border:none;
+}
+
+#search-tab .item-title{
+	width:169px;
+}
+
+#search-tab .item-subtitle{
+	width:173px;
 }
 
 /* ------- ITEM WRAPPER (SUGGESTIONS & FAVORITES) ----- */
@@ -923,6 +937,7 @@ input#search:focus{
 	margin-top:10px;
 	margin-bottom:0px;
 	padding:0px;
+	border:none;
 }
 
 .item-wrapper .item-title{
@@ -945,83 +960,6 @@ input#search:focus{
 
 #tabs-wrapper.admin .item-wrapper .item-subtitle{
 	width:271px;
-}
-
-/* ------ ITEM (TRACKS) ------ */
-
-#tracks-tab .item{
-	height:61px;
-	border-bottom:1px solid #E1E1E1;
-}
-
-#tracks-tab .item-title{
-	width:309px;
-}
-
-#tracks-tab .item-subtitle{
-	width:327px;
-}
-
-/* ------- POPUP SHARE -------*/
-
-#popup-share{
-	width:440px;
-}
-
-#popup-share form{
-	margin-top:16px;
-	margin-bottom:0px;
-	float:left;
-}
-
-#popup-share img.thumbnail{
-	display:block;
-	float:left;
-	margin-left:24px;
-	margin-right:8px;
-	height:37px;
-}
-
-#popup-share textarea{
-	display:block;
-	width:324px;
-	min-height:37px;
-}
-
-#popup-share img.station{
-	display:block;
-	float:left;
-	height:50px;
-	margin:8px;
-	margin-left:88px;
-	margin-bottom:24px;
-}
-
-#popup-share .facebook-link{
-	float:left;
-	width:268px;
-	margin-top:8px;
-	font-family:'Lucida Grande';
-	font-size:11px;
-}
-
-#popup-share .facebook-link span{
-	display:block;
-	padding:4px;
-}
-
-#popup-share .facebook-link span.link{
-	color:#3B5998;
-	font-weight:bold;
-}
-
-#popup-share .facebook-link span.description{
-	color:#999;
-}
-
-#popup-share .modal-footer{
-	float:left;
-	width:410px;
 }
 
 /* ------- POPUP SUGGESTION ------- */
