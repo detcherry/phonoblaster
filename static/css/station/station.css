@@ -761,6 +761,8 @@ input#search:focus{
 	height:61px;
 	background:#FFFFFF;
 	border-bottom:1px solid #E1E1E1;
+	border-top:1px solid #E1E1E1;
+	margin-top:-1px;
 }
 
 .item-picture{	
@@ -813,6 +815,10 @@ input#search:focus{
 .item:hover a.item-cross:hover{
 	color:#333;
 	text-decoration:none;
+}
+
+#live:hover a.item-cross{
+	display:none;
 }
 
 .item-subtitle{
