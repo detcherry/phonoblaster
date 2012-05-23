@@ -207,13 +207,12 @@
 		var buffer = this.getBuffer();
 		var that = this;
 		if (buffer.length >2) {
-			client_id = buffer[1]['client_id']
 			new_index = buffer.length-1;
 
 			$.ajax({
 				url: "/api/buffer/",
 				type: "POST",
-				data: {'shortname':that.getShortname(), 'client_id' :old_index, 'new_index': new_index},
+				data: {'shortname':that.getShortname(), 'tracks' :JSON.stringify([buffer[1]]), 'position': new_index},
 				dataType: "json",
 				timeout: 60000,
 				error: function(xhr, status, error){

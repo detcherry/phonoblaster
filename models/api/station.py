@@ -249,8 +249,8 @@ Global number of stations: %s
 
 		if i is not None:
 			new_buffer = buffer[:i]
-			new_buffer.extended[i:]
-			put_buffer(new_buffer)
+			new_buffer.extend(buffer[i:])
+			self.put_buffer(new_buffer)
 			return True
 		else:
 			return False
@@ -332,10 +332,10 @@ Global number of stations: %s
 
 		track_to_add = [{
 					'track_id': Track.get_or_insert_by_youtube_id(t, self.station).key().id(),
-					'client_id': t[i]['client_id'], 
-					'youtube_id': t[i]['youtube_id'], 
-					'youtube_title': t[i]['youtube_title'],
-					'youtube_duration': t[i]['youtube_duration']
+					'client_id': t['client_id'], 
+					'youtube_id': t['youtube_id'], 
+					'youtube_title': t['youtube_title'],
+					'youtube_duration': t['youtube_duration']
 				} for t in youtube_tracks[:room]]
 
 		rejected_tracks = youtube_tracks[room:]

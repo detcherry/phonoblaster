@@ -46,14 +46,14 @@ class ApiBufferHandler(BaseHandler):
 			# Resetting buffer
 			station_proxy.reset_buffer()
 
-			if position is None:
+			if position is '':
 				# Adding tracks to buffer
 				tracks_to_add, rejected_tracks = station_proxy.add_tracks_to_buffer(youtube_tracks)
 
 				if len(rejected_tracks) > 0:
 					response = {'response':False, 'error':1, 'message': 'Some tracks were rejected because a buffer cannot contain more than 30 tracks.'}
 				else:
-					response = {'response': True, 'message': 'Initializing buffer done successfully.'}
+					response = {'response': True, 'message': 'Adding tracks to buffer done successfully.'}
 
 				if len(tracks_to_add)>0:
 					data = {
@@ -65,15 +65,15 @@ class ApiBufferHandler(BaseHandler):
 				# Changing track position in buffer
 				changeDone, isCurrentTrack = station_proxy.move_tack_in_buffer(youtube_tracks[0]['client_id'], int(position))
 
-				if isCurrentTrack:
-					response = {'response':False, 'error':0, 'message': 'It is not possible to add a tracks at the first position of the buffer (position of the currently played track)'}
-				elif changeDone:
-					response = {'response':True, 'message': 'Track with client_id'}
+				if changeDone:
+					response = {'response':True, 'message': 'Track with client_id :'+youtube_tracks[0]['client_id']+' is now at :'+position}
 					data = {
 						"entity": "buffer",
 						"event": "change",
 						"content": {'client_id': youtube_tracks[0]['client_id'], 'position': int(position)},
 					}
+				elif isCurrentTrack:
+					response = {'response':False, 'error':0, 'message': 'It is not possible to add a track at the first position of the buffer (position of the currently played track)'}
 
 				else:
 					response = {'response': False, 'error':2, 'message': 'Position not in range.'}
