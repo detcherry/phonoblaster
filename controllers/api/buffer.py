@@ -36,31 +36,67 @@ class ApiBufferHandler(BaseHandler):
 		# getting station shortname, youtube_tracks to add and initializing station proxy
 		shortname = self.request.get('shortname')
 		youtube_tracks = json.loads(self.request.get('tracks'))
+		position = self.request.get('position')
+
 		station_proxy = StationApi(shortname)
 
+		data = None
+
 		if(station_proxy.station):
-			added_tracks, rejected_tracks = station_proxy.add_tracks_to_buffer(youtube_tracks)
+			# Resetting buffer
+			station_proxy.reset_buffer()
 
-			# Add a taskqueue to warn everyone
-			data = {
-				"entity": "buffer",
-				"event": "add",
-				"content": added_tracks,
-			}
+			if position is None:
+				# Adding tracks to buffer
+				tracks_to_add, rejected_tracks = station_proxy.add_tracks_to_buffer(youtube_tracks)
 
-			task = Task(
-				url = "/taskqueue/multicast",
-				params = {
-					"station": config.VERSION + "-" + shortname,
-					"data": json.dumps(data)
-				}
-			)
-			task.add(queue_name="buffer-queue")
+				if len(rejected_tracks) > 0:
+					response = {'response':False, 'error':1, 'message': 'Some tracks were rejected because a buffer cannot contain more than 30 tracks.'}
+				else:
+					response = {'response': True, 'message': 'Initializing buffer done successfully.'}
 
-			self.response.out.write(json.dumps({'response':True, 'message': 'Tracks added to buffer, in the limits of the buffer. Listeners were notified.', 'rejected_tracks': rejected_tracks}))
+				if len(tracks_to_add)>0:
+					data = {
+						"entity": "buffer",
+						"event": "add",
+						"content": tracks_to_add,
+					}
+			else:
+				# Changing track position in buffer
+				changeDone, isCurrentTrack = station_proxy.move_tack_in_buffer(youtube_tracks[0]['client_id'], int(position))
+
+				if isCurrentTrack:
+					response = {'response':False, 'error':0, 'message': 'It is not possible to add a tracks at the first position of the buffer (position of the currently played track)'}
+				elif changeDone:
+					response = {'response':True, 'message': 'Track with client_id'}
+					data = {
+						"entity": "buffer",
+						"event": "change",
+						"content": {'client_id': youtube_tracks[0]['client_id'], 'position': int(position)},
+					}
+
+				else:
+					response = {'response': False, 'error':2, 'message': 'Position not in range.'}
+
+
+
+				# Add a taskqueue to warn everyone
+				if data:
+					task = Task(
+						url = "/taskqueue/multicast",
+						params = {
+							"station": config.VERSION + "-" + shortname,
+							"data": json.dumps(data),
+							"server_time": timegm(station_proxy.station.updated.utctimetuple())
+						}
+					)
+					task.add(queue_name="buffer-queue")
 
 		else:
-			self.error(404)
+			response = {'response':False, error:'-1', 'message': 'Station with shortname : '+shortname+' not found.'}
+
+
+		self.response.out.write(json.dumps(response))
 
 
 class ApiBufferDeleteHandler(BaseHandler):

@@ -327,36 +327,24 @@ Global number of stations: %s
 
 
 	def add_tracks_to_buffer(self,youtube_tracks):
-		current_index = self.get_current_track()[0]
-		buffer = self.buffer_and_timestamp['buffer'][::]  # Copy the array
-		logging.info('Adding tracks')
-		logging.info(len(buffer))
+		new_buffer = self.buffer_and_timestamp['buffer'][::]  # Copy the array
 		room = self.room_in_buffer()
-		track_to_add = youtube_tracks[:room]
+
+		track_to_add = [{
+					'track_id': Track.get_or_insert_by_youtube_id(t, self.station).key().id(),
+					'client_id': t[i]['client_id'], 
+					'youtube_id': t[i]['youtube_id'], 
+					'youtube_title': t[i]['youtube_title'],
+					'youtube_duration': t[i]['youtube_duration']
+				} for t in youtube_tracks[:room]]
+
 		rejected_tracks = youtube_tracks[room:]
+		
+		# Injecting traks in buffer
+		new_buffer.extend(track_to_add)
 
-
-		if not current_index:
-			#Nothing on the buffer
-			current_index = 0
-
-		logging.info(current_index)
-		for i in xrange(0,len(track_to_add)):
-			track = Track.get_or_insert_by_youtube_id(track_to_add[i], self.station)
-			buffer.insert(
-				current_index,
-				{
-					'track_id': track.key().id(),
-					'client_id': track_to_add[i]['client_id'], 
-					'youtube_id': track_to_add[i]['youtube_id'], 
-					'youtube_title': track_to_add[i]['youtube_title'],
-					'youtube_duration': track_to_add[i]['youtube_duration']
-				}
-			)
-		logging.info('Tracks added')
-		logging.info(len(self.buffer_and_timestamp['buffer']))
 		#Saving data
-		self.put_buffer(buffer)
+		self.put_buffer(new_buffer)
 		return track_to_add, rejected_tracks
 
 	def remove_track_from_buffer(self,client_id):
@@ -397,30 +385,30 @@ Global number of stations: %s
 			return (False, None)
 
 
-	def move_tack_in_buffer(self,old_index, new_index):
+	def move_tack_in_buffer(self,client_id, position):
 		"""
-			Moving track from position old_index to position new_index.
+			Moving track with client_id to new position.
 			If everything went well : retrun (True,False)
 			If the current track corresponds to a track which position has to change : return (False, True)
 			Otherwise return (False, False)
 		"""
 		buffer = self.buffer_and_timestamp['buffer'][::] ## Copy the array
 		doChange = False
-		taskqueue = False
-		if old_index>=0 and new_index>=0 and new_index<len(buffer) and old_index < len(buffer):
+		isCurrentTrack = False
+		if position>=0 and position<len(buffer) :
 			current_track_infos = self.get_current_track()
 
 			if(current_track_infos[0] is not None):
-				if(current_track_infos[0] == old_index or current_track_infos[0] == new_index):
-					#The current track is being moved, need to start task_queue
+				if(current_track_infos[0] == position or current_track_infos[1]['client_id'] == client_id):
+					#The current track is being moved
 					doChange = False
-					taskqueue = True
+					isCurrentTrack = True
 				else:
 					doChange = True
-					taskqueue = False
+					isCurrentTrack = False
 
 			if doChange:
-				buffer.insert(new_index, buffer.pop(old_index))
+				buffer.insert(position, buffer.pop(current_track_infos[0]))
 				# Saving data
 				self.put_buffer(buffer)
 
@@ -428,7 +416,7 @@ Global number of stations: %s
 			logging.info("In StationApi.move_tack_in_buffer, One of the index is not in the range [0,"+str(len(buffer))+"[")
 			pass
 
-		return doChange, taskqueue
+		return doChange, isCurrentTrack
 
 	# Returns the room in the queue
 	def room_in_buffer(self):
