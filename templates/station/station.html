@@ -300,26 +300,6 @@
 			</div>
 		</div>
 	</div>
-	<!-- Share popup -->
-	<div class="popup" id="popup-share">
-		{% if is_admin %}<h2>Share on {{ station_proxy.station.name }} Wall</h2>{% else %}<h2>Share on your Wall</h2>{% endif %}
-		<form action="#" method="post">
-			{% if is_admin %}
-			<img class="thumbnail" src="https://graph.facebook.com/{{ station_proxy.station.key.name }}/picture?type=square"/>
-			{% else %}
-			<img class="thumbnail" src="https://graph.facebook.com/{{ user_proxy.user.key.name }}/picture?type=square"/>
-			{% endif %}
-			<textarea></textarea>
-			<img class="station" src="https://graph.facebook.com/{{ station_proxy.station.key.name }}/picture?type=square"/>
-			<div class="facebook-link">
-				<span class="link">{{ station_proxy.station.name }}</span>
-				<span class="description">Listen now to {{ station_proxy.station.name }} station on Phonoblaster.</span>
-			</div>
-			<div class="modal-footer">
-				<input type="submit" class="btn primary" value="Share!"/>
-			</div>
-		</form>
-	</div>
 	<!-- Suggestion popup -->
 	<div class="popup" id="popup-suggestion">
 		<h2>Suggest now!</h2>
