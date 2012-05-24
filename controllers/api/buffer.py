@@ -20,6 +20,8 @@ class ApiBufferHandler(BaseHandler):
 		station_proxy = StationApi(shortname)
 
 		if(station_proxy.station):
+			# Resetting buffer
+			station_proxy.reset_buffer()
 			buffer = station_proxy.buffer_and_timestamp['buffer']
 			timestamp = station_proxy.buffer_and_timestamp['timestamp']
 
