@@ -90,6 +90,8 @@ class ApiBufferHandler(BaseHandler):
 						"station": config.VERSION + "-" + shortname,
 						"data": json.dumps(data),
 						"server_time": timegm(station_proxy.station.updated.utctimetuple())
+						}
+					)
 				
 				task.add(queue_name="buffer-queue")
 

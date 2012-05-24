@@ -130,7 +130,7 @@
 	BufferHandler.prototype.get_buffer_and_timestamp = function(callback){
 		var that = this;
 		$.ajax({
-			url: "/api/buffer/",
+			url: "/api/buffer",
 			type: "GET",
 			data: {'shortname':this.getShortname()},
 			dataType: "json",
@@ -150,25 +150,40 @@
 	BufferHandler.prototype.add_tracks_to_buffer = function(callback){
 		var that = this;
 		tracks = [{
+				'track_id':null,
 				'client_id':this.getShortname()+'.'+(Math.random())+'.buffer.'+(Math.random()),
 				'youtube_id':'Q7lInSt2Xgs',
 				'youtube_title':'1995 - Flava In Ya Ear (Remix)',
 				'youtube_duration':210,
+				'type' : 'track',
+				'track_submitter_key_name' : '129247123864094',
+				'track_submitter_name' : 'Fans of Old School Hip Hop',
+				'track_submitter_url' : "/" + this.getShortname(),
 			},{
+				'track_id':null,
 				'client_id':this.getShortname()+'.'+(Math.random())+'.buffer.'+(Math.random()),
 				'youtube_id':'blWw7bM6TS0',
 				'youtube_title':"1995 - La Suite - Clip (Prod. DJ Lo' / Réalisation : Le Garage)",
 				'youtube_duration':295,
+				'type' : 'favorite',
+				'track_submitter_key_name' : '129247123864094',
+				'track_submitter_name' : 'Wet dreams',
+				'track_submitter_url' : '/wetdreams',
 			},{
+				'track_id':null,
 				'client_id':this.getShortname()+'.'+(Math.random())+'.buffer.'+(Math.random()),
 				'youtube_id':'l0qs_VmTlGY',
 				'youtube_title':"Nekfeu/Alpha Wann (1995) - Dans Ta Réssoi",
 				'youtube_duration':275,
+				'type' : 'suggestion',
+				'track_submitter_key_name' : '100003104324320',
+				'track_submitter_name' : 'Tim Phono',
+				'track_submitter_url' : '/user/100003104324320',
 			}
 		];
 
 		$.ajax({
-			url: "/api/buffer/",
+			url: "/api/buffer",
 			type: "POST",
 			data: {'shortname':this.getShortname(),'tracks' :JSON.stringify(tracks)},
 			dataType: "json",
@@ -210,7 +225,7 @@
 			new_index = buffer.length-1;
 
 			$.ajax({
-				url: "/api/buffer/",
+				url: "/api/buffer",
 				type: "POST",
 				data: {'shortname':that.getShortname(), 'tracks' :JSON.stringify([buffer[1]]), 'position': new_index},
 				dataType: "json",

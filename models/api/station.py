@@ -263,6 +263,7 @@ Global number of stations: %s
 		"""
 		buffer = self.buffer_and_timestamp['buffer'][::] # Copy the array
 		buffer_duration = 0
+		logging.info(buffer)
 		if buffer:
 			buffer_duration = sum([t['youtube_duration'] for t in buffer])
 
@@ -328,25 +329,68 @@ Global number of stations: %s
 
 
 	def add_tracks_to_buffer(self,youtube_tracks):
+		added_tracks, rejected_tracks = [], []
 		new_buffer = self.buffer_and_timestamp['buffer'][::]  # Copy the array
 		room = self.room_in_buffer()
-
-		track_to_add = [{
-					'track_id': Track.get_or_insert_by_youtube_id(t, self.station).key().id(),
-					'client_id': t['client_id'], 
-					'youtube_id': t['youtube_id'], 
-					'youtube_title': t['youtube_title'],
-					'youtube_duration': t['youtube_duration']
-				} for t in youtube_tracks[:room]]
-
+		tracks_to_add = youtube_tracks[:room]
 		rejected_tracks = youtube_tracks[room:]
 		
+		for i in xrange(0,len(tracks_to_add)):
+			track_to_add = tracks_to_add[i]
+
+			track = None
+
+			if track_to_add["track_id"]:
+				track = Track.get_by_id(int(track_to_add["track_id"]))
+			
+			else:
+				if(track_to_add["youtube_id"]):
+					track = Track.get_or_insert_by_youtube_id(track_to_add, self.station)
+
+			if track:
+				user_key = None
+
+				if(track_to_add["type"] == "suggestion"):
+					user_key_name = track_to_add["track_submitter_key_name"]
+					user_key = db.Key.from_path("User", user_key_name)
+
+				extended_track = {}
+
+				# Suggested broadcast
+				if(user_key):
+					user = db.get(user_key)
+					extended_track = Track.get_extended_track(track)
+					extended_track["track_submitter_key_name"] = user.key().name()
+					extended_track["track_submitter_name"] = user.first_name + " " + user.last_name
+					extended_track["track_submitter_url"] = "/user/" + user.key().name()
+					extended_track["type"] = "suggestion"
+				else:
+					station_key = Track.station.get_value_for_datastore(track)					
+					
+					# Regular broadcast
+					if(station_key == self.station.key()):
+						station = self.station
+						extended_track["type"] = "track"
+					# Rebroadcast
+					else:
+						station = db.get(station_key)
+						extended_track["type"] = "favorite"
+
+					extended_track = Track.get_extended_track(track)
+					extended_track["track_submitter_key_name"] = station.key().name()
+					extended_track["track_submitter_name"] = station.name
+					extended_track["track_submitter_url"] = "/" + station.shortname
+
+				extended_track['client_id'] = track_to_add['client_id']
+
+				added_tracks.append(extended_track)
+
 		# Injecting traks in buffer
-		new_buffer.extend(track_to_add)
+		new_buffer.extend(added_tracks)
 
 		#Saving data
 		self.put_buffer(new_buffer)
-		return track_to_add, rejected_tracks
+		return added_tracks, rejected_tracks
 
 	def remove_track_from_buffer(self,client_id):
 		"""
