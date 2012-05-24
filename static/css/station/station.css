@@ -249,11 +249,8 @@ body{
 	overflow:hidden;
 }
 
-#media-actions{
-	display:none;
-}
-
 #media-fav{
+	visibility:hidden;
 	width:25px;
 	height:25px;
 	margin-top:-8px;
