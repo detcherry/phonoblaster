@@ -82,17 +82,16 @@ class ApiBufferHandler(BaseHandler):
 
 
 
-				# Add a taskqueue to warn everyone
-				if data:
-					task = Task(
-						url = "/taskqueue/multicast",
-						params = {
-							"station": config.VERSION + "-" + shortname,
-							"data": json.dumps(data),
-							"server_time": timegm(station_proxy.station.updated.utctimetuple())
-						}
-					)
-					task.add(queue_name="buffer-queue")
+			# Add a taskqueue to warn everyone
+			if data:
+				task = Task(
+					url = "/taskqueue/multicast",
+					params = {
+						"station": config.VERSION + "-" + shortname,
+						"data": json.dumps(data),
+						"server_time": timegm(station_proxy.station.updated.utctimetuple())
+				
+				task.add(queue_name="buffer-queue")
 
 		else:
 			response = {'response':False, error:'-1', 'message': 'Station with shortname : '+shortname+' not found.'}
