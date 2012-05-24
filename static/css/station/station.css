@@ -390,6 +390,7 @@ a.listener img{
 /* ------ PANEL BOX ------ */
 
 #panel-box{
+	display:none;
 	position:absolute;
 	z-index:-1;
 	top:35px;
@@ -530,7 +531,7 @@ a.listener img{
 /* -------- PANEL --------*/
 
 #panel{
-	display:none;
+	xdisplay:none;
 	position:relative;
 	top:0px;
 	left:440px;
@@ -552,6 +553,7 @@ a.listener img{
 
 #tabs-wrapper a.hide-panel{
 	display:block;
+	visibility:hidden;
 	margin-top:-9px;
 	margin-left:-9px;
 }

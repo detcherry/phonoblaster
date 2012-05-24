@@ -24,30 +24,31 @@
 {% endblock %}
 
 {% if not user_proxy %}
-	{% block header %}
-	<div class="topbar">
-		<div class="topbar-inner">
-			<div class="container">
-				<h1>Phonoblaster</h1>
-				<a id="logo" href="/"></a>
-				<div id="menu">
-				{% if user_proxy %}
-					<div>
-						<a href="/">Home</a>
+	<!-- Remove the left part of the block header -->
+	<!-- 
+		<div class="topbar">
+			<div class="topbar-inner">
+				<div class="container">
+					<h1>Phonoblaster</h1>
+					<a id="logo" href="/"></a>
+					<div id="menu">
+					{% if user_proxy %}
+						<div>
+							<a href="/">Home</a>
+						</div>
+						<div>
+							<a href="/user/{{ user_proxy.user.key.name }}" class="profile">
+								<img src="https://graph.facebook.com/{{ user_proxy.user.key.name }}/picture?type=square"/>
+								<span>Profile</span>
+							</a>
+						</div>
+						<div><a href="#" class="logout">Logout</a></div>
+					{% endif %}
 					</div>
-					<div>
-						<a href="/user/{{ user_proxy.user.key.name }}" class="profile">
-							<img src="https://graph.facebook.com/{{ user_proxy.user.key.name }}/picture?type=square"/>
-							<span>Profile</span>
-						</a>
-					</div>
-					<div><a href="#" class="logout">Logout</a></div>
-				{% endif %}
 				</div>
 			</div>
 		</div>
-	</div>
-	{% endblock %}
+	-->
 {% endif %}
 
 {% block main %}
