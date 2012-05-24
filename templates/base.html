@@ -108,14 +108,14 @@
 				// Check the result of the user status
 				function checkLoginStatus(response) {
 					if(response && response.status == 'connected') {
-						PHB.log('User is authorized');
+						PHB.log('User is connected');
 						//the loggin button is not present on every page
 						if ($("a.login").length > 0) {
 							//Refreshing window in order to authenticate user
 							window.location.reload();
 						};
 					} else {
-						PHB.log('User is not authorized');
+						PHB.log('User is not connected');
 					}
 				}
 				
