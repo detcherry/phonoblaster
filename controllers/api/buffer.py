@@ -14,7 +14,6 @@ from models.api.station import StationApi
 from models.db.station import Station
 
 class ApiBufferHandler(BaseHandler):
-	@login_required
 	def get(self):
 		# Getting station shortname and initializing station proxy
 		shortname = self.request.get('shortname')
@@ -24,8 +23,11 @@ class ApiBufferHandler(BaseHandler):
 			buffer = station_proxy.buffer_and_timestamp['buffer']
 			timestamp = station_proxy.buffer_and_timestamp['timestamp']
 
-			# Conveerting timestamp (stored as UTC time) to isoformat before sending JSON
-			buffer_and_timestamp = {'buffer':buffer, 'timestamp': timestamp.isoformat()}
+			# Converting timestamp (stored as UTC time) to isoformat before sending JSON
+			buffer_and_timestamp = {
+				'buffer': buffer, 
+				'timestamp': timegm(timestamp.utctimetuple()),
+			}
 			self.response.out.write(json.dumps(buffer_and_timestamp))
 
 		else:
