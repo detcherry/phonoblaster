@@ -308,15 +308,16 @@ Global number of stations: %s
 		current_track = current_track_infos[1]
 		now_time_in_current_track = current_track_infos[2]
 		duration_before_current_track = 0
-		logging.info(current_track['client_id'])
-
-		for i in xrange(len(new_buffer)):
-			logging.info(duration_before_current_track)
-			track = new_buffer[i]
-			if current_track['client_id'] != track['client_id']:
-				duration_before_current_track += track['youtube_duration']
-			else:
-				break
+		
+		if current_track is not None:
+			logging.info(current_track['client_id'])
+			for i in xrange(len(new_buffer)):
+				logging.info(duration_before_current_track)
+				track = new_buffer[i]
+				if current_track['client_id'] != track['client_id']:
+					duration_before_current_track += track['youtube_duration']
+				else:
+					break
 
 		#Setting new timestamp
 		new_timestamp = now-timedelta(0,duration_before_current_track + now_time_in_current_track)
