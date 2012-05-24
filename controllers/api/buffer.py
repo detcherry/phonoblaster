@@ -62,6 +62,7 @@ class ApiBufferHandler(BaseHandler):
 						"entity": "buffer",
 						"event": "add",
 						"content": tracks_to_add,
+						"server_time": timegm(station_proxy.station.updated.utctimetuple())
 					}
 			else:
 				# Changing track position in buffer
@@ -73,6 +74,7 @@ class ApiBufferHandler(BaseHandler):
 						"entity": "buffer",
 						"event": "change",
 						"content": {'track': youtube_tracks[0], 'position': int(position)},
+						"server_time": timegm(station_proxy.station.updated.utctimetuple())
 					}
 				elif isCurrentTrack:
 					response = {'response':False, 'error':0, 'message': 'It is not possible to add a track at the first position of the buffer (position of the currently played track)'}
@@ -88,8 +90,7 @@ class ApiBufferHandler(BaseHandler):
 					url = "/taskqueue/multicast",
 					params = {
 						"station": config.VERSION + "-" + shortname,
-						"data": json.dumps(data),
-						"server_time": timegm(station_proxy.station.updated.utctimetuple())
+						"data": json.dumps(data)
 						}
 					)
 				
@@ -141,6 +142,7 @@ class ApiBufferDeleteHandler(BaseHandler):
 						"entity": "buffer",
 						"event": "remove",
 						"content": key_name,
+						"server_time": timegm(station_proxy.station.updated.utctimetuple()),
 					}
 
 					task = Task(
@@ -148,7 +150,6 @@ class ApiBufferDeleteHandler(BaseHandler):
 						params = {
 							"station": config.VERSION + "-" + shortname,
 							"data": json.dumps(data),
-							"server_time": timegm(station_proxy.station.updated.utctimetuple())
 						},
 					)
 					task.add(queue_name="buffer-queue")
