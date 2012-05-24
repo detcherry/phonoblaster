@@ -39,13 +39,16 @@ class ApiBufferHandler(BaseHandler):
 		shortname = self.request.get('shortname')
 		youtube_tracks = json.loads(self.request.get('tracks'))
 		position = self.request.get('position')
+		
+		logging.info(youtube_tracks)
+		logging.info(position)
 
 		station_proxy = StationApi(shortname)
 
 		data = None
 
 		if(station_proxy.station):
-			# Resetting buffer
+			# Reset buffer
 			station_proxy.reset_buffer()
 
 			if position is '':
@@ -53,9 +56,17 @@ class ApiBufferHandler(BaseHandler):
 				tracks_to_add, rejected_tracks = station_proxy.add_tracks_to_buffer(youtube_tracks)
 
 				if len(rejected_tracks) > 0:
-					response = {'response':False, 'error':1, 'message': 'Some tracks were rejected because a buffer cannot contain more than 30 tracks.', 'rejected_tracks':rejected_tracks}
+					response = {
+						'response': False,
+						'error': 1, 
+						'message': 'Some tracks were rejected because a buffer cannot contain more than 30 tracks.',
+						'rejected_tracks': rejected_tracks
+					}
 				else:
-					response = {'response': True, 'message': 'Adding tracks to buffer done successfully.'}
+					response = {
+						'response': True,
+						'message': 'Adding tracks to buffer done successfully.'
+					}
 
 				if len(tracks_to_add)>0:
 					data = {
@@ -68,19 +79,29 @@ class ApiBufferHandler(BaseHandler):
 				changeDone, isCurrentTrack = station_proxy.move_tack_in_buffer(youtube_tracks[0]['client_id'], int(position))
 
 				if changeDone:
-					response = {'response':True, 'message': 'Track with client_id : '+youtube_tracks[0]['client_id']+' is now at : '+position}
+					response = {
+						'response':True, 
+						'message': 'Track with client_id : '+youtube_tracks[0]['client_id']+' is now at : '+position
+					}
+					
 					data = {
 						"entity": "buffer",
 						"event": "change",
 						"content": {'track': youtube_tracks[0], 'position': int(position)},
 					}
 				elif isCurrentTrack:
-					response = {'response':False, 'error':0, 'message': 'It is not possible to add a track at the first position of the buffer (position of the currently played track)'}
+					response = {
+						'response':False,
+						'error':0, 
+						'message': 'It is not possible to add a track at the first position of the buffer (position of the currently played track)'
+					}
 
 				else:
-					response = {'response': False, 'error':2, 'message': 'Position not in range.'}
-
-
+					response = {
+						'response': False,
+						'error':2, 
+						'message': 'Position not in range.'
+					}
 
 				# Add a taskqueue to warn everyone
 				if data:
@@ -95,8 +116,11 @@ class ApiBufferHandler(BaseHandler):
 					task.add(queue_name="buffer-queue")
 
 		else:
-			response = {'response':False, error:'-1', 'message': 'Station with shortname : '+shortname+' not found.'}
-
+			response = {
+				'response':False,
+				'error':-1, 
+				'message': 'Station with shortname : '+ shortname +' not found.'
+			}
 
 		self.response.out.write(json.dumps(response))
 
