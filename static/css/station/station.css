@@ -390,7 +390,6 @@ a.listener img{
 /* ------ PANEL BOX ------ */
 
 #panel-box{
-	display:none;
 	position:absolute;
 	z-index:-1;
 	top:35px;
@@ -798,7 +797,7 @@ input#search:focus{
 }
 
 .item a.item-cross{
-	display:none;
+	visibility:hidden;
 	float:left;
 	margin-right:-6px;
 	margin-top:-2px;
@@ -811,7 +810,7 @@ input#search:focus{
 }
 
 .item:hover a.item-cross{
-	display:block;
+	visibility:visible;
 }
 
 .item:hover a.item-cross:hover{
@@ -820,7 +819,7 @@ input#search:focus{
 }
 
 #live:hover a.item-cross{
-	display:none;
+	visibility:hidden;
 }
 
 .item-subtitle{
@@ -863,7 +862,7 @@ input#search:focus{
 }
 
 .item a.preview{
-	display:none;
+	visibility:hidden;
 	float:right;
 	margin-right:8px;
 	height:22px;
@@ -873,7 +872,7 @@ input#search:focus{
 }
 
 .item:hover a.preview{
-	display:block;
+	visibility:visible;
 }
 
 .item:hover a.preview:hover{
