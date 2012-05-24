@@ -159,6 +159,12 @@ body{
 	height:20px;
 }
 
+#media p{
+	margin-top:95px;
+	width:100%;
+	text-align:center;
+}
+
 #media-bar{
 	width:100%;
 	height:10px;

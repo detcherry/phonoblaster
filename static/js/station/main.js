@@ -20,7 +20,7 @@ StationClient.prototype = {
 		this.session_manager = null;
 		this.chat_manager = null;
 		this.suggestion_manager = null;
-		this.queue_manager = null;
+		this.buffer_manager = null;
 		this.search_manager = null;
 		this.track_manager = null;
 		this.favorite_manager = null;
@@ -99,7 +99,7 @@ StationClient.prototype = {
 		var pubnub_channel = PHB.version + "-" + this.station.shortname
 		
 		PHB.time(function(){
-			//that.queue_manager = new QueueManager(that); // Fetching
+			that.buffer_manager = new BufferManager(that); // Fetching
 			that.search_manager = new SearchManager(that); // No Fetching
 			
 			that.chat_manager = new ChatManager(that); // Fetching
