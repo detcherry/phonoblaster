@@ -38,7 +38,7 @@ from controllers.company.company import PressFrHandler
 
 application = webapp.WSGIApplication(
 	[
-		('/api/buffer/',ApiBufferHandler),
+		('/api/buffer',ApiBufferHandler),
 		('/api/buffer/([\w.]+)', ApiBufferDeleteHandler),
 		('/api/queue', ApiQueueHandler),
 		('/api/queue/([\w.]+)', ApiQueueDeleteHandler),
