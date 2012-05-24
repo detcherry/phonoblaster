@@ -71,7 +71,7 @@ class ApiBufferHandler(BaseHandler):
 				if len(tracks_to_add)>0:
 					data = {
 						"entity": "buffer",
-						"event": "add",
+						"event": "new",
 						"content": tracks_to_add,
 					}
 			else:
@@ -111,7 +111,8 @@ class ApiBufferHandler(BaseHandler):
 						"station": config.VERSION + "-" + shortname,
 						"data": json.dumps(data),
 						"server_time": timegm(station_proxy.station.updated.utctimetuple())
-				
+					}
+				)
 				task.add(queue_name="buffer-queue")
 
 		else:
