@@ -229,7 +229,7 @@
 			$.ajax({
 				url: "/api/buffer",
 				type: "POST",
-				data: {'shortname':that.getShortname(), 'tracks' :JSON.stringify([buffer[1]]), 'position': new_index},
+				data: {'shortname':that.getShortname(), 'track' :JSON.stringify(buffer[1]), 'position': new_index},
 				dataType: "json",
 				timeout: 60000,
 				error: function(xhr, status, error){
