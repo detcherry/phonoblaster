@@ -45,9 +45,6 @@ class ApiBufferHandler(BaseHandler):
 		data = None
 
 		if(station_proxy.station):
-			# Reset buffer
-			station_proxy.reset_buffer()
-
 			if position is '':
 				# Adding tracks to buffer
 				extended_broadcast = station_proxy.add_track_to_buffer(incoming_track)
@@ -75,9 +72,9 @@ class ApiBufferHandler(BaseHandler):
 					
 			else:
 				# Changing track position in buffer
-				changeDone, isCurrentTrack = station_proxy.move_tack_in_buffer(incoming_track['client_id'], int(position))
+				extended_broadcast = station_proxy.move_tack_in_buffer(incoming_track['client_id'], int(position))
 
-				if changeDone:
+				if extended_broadcast:
 					response = {
 						'response':True, 
 						'message': 'Track with client_id : '+incoming_track['client_id']+' is now at : '+position
@@ -86,21 +83,14 @@ class ApiBufferHandler(BaseHandler):
 					data = {
 						"entity": "buffer",
 						"event": "change",
-						"content": {'track': incoming_track, 'position': int(position)},
+						"content": {'track': extended_broadcast, 'position': int(position)},
 						"server_time": timegm(station_proxy.station.updated.utctimetuple())
 					}
-				elif isCurrentTrack:
+				else:
 					response = {
 						'response':False,
 						'error':0, 
-						'message': 'It is not possible to add a track at the first position of the buffer (position of the currently played track)'
-					}
-
-				else:
-					response = {
-						'response': False,
-						'error':2, 
-						'message': 'Position not in range.'
+						'message': 'Error while changing position (at '+position+') of incomming track with client_id = '+incoming_track['client_id']
 					}
 
 			# Add a taskqueue to warn everyone
@@ -134,9 +124,6 @@ class ApiBufferDeleteHandler(BaseHandler):
 		response = {}
 
 		if(station_proxy.station):
-			# Resetting buffer
-			station_proxy.reset_buffer()
-
 			buffer = station_proxy.buffer_and_timestamp['buffer'][::]
 			
 			if len(buffer) < 2:
