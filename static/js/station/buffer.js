@@ -5,7 +5,7 @@ $(function(){
 	
 	$("#buffer-tab .tab-content:nth-child(2)").sortable({
 		
-		items: ".item[id!=live]",
+		items: ".item:not(:first)",
 		zIndex: 4000,
 		
 		// During sorting
@@ -109,8 +109,22 @@ BufferManager.prototype.getCallback = function(buffer){
 		this.items.push(new_item);
 	}
 	
+	// Organize the buffer
+	this.order()
+	
+	// Play the new live track
+	this.play()
+	
+	// Display the UI
+	this.UIEmpty()
+	for(var i=0, c=this.items.length; i<c; i++){
+		var item = this.items[i];
+		var new_item_div = this.UIBuild(item);
+		this.UIAppend(new_item_div);
+	}
+	
 	// Get the live track, play it, and order buffer in UI
-	this.refresh();
+	//this.refresh();
 }
 
 BufferManager.prototype.serverToLocalItem = function(content){
@@ -120,6 +134,116 @@ BufferManager.prototype.serverToLocalItem = function(content){
 	}
 	return item
 }
+
+//--------------------------------- INCOMING ---------------------------------------
+
+BufferManager.prototype.add = function(new_event){
+	// event = incoming item + information (position, created)
+	// state = event + buffer_before + buffer_after
+	
+	var item = this.serverToLocalItem(new_event.item);
+	
+	var that = this;
+	that.process(new_event, function(buffer_before, buffer_after, previous_item){
+		
+		var new_state = {
+			"event": new_event,
+			"buffer_before": buffer_before,
+			"buffer_after": buffer_after,
+		}
+		that.history.push(new_state);
+		that.items = buffer_after;
+		
+		that.UIAdd(item, previous_item);
+	})	
+}
+
+BufferManager.prototype.remove = function(new_event){
+	
+	var that = this;
+	that.process(new_event, function(buffer_before, buffer_after, previous_item){
+		
+		var new_state = {
+			"event": new_event,
+			"buffer_before": buffer_before,
+			"buffer_after": buffer_after,
+		}
+		that.history.push(new_state);
+		that.items = buffer_after;
+		
+		that.UIRemove(new_event.id);
+	})
+}
+
+BufferManager.prototype.filter = function(new_event, callback){
+	
+	var created = new_event.created
+	var past_states = [];
+	var next_events = [new_event];
+	
+	// Browse history to filter events that happened before and after the new event
+	for(var i=0, c=this.history.length; i<c; i++){
+		var state = this.history[i];
+		var event = state.event;
+		
+		// Normal case: the new event happened after
+		if(event.created <= created){
+			past_states.push(state);
+		}
+		// Unusual case due to PubNub: the new event happened before
+		else{
+			next_events.push(event);
+		}
+	}
+	
+	// Determine which buffer state to build on top of
+	var buffer_before = this.items.slice(0);
+	// If the past states list is not empty, get the last item buffer
+	if(past_states.length > 0){
+		buffer_before = past_states[past_states.length-1].buffer_after;
+	}
+	
+	callback(buffer_before, next_events);
+}
+
+//BufferManager.prototype.process = function(buffer_before, next_events, callback){
+BufferManager.prototype.process = function(new_event, callback){
+	
+	var that = this;
+	// Figure out the right position in the history to insert the event
+	this.filter(new_event, function(buffer_before, next_events){
+		
+		var buffer_after = buffer_before.slice(0);
+		var previous_item = null;
+		for(var i=0, c=next_events.length; i<c; i++){
+			event = next_events[i]
+
+			if(event.id){
+				// Remove the item with this id
+				for(var j=0, d=buffer_after.length; j<d; j++){
+					if(event.id == buffer_after[j].id){
+						buffer_after.splice(j,1);
+						break;
+					}
+				}
+			}
+			else{
+				if(event.position){
+					// Insert the item in the right position
+				}
+				else{
+					// Add it at the end of the list
+					var new_item = that.serverToLocalItem(event.item);
+					previous_item = buffer_after[buffer_after.length-1]
+					buffer_after.push(new_item);
+				}
+			}
+		}
+		
+		callback(buffer_before, buffer_after, previous_item)		
+	})	
+}
+
 
 //--------------------------------- POST methods -----------------------------------
 
@@ -141,22 +265,12 @@ BufferManager.prototype.postSubmit = function(btn, incoming_item){
 		// Format the Track item into a Broadcast item
 		var new_item = this.prePostBuild(incoming_item);
 		
-		// Display "queued" message
+		// Display "added" message
 		this.UISuccess(btn);
 		
-		/*
-		var ui_live_id = this.UILive();
-		if(ui_live_id != ""){
-			// Append the new item locally
-			var new_item_div = this.UIBuild(new_item)
-			this.UIAppend(new_item_div);
-		}
-		else{
-			// Put it live if there was no item before
-			this.UILiveSet(new_item);
-			this.youtube_manager.init(new_item.content.youtube_id, 0);
-		}
-		*/
+		// Append the new item locally
+		new_item_div = this.UIBuild(new_item)
+		this.UIAppend(new_item_div);
 		
 		// POST request to the server
 		var that = this;
@@ -178,20 +292,6 @@ BufferManager.prototype.postData = function(item){
 	return data
 },
 
-//--------------------------------- Buffer Status -----------------------------------
-
-BufferManager.prototype.UIRoom = function(){
-
-	var room = 30;
-	if(this.UILive()){
-		var items_selector = this.selector + " .item"
-		var items_number = $(items_selector).length
-		room = 29 - items_number;
-	}
-	
-	return room
-}
-
 //------------------------------------- UI  -----------------------------------------
 
 // Returns the current live item 
@@ -202,11 +302,11 @@ BufferManager.prototype.UILive = function(){
 
 BufferManager.prototype.UISuccess = function(btn){
 	btn.addClass("success")
-	btn.html("Queued")
+	btn.html("Added")
 	
 	setTimeout(function(){
 		btn.removeClass("success")
-		btn.html("Queue")
+		btn.html("Add")
 	}, 2000)
 }
 
@@ -216,7 +316,7 @@ BufferManager.prototype.UIFail = function(btn){
 	
 	setTimeout(function(){
 		btn.removeClass("danger")
-		btn.html("Queue")
+		btn.html("Add")
 	}, 2000)
 },
 
@@ -321,6 +421,18 @@ BufferManager.prototype.UIEmpty = function(){
 	$(that.selector).empty();
 }
 
+BufferManager.prototype.UIRoom = function(){
+
+	var room = 30;
+	if(this.UILive()){
+		var items_selector = this.selector + " .item"
+		var items_number = $(items_selector).length
+		room = 29 - items_number;
+	}
+	
+	return room
+}
+
 //------------------------------------- LIVE -----------------------------------------
 
 BufferManager.prototype.getBufferDuration = function(){
@@ -331,6 +443,78 @@ BufferManager.prototype.getBufferDuration = function(){
 	return total_duration;
 }
 
+// Refresh the live track and the buffer order
+BufferManager.prototype.order = function(){
+	var buffer_duration = this.getBufferDuration();
+	var offset = ((PHB.now() - this.timestamp)) % buffer_duration
+	var before = 0;
+	var start = 0;
+	var timeout = 0;
+	
+	var new_live_item = null;
+	var ordered_buffer = [];
+	
+	for(var i=0, c=this.items.length; i<c; i++){
+		var item = this.items[i];
+		var duration = item.content.youtube_duration;
+		
+		// This is the current track 
+		if(before + duration > offset){
+			start = offset - before;
+			timeout = duration - start;
+					
+			var previous_items = this.items.slice(0,i);
+			var new_live_item = this.items[i];
+			var next_items = this.items.slice(i+1);
+			
+			var ordered_buffer = [new_live_item].concat(next_items, previous_items);
+			break;
+		}
+		// We must keep browsing the list before finding the current track
+		else{
+			before += duration
+		}
+	}
+	
+	// Update data
+	this.live_item = new_live_item
+	this.items = ordered_buffer
+	this.timestamp = PHB.now() - start;
+}
+
+// Play the new live track
+BufferManager.prototype.play = function(){
+	var live_item = this.live_item;
+	var start = PHB.now() - this.timestamp;
+	var timeout = live_item.content.youtube_duration - start;
+	this.youtube_manager.init(live_item, start);
+	
+	// Program the next play
+	var that = this;
+	setTimeout(function(){
+		// Refresh the UI
+		that.UIRefresh()
+		
+		// Reorganize buffer
+		that.order()
+		
+		// Play the future live track
+		that.play()
+				
+	}, timeout * 1000);
+}
+
+BufferManager.prototype.UIRefresh = function(){
+	var item_div = this.UIBuild(this.live_item);
+	
+	// Remove old live item from the top
+	this.UIRemove(this.live_item.id)
+	
+	// Replace old live item at the bottom
+	this.UIAppend(item_div)
+}
+
+/*
 BufferManager.prototype.refresh = function(){
 	// Get the live track and the buffer ordered
 	var buffer_duration = this.getBufferDuration();
@@ -374,12 +558,6 @@ BufferManager.prototype.refresh = function(){
 	for(var i=0, c=ordered_buffer.length; i<c; i++){
 		var item = ordered_buffer[i];
 		var new_item_div = this.UIBuild(item);
-		
-		// Special treatment for live track
-		if(item.id == new_live_track.id){
-			new_item_div.attr("id", "live")			
-		}
-		
 		this.UIAppend(new_item_div);
 	}
 	
@@ -393,4 +571,4 @@ BufferManager.prototype.refresh = function(){
 	}, timeout * 1000);
 	
 }
-
+*/

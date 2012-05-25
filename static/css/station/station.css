@@ -825,7 +825,7 @@ input#search:focus{
 	text-decoration:none;
 }
 
-#live:hover a.item-cross{
+.item:first-child:hover a.item-cross{
 	visibility:hidden;
 }
 
