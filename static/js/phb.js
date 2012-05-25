@@ -38,6 +38,7 @@ PhB.prototype = {
 		});
 	},
 	
+	// Returns now in seconds
 	now: function(){
 		var now = Date.parse(new Date())/1000 - this.time_delta;
 		return now;
