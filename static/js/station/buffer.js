@@ -482,9 +482,6 @@ BufferManager.prototype.play = function(){
 	this.items = ordered_buffer
 	this.timestamp = PHB.now() - start;
 	
-	PHB.log(this.live_item);
-	PHB.log(start);
-	
 	// Play the live broadcast
 	this.youtube_manager.init(new_live_item, start);
 	
