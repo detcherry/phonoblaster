@@ -240,7 +240,7 @@ Global number of stations: %s
 
 		#Updating memcache
 		memcache.set(self._memcache_station_id, station)
-		memcache.set(self._memcache_station_buffer_id, {'buffer':new_buffer, 'timestamp':new_timestamp} )
+		memcache.set(self._memcache_station_buffer_id, {'buffer':new_buffer, 'timestamp': new_timestamp} )
 
 	def reset_buffer(self):
 		buffer = self.buffer_and_timestamp['buffer'][::] # Copy the array
@@ -327,7 +327,65 @@ Global number of stations: %s
 
 		return new_timestamp
 
+	"""
+	def add_track_to_buffer(self, incoming_track):
+		new_buffer = self.buffer_and_timestamp['buffer'][::]  # Copy the array
+		room = self.room_in_buffer()
+		
+		if room > 0:
+			track = None
+			
+			if incoming_track["track_id"]:
+				track = Track.get_by_id(int(track_to_add["track_id"]))
+			else:
+				if incoming_track["youtube_id"]:
+					track = Track.get_or_insert_by_youtube_id(incoming_track, self.station)
+			
+			if track:
+				user_key = None
+				if(incoming_track["type"] == "suggestion"):
+					user_key_name = incoming_track["track_submitter_key_name"]
+					user_key = db.Key.from_path("User", user_key_name)
+				
+				extended_broadcast = {}
+				
+				# Suggested broadcast
+				if(user_key):
+					user = db.get(user_key)
+					extended_broadcast = Track.get_extended_track(track)
+					extended_broadcast["track_submitter_key_name"] = user.key().name()
+					extended_broadcast["track_submitter_name"] = user.first_name + " " + user.last_name
+					extended_broadcast["track_submitter_url"] = "/user/" + user.key().name()
+					extended_broadcast["type"] = "suggestion"
+				else:
+					station_key = Track.station.get_value_for_datastore(track)					
+					
+					# Regular broadcast
+					if(station_key == self.station.key()):
+						station = self.station
+						extended_track["type"] = "track"
+					# Rebroadcast
+					else:
+						station = db.get(station_key)
+						extended_track["type"] = "favorite"
 
+					extended_broadcast = Track.get_extended_track(track)
+					extended_broadcast["track_submitter_key_name"] = station.key().name()
+					extended_broadcast["track_submitter_name"] = station.name
+					extended_broadcast["track_submitter_url"] = "/" + station.shortname
+				
+				extended_broadcast["client_id"] = incoming_track["client_id"]
+		
+		# Injecting broadcast in buffer		
+		new_buffer.extend(extended_broadcast)
+		self.put_buffer(new_buffer)
+		
+		return extended_broadcast
+	"""
+	"""
+		FUNCTION BELOW TO REMOVE - NOT OPTIMIZED - DEPRECATED
+	
+	"""
 	def add_tracks_to_buffer(self,youtube_tracks):
 		added_tracks, rejected_tracks = [], []
 		new_buffer = self.buffer_and_timestamp['buffer'][::]  # Copy the array
