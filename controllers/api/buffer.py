@@ -50,25 +50,27 @@ class ApiBufferHandler(BaseHandler):
 
 			if position is '':
 				# Adding tracks to buffer
-				result_boolean = station_proxy.add_track_to_buffer(youtube_track)
+				extended_broadcast = station_proxy.add_track_to_buffer(youtube_track)
 
-				if not result_boolean:
+				if not extended_broadcast:
 					response = {
 						'response': False,
 						'error': 1, 
-						'message': 'buffer is full or track not found.'
+						'message': 'Buffer full or track not found.'
 					}
 				else:
 					response = {
 						'response': True,
-						'message': 'Adding track to buffer done successfully.'
+						'message': 'Track successfully added to buffer.'
 					}
 
 					data = {
 						"entity": "buffer",
 						"event": "new",
-						"content": youtube_track,
-						"server_time": timegm(station_proxy.station.updated.utctimetuple())
+						"content": {
+							"item": extended_broadcast,
+							"created": timegm(station_proxy.station.updated.utctimetuple()),
+						}
 					}
 					
 			else:

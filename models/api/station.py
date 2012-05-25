@@ -382,6 +382,7 @@ Global number of stations: %s
 		new_buffer = self.buffer_and_timestamp['buffer'][::]  # Copy the array
 		room = self.room_in_buffer()
 
+		extended_broadcast = None
 		if room > 0 :
 			track = None
 
@@ -399,47 +400,41 @@ Global number of stations: %s
 					user_key_name = youtube_track["track_submitter_key_name"]
 					user_key = db.Key.from_path("User", user_key_name)
 
-				extended_track = {}
+				extended_broadcast = Track.get_extended_track(track)
 
 				# Suggested broadcast
 				if(user_key):
 					user = db.get(user_key)
-					extended_track = Track.get_extended_track(track)
-					extended_track["track_submitter_key_name"] = user.key().name()
-					extended_track["track_submitter_name"] = user.first_name + " " + user.last_name
-					extended_track["track_submitter_url"] = "/user/" + user.key().name()
-					extended_track["type"] = "suggestion"
+					extended_broadcast["track_submitter_key_name"] = user.key().name()
+					extended_broadcast["track_submitter_name"] = user.first_name + " " + user.last_name
+					extended_broadcast["track_submitter_url"] = "/user/" + user.key().name()
+					extended_broadcast["type"] = "suggestion"
 				else:
-					station_key = Track.station.get_value_for_datastore(track)					
+					station_key = Track.station.get_value_for_datastore(track)	
 					
 					# Regular broadcast
 					if(station_key == self.station.key()):
 						station = self.station
-						extended_track["type"] = "track"
+						extended_broadcast["type"] = "track"
 					# Rebroadcast
 					else:
 						station = db.get(station_key)
-						extended_track["type"] = "favorite"
+						extended_broadcast["type"] = "favorite"
 
-					extended_track = Track.get_extended_track(track)
-					extended_track["track_submitter_key_name"] = station.key().name()
-					extended_track["track_submitter_name"] = station.name
-					extended_track["track_submitter_url"] = "/" + station.shortname
+					extended_broadcast["track_submitter_key_name"] = station.key().name()
+					extended_broadcast["track_submitter_name"] = station.name
+					extended_broadcast["track_submitter_url"] = "/" + station.shortname
 
-				extended_track['client_id'] = youtube_track['client_id']
-
+				extended_broadcast['client_id'] = youtube_track['client_id']
 
 				# Injecting traks in buffer
-				new_buffer.append(extended_track)
+				new_buffer.append(extended_broadcast)
 
 				#Saving data
 				self.put_buffer(new_buffer)
-				logging.info(self.get_current_track())
-				return True
-			else:
-				return False
-		else:
-			return False
+				
+		return extended_broadcast
+
 
 	def remove_track_from_buffer(self,client_id):
 		"""
