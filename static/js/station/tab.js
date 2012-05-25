@@ -87,8 +87,7 @@ TabManager.prototype = {
 				catch(e){PHB.log(e);}
 			},
 			afterClose: function(){
-				//if(VOLUME){
-				if(false){
+				if(VOLUME){
 					try{ytplayer.unMute();}
 					catch(e){PHB.log(e);}
 				}
@@ -119,11 +118,11 @@ TabManager.prototype = {
 		})
 	},
 	
-	// Dispatch if the user is admin (queue) or not (suggest)
+	// Dispatch if the user is admin (buffer) or not (suggest)
 	process: function(btn, to_submit){
 		// If station admin it's a broadcast
 		if(this.station_client.admin){
-			var process_manager = this.station_client.queue_manager;
+			var process_manager = this.station_client.buffer_manager;
 		}
 		// Otherwise it's a suggestion
 		else{

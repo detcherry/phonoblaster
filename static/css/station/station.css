@@ -9,6 +9,7 @@
 	- header: 1 000
 	- chat: 2 000
 	- search overlay, input and results: 3 000 -> 3001
+	- ui helper: 4000
 	- fancy box: 5000 -> 5004
 
 */
@@ -172,7 +173,6 @@ body{
 }
 
 #media-bar-filler{
-	width:50px;
 	height:10px;
 	background:rgba(0,0,0,0.7);
 }
@@ -182,6 +182,10 @@ body{
 	width:370px;
 	height:60px;
 	background:rgba(0,0,0,0.3);
+}
+
+#media-id{
+	display:none;
 }
 
 #media-picture{

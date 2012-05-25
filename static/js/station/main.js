@@ -119,14 +119,15 @@ StationClient.prototype = {
 		var event = message.event;
 		var content = message.content;
 		
+		PHB.log(message)
 		PHB.log(entity + " " + event)
 		
 		var manager = null;
 		if(entity == "session"){
 			manager = this.session_manager;
 		}
-		if(entity == "broadcast"){
-			manager = this.queue_manager;
+		if(entity == "buffer"){
+			manager = this.buffer_manager;
 		}
 		if(entity == "comment"){
 			manager = this.chat_manager;
