@@ -245,10 +245,11 @@ Global number of stations: %s
 
 	def reset_buffer(self):
 		buffer = self.buffer_and_timestamp['buffer'][::] # Copy the array
-		current_track_infos = self.get_current_track()
-		i = current_track_infos[0]
+		current_broadcast_infos = self.get_current_broadcast_infos()
+		
 
-		if i is not None:
+		if current_broadcast_infos is not None:
+			i = current_broadcast_infos['index']
 			new_buffer = buffer[i:]
 			new_buffer.extend(buffer[:i])
 			self.put_buffer(new_buffer)
@@ -269,7 +270,7 @@ Global number of stations: %s
 
 		return buffer_duration
 	
-	def get_current_track(self):
+	def get_current_broadcast_infos(self):
 		"""
 			Returns :
 				- (index_curent_track, {'track_id':track id in datastore, 'client_id':id_of_track_in_buffer ,'youtube_id':youtube_id, 'youtube_title':youtube_title, 'youtube_duration':youtube_duration}, now_time_in_track, now_time_in_buffer)
@@ -278,48 +279,60 @@ Global number of stations: %s
 		buffer = buffer_and_timestamp['buffer'][::] # Copy the array
 		timestamp = buffer_and_timestamp['timestamp']
 
+		current_broadcast_infos = None
+
 		now = datetime.utcnow()
 		buffer_duration = self.get_buffer_duration()
 		
-		if(buffer_duration == 0):
-			#buffer empty
-			return None, None, 0, 0
+		if(buffer_duration > 0):
+			now_broadcast_time = (now - timestamp).total_seconds() % buffer_duration
 
-		now_broadcast_time = (now - timestamp).total_seconds() % buffer_duration
+			current_duration = 0
 
-		current_duration = 0
+			for i in xrange(len(buffer)):
+				extended_broadcast = buffer[i]
+				current_duration += extended_broadcast['youtube_duration']
 
-		for i in xrange(len(buffer)):
-			track = buffer[i]
-			current_duration += track['youtube_duration']
-			if(current_duration>now_broadcast_time):
-				#Current track found, return its position in buffer and the corresponding track
-				return i, track, now_broadcast_time - current_duration + track['youtube_duration'], now_broadcast_time
+				if(current_duration>now_broadcast_time):
+					#Current extended_broadcast found, return its position in buffer and the corresponding extended_broadcast
+					current_broadcast_infos = {
+													'index':i,
+													'extended_broadcast': extended_broadcast,
+													'time_in_broadcast': now_broadcast_time - current_duration + extended_broadcast['youtube_duration'],
+													'time_in_buffer': now_broadcast_time
+												}
+					break
+
+		return current_broadcast_infos
 
 	def calculate_new_timestamp(self, new_buffer):
 		"""
 			Calculating new timestamp.
 		"""
 		now = datetime.utcnow()
-		current_track_infos = self.get_current_track()
-		current_track = current_track_infos[1]
-		now_time_in_current_track = current_track_infos[2]
-		duration_before_current_track = 0
-		
-		if current_track is not None:
+		current_broadcast_infos = self.get_current_broadcast_infos()
+
+		if current_broadcast_infos is not None:
+			current_broadcast = current_broadcast_infos['extended_broadcast']
+			now_time_in_current_broadcast = current_broadcast_infos['time_in_broadcast']
+			duration_before_current_broadcast = 0
+			
 			for i in xrange(len(new_buffer)):
-				track = new_buffer[i]
-				if current_track['client_id'] != track['client_id']:
-					duration_before_current_track += track['youtube_duration']
+				broadcast = new_buffer[i]
+				if current_broadcast['client_id'] != broadcast['client_id']:
+					duration_before_current_broadcast += broadcast['youtube_duration']
 				else:
 					break
 
-		#Setting new timestamp
-		new_timestamp = now-timedelta(0,duration_before_current_track + now_time_in_current_track)
+			#Setting new timestamp
+			new_timestamp = now-timedelta(0,duration_before_current_broadcast + now_time_in_current_broadcast)
 
 		return new_timestamp
 
 	def add_track_to_buffer(self,youtube_track):
+		# Reset buffer
+		self.reset_buffer()
+		
 		new_buffer = self.buffer_and_timestamp['buffer'][::]  # Copy the array
 		room = self.room_in_buffer()
 
@@ -387,29 +400,34 @@ Global number of stations: %s
 			If client_id is OK but represents the track that is being played : (False, client_id)
 
 		"""
+		# Reset buffer
+		self.reset_buffer()
+		
 		buffer = self.buffer_and_timestamp['buffer'][::] # Copy the array
-		index_track_to_find = None
+		index_broadcast_to_find = None
 
 		# Retrieving index corresponding to id
 		for i in xrange(0,len(buffer)):
 			track = buffer[i]
 			if track['client_id'] == client_id:
-				index_track_to_find = i
+				index_broadcast_to_find = i
 				break
 
-		if index_track_to_find is not None:
-			current_index = self.get_current_track()[0]
+		if index_broadcast_to_find is not None:
+			current_broadcast_infos = self.get_current_broadcast_infos()
+			if current_broadcast_infos:
+				current_index = current_broadcast_infos['index']
 
-			if(current_index != index_track_to_find):
-				# index retrieved and not corresponding to the current played track
-				buffer.pop(index_track_to_find)
+				if(current_index != index_broadcast_to_find):
+					# index retrieved and not corresponding to the current played track
+					buffer.pop(index_broadcast_to_find)
 
-				# Saving data
-				self.put_buffer(buffer)
-				return (True, client_id)
-			else:
-				# index retrived and corresponding to the currently plyayed track
-				return (False, client_id)
+					# Saving data
+					self.put_buffer(buffer)
+					return (True, client_id)
+				else:
+					# index retrived and corresponding to the currently plyayed track
+					return (False, client_id)
 		else:
 			# index not retrieved, the id is not valid
 			return (False, None)
@@ -422,31 +440,28 @@ Global number of stations: %s
 			If the current track corresponds to a track which position has to change : return (False, True)
 			Otherwise return (False, False)
 		"""
-		buffer = self.buffer_and_timestamp['buffer'][::] ## Copy the array
-		doChange = False
-		isCurrentTrack = False
+		# Reset buffer
+		self.reset_buffer()
+		
+		buffer = self.buffer_and_timestamp['buffer'][::] # Copy the array
+		extended_broadcast = None
+
 		if position>=0 and position<len(buffer) :
-			current_track_infos = self.get_current_track()
+			current_broadcast_infos = self.get_current_broadcast_infos()
 
-			if(current_track_infos[0] is not None):
-				if(current_track_infos[0] == position or current_track_infos[1]['client_id'] == client_id):
-					#The current track is being moved
-					doChange = False
-					isCurrentTrack = True
-				else:
-					doChange = True
-					isCurrentTrack = False
-
-			if doChange:
-				buffer.insert(position, buffer.pop(current_track_infos[0]))
-				# Saving data
-				self.put_buffer(buffer)
+			if current_broadcast_infos is not None :
+				extended_broadcast = current_broadcast_infos['extended_broadcast']
+				current_index = current_broadcast_infos['index']
+				if not ( current_index == position or extended_broadcast['client_id'] == client_id):
+					buffer.insert(position, buffer.pop(current_index))
+					# Saving data
+					self.put_buffer(buffer)
 
 		else:
 			logging.info("In StationApi.move_tack_in_buffer, position is not in the range [0,"+str(len(buffer))+"[")
 			pass
 
-		return doChange, isCurrentTrack
+		return extended_broadcast
 
 	# Returns the room in the queue
 	def room_in_buffer(self):
