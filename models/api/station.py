@@ -239,6 +239,7 @@ Global number of stations: %s
 		station.put()
 
 		#Updating memcache
+		self.buffer_and_timestamp = {'buffer':new_buffer, 'timestamp': new_timestamp}
 		memcache.set(self._memcache_station_id, station)
 		memcache.set(self._memcache_station_buffer_id, {'buffer':new_buffer, 'timestamp': new_timestamp} )
 
@@ -248,13 +249,12 @@ Global number of stations: %s
 		i = current_track_infos[0]
 
 		if i is not None:
-			new_buffer = buffer[:i]
-			new_buffer.extend(buffer[i:])
+			new_buffer = buffer[i:]
+			new_buffer.extend(buffer[:i])
 			self.put_buffer(new_buffer)
 			return True
 		else:
 			return False
-
 
 
 	def get_buffer_duration(self):
@@ -263,7 +263,7 @@ Global number of stations: %s
 		"""
 		buffer = self.buffer_and_timestamp['buffer'][::] # Copy the array
 		buffer_duration = 0
-		logging.info(buffer)
+
 		if buffer:
 			buffer_duration = sum([t['youtube_duration'] for t in buffer])
 
@@ -300,10 +300,6 @@ Global number of stations: %s
 		"""
 			Calculating new timestamp.
 		"""
-		logging.info('Calculating new timestamp')
-		logging.info(len(new_buffer))
-		logging.info(len(self.buffer_and_timestamp['buffer']))
-
 		now = datetime.utcnow()
 		current_track_infos = self.get_current_track()
 		current_track = current_track_infos[1]
@@ -311,9 +307,7 @@ Global number of stations: %s
 		duration_before_current_track = 0
 		
 		if current_track is not None:
-			logging.info(current_track['client_id'])
 			for i in xrange(len(new_buffer)):
-				logging.info(duration_before_current_track)
 				track = new_buffer[i]
 				if current_track['client_id'] != track['client_id']:
 					duration_before_current_track += track['youtube_duration']
@@ -322,8 +316,6 @@ Global number of stations: %s
 
 		#Setting new timestamp
 		new_timestamp = now-timedelta(0,duration_before_current_track + now_time_in_current_track)
-		logging.info(new_timestamp)
-		logging.info('Finished calculating new timestamp')
 
 		return new_timestamp
 
@@ -386,30 +378,25 @@ Global number of stations: %s
 		FUNCTION BELOW TO REMOVE - NOT OPTIMIZED - DEPRECATED
 	
 	"""
-	def add_tracks_to_buffer(self,youtube_tracks):
-		added_tracks, rejected_tracks = [], []
+	def add_track_to_buffer(self,youtube_track):
 		new_buffer = self.buffer_and_timestamp['buffer'][::]  # Copy the array
 		room = self.room_in_buffer()
-		tracks_to_add = youtube_tracks[:room]
-		rejected_tracks = youtube_tracks[room:]
-		
-		for i in xrange(0,len(tracks_to_add)):
-			track_to_add = tracks_to_add[i]
 
+		if room > 0 :
 			track = None
 
-			if track_to_add["track_id"]:
-				track = Track.get_by_id(int(track_to_add["track_id"]))
+			if youtube_track["track_id"]:
+				track = Track.get_by_id(int(youtube_track["track_id"]))
 			
 			else:
-				if(track_to_add["youtube_id"]):
-					track = Track.get_or_insert_by_youtube_id(track_to_add, self.station)
+				if(youtube_track["youtube_id"]):
+					track = Track.get_or_insert_by_youtube_id(youtube_track, self.station)
 
 			if track:
 				user_key = None
 
-				if(track_to_add["type"] == "suggestion"):
-					user_key_name = track_to_add["track_submitter_key_name"]
+				if(youtube_track["type"] == "suggestion"):
+					user_key_name = youtube_track["track_submitter_key_name"]
 					user_key = db.Key.from_path("User", user_key_name)
 
 				extended_track = {}
@@ -439,16 +426,20 @@ Global number of stations: %s
 					extended_track["track_submitter_name"] = station.name
 					extended_track["track_submitter_url"] = "/" + station.shortname
 
-				extended_track['client_id'] = track_to_add['client_id']
+				extended_track['client_id'] = youtube_track['client_id']
 
-				added_tracks.append(extended_track)
 
-		# Injecting traks in buffer
-		new_buffer.extend(added_tracks)
+				# Injecting traks in buffer
+				new_buffer.append(extended_track)
 
-		#Saving data
-		self.put_buffer(new_buffer)
-		return added_tracks, rejected_tracks
+				#Saving data
+				self.put_buffer(new_buffer)
+				logging.info(self.get_current_track())
+				return True
+			else:
+				return False
+		else:
+			return False
 
 	def remove_track_from_buffer(self,client_id):
 		"""
