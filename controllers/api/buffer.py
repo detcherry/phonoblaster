@@ -23,15 +23,15 @@ class ApiBufferHandler(BaseHandler):
 		station_proxy = StationApi(shortname)
 
 		if(station_proxy.station):
-			buffer = station_proxy.buffer_and_timestamp['buffer']
-			timestamp = station_proxy.buffer_and_timestamp['timestamp']
+			broadcasts = station_proxy.buffer['broadcasts'][:]
+			timestamp = station_proxy.buffer['timestamp']
 
-			# Converting timestamp (stored as UTC time) to isoformat before sending JSON
-			buffer_and_timestamp = {
-				'buffer': buffer, 
+			# Converting timestamp (stored as UTC time) to UNIX milliseconds before sending JSON
+			buffer = {
+				'broadcasts': broadcasts, 
 				'timestamp': timegm(timestamp.utctimetuple()),
 			}
-			self.response.out.write(json.dumps(buffer_and_timestamp))
+			self.response.out.write(json.dumps(buffer))
 
 		else:
 			self.error(404)
@@ -40,7 +40,7 @@ class ApiBufferHandler(BaseHandler):
 	def post(self):
 		# getting station shortname, youtube_tracks to add and initializing station proxy
 		shortname = self.request.get('shortname')
-		youtube_track = json.loads(self.request.get('track'))
+		incoming_track = json.loads(self.request.get('track'))
 		position = self.request.get('position')
 
 		station_proxy = StationApi(shortname)
@@ -48,12 +48,9 @@ class ApiBufferHandler(BaseHandler):
 		data = None
 
 		if(station_proxy.station):
-			# Reset buffer
-			station_proxy.reset_buffer()
-
 			if position is '':
 				# Adding tracks to buffer
-				extended_broadcast = station_proxy.add_track_to_buffer(youtube_track)
+				extended_broadcast = station_proxy.add_track_to_buffer(incoming_track)
 
 				if not extended_broadcast:
 					response = {
@@ -79,32 +76,25 @@ class ApiBufferHandler(BaseHandler):
 					
 			else:
 				# Changing track position in buffer
-				changeDone, isCurrentTrack = station_proxy.move_tack_in_buffer(youtube_tracks['client_id'], int(position))
+				extended_broadcast = station_proxy.move_track_in_buffer(incoming_track['client_id'], int(position))
 
-				if changeDone:
+				if extended_broadcast:
 					response = {
 						'response':True, 
-						'message': 'Track with client_id : '+youtube_tracks[0]['client_id']+' is now at : '+position
+						'message': 'Track with client_id : '+incoming_track['client_id']+' is now at : '+position
 					}
 					
 					data = {
 						"entity": "buffer",
 						"event": "change",
-						"content": {'track': youtube_tracks[0], 'position': int(position)},
+						"content": {'track': extended_broadcast, 'position': int(position)},
 						"server_time": timegm(station_proxy.station.updated.utctimetuple())
 					}
-				elif isCurrentTrack:
+				else:
 					response = {
 						'response':False,
 						'error':0, 
-						'message': 'It is not possible to add a track at the first position of the buffer (position of the currently played track)'
-					}
-
-				else:
-					response = {
-						'response': False,
-						'error':2, 
-						'message': 'Position not in range.'
+						'message': 'Error while changing position (at '+position+') of incomming track with client_id = '+incoming_track['client_id']
 					}
 
 			# Add a taskqueue to warn everyone
@@ -138,12 +128,9 @@ class ApiBufferDeleteHandler(BaseHandler):
 		response = {}
 
 		if(station_proxy.station):
-			# Resetting buffer
-			station_proxy.reset_buffer()
-
-			buffer = station_proxy.buffer_and_timestamp['buffer'][::]
+			broadcasts = station_proxy.buffer['broadcasts'][::]
 			
-			if len(buffer) < 2:
+			if len(broadcasts) < 2:
 				response = {'response': False, 'error':0, 'message': 'A buffer cannot be empty.'}
 			else :
 				# Deleting track
