@@ -239,7 +239,7 @@ Global number of stations: %s
 		station.put()
 
 		#Updating memcache
-		self.buffer_and_timestamp = {'buffer':new_buffer, 'timestamp': new_timestamp}
+		self._buffer_and_timestamp = {'buffer':new_buffer, 'timestamp': new_timestamp}
 		memcache.set(self._memcache_station_id, station)
 		memcache.set(self._memcache_station_buffer_id, {'buffer':new_buffer, 'timestamp': new_timestamp} )
 
