@@ -20,15 +20,15 @@ class ApiBufferHandler(BaseHandler):
 		station_proxy = StationApi(shortname)
 
 		if(station_proxy.station):
-			buffer = station_proxy.buffer_and_timestamp['buffer']
-			timestamp = station_proxy.buffer_and_timestamp['timestamp']
+			broadcasts = station_proxy.buffer['broadcasts'][:]
+			timestamp = station_proxy.buffer['timestamp']
 
-			# Converting timestamp (stored as UTC time) to isoformat before sending JSON
-			buffer_and_timestamp = {
-				'buffer': buffer, 
+			# Converting timestamp (stored as UTC time) to UNIX milliseconds before sending JSON
+			buffer = {
+				'broadcasts': broadcasts, 
 				'timestamp': timegm(timestamp.utctimetuple()),
 			}
-			self.response.out.write(json.dumps(buffer_and_timestamp))
+			self.response.out.write(json.dumps(buffer))
 
 		else:
 			self.error(404)
@@ -72,7 +72,7 @@ class ApiBufferHandler(BaseHandler):
 					
 			else:
 				# Changing track position in buffer
-				extended_broadcast = station_proxy.move_tack_in_buffer(incoming_track['client_id'], int(position))
+				extended_broadcast = station_proxy.move_track_in_buffer(incoming_track['client_id'], int(position))
 
 				if extended_broadcast:
 					response = {
@@ -124,9 +124,9 @@ class ApiBufferDeleteHandler(BaseHandler):
 		response = {}
 
 		if(station_proxy.station):
-			buffer = station_proxy.buffer_and_timestamp['buffer'][::]
+			broadcasts = station_proxy.buffer['broadcasts'][::]
 			
-			if len(buffer) < 2:
+			if len(broadcasts) < 2:
 				response = {'response': False, 'error':0, 'message': 'A buffer cannot be empty.'}
 			else :
 				# Deleting track

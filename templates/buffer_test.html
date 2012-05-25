@@ -141,7 +141,7 @@
 			success: function(json){
 				PHB.log(json);
 				that.setTimestamp(new Date(json['timestamp']));
-				that.setBuffer(json['buffer']);
+				that.setBuffer(json['broadcasts']);
 				that.refresh();
 			},
 		});
