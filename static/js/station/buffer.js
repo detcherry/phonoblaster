@@ -74,11 +74,11 @@ BufferManager.prototype.get = function(){
 		},
 		success: function(json){
 			
-			if(json.buffer.length > 0){
+			if(json.broadcasts.length > 0){
 				that.timestamp = json.timestamp;
 				
 				that.empty(function(){
-					that.getCallback(json.buffer);
+					that.getCallback(json.broadcasts);
 				})
 			}
 			else{
@@ -91,8 +91,8 @@ BufferManager.prototype.get = function(){
 
 BufferManager.prototype.noData = function(){
 	// UI modifications
-	$("#media").empty();
-	$("#media").append($("<p/>").html("No live track."));
+	$("#youtube-player").empty();
+	$("#youtube-player").append($("<p/>").html("No live track."));
 	$("#media-title").html("No current track.")
 	
 	if(this.station_client.admin){
@@ -101,18 +101,15 @@ BufferManager.prototype.noData = function(){
 }
 
 // Save the intial state of the buffer and trigger the cycle
-BufferManager.prototype.getCallback = function(buffer){
+BufferManager.prototype.getCallback = function(broadcasts){
 	
 	// Format the list from the server
-	for(var i=0, c=buffer.length; i<c; i++){
-		var new_item = this.serverToLocalItem(buffer[i]);
+	for(var i=0, c=broadcasts.length; i<c; i++){
+		var new_item = this.serverToLocalItem(broadcasts[i]);
 		this.items.push(new_item);
 	}
-	
-	// Organize the buffer
-	this.order()
-	
-	// Play the new live track
+
+	// Play the new live broadcast
 	this.play()
 	
 	// Display the UI
@@ -122,9 +119,6 @@ BufferManager.prototype.getCallback = function(buffer){
 		var new_item_div = this.UIBuild(item);
 		this.UIAppend(new_item_div);
 	}
-	
-	// Get the live track, play it, and order buffer in UI
-	//this.refresh();
 }
 
 BufferManager.prototype.serverToLocalItem = function(content){
@@ -155,6 +149,13 @@ BufferManager.prototype.add = function(new_event){
 		that.items = buffer_after;
 		
 		that.UIAdd(item, previous_item);
+		
+		// In case there is no existing live item
+		if(!that.live_item){
+			that.timestamp = PHB.now();
+			
+			that.play();
+		}
 	})	
 }
 
@@ -443,8 +444,8 @@ BufferManager.prototype.getBufferDuration = function(){
 	return total_duration;
 }
 
-// Refresh the live track and the buffer order
-BufferManager.prototype.order = function(){
+// Play the new live broadcast
+BufferManager.prototype.play = function(){
 	var buffer_duration = this.getBufferDuration();
 	var offset = ((PHB.now() - this.timestamp)) % buffer_duration
 	var before = 0;
@@ -480,25 +481,20 @@ BufferManager.prototype.order = function(){
 	this.live_item = new_live_item
 	this.items = ordered_buffer
 	this.timestamp = PHB.now() - start;
-}
-
-// Play the new live track
-BufferManager.prototype.play = function(){
-	var live_item = this.live_item;
-	var start = PHB.now() - this.timestamp;
-	var timeout = live_item.content.youtube_duration - start;
-	this.youtube_manager.init(live_item, start);
+	
+	PHB.log(this.live_item);
+	PHB.log(start);
+	
+	// Play the live broadcast
+	this.youtube_manager.init(new_live_item, start);
 	
 	// Program the next play
 	var that = this;
 	setTimeout(function(){
 		// Refresh the UI
 		that.UIRefresh()
-		
-		// Reorganize buffer
-		that.order()
-		
-		// Play the future live track
+
+		// Trigger the next broadcast
 		that.play()
 				
 	}, timeout * 1000);
@@ -513,62 +509,3 @@ BufferManager.prototype.UIRefresh = function(){
 	// Replace old live item at the bottom
 	this.UIAppend(item_div)
 }
-
-/*
-BufferManager.prototype.refresh = function(){
-	// Get the live track and the buffer ordered
-	var buffer_duration = this.getBufferDuration();
-	var offset = ((PHB.now() - this.timestamp)) % buffer_duration
-	var before = 0;
-	var start = 0;
-	var timeout = 0;
-	
-	var new_live_track = null;
-	var ordered_buffer = [];
-	
-	for(var i=0, c=this.items.length; i<c; i++){
-		var item = this.items[i];
-		var duration = item.content.youtube_duration;
-		
-		// This is the current track 
-		if(before + duration > offset){
-			start = offset - before;
-			timeout = duration - start;
-					
-			var previous_tracks = this.items.slice(0,i);
-			var new_live_track = this.items[i];
-			var next_tracks = this.items.slice(i+1);
-			
-			var ordered_buffer = [new_live_track].concat(next_tracks, previous_tracks);
-			break;
-		}
-		// We must keep browsing the list before finding the current track
-		else{
-			before += duration
-		}
-	}
-	
-	// Update data
-	this.live_item = new_live_track
-	this.items = ordered_buffer
-	this.timestamp = PHB.now() - start;
-	
-	// Completly refresh the UI
-	this.UIEmpty()
-	for(var i=0, c=ordered_buffer.length; i<c; i++){
-		var item = ordered_buffer[i];
-		var new_item_div = this.UIBuild(item);
-		this.UIAppend(new_item_div);
-	}
-	
-	// Put the new track live
-	this.youtube_manager.init(new_live_track, start)
-	
-	// Program the next refresh
-	var that = this;
-	setTimeout(function(){
-		that.refresh()
-	}, timeout * 1000);
-	
-}
-*/
