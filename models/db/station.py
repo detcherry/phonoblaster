@@ -8,5 +8,5 @@ class Station(db.Model):
 	link = db.StringProperty(required = True) # Link of the facebook page
 	created = db.DateTimeProperty(auto_now_add = True)
 	updated = db.DateTimeProperty(auto_now = True)
-	buffer = db.StringListProperty()
+	broadcasts = db.StringListProperty()
 	timestamp = db.DateTimeProperty(auto_now_add=True)
