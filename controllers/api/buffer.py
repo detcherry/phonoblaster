@@ -20,8 +20,6 @@ class ApiBufferHandler(BaseHandler):
 		station_proxy = StationApi(shortname)
 
 		if(station_proxy.station):
-			# Resetting buffer
-			station_proxy.reset_buffer()
 			buffer = station_proxy.buffer_and_timestamp['buffer']
 			timestamp = station_proxy.buffer_and_timestamp['timestamp']
 
@@ -39,11 +37,8 @@ class ApiBufferHandler(BaseHandler):
 	def post(self):
 		# getting station shortname, youtube_tracks to add and initializing station proxy
 		shortname = self.request.get('shortname')
-		youtube_tracks = json.loads(self.request.get('tracks'))
+		youtube_track = json.loads(self.request.get('track'))
 		position = self.request.get('position')
-		
-		logging.info(youtube_tracks)
-		logging.info(position)
 
 		station_proxy = StationApi(shortname)
 
@@ -55,31 +50,30 @@ class ApiBufferHandler(BaseHandler):
 
 			if position is '':
 				# Adding tracks to buffer
-				tracks_to_add, rejected_tracks = station_proxy.add_tracks_to_buffer(youtube_tracks)
+				result_boolean = station_proxy.add_track_to_buffer(youtube_track)
 
-				if len(rejected_tracks) > 0:
+				if not result_boolean:
 					response = {
 						'response': False,
 						'error': 1, 
-						'message': 'Some tracks were rejected because a buffer cannot contain more than 30 tracks.',
-						'rejected_tracks': rejected_tracks
+						'message': 'buffer is full or track not found.'
 					}
 				else:
 					response = {
 						'response': True,
-						'message': 'Adding tracks to buffer done successfully.'
+						'message': 'Adding track to buffer done successfully.'
 					}
 
-				if len(tracks_to_add)>0:
 					data = {
 						"entity": "buffer",
 						"event": "new",
-						"content": tracks_to_add,
+						"content": youtube_track,
 						"server_time": timegm(station_proxy.station.updated.utctimetuple())
 					}
+					
 			else:
 				# Changing track position in buffer
-				changeDone, isCurrentTrack = station_proxy.move_tack_in_buffer(youtube_tracks[0]['client_id'], int(position))
+				changeDone, isCurrentTrack = station_proxy.move_tack_in_buffer(youtube_tracks['client_id'], int(position))
 
 				if changeDone:
 					response = {
