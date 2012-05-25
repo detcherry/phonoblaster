@@ -27,10 +27,10 @@ class Track(db.Model):
 	created = db.DateTimeProperty(auto_now_add = True)
 
 	@staticmethod
-	def get_or_insert_by_youtube_id(broadcast, station):
-		youtube_id = broadcast["youtube_id"]
-		youtube_duration = broadcast["youtube_duration"]
-		youtube_title = broadcast ["youtube_title"]
+	def get_or_insert_by_youtube_id(incoming, station):
+		youtube_id = incoming["youtube_id"]
+		youtube_duration = incoming["youtube_duration"]
+		youtube_title = incoming["youtube_title"]
 		
 		track = None
 
