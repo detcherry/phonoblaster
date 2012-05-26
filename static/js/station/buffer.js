@@ -138,42 +138,29 @@ BufferManager.prototype.add = function(new_event){
 	var item = this.serverToLocalItem(new_event.item);
 	
 	var that = this;
-	that.process(new_event, function(buffer_before, buffer_after, previous_item){
+	that.processIncoming(new_event, function(previous_item){
 		
-		var new_state = {
-			"event": new_event,
-			"buffer_before": buffer_before,
-			"buffer_after": buffer_after,
-		}
-		that.history.push(new_state);
-		that.items = buffer_after;
-		
+		// Add it to the UI
 		that.UIAdd(item, previous_item);
 		
-		// In case there is no existing live item
+		// In case there was no live item before
 		if(!that.live_item){
 			that.timestamp = PHB.now();
 			
 			that.play();
 		}
-	})	
+	})
 }
 
 BufferManager.prototype.remove = function(new_event){
 	
 	var that = this;
-	that.process(new_event, function(buffer_before, buffer_after, previous_item){
+	that.processIncoming(new_event, function(previous_item){	
 		
-		var new_state = {
-			"event": new_event,
-			"buffer_before": buffer_before,
-			"buffer_after": buffer_after,
-		}
-		that.history.push(new_state);
-		that.items = buffer_after;
-		
+		// Remove from the UI
 		that.UIRemove(new_event.id);
-	})
+		
+	});
 }
 
 BufferManager.prototype.filter = function(new_event, callback){
@@ -197,54 +184,158 @@ BufferManager.prototype.filter = function(new_event, callback){
 		}
 	}
 	
+	PHB.log("past states")
+	PHB.log(past_states)
+	PHB.log("next events")
+	PHB.log(next_events)
+	
 	// Determine which buffer state to build on top of
-	var buffer_before = this.items.slice(0);
+	var buffer_before = {};
 	// If the past states list is not empty, get the last item buffer
 	if(past_states.length > 0){
 		buffer_before = past_states[past_states.length-1].buffer_after;
+		
+		// Clean the history from all the states that are going to be recalculated
+		var history_reset = this.history.slice(0, past_states.length);
+		this.history = history_reset;
 	}
+	// If not pick up as the buffer before the current item list
+	else{
+		buffer_before = {
+			"broadcasts": this.items.slice(0),
+			"timestamp": this.timestamp,
+		}		
+	}
+	
+	PHB.log("buffer before")
+	PHB.log(buffer_before)
 	
 	callback(buffer_before, next_events);
 }
 
-//BufferManager.prototype.process = function(buffer_before, next_events, callback){
-BufferManager.prototype.process = function(new_event, callback){
+BufferManager.prototype.getDuration = function(broadcasts){
+	var total_duration = 0;
+	for(var i=0, c=broadcasts.length; i<c; i++){
+		total_duration += broadcasts[i].content.youtube_duration;
+	}
+	return total_duration;
+}
+
+BufferManager.prototype.reOrderBuffer = function(buffer, callback){
+	
+	var broadcasts = buffer.broadcasts;
+	var timestamp = buffer.timestamp;
+	
+	var buffer_duration = this.getDuration(broadcasts);
+	var offset = ((PHB.now() - timestamp)) % buffer_duration
+	var elapsed = 0;
+	
+	var new_live_item = null;
+	var start = 0;
+	var updated_buffer = {};
+	
+	for(var i=0, c=broadcasts.length; i<c; i++){
+		var item = broadcasts[i];
+		var duration = item.content.youtube_duration;
+		
+		// This is the current broadcast
+		if(elapsed + duration > offset){
+			start = offset - elapsed;
+					
+			var previous_items = broadcasts.slice(0,i);
+			var new_live_item = broadcasts[i];
+			var next_items = broadcasts.slice(i+1);
+			
+			updated_buffer = {
+				"broadcasts": [new_live_item].concat(next_items, previous_items),
+				"timestamp": PHB.now() - start,
+			}
+			
+			break;
+		}
+		// We must keep browsing the list before finding the current track
+		else{
+			elapsed += duration
+		}
+	}
+		
+	callback(new_live_item, start, updated_buffer);
+}
+
+
+BufferManager.prototype.processIncoming = function(new_event, callback){
 	
 	var that = this;
+
 	// Figure out the right position in the history to insert the event
 	this.filter(new_event, function(buffer_before, next_events){
 		
-		var buffer_after = buffer_before.slice(0);
+		var buffer_after = null;
 		var previous_item = null;
+		
+		// Browse next events list
 		for(var i=0, c=next_events.length; i<c; i++){
-			event = next_events[i]
+			
+			// Get buffer reordered before making any changes to it
+			that.reOrderBuffer(buffer_before, function(new_live_item, start, updated_buffer){
+				
+				event = next_events[i]
+				buffer_after = updated_buffer
 
-			if(event.id){
-				// Remove the item with this id
-				for(var j=0, d=buffer_after.length; j<d; j++){
-					if(event.id == buffer_after[j].id){
-						buffer_after.splice(j,1);
-						break;
+				if(event.id){
+					// Remove the item with this id
+					for(var j=0, d=buffer_after.broadcasts.length; j<d; j++){
+						if(event.id == buffer_after.broadcasts[j].id){
+							buffer_after.broadcasts.splice(j,1);
+							break;
+						}
 					}
 				}
-			}
-			else{
-				if(event.position){
-					// Insert the item in the right position
-				}
 				else{
-					// Add it at the end of the list
-					var new_item = that.serverToLocalItem(event.item);
-					previous_item = buffer_after[buffer_after.length-1]
-					buffer_after.push(new_item);
+					if(event.position){
+						// Insert the item in the right position
+					}
+					else{
+						// Add it at the end of the list
+						var new_item = that.serverToLocalItem(event.item);
+						previous_item = buffer_after.broadcasts[buffer_after.broadcasts.length-1]
+						buffer_after.broadcasts.push(new_item);
+					}
 				}
-			}
+				
+				// Build the new state and put in history
+				var new_state = {
+					"event": event,
+					"buffer_before": buffer_before,
+					"buffer_after": buffer_after,
+				}
+				that.history.push(new_state);
+
+				// Only keep a 30 elements history
+				var new_history = that.history.reverse().slice(0,30).reverse();
+				that.history = new_history;
+				
+				PHB.log("new history")
+				PHB.log(that.history)
+				
+				// Necessary for the next round in the loop
+				buffer_before = buffer_after;	
+			});
+						
 		}
 		
-		callback(buffer_before, buffer_after, previous_item)		
-	})	
+		// At the end of the buffer recalculation, set the new items list and timestamp
+		that.timestamp = buffer_after.timestamp
+		PHB.log("new timestamp")
+		PHB.log(that.timestamp)
+		that.items = buffer_after.broadcasts
+		PHB.log("new broadcasts")
+		PHB.log(that.items)
+			
+		// Callback necessary to make UI changes
+		callback(previous_item);
+	});
 }
-
 
 //--------------------------------- POST methods -----------------------------------
 
@@ -436,65 +527,37 @@ BufferManager.prototype.UIRoom = function(){
 
 //------------------------------------- LIVE -----------------------------------------
 
-BufferManager.prototype.getBufferDuration = function(){
-	var total_duration = 0;
-	for(var i=0, c=this.items.length; i<c; i++){
-		total_duration += this.items[i].content.youtube_duration;
-	}
-	return total_duration;
-}
-
 // Play the new live broadcast
 BufferManager.prototype.play = function(){
-	var buffer_duration = this.getBufferDuration();
-	var offset = ((PHB.now() - this.timestamp)) % buffer_duration
-	var before = 0;
-	var start = 0;
-	var timeout = 0;
 	
-	var new_live_item = null;
-	var ordered_buffer = [];
-	
-	for(var i=0, c=this.items.length; i<c; i++){
-		var item = this.items[i];
-		var duration = item.content.youtube_duration;
-		
-		// This is the current track 
-		if(before + duration > offset){
-			start = offset - before;
-			timeout = duration - start;
-					
-			var previous_items = this.items.slice(0,i);
-			var new_live_item = this.items[i];
-			var next_items = this.items.slice(i+1);
-			
-			var ordered_buffer = [new_live_item].concat(next_items, previous_items);
-			break;
-		}
-		// We must keep browsing the list before finding the current track
-		else{
-			before += duration
-		}
+	var that = this;
+	var buffer = {
+		"broadcasts": this.items,
+		"timestamp": this.timestamp,
 	}
 	
-	// Update data
-	this.live_item = new_live_item
-	this.items = ordered_buffer
-	this.timestamp = PHB.now() - start;
-	
-	// Play the live broadcast
-	this.youtube_manager.init(new_live_item, start);
-	
-	// Program the next play
-	var that = this;
-	setTimeout(function(){
-		// Refresh the UI
-		that.UIRefresh()
-
-		// Trigger the next broadcast
-		that.play()
+	this.reOrderBuffer(buffer, function(new_live_item, start, updated_buffer){
+		
+		// Update data
+		that.live_item = new_live_item;
+		that.items = updated_buffer.broadcasts;
+		that.timestamp = updated_buffer.timestamp;
+		
+		// Play the live broadcast
+		that.youtube_manager.init(new_live_item, start);
+		
+		var timeout = new_live_item.content.youtube_duration - start;
 				
-	}, timeout * 1000);
+		// Program the next play
+		setTimeout(function(){
+			// Refresh the UI
+			that.UIRefresh()
+
+			// Trigger the next broadcast
+			that.play()
+
+		}, timeout * 1000);
+	})
 }
 
 BufferManager.prototype.UIRefresh = function(){
