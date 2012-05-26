@@ -29,16 +29,19 @@
 					</a>
 				</div>
 			{% endfor %}
-			<div id="home-create-new-station"></div>
-			<a href="/station/create" >Create your station!</a>
-		{% else %}	
-			<a href="/station/create" class="btn primary">Create your station!</a>
 		{% endif %}
+
+		<div id="home-create-new-station">
+			<p >Create your station : </p>
+			<a href="/station/create" class="btn primary"> Start brodcasting today! <a>
+		</div>
+
+		
 	</div>
 </div>
 <div id="right-column">
 	<div class="content">
-		{% for s, t, a in feed %}
+		{% for s, t in feed %}
 			<div class="home-feed-item">
 				<div class="home-feed-station">
 					<a href="/{{ s.shortname }}">
@@ -46,15 +49,9 @@
 					</a>
 					<p><a href="/{{ s.shortname }}"><span class="middle">{{ s.name }}</span></a></p>
 					<div class="home-feed-station-right">
-						{% if a %}
-						<div class="home-feed-status on"><a href="/{{ s.shortname }}">On Air</a></div>
-						{% else %}
-						<div class="home-feed-status off"><a href="/{{ s.shortname }}">Off Air</a></div>
-						{% endif %}
 						<div class="fb-like" data-href="{{ s.link }}" data-send="false" data-layout="button_count"  data-show-faces="false"></div>
 					</div>
 				</div>
-				<div class="home-feed-arrow"></div>
 				<div class="home-feed-track">
 					<div class="home-feed-track-picture">
 						<a href="/{{ s.shortname }}"><img src="http://i.ytimg.com/vi/{{ t.id }}/default.jpg"></a>
