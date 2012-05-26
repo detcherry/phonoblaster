@@ -1,7 +1,10 @@
+import math
 import logging
 import re
 import django_setup
 from django.utils import simplejson as json
+
+from datetime import datetime
 from calendar import timegm
 
 from google.appengine.api.taskqueue import Task
@@ -61,12 +64,13 @@ class ApiBufferHandler(BaseHandler):
 						'message': 'Track successfully added to buffer.'
 					}
 
+					now = datetime.utcnow()
 					data = {
 						"entity": "buffer",
 						"event": "new",
 						"content": {
 							"item": extended_broadcast,
-							"created": timegm(station_proxy.station.updated.utctimetuple()),
+							"created": timegm(now.utctimetuple())*1000 + math.floor(now.microsecond/1000),
 						}
 					}
 					
@@ -146,11 +150,14 @@ class ApiBufferDeleteHandler(BaseHandler):
 					response = {'response': True, 'message': 'Deletion of track successful'}
 
 					# Add a taskqueue to warn everyone
+					now = datetime.utcnow()
 					data = {
 						"entity": "buffer",
 						"event": "remove",
-						"content": key_name,
-						"server_time": timegm(station_proxy.station.updated.utctimetuple()),
+						"content": {
+							"id": key_name,
+							"created": timegm(now.utctimetuple())*1000 + math.floor(now.microsecond/1000),
+						}
 					}
 
 					task = Task(

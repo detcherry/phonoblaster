@@ -119,7 +119,6 @@ StationClient.prototype = {
 		var event = message.event;
 		var content = message.content;
 		
-		PHB.log(message)
 		PHB.log(entity + " " + event)
 		
 		var manager = null;
