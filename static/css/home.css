@@ -30,6 +30,15 @@
 	margin-right: 20px;
 }
 
+#right-column #feed-title{
+	font-family: Futura Heavy;
+	font-style: oblique;
+	font-size: 14pt;
+	color: #5A5A5A;
+	margin-left: 35px;
+	margin-bottom: 15px;
+}
+
 /* ------ HOME PROFILE ----- */
 
 #home-profile{
@@ -123,7 +132,8 @@
 
 #home-create-new-station a.btn.primary {
 	float: none;
-	font-family: Futura Heavy Oblique;
+	font-family: Futura Heavy;
+	font-style: oblique;
 	font-size: 14pt;
 	color: #FFFFFF;
 	background: rgba(0, 0, 0, 0.5);
@@ -249,15 +259,15 @@
 	width: 48px;
 	-moz-border-radius: 35px;
 	border-radius: 35px;
-	/*position:absolute;
-	top:-20px;
-	left:-35px;*/
 }
 
 .home-feed-track p{
 	height:50px;
 	width:81px;
 	overflow:hidden;
+	font-family: verdana regular;
+	font-size: 10pt;
+	color: #7A7A7A;
 }
 
 .home-feed-track p a{
