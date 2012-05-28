@@ -102,6 +102,9 @@ YoutubeManager.prototype = {
 		// Show favorite button
 		if(content.track_id){
 			$("#media-fav").css("visibility","visible")
+			
+			// Reset fav icon if necessary
+			$("#media-fav a").removeClass("unfav").addClass("fav").addClass("tuto").attr("data-original-title", "Favorite this track")
 		}
 	},
 	
