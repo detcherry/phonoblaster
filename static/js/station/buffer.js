@@ -49,7 +49,7 @@ BufferManager.prototype.init = function(station_client){
 	this.live_item = null;
 	this.timestamp = null;
 	this.history = [];
-	this.youtube_manager = new YoutubeManager();
+	this.youtube_manager = new YoutubeManager(this);
 	this.recommandation_manager = null;
 		
 	// Init Methods
