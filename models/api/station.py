@@ -214,8 +214,10 @@ Global number of stations: %s
 			self._buffer = memcache.get(self._memcache_station_buffer_id)
 			if self._buffer is None:
 				station = self.station
-				if self.station.broadcasts is not None:
-					broadcasts = [json.loads(t) for t in self.station.broadcasts]
+				if station is not None and station.broadcasts is not None:
+					keys = station.broadcasts
+			 		broadcasts_entities = db.get(keys)
+			 		broadcasts = Broadcast.get_extended_broadcasts(broadcasts_entities, self.station)
 				else:
 					broadcasts = []
 				timestamp = self.station.timestamp
