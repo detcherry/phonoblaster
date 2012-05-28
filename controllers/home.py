@@ -7,6 +7,7 @@ from google.appengine.ext import db
 from base import BaseHandler
 from controllers import facebook
 from models.db.station import Station
+from models.api.station import StationApi
 from models.db.air import Air
 from models.db.track import Youtube
 
@@ -20,33 +21,31 @@ class HomeHandler(BaseHandler):
 			else:
 				user_stations = self.user_proxy.stations
 
-				q = Air.all()
-				q.order("-created")
-				feed = q.fetch(50)
+				q = Station.all()
+				q.order("-updated")
+				feed = q.fetch(10)
 
-				extended_tracks = [
-					{
-						"id": air.youtube_id,
-						"title": air.youtube_title,
-						"duration": air.youtube_duration,
-					} for air in feed]
+				current_broadcasts = []
+				latest_active_stations = []
 
-				on_air = []
-				stations = []
-				tracks = []
-				for f, e in zip(feed, extended_tracks):
-					if e:
-						stations.append(f)
-						tracks.append(e)
-						if(f.expired > datetime.utcnow()):
-							on_air.append(True)
-						else:
-							on_air.append(False)
+				for station in feed:
+					station_proxy = StationApi(station.shortname)
+					current_broadcast_infos = station_proxy.get_current_broadcast_infos()
+					
+					if current_broadcast_infos:
+						latest_active_stations.append(station)
+						current_broadcasts = current_broadcast_infos['extended_broadcast']
+						current_broadcasts = [{
+							"id": current_broadcasts['youtube_id'],
+							"title": current_broadcasts['youtube_title'],
+							"duration": current_broadcasts['youtube_duration'],
+						}]
+
 			
 				# Display all the user stations
 				template_values = {
 					"user_stations": user_stations,
-					"feed": zip(stations, tracks, on_air),
+					"feed": zip(latest_active_stations, current_broadcasts),
 				}
 				self.render("home.html", template_values)
 			
