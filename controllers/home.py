@@ -33,13 +33,14 @@ class HomeHandler(BaseHandler):
 					current_broadcast_infos = station_proxy.get_current_broadcast_infos()
 					
 					if current_broadcast_infos:
+						logging.info(current_broadcast_infos)
 						latest_active_stations.append(station)
-						current_broadcasts = current_broadcast_infos['extended_broadcast']
-						current_broadcasts = [{
-							"id": current_broadcasts['youtube_id'],
-							"title": current_broadcasts['youtube_title'],
-							"duration": current_broadcasts['youtube_duration'],
-						}]
+						current_broadcast = current_broadcast_infos['extended_broadcast']
+						current_broadcasts.append({
+							"id": current_broadcast['youtube_id'],
+							"title": current_broadcast['youtube_title'],
+							"duration": current_broadcast['youtube_duration'],
+						})
 
 			
 				# Display all the user stations
