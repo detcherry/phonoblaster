@@ -29,18 +29,27 @@
 					</a>
 				</div>
 			{% endfor %}
+			<!---->
+			<div id="home-create-new-station">
+				<div id = "no-stations">
+					<a href="/station/create"> Create a new station!<a>
+				</div>
+				
+			</div>
+		{% else %}
+			<div id="home-create-new-station">
+				<p >Start brodcasting today: </p>
+				<a href="/station/create" class="btn primary"> Create your station! <a>
+			</div>
+		
 		{% endif %}
-
-		<div id="home-create-new-station">
-			<p >Create your station : </p>
-			<a href="/station/create" class="btn primary"> Start brodcasting today! <a>
-		</div>
+		
 
 		
 	</div>
 </div>
 <div id="right-column">
-	<p id="feed-title">ACTIVE RECTENLY</p>
+	<p id="feed-title">ACTIVE RECENTLY</p>
 	<div class="content">
 		{% for s, t in feed %}
 			<div class="home-feed-item">
