@@ -6,6 +6,7 @@ function YoutubeManager(buffer_manager){
 	this.buffer_manager = buffer_manager;
 	this.item = null;
 	
+	this.scrollListen();
 	this.postListen();
 	this.deleteListen();
 }
@@ -33,13 +34,6 @@ YoutubeManager.prototype = {
 		// Player already loaded
 		try{
 			ytplayer.loadVideoById(youtube_id, start);
-			setTimeout(function(){
-				// If medium quality available
-				if(ytplayer.getAvailableQualityLevels().indexOf("medium") != -1){
-					ytplayer.setPlaybackQuality("medium");
-				}
-			},1000)
-			
 			PHB.log("Player already loaded");
 		}
 		// Player not loaded yet
@@ -255,6 +249,20 @@ YoutubeManager.prototype = {
 		}
 	},
 	
+	scrollListen: function(){
+		$(window).scroll(function(){
+			
+			var scrollTop = $(this).scrollTop();
+			var margin = scrollTop - 125;
+			if(margin > 0){
+				$("#no-scrolling-box").css("position", "fixed").css("top","15px")
+			}			
+			else{
+				$("#no-scrolling-box").css("position","static")
+			}
+			
+		})
+	},
 }
 
 //Youtube PLAY & VOLUME & ERROR management
@@ -266,12 +274,6 @@ function onYouTubePlayerReady(playerId) {
 	
 	// Triggers the video
 	ytplayer.loadVideoById(YOUTUBE_ID, START);
-	setTimeout(function(){
-		// If medium quality available
-		if(ytplayer.getAvailableQualityLevels().indexOf("medium") != -1){
-			ytplayer.setPlaybackQuality("medium");
-		}
-	},1000)
 
 	//If the volume had been turned off, mute the player
 	if(!VOLUME){

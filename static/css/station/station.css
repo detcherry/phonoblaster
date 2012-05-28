@@ -141,6 +141,10 @@ body{
 	color:#C4C4C4;
 }
 
+#no-scrolling-box{
+	width:400px;
+}
+
 /* ---------- MEDIA ---------- */
 
 #media{
