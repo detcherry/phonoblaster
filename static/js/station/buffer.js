@@ -125,7 +125,7 @@ BufferManager.prototype.getCallback = function(broadcasts){
 
 BufferManager.prototype.serverToLocalItem = function(content){
 	var item = {
-		id: content.client_id,
+		id: content.key_name,
 		content: content
 	}
 	return item
@@ -350,7 +350,7 @@ BufferManager.prototype.prePostBuild = function(item){
 	var created = PHB.now();
 
 	content = item.content;
-	content["client_id"] = channel_id + ".queued." + created + Math.floor(Math.random()*100).toString();
+	content["key_name"] = channel_id + ".queued." + created + Math.floor(Math.random()*100).toString();
 	
 	var new_item = this.serverToLocalItem(content)
 	return new_item

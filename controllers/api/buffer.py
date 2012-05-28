@@ -76,12 +76,12 @@ class ApiBufferHandler(BaseHandler):
 					
 			else:
 				# Changing track position in buffer
-				extended_broadcast = station_proxy.move_track_in_buffer(incoming_track['client_id'], int(position))
+				extended_broadcast = station_proxy.move_track_in_buffer(incoming_track['key_name'], int(position))
 
 				if extended_broadcast:
 					response = {
 						'response':True, 
-						'message': 'Track with client_id : '+incoming_track['client_id']+' is now at : '+position
+						'message': 'Track with key_name : '+incoming_track['key_name']+' is now at : '+position
 					}
 					
 					data = {
@@ -94,7 +94,7 @@ class ApiBufferHandler(BaseHandler):
 					response = {
 						'response':False,
 						'error':0, 
-						'message': 'Error while changing position (at '+position+') of incomming track with client_id = '+incoming_track['client_id']
+						'message': 'Error while changing position (at '+position+') of incomming track with key_name = '+incoming_track['key_name']
 					}
 
 			# Add a taskqueue to warn everyone
@@ -134,12 +134,12 @@ class ApiBufferDeleteHandler(BaseHandler):
 				response = {'response': False, 'error':0, 'message': 'A buffer cannot be empty.'}
 			else :
 				# Deleting track
-				deletion_result, client_id = station_proxy.remove_track_from_buffer(key_name)
+				deletion_result, key_name = station_proxy.remove_track_from_buffer(key_name)
 
 				if not deletion_result:
 					# The deletion was not successful
 					
-					if client_id:
+					if key_name:
 						# Track client id corresponds to the currently played track
 						response = {'response': False, 'error':1, 'message': 'You cannot delete the currently played track.'}
 					else:

@@ -272,7 +272,7 @@ Global number of stations: %s
 	def get_current_broadcast_infos(self):
 		"""
 			Returns :
-				- (index_curent_track, {'track_id':track id in datastore, 'client_id':id_of_track_in_buffer ,'youtube_id':youtube_id, 'youtube_title':youtube_title, 'youtube_duration':youtube_duration}, now_time_in_track, now_time_in_buffer)
+				- (index_curent_track, {'track_id':track id in datastore, 'key_name':id_of_track_in_buffer ,'youtube_id':youtube_id, 'youtube_title':youtube_title, 'youtube_duration':youtube_duration}, now_time_in_track, now_time_in_buffer)
 		"""
 		broadcasts = self.buffer['broadcasts'][::] # Copy the array
 		timestamp = self.buffer['timestamp']
@@ -318,7 +318,7 @@ Global number of stations: %s
 			
 			for i in xrange(len(new_broadcasts)):
 				broadcast = new_broadcasts[i]
-				if current_broadcast['client_id'] != broadcast['client_id']:
+				if current_broadcast['key_name'] != broadcast['key_name']:
 					duration_before_current_broadcast += broadcast['youtube_duration']
 				else:
 					break
@@ -375,7 +375,7 @@ Global number of stations: %s
 					extended_broadcast["track_submitter_name"] = station.name
 					extended_broadcast["track_submitter_url"] = "/" + station.shortname
 
-				extended_broadcast['client_id'] = incoming_track['client_id']
+				extended_broadcast['key_name'] = incoming_track['key_name']
 
 				# Injecting traks in buffer
 				new_broadcasts.append(extended_broadcast)
@@ -386,14 +386,14 @@ Global number of stations: %s
 		return extended_broadcast
 
 
-	def remove_track_from_buffer(self,client_id):
+	def remove_track_from_buffer(self,key_name):
 		"""
-			client_id is the id of the track in the buffer that has to be removed. This methods returns a tuple, the first argument i a boolean,
+			key_name is the id of the track in the buffer that has to be removed. This methods returns a tuple, the first argument i a boolean,
 			it tells if the remove was successfull, the second argument is an integer or None.
 
-			If the remove was successfull : (True, client_id).
-			If client_id does not correspond to anny track, this method returns (False, None).
-			If client_id is OK but represents the track that is being played : (False, client_id)
+			If the remove was successfull : (True, key_name).
+			If key_name does not correspond to anny track, this method returns (False, None).
+			If key_name is OK but represents the track that is being played : (False, key_name)
 
 		"""
 		broadcasts = self.reset_buffer(self.buffer['broadcasts'][::]) # Copy array and resting broadcasts
@@ -402,36 +402,36 @@ Global number of stations: %s
 		# Retrieving index corresponding to id
 		for i in xrange(0,len(broadcasts)):
 			broadcast = broadcasts[i]
-			if broadcast['client_id'] == client_id:
+			if broadcast['key_name'] == key_name:
 				index_broadcast_to_find = i
 				break
 
 		if index_broadcast_to_find is not None:
 			current_broadcast_infos = self.get_current_broadcast_infos()
 			if current_broadcast_infos:
-				current_broadcast_client_id = current_broadcast_infos['client_id']
+				current_broadcast_key_name = current_broadcast_infos['key_name']
 
-				if(current_broadcast_client_id != client_id):
+				if(current_broadcast_key_name != key_name):
 					# index retrieved and not corresponding to the current played track
-					logging.info("Broadcast with client_id="+client_id+" found and is not the currently played track. Will proceed to deletion.")
+					logging.info("Broadcast with key_name="+key_name+" found and is not the currently played track. Will proceed to deletion.")
 					broadcasts.pop(index_broadcast_to_find)
 
 					# Saving data
 					self.put_broadcasts(broadcasts)
-					return (True, client_id)
+					return (True, key_name)
 				else:
 					# index retrived and corresponding to the currently plyayed track
-					logging.info("Broadcast with client_id="+client_id+" found but is the currently played track. Will NOT proceed to deletion.")
-					return (False, client_id)
+					logging.info("Broadcast with key_name="+key_name+" found but is the currently played track. Will NOT proceed to deletion.")
+					return (False, key_name)
 		else:
 			# index not retrieved, the id is not valid
-			logging.info("Broadcast with client_id="+client_id+" NOT found. Will NOT proceed to deletion.")
+			logging.info("Broadcast with key_name="+key_name+" NOT found. Will NOT proceed to deletion.")
 			return (False, None)
 
 
-	def move_track_in_buffer(self,client_id, position):
+	def move_track_in_buffer(self,key_name, position):
 		"""
-			Moving track with client_id to new position.
+			Moving track with key_name to new position.
 			If everything went well : retrun (True,False)
 			If the current track corresponds to a track which position has to change : return (False, True)
 			Otherwise return (False, False)
@@ -445,7 +445,7 @@ Global number of stations: %s
 			if current_broadcast_infos is not None :
 				extended_broadcast = current_broadcast_infos['extended_broadcast']
 				current_index = current_broadcast_infos['index']
-				if not ( current_index == position or extended_broadcast['client_id'] == client_id):
+				if not ( current_index == position or extended_broadcast['key_name'] == key_name):
 					broadcasts.insert(position, broadcasts.pop(current_index))
 					# Saving data
 					self.put_broadcasts(broadcasts)

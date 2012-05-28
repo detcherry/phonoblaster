@@ -151,7 +151,7 @@
 		var that = this;
 		tracks = [{
 				'track_id':null,
-				'client_id':this.getShortname()+'.'+(Math.random())+'.buffer.'+(Math.random()),
+				'key_name':this.getShortname()+'.'+(Math.random())+'.buffer.'+(Math.random()),
 				'youtube_id':'Q7lInSt2Xgs',
 				'youtube_title':'1995 - Flava In Ya Ear (Remix)',
 				'youtube_duration':210,
@@ -161,7 +161,7 @@
 				'track_submitter_url' : "/" + this.getShortname(),
 			},{
 				'track_id':null,
-				'client_id':this.getShortname()+'.'+(Math.random())+'.buffer.'+(Math.random()),
+				'key_name':this.getShortname()+'.'+(Math.random())+'.buffer.'+(Math.random()),
 				'youtube_id':'blWw7bM6TS0',
 				'youtube_title':"1995 - La Suite - Clip (Prod. DJ Lo' / Réalisation : Le Garage)",
 				'youtube_duration':295,
@@ -171,7 +171,7 @@
 				'track_submitter_url' : '/wetdreams',
 			},{
 				'track_id':null,
-				'client_id':this.getShortname()+'.'+(Math.random())+'.buffer.'+(Math.random()),
+				'key_name':this.getShortname()+'.'+(Math.random())+'.buffer.'+(Math.random()),
 				'youtube_id':'l0qs_VmTlGY',
 				'youtube_title':"Nekfeu/Alpha Wann (1995) - Dans Ta Réssoi",
 				'youtube_duration':275,
@@ -203,7 +203,7 @@
 		var buffer = this.getBuffer();
 		var that = this;
 		if (buffer.length >=2) {
-			track_to_remove_id = buffer[1]['client_id'];
+			track_to_remove_id = buffer[1]['key_name'];
 			$.ajax({
 				url: "/api/buffer/"+track_to_remove_id,
 				type: "DELETE",
