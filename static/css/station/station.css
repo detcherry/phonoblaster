@@ -142,6 +142,8 @@ body{
 }
 
 #no-scrolling-box{
+	position:fixed;
+	top:150px;
 	width:400px;
 }
 
