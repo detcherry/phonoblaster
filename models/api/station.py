@@ -407,10 +407,11 @@ Global number of stations: %s
 		if index_broadcast_to_find is not None:
 			current_broadcast_infos = self.get_current_broadcast_infos()
 			if current_broadcast_infos:
-				current_index = current_broadcast_infos['index']
+				current_broadcast_client_id = current_broadcast_infos['client_id']
 
-				if(current_index != index_broadcast_to_find):
+				if(current_broadcast_client_id != client_id):
 					# index retrieved and not corresponding to the current played track
+					logging.info("Broadcast with client_id="+client_id+" found and is not the currently played track. Will proceed to deletion.")
 					broadcasts.pop(index_broadcast_to_find)
 
 					# Saving data
@@ -418,9 +419,11 @@ Global number of stations: %s
 					return (True, client_id)
 				else:
 					# index retrived and corresponding to the currently plyayed track
+					logging.info("Broadcast with client_id="+client_id+" found but is the currently played track. Will NOT proceed to deletion.")
 					return (False, client_id)
 		else:
 			# index not retrieved, the id is not valid
+			logging.info("Broadcast with client_id="+client_id+" NOT found. Will NOT proceed to deletion.")
 			return (False, None)
 
 
