@@ -243,19 +243,16 @@ Global number of stations: %s
 		memcache.set(self._memcache_station_id, station)
 		memcache.set(self._memcache_station_buffer_id, {'broadcasts':new_broadcasts, 'timestamp': new_timestamp} )
 
-	def reset_buffer(self):
-		broadcasts = self.buffer['broadcasts'][::] # Copy the array
+	def reset_buffer(self,broadcasts):
 		current_broadcast_infos = self.get_current_broadcast_infos()
 		
-
 		if current_broadcast_infos is not None:
 			i = current_broadcast_infos['index']
 			new_broadcasts = broadcasts[i:]
 			new_broadcasts.extend(broadcasts[:i])
-			self.put_broadcasts(new_broadcasts)
-			return True
+			return new_broadcasts
 		else:
-			return False
+			return broadcasts
 
 
 	def get_buffer_duration(self):
@@ -330,10 +327,7 @@ Global number of stations: %s
 		return new_timestamp
 
 	def add_track_to_buffer(self,incoming_track):
-		# Reset buffer
-		self.reset_buffer()
-		
-		new_broadcasts = self.buffer['broadcasts'][::]  # Copy the array
+		new_broadcasts = self.reset_buffer(self.buffer['broadcasts'][::])  # Copy array and resting broadcasts
 		room = self.room_in_buffer()
 
 		extended_broadcast = None
@@ -400,10 +394,7 @@ Global number of stations: %s
 			If client_id is OK but represents the track that is being played : (False, client_id)
 
 		"""
-		# Reset buffer
-		self.reset_buffer()
-		
-		broadcasts = self.buffer['broadcasts'][::] # Copy the array
+		broadcasts = self.reset_buffer(self.buffer['broadcasts'][::]) # Copy array and resting broadcasts
 		index_broadcast_to_find = None
 
 		# Retrieving index corresponding to id
@@ -440,10 +431,7 @@ Global number of stations: %s
 			If the current track corresponds to a track which position has to change : return (False, True)
 			Otherwise return (False, False)
 		"""
-		# Reset buffer
-		self.reset_buffer()
-		
-		broadcasts = self.buffer['broadcasts'][::] # Copy the array
+		broadcasts = self.reset_buffer(self.buffer['broadcasts'][::]) # Copy the array
 		extended_broadcast = None
 
 		if position>=0 and position<len(broadcasts) :
