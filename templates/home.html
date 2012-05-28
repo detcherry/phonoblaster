@@ -31,7 +31,7 @@
 			{% endfor %}
 			<!---->
 				<div id = "other-stations">
-					<a href="/station/create"> Create a new station!<a>
+					<a href="/station/create"> Create a new station<a>
 				</div>
 				
 		{% else %}
@@ -62,7 +62,10 @@
 				</div>
 				<div class="home-feed-track">
 					<div class="home-feed-track-picture">
-						<a href="/{{ s.shortname }}"><img src="http://i.ytimg.com/vi/{{ t.id }}/default.jpg"></a>
+						<a href="/{{ s.shortname }}">
+							<span class="image-wrap " style="background:url('http://i.ytimg.com/vi/{{ t.id }}/default.jpg') no-repeat center center;">
+							</span>
+						</a>
 					</div>
 					<p><a href="/{{ s.shortname }}"><span class="middle">{{ t.title }}</span></a></p>
 				</div>

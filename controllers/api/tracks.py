@@ -31,9 +31,6 @@ class ApiTracksHandler(BaseHandler):
 class ApiTracksDeleteHandler(BaseHandler):
 	@login_required
 	def delete(self, id):
-		logging.info("In ApiTracksDeleteHandler")
-		logging.info(id)
-
 		track = Track.get_by_id(int(id))
 
 		if(track):
