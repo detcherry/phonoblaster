@@ -50,6 +50,7 @@ BufferManager.prototype.init = function(station_client){
 	this.timestamp = null;
 	this.history = [];
 	this.youtube_manager = new YoutubeManager();
+	this.recommandation_manager = null;
 		
 	// Init Methods
 	this.get();
@@ -97,6 +98,7 @@ BufferManager.prototype.noData = function(){
 	
 	if(this.station_client.admin){
 		// Open the recommandation manager
+		this.recommandation_manager = new RecommendationManager(this.station_client)
 	}
 }
 
@@ -232,7 +234,10 @@ BufferManager.prototype.reOrderBuffer = function(buffer, callback){
 	
 	var new_live_item = null;
 	var start = 0;
-	var updated_buffer = {};
+	var updated_buffer = {
+		"broadcasts": [],
+		"timestamp": PHB.now(),
+	};
 	
 	for(var i=0, c=broadcasts.length; i<c; i++){
 		var item = broadcasts[i];
