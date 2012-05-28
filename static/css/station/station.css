@@ -142,6 +142,8 @@ body{
 }
 
 #no-scrolling-box{
+	position:fixed;
+	top:150px;
 	width:400px;
 }
 
@@ -829,10 +831,6 @@ input#search:focus{
 	text-decoration:none;
 }
 
-.item:first-child:hover a.item-cross{
-	visibility:hidden;
-}
-
 .item-subtitle{
 	height:22px;
 	width:327px;
@@ -912,6 +910,12 @@ input#search:focus{
 	width:173px;
 }
 
+/* ------- ITEMS (BUFFER) ------- */
+
+#buffer-tab .item:first-child:hover a.item-cross{
+	visibility:hidden;
+}
+
 /* ------- ITEM WRAPPER (SUGGESTIONS & FAVORITES) ----- */
 
 .item-wrapper{
@@ -978,12 +982,11 @@ input#search:focus{
 	width:271px;
 }
 
-/* ------- ITEM (RECOMMENDATIONS POPUP) -------- */
+/* ------ ITEM (TRACKS) ------ */
 
-#popup-recommendations{
-	
+#tracks-tab .item:hover a.item-cross{
+	visibility:hidden;
 }
-
 
 /* ------ POPUP RECOMMENDATIONS ------ */
 
