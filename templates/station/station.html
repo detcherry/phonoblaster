@@ -71,72 +71,74 @@
 				<div class="fb-like" data-href="{{ station_proxy.station.link }}" data-send="false" data-layout="button_count"  data-show-faces="false"></div>
 			</div>
 		</div>
-		<!-- Media -->
-		<div id="media">
-			<div id="youtube-player">
-				<img src="/{{tag}}/static/images/loader.gif" class="loader"/>
-			</div>
-		</div>
-		<div id="media-bar">
-			<div id="media-bar-filler"></div>
-		</div>
-		<div id="media-details">
-			<div id="media-id"><!-- Div necessary for JS --></div>
-			<div id="media-picture">
-				<!--  Example: -->
-				<!-- <img src="http://i1.ytimg.com/vi/yBP_Re9r9MI/default.jpg"/> -->
-			</div>
-			<div id="media-info">
-				<div id="media-info-top">
-					<h3>Current track</h3>
-					<div id="media-submitter">
-						<!--  Example: -->
-						<!--
-							<a href="" data-original-title="Damien Detcherry">
-								<img src="http://graph.facebook.com/damien.detcherry/picture?type=square">
-							</a>
-							<span>Rebroadcast of</span> 
-						-->
-					</div>
-				</div>
-				<div class="stroke grey"></div>
-				<div id="media-title">Loading...</div>
-				<div id="media-actions">
-					<div id="media-fav">
-					  	<a class="fav tuto" data-original-title="Favorite this track!" href="#"></a>
-					</div>
-					<div id="media-volume">
-						<a href="#" class="unmuted tuto" data-original-title="Mute the player"></a>
-					</div>
+		<div id="no-scrolling-box">
+			<!-- Media -->
+			<div id="media">
+				<div id="youtube-player">
+					<img src="/{{tag}}/static/images/loader.gif" class="loader"/>
 				</div>
 			</div>
-		</div>
-		<!-- Listeners counter -->
-		<div id="sessions">
-			<div class="stat">
-				<span class="figure">0</span>
-				<span class="title">Listeners</span>
-				<a id="tw-share" href="https://twitter.com/share?url={{ site_url }}/randomblaster&text=♫ Listening to {{ station_proxy.station.name }} radio on @phonoblaster ♫&hashtags=nowplaying" target="_blank" class="tuto" data-original-title="Share {% if is_admin %}your{% else%}this{% endif %} station on Twitter!"></a>
-				<a id="fb-share" href="#" class="tuto" data-original-title="Share {% if is_admin %}your{% else%}this{% endif %} station on Facebook!"></a>
+			<div id="media-bar">
+				<div id="media-bar-filler"></div>
 			</div>
-			<div id="listeners">
-				<!-- Example -->
-				<!--
-					<a href="" class="tuto listener" data-original-title="Damien Detcherry">
-						<img src="http://graph.facebook.com/damien.detcherry/picture?type=square">
-					</a>
-				-->
+			<div id="media-details">
+				<div id="media-id"><!-- Div necessary for JS --></div>
+				<div id="media-picture">
+					<!--  Example: -->
+					<!-- <img src="http://i1.ytimg.com/vi/yBP_Re9r9MI/default.jpg"/> -->
+				</div>
+				<div id="media-info">
+					<div id="media-info-top">
+						<h3>Current track</h3>
+						<div id="media-submitter">
+							<!--  Example: -->
+							<!--
+								<a href="" data-original-title="Damien Detcherry">
+									<img src="http://graph.facebook.com/damien.detcherry/picture?type=square">
+								</a>
+								<span>Rebroadcast of</span> 
+							-->
+						</div>
+					</div>
+					<div class="stroke grey"></div>
+					<div id="media-title">Loading...</div>
+					<div id="media-actions">
+						<div id="media-fav">
+						  	<a class="fav tuto" data-original-title="Favorite this track!" href="#"></a>
+						</div>
+						<div id="media-volume">
+							<a href="#" class="unmuted tuto" data-original-title="Mute the player"></a>
+						</div>
+					</div>
+				</div>
 			</div>
-		</div>
-		<!-- Views counter -->
-		<div id="views" class="stat">
-			<span class="figure">{{ station_proxy.number_of_views }}</span>
-			<span class="title"> Views</span>
-		</div>
-		<!-- Suggestions counter -->
-		<div id="suggestions" class="stat">
-			<span class="figure">{{ station_proxy.number_of_suggestions }}</span>
-			<span class="title"> Suggestions</span>
+			<!-- Listeners counter -->
+			<div id="sessions">
+				<div class="stat">
+					<span class="figure">0</span>
+					<span class="title">Listeners</span>
+					<a id="tw-share" href="https://twitter.com/share?url={{ site_url }}/randomblaster&text=♫ Listening to {{ station_proxy.station.name }} radio on @phonoblaster ♫&hashtags=nowplaying" target="_blank" class="tuto" data-original-title="Share {% if is_admin %}your{% else%}this{% endif %} station on Twitter!"></a>
+					<a id="fb-share" href="#" class="tuto" data-original-title="Share {% if is_admin %}your{% else%}this{% endif %} station on Facebook!"></a>
+				</div>
+				<div id="listeners">
+					<!-- Example -->
+					<!--
+						<a href="" class="tuto listener" data-original-title="Damien Detcherry">
+							<img src="http://graph.facebook.com/damien.detcherry/picture?type=square">
+						</a>
+					-->
+				</div>
+			</div>
+			<!-- Views counter -->
+			<div id="views" class="stat">
+				<span class="figure">{{ station_proxy.number_of_views }}</span>
+				<span class="title"> Views</span>
+			</div>
+			<!-- Suggestions counter -->
+			<div id="suggestions" class="stat">
+				<span class="figure">{{ station_proxy.number_of_suggestions }}</span>
+				<span class="title"> Suggestions</span>
+			</div>
 		</div>
 		<!-- Panel box (Upper right) -->
 		<div id="panel-box">

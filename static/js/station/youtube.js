@@ -6,6 +6,7 @@ function YoutubeManager(buffer_manager){
 	this.buffer_manager = buffer_manager;
 	this.item = null;
 	
+	this.scrollListen();
 	this.postListen();
 	this.deleteListen();
 }
@@ -255,6 +256,20 @@ YoutubeManager.prototype = {
 		}
 	},
 	
+	scrollListen: function(){
+		$(window).scroll(function(){
+			
+			var scrollTop = $(this).scrollTop();
+			var margin = scrollTop - 125;
+			if(margin > 0){
+				$("#no-scrolling-box").css("position", "fixed").css("top","15px")
+			}			
+			else{
+				$("#no-scrolling-box").css("position","static")
+			}
+			
+		})
+	},
 }
 
 //Youtube PLAY & VOLUME & ERROR management
