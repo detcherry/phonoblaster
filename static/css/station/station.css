@@ -974,6 +974,62 @@ input#search:focus{
 	width:271px;
 }
 
+/* ------- ITEM (RECOMMENDATIONS POPUP) -------- */
+
+#popup-recommendations{
+	
+}
+
+
+/* ------ POPUP RECOMMENDATIONS ------ */
+
+#popup-recommendations{
+	width:815px;
+}
+
+#popup-recommendations h2{
+	width:775px;
+}
+
+#popup-recommendations strong{
+	letter-spacing:-1px;
+	font-size:17px;
+	font-style:italic;
+}
+
+#popup-recommendations div{
+	float:left;
+}
+
+#recommendations-zone{
+	padding:0px;
+	padding-left:15px;
+	height:292px;
+	overflow-y:auto;
+}
+
+#popup-recommendations .item{
+	margin-right:15px;
+	margin-bottom:15px;
+	width:226px;
+}
+
+#popup-recommendations .item-title{
+	width:142px;
+}
+
+#popup-recommendations .item-subtitle{
+	width:146px;
+}
+
+#popup-recommendations .item-process{
+	float:right;
+}
+
+#popup-recommendations .modal-footer{
+	width:785px;
+}
+
 /* ------- POPUP SUGGESTION ------- */
 
 #popup-suggestion{
