@@ -114,22 +114,44 @@ BufferManager.prototype.serverToLocalItem = function(content){
 BufferManager.prototype.add = function(new_event){
 	// event = incoming item + information (position, created)
 	// state = event + buffer_before + buffer_after
-	
-	var item = this.serverToLocalItem(new_event.item);
-	
 	var that = this;
-	that.processIncoming(new_event, function(previous_item){
+	
+	// This is a position change
+	if(new_event.position){
 		
-		// Add it to the UI
-		that.UIAdd(item, previous_item);
-		
-		// In case there was no live item before
-		if(!that.live_item){
-			that.timestamp = PHB.now();
+		that.processIncoming(new_event, function(previous_item){
 			
-			that.play();
-		}
-	})
+			// Find the item
+			var item = null;
+			for(var i=0, c=that.items.length; i<c; i++){
+				if(that.items[i].id == new_event.id){
+					item = that.items[i];
+					break;
+				}
+			}
+			
+			// Add it to the UI
+			that.UIAdd(item, previous_item);
+		
+		});
+				
+	}
+	// This is a new broadcast
+	else{
+		that.processIncoming(new_event, function(previous_item){
+			var item = that.serverToLocalItem(new_event.item);
+
+			// Add it to the UI
+			that.UIAdd(item, previous_item);
+
+			// In case there was no live item before
+			if(!that.live_item){
+				that.timestamp = PHB.now();
+
+				that.play();
+			}
+		})
+	}
 }
 
 BufferManager.prototype.remove = function(new_event){
@@ -262,21 +284,39 @@ BufferManager.prototype.processIncoming = function(new_event, callback){
 			// Get buffer reordered before making any changes to it
 			that.reOrderBuffer(buffer_before, function(new_live_item, start, updated_buffer){
 				
-				event = next_events[i]
+				var event = next_events[i]
 				buffer_after = updated_buffer
 
-				if(event.id){
-					// Remove the item with this id
+				// Move a broadcast to a different position
+				if(event.position){
+					
+					// Withdraw the broadcast from the existing list
+					var broadcast_to_move = null;
 					for(var j=0, d=buffer_after.broadcasts.length; j<d; j++){
 						if(event.id == buffer_after.broadcasts[j].id){
-							buffer_after.broadcasts.splice(j,1);
+							broadcast_to_move = buffer_after.broadcasts.splice(j,1)[0];
 							break;
 						}
 					}
+					
+					// Insert the broadcast at the right position
+					var previous_broadcasts = buffer_after.broadcasts.slice(0, event.position)
+					var next_broadcasts = buffer_after.broadcasts.slice(event.position, buffer_after.broadcasts.length)
+					
+					// There ought to be a previous broadcast
+					previous_item = previous_broadcasts[previous_broadcasts.length - 1];
+					buffer_after.broadcasts = previous_broadcasts.concat([broadcast_to_move], next_broadcasts);
+					
 				}
 				else{
-					if(event.position){
-						// Insert the item in the right position
+					if(event.id){
+						// Remove the item with this id
+						for(var j=0, d=buffer_after.broadcasts.length; j<d; j++){
+							if(event.id == buffer_after.broadcasts[j].id){
+								buffer_after.broadcasts.splice(j,1);
+								break;
+							}
+						}
 					}
 					else{
 						// Add it at the end of the list
@@ -349,22 +389,63 @@ BufferManager.prototype.moveListen = function(){
 			}
 			
 			if(move){
-				// If move authorized, get new position, item and send request to server
-				var new_position = null;
+				// If move authorized, get new position
+				var new_position = 0;
 				var ids_list = $(this).sortable("toArray");
 				for(var i=0, c=ids_list.length; i<c; i++){
 					if(ids_list[i] == id){
-						
-						new_position = i;
-						
+						new_position = i + 1; // Because the first element is not in the "draggable list"
+						break;
 					}
 				}
+				
+				var plugin = $(this);
+				that.move(id, new_position, function(response){	
+					if(!response){
+						plugin.sortable("cancel");
+						PHB.error("Broadcast has not been moved in your selection.")
+					}
+				})
+				
 			}
 			
 		},	
 	});
 	
 }
+
+BufferManager.prototype.move = function(id, new_position, callback){
+	
+	var data = this.moveData(id, new_position);
+	var that = this;
+
+	$.ajax({
+		url: that.url,
+		type: "POST",
+		dataType: that.data_type,
+		timeout: 60000,
+		data: data,
+		error: function(xhr, status, error) {
+			callback(false)
+		},
+		success: function(json){
+			callback(json.response);
+		},
+	});
+
+}
+
+BufferManager.prototype.moveData = function(id, new_position){
+	// Build data
+	var shortname = this.station_client.station.shortname;		
+	var data = {
+		shortname: shortname,
+		content: JSON.stringify(id),
+		position: new_position,
+	}
+	return data
+}
+
 
 //--------------------------------- POST methods -----------------------------------
 
@@ -414,12 +495,6 @@ BufferManager.prototype.postData = function(item){
 },
 
 //------------------------------------- UI  -----------------------------------------
-
-// Returns the current live item 
-BufferManager.prototype.UILive = function(){
-	var item_id = $("#media-id").html();
-	return item_id;
-}
 
 BufferManager.prototype.UISuccess = function(btn){
 	btn.addClass("success")
@@ -544,12 +619,9 @@ BufferManager.prototype.UIEmpty = function(){
 
 BufferManager.prototype.UIRoom = function(){
 
-	var room = 30;
-	if(this.UILive()){
-		var items_selector = this.selector + " .item"
-		var items_number = $(items_selector).length
-		room = 29 - items_number;
-	}
+	var items_selector = this.selector + " .item"
+	var items_number = $(items_selector).length
+    var	room = 30 - items_number;
 	
 	return room
 }
