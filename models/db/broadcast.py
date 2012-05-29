@@ -12,7 +12,6 @@ class Broadcast(db.Model):
 		track - track being broadcast
 		station - where the track is being broadcast
 		user (optional) - if the broadcast has been suggested by a user (e.g. a listener)
-		expired - end of the broadcast
 	"""
 	
 	track = db.ReferenceProperty(Track, required = True, collection_name = "broadcastTrack")

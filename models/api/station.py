@@ -235,9 +235,23 @@ Global number of stations: %s
 		station = self.station
 		new_timestamp = self.calculate_new_timestamp(new_broadcasts)
 
+		#Retrieving broadcasts from datastore
+		key_names = []
+		for i in xrange(0,len(new_broadcasts)):
+			b = new_broadcasts[i]
+			key_names.append(b['key_name'])
+
+		broadcasts = Broadcast.get_by_key_name(key_names)
+		b_keys = []
+
+		for i in xrange(0,len(broadcasts)):
+			b_key = broadcasts[i]
+			b_keys.append(b_key.key())
+
+
 		#Putting data in datastore
 		station.timestamp = new_timestamp
-		station.broadcasts = [json.dumps(t) for t in new_broadcasts]
+		station.broadcasts = b_keys
 		station.put()
 
 		#Updating memcache
@@ -350,6 +364,16 @@ Global number of stations: %s
 					user_key_name = incoming_track["track_submitter_key_name"]
 					user_key = db.Key.from_path("User", user_key_name)
 
+				new_broadcast = Broadcast(
+					key_name = incoming_track["key_name"],
+					track = track.key(),
+					station = self.station.key(),
+					user = user_key,
+				)
+
+				new_broadcast.put()
+				logging.info("New broadcast put in datastore")
+
 				extended_broadcast = Track.get_extended_track(track)
 
 				# Suggested broadcast
@@ -409,7 +433,7 @@ Global number of stations: %s
 		if index_broadcast_to_find is not None:
 			current_broadcast_infos = self.get_current_broadcast_infos()
 			if current_broadcast_infos:
-				current_broadcast_key_name = current_broadcast_infos['key_name']
+				current_broadcast_key_name = current_broadcast_infos['extended_broadcast']['key_name']
 
 				if(current_broadcast_key_name != key_name):
 					# index retrieved and not corresponding to the current played track
@@ -432,9 +456,6 @@ Global number of stations: %s
 	def move_track_in_buffer(self,key_name, position):
 		"""
 			Moving track with key_name to new position.
-			If everything went well : retrun (True,False)
-			If the current track corresponds to a track which position has to change : return (False, True)
-			Otherwise return (False, False)
 		"""
 		broadcasts = self.reset_buffer(self.buffer['broadcasts'][::]) # Copy the array
 		extended_broadcast = None
@@ -443,12 +464,32 @@ Global number of stations: %s
 			current_broadcast_infos = self.get_current_broadcast_infos()
 
 			if current_broadcast_infos is not None :
-				extended_broadcast = current_broadcast_infos['extended_broadcast']
+				current_broadcast = current_broadcast_infos['extended_broadcast']
 				current_index = current_broadcast_infos['index']
-				if not ( current_index == position or extended_broadcast['key_name'] == key_name):
-					broadcasts.insert(position, broadcasts.pop(current_index))
-					# Saving data
-					self.put_broadcasts(broadcasts)
+
+				if not ( current_index == position or current_broadcast['key_name'] == key_name):
+					# Lookig for index of track to change position:
+
+					index_track_to_move = None
+
+					for i in xrange(0,len(broadcasts)):
+						if broadcasts[i]['key_name'] == key_name:
+							index_track_to_move = i
+							break
+
+					if index_track_to_move:
+						broadcasts.insert(position, broadcasts.pop(index_track_to_move))
+						extended_broadcast = broadcasts[position]
+						logging.info(extended_broadcast['key_name'] == key_name)
+						logging.info("Inserting track with ky_name = "+key_name+" at position :"+str(position))
+						# Saving data
+						self.put_broadcasts(broadcasts)
+					else:
+						logging.info("Track with ky_name = "+key_name+" was not found, impossible to proceed to insertion.")
+
+			else:
+				logging.info("Track with ky_name = "+key_name+" is the currently broadcast track, or is inserting at position 1, inserting is cacelled")
+				
 
 		else:
 			logging.info("In StationApi.move_track_in_buffer, position is not in the range [0,"+str(len(broadcasts))+"[")

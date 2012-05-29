@@ -33,7 +33,6 @@ class HomeHandler(BaseHandler):
 					current_broadcast_infos = station_proxy.get_current_broadcast_infos()
 					
 					if current_broadcast_infos:
-						logging.info(current_broadcast_infos)
 						latest_active_stations.append(station)
 						current_broadcast = current_broadcast_infos['extended_broadcast']
 						current_broadcasts.append({
