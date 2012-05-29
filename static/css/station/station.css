@@ -115,7 +115,7 @@ body{
 	height:25px;
 	width:25px;
 	background:url("/static/images/new-sprits.png");
-	background-position:0px -109px;
+	background-position:-1px -109px;
 }
 
 #station-name a:hover{
