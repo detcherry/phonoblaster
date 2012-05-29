@@ -480,20 +480,21 @@ Global number of stations: %s
 					if index_track_to_move:
 						broadcasts.insert(position, broadcasts.pop(index_track_to_move))
 						extended_broadcast = broadcasts[position]
-						logging.info(extended_broadcast['key_name'] == key_name)
 						logging.info("Inserting track with ky_name = "+key_name+" at position :"+str(position))
 						# Saving data
 						self.put_broadcasts(broadcasts)
 					else:
 						logging.info("Track with ky_name = "+key_name+" was not found, impossible to proceed to insertion.")
 
+				else:
+					logging.info("Track with ky_name = "+key_name+" is the currently broadcast track, or is inserting at position 0, inserting is cacelled")
+
 			else:
-				logging.info("Track with ky_name = "+key_name+" is the currently broadcast track, or is inserting at position 1, inserting is cacelled")
+				logging.info("No currently broadcast track, buffer empty or problem occured with get_current_broadcast_infos.")
 				
 
 		else:
 			logging.info("In StationApi.move_track_in_buffer, position is not in the range [0,"+str(len(broadcasts))+"[")
-			pass
 
 		return extended_broadcast
 
