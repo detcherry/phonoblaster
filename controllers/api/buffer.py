@@ -40,11 +40,10 @@ class ApiBufferHandler(BaseHandler):
 	def post(self):
 		# getting station shortname, youtube_tracks to add and initializing station proxy
 		shortname = self.request.get('shortname')
-		content = json.loads(self.request.get('content'))
+		content = json.loads(self.request.get("content"))				
 		position = self.request.get('position')
 
 		station_proxy = StationApi(shortname)
-
 		data = None
 
 		if(station_proxy.station):
@@ -75,20 +74,22 @@ class ApiBufferHandler(BaseHandler):
 					}
 					
 			else:
-				# Changing track position in buffer
+				# Changing broadcast position in buffer
 				extended_broadcast = station_proxy.move_track_in_buffer(content, int(position))
+				logging.info(extended_broadcast)
 
 				if extended_broadcast:
 					response = {
-						'response':True, 
+						'response': True, 
 						'message': 'Track with key_name : '+ content + ' is now at : ' + position
 					}
 					
+					now = datetime.utcnow()
 					data = {
 						"entity": "buffer",
-						"event": "change",
+						"event": "new",
 						"content": {
-							'item': extended_broadcast,
+							'id': content,
 							'position': int(position),
 							"created": timegm(now.utctimetuple())*1000 + math.floor(now.microsecond/1000),
 						},
@@ -96,9 +97,10 @@ class ApiBufferHandler(BaseHandler):
 				else:
 					response = {
 						'response':False,
-						'error':0, 
-						'message': 'Error while changing position (at '+position+') of incomming track with key_name = '+incoming_track['key_name']
+						'error': 0, 
+						'message': 'Error while changing position (at '+ position +') of incomming track with key_name = '+ content
 					}
+
 
 			# Add a taskqueue to warn everyone
 			if data:

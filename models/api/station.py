@@ -308,11 +308,11 @@ Global number of stations: %s
 				if(current_duration>now_broadcast_time):
 					#Current extended_broadcast found, return its position in buffer and the corresponding extended_broadcast
 					current_broadcast_infos = {
-													'index':i,
-													'extended_broadcast': extended_broadcast,
-													'time_in_broadcast': now_broadcast_time - current_duration + extended_broadcast['youtube_duration'],
-													'time_in_buffer': now_broadcast_time
-												}
+			            'index':i,
+			            'extended_broadcast': extended_broadcast,
+			            'time_in_broadcast': now_broadcast_time - current_duration + extended_broadcast['youtube_duration'],
+			            'time_in_buffer': now_broadcast_time
+					}
 					break
 
 		return current_broadcast_infos
@@ -460,10 +460,19 @@ Global number of stations: %s
 		broadcasts = self.reset_buffer(self.buffer['broadcasts'][::]) # Copy the array
 		extended_broadcast = None
 
+		logging.info(broadcasts)
+
+		logging.info(key_name)
+		logging.info(position)
+
 		if position>=0 and position<len(broadcasts) :
+			logging.info("toto")
+			
 			current_broadcast_infos = self.get_current_broadcast_infos()
 
 			if current_broadcast_infos is not None :
+				logging.info("tata")
+				
 				current_broadcast = current_broadcast_infos['extended_broadcast']
 				current_index = current_broadcast_infos['index']
 
@@ -481,7 +490,7 @@ Global number of stations: %s
 						broadcasts.insert(position, broadcasts.pop(index_track_to_move))
 						extended_broadcast = broadcasts[position]
 						logging.info(extended_broadcast['key_name'] == key_name)
-						logging.info("Inserting track with ky_name = "+key_name+" at position :"+str(position))
+						logging.info("Inserting track "+ key_name + " at position: " + str(position))
 						# Saving data
 						self.put_broadcasts(broadcasts)
 					else:
