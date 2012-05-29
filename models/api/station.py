@@ -320,7 +320,7 @@ Global number of stations: %s
 
 		# Edge Case, if adding track to position 1 5 seconds before the live track ends, we reject the operation.
 		# This is due to the latency of Pubnub.
-		if len(buffer) == 1:
+		if len(new_broadcasts) == 1:
 			# We need to check if the live track ends in the next 5 seconds
 			live_broadcast = new_broadcasts[0]
 			live_broadcast_duration = live_broadcast['youtube_duration']
