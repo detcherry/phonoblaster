@@ -139,12 +139,12 @@ class ApiBufferDeleteHandler(BaseHandler):
 				response = {'response': False, 'error':0, 'message': 'A buffer cannot be empty.'}
 			else :
 				# Deleting track
-				deletion_result, key_name = station_proxy.remove_track_from_buffer(key_name)
+				deletion_result, result_key_name = station_proxy.remove_track_from_buffer(key_name)
 
 				if not deletion_result:
 					# The deletion was not successful
 					
-					if key_name:
+					if result_key_name:
 						# Track client id corresponds to the currently played track
 						response = {'response': False, 'error':1, 'message': 'You cannot delete the currently played track.'}
 					else:

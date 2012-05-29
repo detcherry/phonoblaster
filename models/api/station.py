@@ -318,6 +318,23 @@ Global number of stations: %s
 		timestamp = buffer['timestamp']
 		room = self.room_in_buffer()
 
+		# Edge Case, if adding track to position 1 5 seconds before the live track ends, we reject the operation.
+		# This is due to the latency of Pubnub.
+		if len(new_broadcasts) == 1:
+			# We need to check if the live track ends in the next 5 seconds
+			live_broadcast = new_broadcasts[0]
+			live_broadcast_duration = live_broadcast['youtube_duration']
+			start = (datetime.utcnow()-timestamp).total_seconds()
+			time_before_end = live_broadcast_duration-start
+
+			if time_before_end< 5:
+				# Rejecting action
+				logging.info("Rejecting opertion because of an edge case (adding)")
+				return None
+
+		# End of edge case
+
+
 		extended_broadcast = None
 		if room > 0 :
 			track = None
@@ -407,6 +424,23 @@ Global number of stations: %s
 				index_broadcast_to_find = i
 				break
 
+		# Edge Case, if remove track at position 1 5 seconds before the live track ends, we reject the operation.
+		# This is due to the latency of Pubnub.
+		if index_broadcast_to_find == 1:
+			# We need to check if the live track ends in the next 5 seconds
+			live_broadcast = broadcasts[0]
+			live_broadcast_duration = live_broadcast['youtube_duration']
+			start = (datetime.utcnow()-timestamp).total_seconds()
+			time_before_end = live_broadcast_duration-start
+
+			if time_before_end< 5:
+				# Rejecting action
+				logging.info("Rejecting opertion because of an edge case (deletion)")
+				return False, False
+
+		# End of edge case
+
+
 		if (index_broadcast_to_find is not None) or (len(broadcasts)==0):
 			live_broadcast = broadcasts[0]
 			live_broadcast_key_name = live_broadcast['key_name']
@@ -442,6 +476,22 @@ Global number of stations: %s
 		if len(buffer) == 0:
 			logging.info("Buffer is empty.")
 			return None
+
+		# Edge Case, if moving track to position 1 5 seconds before the live track ends, we reject the operation.
+		# This is due to the latency of Pubnub.
+		if position == 1:
+			# We need to check if the live track ends in the next 5 seconds
+			live_broadcast = broadcasts[0]
+			live_broadcast_duration = live_broadcast['youtube_duration']
+			start = (datetime.utcnow()-timestamp).total_seconds()
+			time_before_end = live_broadcast_duration-start
+
+			if time_before_end< 5:
+				# Rejecting action
+				logging.info("Rejecting opertion because of an edge case (moving)")
+				return None
+
+		# End of edge case
 
 		if position>=0 and position<len(broadcasts) :
 			live_broadcast = broadcasts[0]
