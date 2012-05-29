@@ -40,7 +40,7 @@ class ApiBufferHandler(BaseHandler):
 	def post(self):
 		# getting station shortname, youtube_tracks to add and initializing station proxy
 		shortname = self.request.get('shortname')
-		incoming_track = json.loads(self.request.get('track'))
+		content = json.loads(self.request.get('content'))
 		position = self.request.get('position')
 
 		station_proxy = StationApi(shortname)
@@ -50,7 +50,7 @@ class ApiBufferHandler(BaseHandler):
 		if(station_proxy.station):
 			if position is '':
 				# Adding tracks to buffer
-				extended_broadcast = station_proxy.add_track_to_buffer(incoming_track)
+				extended_broadcast = station_proxy.add_track_to_buffer(content)
 
 				if not extended_broadcast:
 					response = {
@@ -76,19 +76,22 @@ class ApiBufferHandler(BaseHandler):
 					
 			else:
 				# Changing track position in buffer
-				extended_broadcast = station_proxy.move_track_in_buffer(incoming_track['key_name'], int(position))
+				extended_broadcast = station_proxy.move_track_in_buffer(content, int(position))
 
 				if extended_broadcast:
 					response = {
 						'response':True, 
-						'message': 'Track with key_name : '+incoming_track['key_name']+' is now at : '+position
+						'message': 'Track with key_name : '+ content + ' is now at : ' + position
 					}
 					
 					data = {
 						"entity": "buffer",
 						"event": "change",
-						"content": {'track': extended_broadcast, 'position': int(position)},
-						"server_time": timegm(station_proxy.station.updated.utctimetuple())
+						"content": {
+							'item': extended_broadcast,
+							'position': int(position),
+							"created": timegm(now.utctimetuple())*1000 + math.floor(now.microsecond/1000),
+						},
 					}
 				else:
 					response = {

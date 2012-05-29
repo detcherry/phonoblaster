@@ -408,7 +408,7 @@ BufferManager.prototype.postData = function(item){
 	var shortname = this.station_client.station.shortname;		
 	var data = {
 		shortname: shortname,
-		track: JSON.stringify(item.content),
+		content: JSON.stringify(item.content),
 	}
 	return data
 },
