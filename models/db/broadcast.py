@@ -12,13 +12,11 @@ class Broadcast(db.Model):
 		track - track being broadcast
 		station - where the track is being broadcast
 		user (optional) - if the broadcast has been suggested by a user (e.g. a listener)
-		expired - end of the broadcast
 	"""
 	
 	track = db.ReferenceProperty(Track, required = True, collection_name = "broadcastTrack")
 	station = db.ReferenceProperty(Station, required = True, collection_name = "broadcastStation")
 	user = db.ReferenceProperty(User, required = False, collection_name = "broadcastUser")
-	expired = db.DateTimeProperty(required = True)
 	created = db.DateTimeProperty(auto_now_add = True)
 
 	@staticmethod
@@ -102,8 +100,7 @@ class Broadcast(db.Model):
 
 		extended_broadcast = {
 			"key_name": broadcast.key().name(),
-			"created": timegm(broadcast.created.utctimetuple()),
-			"expired": timegm(broadcast.expired.utctimetuple()),	
+			"created": timegm(broadcast.created.utctimetuple()),	
 			"youtube_id": track.youtube_id,
 			"youtube_title": track.youtube_title,
 			"youtube_duration": track.youtube_duration,
