@@ -231,9 +231,49 @@ Global number of stations: %s
 		
 		return self._buffer
 
-	def put_broadcasts(self, new_broadcasts):
+	def reorder_buffer(self,buffer):
+		# Getting live track
+		broadcasts = buffer['broadcasts'][::] # Copy the array
+		timestamp = buffer['timestamp']
+
+		now = datetime.utcnow()
+
+		buffer_duration = self.get_buffer_duration() # Relatively to old_buffer
+
+		offset = (now - timestamp).total_seconds() % buffer_duration
+		elapsed = 0
+		new_live_item = None
+		start = 0
+
+		updated_buffer = {
+			"broadcasts": [],
+			"timestamp": now,
+		}
+
+		for i in xrange(0,len(broadcasts)):
+			item = broadcasts[i]
+			duration = item['youtube_duration']
+			# This is the current broadcast
+			if elapsed + duration > offset :
+				start = offset - elapsed
+				previous_items = broadcasts[:i]
+				new_live_item = broadcasts[i]
+				next_items = broadcasts[i+1:]
+
+				updated_buffer['broadcasts'] = [new_live_item]
+				updated_buffer['broadcasts'].extend(next_items)
+				updated_buffer['broadcasts'].extend(previous_items)
+				updated_buffer['timestamp'] = now - timedelta(0,start)
+				break
+			# We must keep browsing the list before finding the current track
+			else:
+				elapsed += duration
+		return updated_buffer
+
+	def put_buffer(self, buffer):
 		station = self.station
-		new_timestamp = self.calculate_new_timestamp(new_broadcasts)
+		new_timestamp = buffer['timestamp']
+		new_broadcasts = buffer['broadcasts']
 
 		#Retrieving broadcasts from datastore
 		key_names = []
@@ -259,91 +299,23 @@ Global number of stations: %s
 		memcache.set(self._memcache_station_id, station)
 		memcache.set(self._memcache_station_buffer_id, {'broadcasts':new_broadcasts, 'timestamp': new_timestamp} )
 
-	def reset_buffer(self,broadcasts):
-		current_broadcast_infos = self.get_current_broadcast_infos()
-		
-		if current_broadcast_infos is not None:
-			i = current_broadcast_infos['index']
-			new_broadcasts = broadcasts[i:]
-			new_broadcasts.extend(broadcasts[:i])
-			return new_broadcasts
-		else:
-			return broadcasts
-
 
 	def get_buffer_duration(self):
 		"""
 			Returns the length in seconds of the buffer.
 		"""
-		broadcasts = self.buffer['broadcasts'][::] # Copy the array
+		broadcasts = self.buffer['broadcasts'][:]
 		buffer_duration = 0
 
 		if broadcasts:
 			buffer_duration = sum([t['youtube_duration'] for t in broadcasts])
 
 		return buffer_duration
-	
-	def get_current_broadcast_infos(self):
-		"""
-			Returns :
-				- (index_curent_track, {'track_id':track id in datastore, 'key_name':id_of_track_in_buffer ,'youtube_id':youtube_id, 'youtube_title':youtube_title, 'youtube_duration':youtube_duration}, now_time_in_track, now_time_in_buffer)
-		"""
-		broadcasts = self.buffer['broadcasts'][::] # Copy the array
-		timestamp = self.buffer['timestamp']
-
-		current_broadcast_infos = None
-
-		now = datetime.utcnow()
-		buffer_duration = self.get_buffer_duration()
-		
-		if(buffer_duration > 0):
-			now_broadcast_time = (now - timestamp).total_seconds() % buffer_duration
-
-			current_duration = 0
-
-			for i in xrange(len(broadcasts)):
-				extended_broadcast = broadcasts[i]
-				current_duration += extended_broadcast['youtube_duration']
-
-				if(current_duration>now_broadcast_time):
-					#Current extended_broadcast found, return its position in buffer and the corresponding extended_broadcast
-					current_broadcast_infos = {
-			            'index':i,
-			            'extended_broadcast': extended_broadcast,
-			            'time_in_broadcast': now_broadcast_time - current_duration + extended_broadcast['youtube_duration'],
-			            'time_in_buffer': now_broadcast_time
-					}
-					break
-
-		return current_broadcast_infos
-
-	def calculate_new_timestamp(self, new_broadcasts):
-		"""
-			Calculating new timestamp.
-		"""
-		now = datetime.utcnow()
-		current_broadcast_infos = self.get_current_broadcast_infos()
-		new_timestamp = self.buffer['timestamp']
-
-		if current_broadcast_infos is not None:
-			current_broadcast = current_broadcast_infos['extended_broadcast']
-			now_time_in_current_broadcast = current_broadcast_infos['time_in_broadcast']
-			duration_before_current_broadcast = 0
-			
-			for i in xrange(len(new_broadcasts)):
-				broadcast = new_broadcasts[i]
-				if current_broadcast['key_name'] != broadcast['key_name']:
-					duration_before_current_broadcast += broadcast['youtube_duration']
-				else:
-					break
-
-			#Setting new timestamp
-			new_timestamp = now-timedelta(0,duration_before_current_broadcast + now_time_in_current_broadcast)
-
-		return new_timestamp
 
 	def add_track_to_buffer(self,incoming_track):
-		new_broadcasts = self.reset_buffer(self.buffer['broadcasts'][::])  # Copy array and resting broadcasts
+		buffer = self.reorder_buffer(self.buffer)
+		new_broadcasts = buffer['broadcasts'][::]  # Copy array and resting broadcasts
+		timestamp = buffer['timestamp']
 		room = self.room_in_buffer()
 
 		extended_broadcast = None
@@ -404,8 +376,11 @@ Global number of stations: %s
 				# Injecting traks in buffer
 				new_broadcasts.append(extended_broadcast)
 
+
+				new_buffer = {'broadcasts':new_broadcasts, 'timestamp':timestamp}
+
 				#Saving data
-				self.put_broadcasts(new_broadcasts)
+				self.put_buffer(new_buffer)
 				
 		return extended_broadcast
 
@@ -420,7 +395,9 @@ Global number of stations: %s
 			If key_name is OK but represents the track that is being played : (False, key_name)
 
 		"""
-		broadcasts = self.reset_buffer(self.buffer['broadcasts'][::]) # Copy array and resting broadcasts
+		buffer = self.reorder_buffer(self.buffer)
+		broadcasts = buffer['broadcasts'][::] # Copy array and resting broadcasts
+		timestamp = buffer['timestamp']
 		index_broadcast_to_find = None
 
 		# Retrieving index corresponding to id
@@ -430,23 +407,23 @@ Global number of stations: %s
 				index_broadcast_to_find = i
 				break
 
-		if index_broadcast_to_find is not None:
-			current_broadcast_infos = self.get_current_broadcast_infos()
-			if current_broadcast_infos:
-				current_broadcast_key_name = current_broadcast_infos['extended_broadcast']['key_name']
+		if (index_broadcast_to_find is not None) or (len(broadcasts)==0):
+			live_broadcast = broadcasts[0]
+			live_broadcast_key_name = live_broadcast['key_name']
 
-				if(current_broadcast_key_name != key_name):
-					# index retrieved and not corresponding to the current played track
-					logging.info("Broadcast with key_name="+key_name+" found and is not the currently played track. Will proceed to deletion.")
-					broadcasts.pop(index_broadcast_to_find)
+			if live_broadcast_key_name != key_name:
+				# index retrieved and not corresponding to the current played track
+				logging.info("Broadcast with key_name="+key_name+" found and is not the currently played track. Will proceed to deletion.")
+				broadcasts.pop(index_broadcast_to_find)
+				new_buffer = {'broadcasts':broadcasts, 'timestamp':timestamp}
+				# Saving data
+				self.put_buffer(new_buffer)
+				return (True, key_name)
+			else:
+				# index retrived and corresponding to the currently plyayed track
+				logging.info("Broadcast with key_name="+key_name+" found but is the currently played track. Will NOT proceed to deletion.")
+				return (False, key_name)
 
-					# Saving data
-					self.put_broadcasts(broadcasts)
-					return (True, key_name)
-				else:
-					# index retrived and corresponding to the currently plyayed track
-					logging.info("Broadcast with key_name="+key_name+" found but is the currently played track. Will NOT proceed to deletion.")
-					return (False, key_name)
 		else:
 			# index not retrieved, the id is not valid
 			logging.info("Broadcast with key_name="+key_name+" NOT found. Will NOT proceed to deletion.")
@@ -457,52 +434,43 @@ Global number of stations: %s
 		"""
 			Moving track with key_name to new position.
 		"""
-		broadcasts = self.reset_buffer(self.buffer['broadcasts'][::]) # Copy the array
+		buffer = self.reorder_buffer(self.buffer)
+		broadcasts = buffer['broadcasts'][::] # Copy the array
+		timestamp = buffer['timestamp']
 		extended_broadcast = None
 
-		logging.info(broadcasts)
-
-		logging.info(key_name)
-		logging.info(position)
+		if len(buffer) == 0:
+			logging.info("Buffer is empty.")
+			return None
 
 		if position>=0 and position<len(broadcasts) :
-			logging.info("toto")
-			
-			current_broadcast_infos = self.get_current_broadcast_infos()
+			live_broadcast = broadcasts[0]
+			if not ( 0 == position or live_broadcast['key_name'] == key_name):
+				# Lookig for index of track to change position:
 
-			if current_broadcast_infos is not None :
-				logging.info("tata")
-				
-				current_broadcast = current_broadcast_infos['extended_broadcast']
-				current_index = current_broadcast_infos['index']
+				index_track_to_move = None
 
-				if not ( current_index == position or current_broadcast['key_name'] == key_name):
-					# Lookig for index of track to change position:
+				for i in xrange(0,len(broadcasts)):
+					if broadcasts[i]['key_name'] == key_name:
+						index_track_to_move = i
+						break
 
-					index_track_to_move = None
-
-					for i in xrange(0,len(broadcasts)):
-						if broadcasts[i]['key_name'] == key_name:
-							index_track_to_move = i
-							break
-
-					if index_track_to_move:
-						broadcasts.insert(position, broadcasts.pop(index_track_to_move))
-						extended_broadcast = broadcasts[position]
-						logging.info(extended_broadcast['key_name'] == key_name)
-						logging.info("Inserting track "+ key_name + " at position: " + str(position))
-						# Saving data
-						self.put_broadcasts(broadcasts)
-					else:
-						logging.info("Track with ky_name = "+key_name+" was not found, impossible to proceed to insertion.")
+				if index_track_to_move:
+					broadcasts.insert(position, broadcasts.pop(index_track_to_move))
+					extended_broadcast = broadcasts[position]
+					logging.info("Inserting track with ky_name = "+key_name+" at position :"+str(position))
+					# Saving data
+					new_buffer = {'broadcasts':broadcasts, 'timestamp':timestamp}
+					self.put_buffer(new_buffer)
+				else:
+					logging.info("Track with ky_name = "+key_name+" was not found, impossible to proceed to insertion.")
 
 			else:
-				logging.info("Track with ky_name = "+key_name+" is the currently broadcast track, or is inserting at position 1, inserting is cacelled")
+				logging.info("Track with ky_name = "+key_name+" is the currently broadcast track, or is inserting at position 0, inserting is cacelled")
 				
 
 		else:
 			logging.info("In StationApi.move_track_in_buffer, position is not in the range [0,"+str(len(broadcasts))+"[")
-			pass
 
 		return extended_broadcast
 

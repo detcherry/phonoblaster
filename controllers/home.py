@@ -25,27 +25,27 @@ class HomeHandler(BaseHandler):
 				q.order("-updated")
 				feed = q.fetch(10)
 
-				current_broadcasts = []
+				live_broadcasts = []
 				latest_active_stations = []
 
 				for station in feed:
 					station_proxy = StationApi(station.shortname)
-					current_broadcast_infos = station_proxy.get_current_broadcast_infos()
+					buffer = station_proxy.reorder_buffer(station_proxy.buffer)
 					
-					if current_broadcast_infos:
+					if buffer:
 						latest_active_stations.append(station)
-						current_broadcast = current_broadcast_infos['extended_broadcast']
-						current_broadcasts.append({
-							"id": current_broadcast['youtube_id'],
-							"title": current_broadcast['youtube_title'],
-							"duration": current_broadcast['youtube_duration'],
+						live_broadcast = buffer['broadcasts'][0]
+						live_broadcasts.append({
+							"id": live_broadcast['youtube_id'],
+							"title": live_broadcast['youtube_title'],
+							"duration": live_broadcast['youtube_duration'],
 						})
 
 			
 				# Display all the user stations
 				template_values = {
 					"user_stations": user_stations,
-					"feed": zip(latest_active_stations, current_broadcasts),
+					"feed": zip(latest_active_stations, live_broadcasts),
 				}
 				self.render("home.html", template_values)
 			
