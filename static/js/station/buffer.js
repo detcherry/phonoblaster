@@ -1,26 +1,3 @@
-$(function(){
-	// Drag and drop 
-	var initial_position = null;
-	var final_position = null;
-	
-	$("#buffer-tab .tab-content:nth-child(2)").sortable({
-		
-		items: ".item:not(:first)",
-		zIndex: 4000,
-		
-		// During sorting
-		sort:function(event, ui){
-			$(ui.helper).css("borderRight","1px solid #E1E1E1").css("borderLeft","1px solid #E1E1E1")
-		},
-		
-		// Once sorting has stopped
-		stop:function(event, ui){
-			$(ui.item).css("borderRight","none").css("borderLeft","none")			
-		},	
-	});
-})
-
-
 // ---------------------------------------------------------------------------
 // BUFFER MANAGER
 // ---------------------------------------------------------------------------
@@ -54,6 +31,7 @@ BufferManager.prototype.init = function(station_client){
 		
 	// Init Methods
 	this.get();
+	this.moveListen();
 	this.deleteListen();
 }
 
@@ -340,6 +318,52 @@ BufferManager.prototype.processIncoming = function(new_event, callback){
 		// Callback necessary to make UI changes
 		callback(previous_item);
 	});
+}
+
+//--------------------------------- MOVE -----------------------------------
+
+BufferManager.prototype.moveListen = function(){
+	
+	var that = this
+	$(this.selector).sortable({
+		
+		// Prevent other items to be moved to the first position
+		items:".item:not(:first)",
+		zIndex: 4000,
+		axis: 'y',
+		
+		// Once sorting has stopped
+		update:function(event, ui){
+			
+			var move = true;
+			
+			// Prevent live item to be moved
+			var id = $(ui.item).attr("id");
+			if(id == that.live_item.id){
+				
+				var move = false;
+				var re = RegExp("[.]","g");
+				var div_selector = "#" + id.toString().replace(re, "\\.");
+				$(div_selector).prependTo(that.selector);
+								
+			}
+			
+			if(move){
+				// If move authorized, get new position, item and send request to server
+				var new_position = null;
+				var ids_list = $(this).sortable("toArray");
+				for(var i=0, c=ids_list.length; i<c; i++){
+					if(ids_list[i] == id){
+						
+						new_position = i;
+						
+					}
+				}
+			}
+			
+		},	
+	});
+	
 }
 
 //--------------------------------- POST methods -----------------------------------
