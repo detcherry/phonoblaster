@@ -253,27 +253,36 @@ YoutubeManager.prototype = {
 	},
 	
 	scrollListen: function(){
+		
+		// Initialization
+		this.refreshPosition();
+		
+		var that = this;
+		// Scrolling events
 		$(window).scroll(function(){
-			
-			var scrollTop = $(this).scrollTop();
-			var margin = scrollTop - 125;
-			if(margin > 0){
-				$("#no-scrolling-box").css("position","fixed").css("top","20px")
-			}			
+			that.refreshPosition();
+		})
+	},
+	
+	refreshPosition: function(){
+		var scrollTop = $(window).scrollTop();
+		var margin = scrollTop - 125;
+		
+		if(margin > 0){
+			$("#no-scrolling-box").css("position","fixed").css("top","20px")
+		}			
+		else{
+			var top = 145 - scrollTop;
+							
+			// Difference between Firefox and other browsers
+			if(BROWSER_DETECT.browser == "Firefox"){
+				$("#no-scrolling-box").css("top", top+"px")
+			}
 			else{
-				var top = 145 - scrollTop;
-								
-				// Difference between Mozilla and other browsers
-				if(BROWSER_DETECT.browser == "Mozilla"){
-					$("#no-scrolling-box").css("top",top+"px")
-				}
-				else{
-					$("#no-scrolling-box").css("position","static")
-				}
-				
+				$("#no-scrolling-box").css("position","static")
 			}
 			
-		})
+		}
 	},
 }
 
