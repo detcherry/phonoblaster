@@ -68,9 +68,6 @@ YoutubeManager.prototype = {
 		// Display the title
 		$("#media-title").html(youtube_title);
 
-		// Put the item id in the div
-		$("#media-id").html(id);
-
 		// Display the submitter
 		$("#media-submitter").empty();
 
