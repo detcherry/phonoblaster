@@ -3,13 +3,21 @@
 
 @font-face{
 	font-family:Futura;
-	src:url("/static/fonts/Futura-Heavy.otf");
+	src: url('/static/fonts/futura-heavy-webfont.eot');
+    src: url('/static/fonts/futura-heavy-webfont.eot?#iefix') format('embedded-opentype'),
+         url('/static/fonts/futura-heavy-webfont.woff') format('woff'),
+         url('/static/fonts/futura-heavy-webfont.ttf') format('truetype'),
+         url('/static/fonts/futura-heavy-webfont.svg#FuturaStdMediumBold') format('svg');	
 }
 
 @font-face{
 	font-family:Futura;
 	font-style:italic;
-	src:url("/static/fonts/Futura-Heavy-Oblique.otf");
+	src: url('/static/fonts/futura-heavy-oblique-webfont.eot');
+    src: url('/static/fonts/futura-heavy-oblique-webfont.eot?#iefix') format('embedded-opentype'),
+         url('/static/fonts/futura-heavy-oblique-webfont.woff') format('woff'),
+         url('/static/fonts/futura-heavy-oblique-webfont.ttf') format('truetype'),
+         url('/static/fonts/futura-heavy-oblique-webfont.svg#FuturaStdMediumBoldItalic') format('svg');	
 }
 
 /*
@@ -107,6 +115,7 @@ div#fb-root{
 h1, h2, h3{
 	font-family:Futura;
 	color:#333333;
+	font-weight:normal;
 }
 
 h1{
