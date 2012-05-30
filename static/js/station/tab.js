@@ -811,7 +811,7 @@ RealtimeTabManager.prototype.pushNew = function(content){
 }
 
 // Item to remove received from PUBNUB
-RealtimeTabManager.prototype.remove = function(id){
+RealtimeTabManager.prototype.pushRemove = function(id){
 	var new_items = []
 	var that = this
 	for(var i=0, c =that.items.length; i<c; i++){

@@ -154,7 +154,7 @@ BufferManager.prototype.add = function(new_event){
 	}
 }
 
-BufferManager.prototype.remove = function(new_event){
+BufferManager.prototype.pushRemove = function(new_event){
 	
 	var that = this;
 	that.processIncoming(new_event, function(previous_item){	

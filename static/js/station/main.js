@@ -137,7 +137,7 @@ StationClient.prototype = {
 			manager.pushNew(content);
 		}
 		else{
-			manager.remove(content);
+			manager.pushRemove(content);
 		}
 		
 	},
