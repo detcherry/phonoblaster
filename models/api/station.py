@@ -32,6 +32,7 @@ MEMCACHE_STATION_BUFFER_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".buffer.sta
 COUNTER_OF_BROADCASTS_PREFIX = "station.broadcasts.counter."
 COUNTER_OF_VIEWS_PREFIX = "station.views.counter."
 COUNTER_OF_SUGGESTIONS_PREFIX = "station.suggestions.counter."
+COUNTER_OF_VISITS_PREFIX = "station.visits.counter."
 
 class StationApi():
 	
@@ -46,6 +47,7 @@ class StationApi():
 		self._counter_of_broadcasts_id = COUNTER_OF_BROADCASTS_PREFIX + self._shortname
 		self._counter_of_views_id = COUNTER_OF_VIEWS_PREFIX + self._shortname
 		self._counter_of_suggestions_id = COUNTER_OF_SUGGESTIONS_PREFIX + self._shortname
+		self._counter_of_visits_id = COUNTER_OF_VISITS_PREFIX + self._shortname
 	
 	# Return the station
 	@property
@@ -250,7 +252,7 @@ Global number of stations: %s
 		buffer_duration = self.get_buffer_duration() # Relatively to old_buffer
 
 		if buffer_duration > 0:
-			offset = (now - timestamp).total_seconds() % buffer_duration
+			offset = (timegm(now.utctimetuple()) - timegm(timestamp.utctimetuple())) % buffer_duration
 
 			for i in xrange(0,len(broadcasts)):
 				item = broadcasts[i]
@@ -266,6 +268,7 @@ Global number of stations: %s
 					updated_buffer['broadcasts'].extend(next_items)
 					updated_buffer['broadcasts'].extend(previous_items)
 					updated_buffer['timestamp'] = now - timedelta(0,start)
+					logging.info("Buffer reordered")
 					break
 				# We must keep browsing the list before finding the current track
 				else:
@@ -332,7 +335,7 @@ Global number of stations: %s
 			# We need to check if the live track ends in the next 5 seconds
 			live_broadcast = new_broadcasts[0]
 			live_broadcast_duration = live_broadcast['youtube_duration']
-			start = (datetime.utcnow()-timestamp).total_seconds()
+			start = timegm(datetime.utcnow().utctimetuple()) - timegm(timestamp.utctimetuple())
 			time_before_end = live_broadcast_duration-start
 
 			if time_before_end< 5:
@@ -449,7 +452,7 @@ Global number of stations: %s
 			# We need to check if the live track ends in the next 5 seconds
 			live_broadcast = broadcasts[0]
 			live_broadcast_duration = live_broadcast['youtube_duration']
-			start = (datetime.utcnow()-timestamp).total_seconds()
+			start = timegm(datetime.utcnow().utctimetuple()) - timegm(timestamp.utctimetuple())
 			time_before_end = live_broadcast_duration-start
 
 			if time_before_end< 5:
@@ -502,7 +505,7 @@ Global number of stations: %s
 			# We need to check if the live track ends in the next 5 seconds
 			live_broadcast = broadcasts[0]
 			live_broadcast_duration = live_broadcast['youtube_duration']
-			start = (datetime.utcnow()-timestamp).total_seconds()
+			start = timegm(datetime.utcnow().utctimetuple()) - timegm(timestamp.utctimetuple())
 			time_before_end = live_broadcast_duration-start
 
 			if time_before_end< 5:
@@ -681,6 +684,15 @@ Global number of stations: %s
 			}
 		)
 		task.add(queue_name = "worker-queue")
+
+	def task_visit(self):
+		task = Task(
+			url = "/taskqueue/visit",
+			params = {
+				"shortname": self._shortname,
+			}
+		)
+		task.add(queue_name = "worker-queue")
 	
 	#TO BE REMOVED AT THE END OF V4 DEV
 	# Remove a broadcast from the queue
@@ -771,6 +783,19 @@ Global number of stations: %s
 		shard_name = self._counter_of_broadcasts_id
 		Shard.task(shard_name, "decrement")
 	
+	# Visits counter
+	@property
+	def number_of_visits(self):
+		if not hasattr(self, "_number_of_visits"):
+			shard_name = self._counter_of_visits_id
+			self._number_of_visits = Shard.get_count(shard_name)
+		return self._number_of_visits
+	
+	def increase_visits_counter(self, value):
+		shard_name = self._counter_of_visits_id
+		Shard.increase(shard_name, value)
+	
+
 
 	@property
 	def number_of_views(self):

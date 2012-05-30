@@ -1,6 +1,6 @@
 (function(){
 	$("#put-admin").live("click",function(){
-		alert("Stations <-> Admins !");
+		alert("Filling buffers !");
 
 		$.ajax({
 			url: "/admin/upgrade",

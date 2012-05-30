@@ -23,7 +23,7 @@ class HomeHandler(BaseHandler):
 
 				q = Station.all()
 				q.order("-updated")
-				feed = q.fetch(10)
+				feed = q.fetch(30)
 
 				live_broadcasts = []
 				latest_active_stations = []
@@ -33,13 +33,14 @@ class HomeHandler(BaseHandler):
 					buffer = station_proxy.reorder_buffer(station_proxy.buffer)
 					
 					if buffer:
-						latest_active_stations.append(station)
-						live_broadcast = buffer['broadcasts'][0]
-						live_broadcasts.append({
-							"id": live_broadcast['youtube_id'],
-							"title": live_broadcast['youtube_title'],
-							"duration": live_broadcast['youtube_duration'],
-						})
+						if len(buffer['broadcasts'])>0:
+							latest_active_stations.append(station)
+							live_broadcast = buffer['broadcasts'][0]
+							live_broadcasts.append({
+								"id": live_broadcast['youtube_id'],
+								"title": live_broadcast['youtube_title'],
+								"duration": live_broadcast['youtube_duration'],
+							})
 
 			
 				# Display all the user stations
