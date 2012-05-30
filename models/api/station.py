@@ -684,6 +684,15 @@ Global number of stations: %s
 			}
 		)
 		task.add(queue_name = "worker-queue")
+
+	def task_visit(self):
+		task = Task(
+			url = "/taskqueue/visit",
+			params = {
+				"shortname": self._shortname,
+			}
+		)
+		task.add(queue_name = "worker-queue")
 	
 	#TO BE REMOVED AT THE END OF V4 DEV
 	# Remove a broadcast from the queue
@@ -786,6 +795,7 @@ Global number of stations: %s
 		shard_name = self._counter_of_visits_id
 		Shard.increase(shard_name, value)
 	
+
 
 	@property
 	def number_of_views(self):

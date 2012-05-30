@@ -43,6 +43,9 @@ class ApiSessionsHandler(BaseHandler):
 		
 		output = {}
 		if(station):
+			# Lanching queue for visits counter 
+			station_proxy.task_visit()
+			
 			# Channel ID and token generation
 			time_now = str(timegm(gmtime()))
 			random_integer = str(randrange(1000))
