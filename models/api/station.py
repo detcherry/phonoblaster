@@ -238,36 +238,41 @@ Global number of stations: %s
 
 		now = datetime.utcnow()
 
-		buffer_duration = self.get_buffer_duration() # Relatively to old_buffer
-
-		offset = (now - timestamp).total_seconds() % buffer_duration
-		elapsed = 0
-		new_live_item = None
-		start = 0
-
 		updated_buffer = {
 			"broadcasts": [],
 			"timestamp": now,
 		}
 
-		for i in xrange(0,len(broadcasts)):
-			item = broadcasts[i]
-			duration = item['youtube_duration']
-			# This is the current broadcast
-			if elapsed + duration > offset :
-				start = offset - elapsed
-				previous_items = broadcasts[:i]
-				new_live_item = broadcasts[i]
-				next_items = broadcasts[i+1:]
+		elapsed = 0
+		new_live_item = None
+		start = 0
 
-				updated_buffer['broadcasts'] = [new_live_item]
-				updated_buffer['broadcasts'].extend(next_items)
-				updated_buffer['broadcasts'].extend(previous_items)
-				updated_buffer['timestamp'] = now - timedelta(0,start)
-				break
-			# We must keep browsing the list before finding the current track
-			else:
-				elapsed += duration
+		buffer_duration = self.get_buffer_duration() # Relatively to old_buffer
+
+		if buffer_duration > 0:
+			offset = (now - timestamp).total_seconds() % buffer_duration
+
+			for i in xrange(0,len(broadcasts)):
+				item = broadcasts[i]
+				duration = item['youtube_duration']
+				# This is the current broadcast
+				if elapsed + duration > offset :
+					start = offset - elapsed
+					previous_items = broadcasts[:i]
+					new_live_item = broadcasts[i]
+					next_items = broadcasts[i+1:]
+
+					updated_buffer['broadcasts'] = [new_live_item]
+					updated_buffer['broadcasts'].extend(next_items)
+					updated_buffer['broadcasts'].extend(previous_items)
+					updated_buffer['timestamp'] = now - timedelta(0,start)
+					break
+				# We must keep browsing the list before finding the current track
+				else:
+					elapsed += duration
+		else:
+			logging.info("Buffer is empty")
+
 		return updated_buffer
 
 	def put_buffer(self, buffer):
