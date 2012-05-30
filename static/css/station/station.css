@@ -916,6 +916,14 @@ input#search:focus{
 	visibility:hidden;
 }
 
+#buffer-tab .item:hover{
+	cursor:move;
+}
+
+#buffer-tab .item:first-child:hover{
+	cursor:default;
+}
+
 /* ------- ITEM WRAPPER (SUGGESTIONS & FAVORITES) ----- */
 
 .item-wrapper{
