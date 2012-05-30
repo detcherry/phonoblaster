@@ -215,7 +215,7 @@ YoutubeManager.prototype = {
 			var btn = $(this)
 			that.toggle(btn)
 
-			that.delete_item(item, function(response){
+			that.deleteAjax(item, function(response){
 				that.deleteCallback(btn, response)
 			})
 
@@ -224,7 +224,7 @@ YoutubeManager.prototype = {
 		})
 	},
 	
-	delete_item: function(item, callback){
+	deleteAjax: function(item, callback){
 		var that = this;
 		var delete_url = "/api/favorites/" + item.content.track_id
 		

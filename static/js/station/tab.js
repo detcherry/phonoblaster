@@ -246,12 +246,12 @@ TabManager.prototype = {
 		this.UIHide(item.id)
 		
 		var that = this;
-		this.delete(item, function(response){
+		this.deleteAjax(item, function(response){
 			that.deleteCallback(item, response)
 		})
 	},
 	
-	delete: function(item, callback){
+	deleteAjax: function(item, callback){
 		var that = this;
 		var delete_url = that.url + "/" + item.id
 		
