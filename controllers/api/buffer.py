@@ -76,7 +76,6 @@ class ApiBufferHandler(BaseHandler):
 			else:
 				# Changing broadcast position in buffer
 				extended_broadcast = station_proxy.move_track_in_buffer(content, int(position))
-				logging.info(extended_broadcast)
 
 				if extended_broadcast:
 					response = {
