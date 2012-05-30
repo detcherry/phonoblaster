@@ -150,8 +150,83 @@ BufferManager.prototype.add = function(new_event){
 
 				that.play();
 			}
+			
+			PHB.log(item);
+			
+			// If user not admin and incoming track suggestion, we display something on the station wall
+			var type = item.content.type;
+			if(!that.station_client.admin && type == "suggestion"){
+				
+				// If user suggestion submitter, display notification
+				if(item.content.track_submitter_key_name == that.station_client.user.key_name){
+					$("#notifications").removeClass("off").addClass("on");
+				}
+	
+				// Display the rebroadcast on the station wall
+				that.UIWallDisplay(item);
+			}
 		})
 	}
+}
+
+BufferManager.prototype.UIWallDisplay = function(item){	
+	var id = item.id;
+	var content = item.content;
+	
+	var youtube_id = content.youtube_id;
+	var youtube_title = content.youtube_title;
+	var youtube_duration = PHB.convertDuration(content.youtube_duration)
+	var youtube_thumbnail = "https://i.ytimg.com/vi/" + youtube_id + "/default.jpg";
+	var preview = "https://www.youtube.com/embed/" + content.youtube_id + "?autoplay=1"
+
+	var track_submitter_name = content.track_submitter_name;
+	var track_submitter_url = content.track_submitter_url;
+	
+	var station = this.station_client.station;
+	var station_name = station.name;
+	var station_url = PHB.site_url + "/" + station.shortname;
+	var station_picture = "https://graph.facebook.com/" + station.key_name + "/picture?type=square";
+	
+	var div = $("<div/>").addClass("item-wrapper").attr("id", id)
+	
+	div.append(
+		$("<div/>")
+			.addClass("item-wrapper-submitter")
+			.append($("<img/>").attr("src", station_picture))
+	)
+	.append(
+		$("<div/>")
+			.addClass("item-wrapper-content")
+			.append(
+				$("<p/>")
+					.append($("<a/>").attr("href", station_url).html(station_name))
+					.append(" added ")
+					.append($("<a/>").attr("href", track_submitter_url).html(track_submitter_name))
+					.append(" suggestion to his live selection")
+			)
+			.append(
+				$("<div/>")
+					.addClass("item")
+					.append(
+						$("<div/>")
+							.addClass("item-picture")
+							.append($("<img/>").attr("src", youtube_thumbnail))
+					)
+					.append(
+						$("<div/>")
+							.addClass("item-title")
+							.append($("<span/>").addClass("middle").html(youtube_title))
+					)
+					.append(
+						$("<div/>")
+							.addClass("item-subtitle")
+							.append($("<div/>").addClass("item-duration").html(youtube_duration))
+					)
+			)
+	)
+	
+	// Append this div to the tab made of suggestions
+	div.prependTo("#suggestions-tab .tab-content:nth-child(2)");
 }
 
 BufferManager.prototype.pushRemove = function(new_event){

@@ -44,6 +44,29 @@ body{
 	padding-right:0px;
 }
 
+/* ------ HEADER NOTIFICATIONS ------*/
+
+#notifications{
+	display:block;
+	float:left;
+	margin-left:10px;
+	margin-top:2px;
+	margin-bottom:-2px;
+	height:30px;
+	width:50px;
+}
+
+#notifications.on{
+	background:url("/static/images/new-sprits.png");
+	background-position:-158px -227px;
+}
+
+#notifications.off{
+	background:url("/static/images/new-sprits.png");
+	background-position:-158px -180px;
+}
+
+
 /* ------ STATION CSS STYLE ------ */
 
 .stretch{

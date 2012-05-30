@@ -264,5 +264,24 @@ SuggestionManager.prototype.postAction = function(new_item){
 // -------------------------------- NEW --------------------------------------
 
 SuggestionManager.prototype.newEvent = function(){
-	//do something
+	// If user admin, display notification for incoming suggestion
+	if(this.station_client.admin){
+		$("#notifications").removeClass("off").addClass("on")
+	}
 }
+
+/*--------------- NOTIFICATION  MANAGER -----------------*/
+
+$(function(){
+	$("#notifications").click(function(){
+		var status = $(this).hasClass("on")
+		if(status){
+			// Open the suggestions tab
+			$("a#suggestions-header").trigger("click");
+		}
+		
+		$(this).removeClass("on").addClass("off")
+		
+		return false;
+	})
+})
