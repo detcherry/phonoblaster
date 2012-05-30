@@ -266,6 +266,7 @@ Global number of stations: %s
 					updated_buffer['broadcasts'].extend(next_items)
 					updated_buffer['broadcasts'].extend(previous_items)
 					updated_buffer['timestamp'] = now - timedelta(0,start)
+					logging.info("Buffer reordered")
 					break
 				# We must keep browsing the list before finding the current track
 				else:
