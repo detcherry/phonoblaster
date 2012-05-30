@@ -170,6 +170,9 @@ Facebook.prototype = {
 				PHB.log(response);
 			})
 		}
+		else{
+			PHB.log("No Facebook action sent on localhost")
+		}
 
 	},
 	

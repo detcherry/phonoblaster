@@ -33,7 +33,7 @@ YoutubeManager.prototype = {
 	play: function(youtube_id, start){
 		// Player already loaded
 		try{
-			ytplayer.loadVideoById(youtube_id, start);
+			ytplayer.loadVideoById(youtube_id, start,"medium");
 			PHB.log("Player already loaded");
 		}
 		// Player not loaded yet
@@ -250,7 +250,6 @@ YoutubeManager.prototype = {
 	},
 	
 	scrollListen: function(){
-		
 		// Initialization
 		this.refreshPosition();
 		
@@ -290,12 +289,21 @@ function onYouTubePlayerReady(playerId) {
 	// Puts handler in case the video does not work
 	ytplayer.addEventListener("onError", "onPlayerError");
 	
+	// Add event listener to monitor quality
+	ytplayer.addEventListener("onPlaybackQualityChange","onQualityChange");
+	
 	// Triggers the video
-	ytplayer.loadVideoById(YOUTUBE_ID, START);
+	ytplayer.loadVideoById(YOUTUBE_ID, START, "medium");
 
 	//If the volume had been turned off, mute the player
 	if(!VOLUME){
 		ytplayer.mute();
+	}
+}
+
+function onQualityChange(qualityState){
+	if(qualityState != "medium" && ytplayer.getAvailableQualityLevels().indexOf("medium") != -1){
+		ytplayer.setPlaybackQuality("medium");
 	}
 }
 

@@ -647,8 +647,11 @@ BufferManager.prototype.play = function(){
 		// Play the live broadcast
 		that.youtube_manager.init(new_live_item, start);
 		
+		// Post action to FACEBOOK
+		that.postAction(new_live_item);
+		
 		var timeout = new_live_item.content.youtube_duration - start;
-				
+		
 		// Program the next play
 		setTimeout(function(){
 			// Refresh the UI
@@ -669,4 +672,25 @@ BufferManager.prototype.UIRefresh = function(){
 	
 	// Replace old live item at the bottom
 	this.UIAppend(item_div)
+}
+
+BufferManager.prototype.postAction = function(item){	
+	if(this.station_client.user){
+		var broadcast_url = PHB.site_url + "/broadcast/" + item.id;
+		
+		var obj = { "live": broadcast_url };
+		var extra = {};
+		var expires_in = item.content.youtube_duration;
+		
+		if(this.station_client.admin){
+			// BROADCAST action
+			var action = "broadcast";
+		}
+		else{
+			// ATTEND action
+			var action = "attend";
+		}
+		
+		FACEBOOK.putAction(action, obj, extra, expires_in);
+	}
 }
