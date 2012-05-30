@@ -32,6 +32,7 @@ MEMCACHE_STATION_BUFFER_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".buffer.sta
 COUNTER_OF_BROADCASTS_PREFIX = "station.broadcasts.counter."
 COUNTER_OF_VIEWS_PREFIX = "station.views.counter."
 COUNTER_OF_SUGGESTIONS_PREFIX = "station.suggestions.counter."
+COUNTER_OF_VISITS_PREFIX = "station.visits.counter."
 
 class StationApi():
 	
@@ -46,6 +47,7 @@ class StationApi():
 		self._counter_of_broadcasts_id = COUNTER_OF_BROADCASTS_PREFIX + self._shortname
 		self._counter_of_views_id = COUNTER_OF_VIEWS_PREFIX + self._shortname
 		self._counter_of_suggestions_id = COUNTER_OF_SUGGESTIONS_PREFIX + self._shortname
+		self._counter_of_visits_id = COUNTER_OF_VISITS_PREFIX + self._shortname
 	
 	# Return the station
 	@property
@@ -771,6 +773,18 @@ Global number of stations: %s
 	def decrement_broadcasts_counter(self):
 		shard_name = self._counter_of_broadcasts_id
 		Shard.task(shard_name, "decrement")
+	
+	# Visits counter
+	@property
+	def number_of_visits(self):
+		if not hasattr(self, "_number_of_visits"):
+			shard_name = self._counter_of_visits_id
+			self._number_of_visits = Shard.get_count(shard_name)
+		return self._number_of_visits
+	
+	def increase_visits_counter(self, value):
+		shard_name = self._counter_of_visits_id
+		Shard.increase(shard_name, value)
 	
 
 	@property
