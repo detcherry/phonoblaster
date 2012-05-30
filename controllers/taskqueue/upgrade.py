@@ -10,32 +10,40 @@ from google.appengine.ext import db
 
 from google.appengine.api.taskqueue import Task
 
-from models.db.user import User
 from models.db.station import Station
-from models.db.comment import Comment
+from models.db.broadcast import Broadcast
 
 class UpgradeHandler(webapp.RequestHandler):
 	def post(self):
 		cursor = self.request.get("cursor")
 
-		query = User.all()
+		query = Station.all()
+		# Is there a cursor?
 		if(cursor):
 			logging.info("Cursor found")
 			query.with_cursor(start_cursor = cursor)
 		else:
 			logging.info("No cursor")
 
-		users = query.fetch(100)
+		stations = query.fetch(10)
 
-		if(users):
-			logging.info("Users found")
-			for user in users:
-				if(user.stations):
-					logging.info("Stations found for %s %s"%(user.first_name, user.last_name))
-				else:
-					logging.info("Stations not found for %s %s"%(user.first_name, user.last_name))
-					user.stations = []
-					user.put()
+		if(stations):
+			logging.info("Stations found")
+			
+			for i in xrange(0,len(stations)):
+				station = stations[i]
+
+				# Now we need to retrieve 30 latest broadcasts from datastore
+				q = Broadcast.all()
+				q.filter("station", station).order("-created")
+				broadcast_keys = q.fetch(30, keys_only=True) # We are only interested in the keys of the entities, not the entire entities.
+				logging.info("Broadcast Keys retrieved from datastore")
+				station.broadcasts = broadcast_keys
+				station.timestamp = datetime.utcnow()
+
+			# Putting stations in datastore
+			db.put(stations)
+			logging.info("Putting new stations in datastore")
 
 			cursor = query.cursor()
 			task = Task(
@@ -45,7 +53,20 @@ class UpgradeHandler(webapp.RequestHandler):
 				)
 			task.add(queue_name = "upgrade-queue")
 		else:
-			logging.info("No More users, terminating update")
+			logging.info("No More stations, terminating update")
+
+			subject = "Upgrade from queue to buffer done"
+			body = "Everything is OK"
+			
+			task = Task(
+				url = "/taskqueue/mail",
+				params = {
+					"to": "activity@phonoblaster.com",
+					"subject": subject,
+					"body": body,
+				}
+			)
+			task.add(queue_name = "worker-queue")
 
 
 
