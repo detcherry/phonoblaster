@@ -135,7 +135,7 @@ YoutubeManager.prototype = {
 				that.toggle(btn)
 
 				// POST new favorite to server
-				that.post(item, function(response){
+				that.postAjax(item, function(response){
 					that.postCallback(btn, response)
 				})
 
@@ -167,7 +167,7 @@ YoutubeManager.prototype = {
 	},
 	
 	// POST request to server
-	post: function(item, callback){
+	postAjax: function(item, callback){
 		var data = this.postData(item);
 		var that = this;
 

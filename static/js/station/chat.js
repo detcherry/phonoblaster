@@ -100,7 +100,7 @@ ChatManager.prototype.inputListen = function(){
 			$("input[id='chat-input']").val("");
 
 			// POST message to everyone
-			that.post(new_item, function(response){
+			that.postAjax(new_item, function(response){
 				that.postCallback(new_item, response);
 			});
 		}

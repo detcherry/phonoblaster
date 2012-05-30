@@ -139,7 +139,7 @@ SuggestionManager.prototype.postListen = function(btn, item){
 		}, 180000)
 		
 		// POST request to the server
-		that.post(new_item, function(response){
+		that.postAjax(new_item, function(response){
 			that.postCallback(new_item, response);
 			
 			// POST action to facebook

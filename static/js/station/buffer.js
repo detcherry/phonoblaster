@@ -476,7 +476,7 @@ BufferManager.prototype.postSubmit = function(btn, incoming_item){
 		
 		// POST request to the server
 		var that = this;
-		this.post(new_item, function(response){
+		this.postAjax(new_item, function(response){
 			that.postCallback(new_item, response);
 		});
 	}

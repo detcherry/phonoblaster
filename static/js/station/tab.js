@@ -186,7 +186,7 @@ TabManager.prototype = {
 	},
 	
 	// POST request to server
-	post: function(item, callback){
+	postAjax: function(item, callback){
 		var data = this.postData(item);
 		var that = this;
 
