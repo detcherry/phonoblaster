@@ -13,7 +13,6 @@ function SessionManager(station_client){
 	this.init();
 }
 
-
 SessionManager.prototype = {
 	
 	// Fetch sessions
@@ -53,7 +52,7 @@ SessionManager.prototype = {
 	},
 	
 	// Incoming sessions received from PubNub
-	new: function(new_session){
+	pushNew: function(new_session){
 		this.add(new_session);
 		
 		// Increment sessions counter
@@ -129,15 +128,15 @@ SessionManager.prototype = {
 	},
 	
 	// Session left
-	remove: function(session_gone){
-		this.delete(session_gone);
+	pushRemove: function(session_gone){
+		this.remove(session_gone);
 		
 		if(this.sessions_counter){
 			this.sessions_counter.setCount(this.sessions.length);
 		}
 	},
 	
-	delete: function(session_gone){
+	remove: function(session_gone){
 		// We gonna check first in the duplicate list
 		var that = this;
 		var was_duplicate = false;
