@@ -250,7 +250,7 @@ Global number of stations: %s
 		buffer_duration = self.get_buffer_duration() # Relatively to old_buffer
 
 		if buffer_duration > 0:
-			offset = (now - timestamp).total_seconds() % buffer_duration
+			offset = (timegm(now.utctimetuple()) - timegm(timestamp.utctimetuple())) % buffer_duration
 
 			for i in xrange(0,len(broadcasts)):
 				item = broadcasts[i]
@@ -333,7 +333,7 @@ Global number of stations: %s
 			# We need to check if the live track ends in the next 5 seconds
 			live_broadcast = new_broadcasts[0]
 			live_broadcast_duration = live_broadcast['youtube_duration']
-			start = (datetime.utcnow()-timestamp).total_seconds()
+			start = timegm(datetime.utcnow().utctimetuple()) - timegm(timestamp.utctimetuple())
 			time_before_end = live_broadcast_duration-start
 
 			if time_before_end< 5:
@@ -450,7 +450,7 @@ Global number of stations: %s
 			# We need to check if the live track ends in the next 5 seconds
 			live_broadcast = broadcasts[0]
 			live_broadcast_duration = live_broadcast['youtube_duration']
-			start = (datetime.utcnow()-timestamp).total_seconds()
+			start = timegm(datetime.utcnow().utctimetuple()) - timegm(timestamp.utctimetuple())
 			time_before_end = live_broadcast_duration-start
 
 			if time_before_end< 5:
@@ -503,7 +503,7 @@ Global number of stations: %s
 			# We need to check if the live track ends in the next 5 seconds
 			live_broadcast = broadcasts[0]
 			live_broadcast_duration = live_broadcast['youtube_duration']
-			start = (datetime.utcnow()-timestamp).total_seconds()
+			start = timegm(datetime.utcnow().utctimetuple()) - timegm(timestamp.utctimetuple())
 			time_before_end = live_broadcast_duration-start
 
 			if time_before_end< 5:

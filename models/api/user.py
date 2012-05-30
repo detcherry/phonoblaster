@@ -170,7 +170,7 @@ Global number of users: %s
 			# Updating stations fileds
 			doStationUpdate = False # boolean that will let the system know if it has to perform an update
 			if(self.user.stations):
-				logging.info('Time since last stations field update for user %s %s (in hours) : %s'% (self.user.first_name, self.user.last_name, str((datetime.utcnow()-self.user.updated).total_seconds()/3600)))
+				logging.info('Time since last stations field update for user %s %s (in hours) : %s'% (self.user.first_name, self.user.last_name, str((timegm(datetime.utcnow().utctimetuple()) - timegm(self.user.updated.utctimetuple()))/3600)))
 
 				if(self.user.updated < datetime.utcnow() - timedelta(1,0)):
 					logging.info('Last update more than 24h ago, will proceed to user stations field update.')
