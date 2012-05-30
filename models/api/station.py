@@ -298,11 +298,13 @@ Global number of stations: %s
 		station.timestamp = new_timestamp
 		station.broadcasts = b_keys
 		station.put()
+		logging.info("Putting station with new buffer in DATASTORE")
 
 		#Updating memcache
 		self._buffer = {'broadcasts':new_broadcasts, 'timestamp': new_timestamp}
 		memcache.set(self._memcache_station_id, station)
 		memcache.set(self._memcache_station_buffer_id, {'broadcasts':new_broadcasts, 'timestamp': new_timestamp} )
+		logging.info("Updating station and buffer in MEMCACHE")
 
 
 	def get_buffer_duration(self):
@@ -323,6 +325,7 @@ Global number of stations: %s
 		timestamp = buffer['timestamp']
 		room = self.room_in_buffer()
 
+
 		# Edge Case, if adding track to position 1 5 seconds before the live track ends, we reject the operation.
 		# This is due to the latency of Pubnub.
 		if len(new_broadcasts) == 1:
@@ -334,7 +337,7 @@ Global number of stations: %s
 
 			if time_before_end< 5:
 				# Rejecting action
-				logging.info("Rejecting opertion because of an edge case (adding)")
+				logging.info("Rejecting operation because of an edge case (adding)")
 				return None
 
 		# End of edge case
@@ -342,16 +345,19 @@ Global number of stations: %s
 
 		extended_broadcast = None
 		if room > 0 :
+			logging.info("Room found in buffer.")
+
 			track = None
 
 			if incoming_track["track_id"]:
 				track = Track.get_by_id(int(incoming_track["track_id"]))
-			
 			else:
 				if(incoming_track["youtube_id"]):
 					track = Track.get_or_insert_by_youtube_id(incoming_track, self.station)
 
 			if track:
+				logging.info("Track found")
+
 				user_key = None
 
 				if(incoming_track["type"] == "suggestion"):
@@ -372,6 +378,8 @@ Global number of stations: %s
 
 				# Suggested broadcast
 				if(user_key):
+					logging.info("Suggested Broadcast")
+
 					user = db.get(user_key)
 					extended_broadcast["track_submitter_key_name"] = user.key().name()
 					extended_broadcast["track_submitter_name"] = user.first_name + " " + user.last_name
@@ -382,10 +390,12 @@ Global number of stations: %s
 					
 					# Regular broadcast
 					if(station_key == self.station.key()):
+						logging.info("Regular Broadcast")
 						station = self.station
 						extended_broadcast["type"] = "track"
 					# Rebroadcast
 					else:
+						logging.info("Regular Broadcast")
 						station = db.get(station_key)
 						extended_broadcast["type"] = "favorite"
 
@@ -403,6 +413,10 @@ Global number of stations: %s
 
 				#Saving data
 				self.put_buffer(new_buffer)
+			else:
+				logging.info("Track not found")
+		else:
+			logging.info("There is no more room in the buffer.")
 				
 		return extended_broadcast
 
@@ -440,13 +454,13 @@ Global number of stations: %s
 
 			if time_before_end< 5:
 				# Rejecting action
-				logging.info("Rejecting opertion because of an edge case (deletion)")
+				logging.info("Rejecting operation because of an edge case (deletion)")
 				return False, False
 
 		# End of edge case
 
 
-		if (index_broadcast_to_find is not None) or (len(broadcasts)==0):
+		if (index_broadcast_to_find is not None) or (len(broadcasts)>0):
 			live_broadcast = broadcasts[0]
 			live_broadcast_key_name = live_broadcast['key_name']
 
@@ -493,7 +507,7 @@ Global number of stations: %s
 
 			if time_before_end< 5:
 				# Rejecting action
-				logging.info("Rejecting opertion because of an edge case (moving)")
+				logging.info("Rejecting operation because of an edge case (moving)")
 				return None
 
 		# End of edge case
@@ -501,7 +515,7 @@ Global number of stations: %s
 		if position>=0 and position<len(broadcasts) :
 			live_broadcast = broadcasts[0]
 			if not ( 0 == position or live_broadcast['key_name'] == key_name):
-				# Lookig for index of track to change position:
+				# Looking for index of track to change position:
 
 				index_track_to_move = None
 
