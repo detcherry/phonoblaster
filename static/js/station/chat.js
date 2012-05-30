@@ -25,7 +25,7 @@ ChatManager.prototype.init = function(){
 	this.inputListen();
 	
 	// Get latest messages
-	this.get();
+	this.getAjax();
 }
 
 ChatManager.prototype.toggleListen = function(){	

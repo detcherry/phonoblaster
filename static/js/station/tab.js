@@ -141,7 +141,7 @@ TabManager.prototype = {
 	},
 	
 	// GET items from server
-	get: function(){},
+	getAjax: function(){},
 	
 	empty: function(callback){
 		this.items = [];
@@ -359,7 +359,7 @@ ScrollTabManager.prototype.getListen = function(){
 			}
 
 			if(tab_active){
-				that.get();
+				that.getAjax();
 			}
 		}		
 	})
@@ -373,7 +373,7 @@ ScrollTabManager.prototype.getData = function(){
 	return data
 }
 
-ScrollTabManager.prototype.get = function(){
+ScrollTabManager.prototype.getAjax = function(){
 	
 	var that = this;	
 	var data = this.getData();
@@ -509,7 +509,7 @@ ScrollTabManager.prototype.scrollListen = function(){
 				that.offset = last_item.created;
 				that.load = true;
 				that.UIShowLoader();
-				that.get();
+				that.getAjax();
 			}
 		}
 	})
@@ -623,7 +623,7 @@ ScrollPlayTabManager.prototype.nextVideo = function(time_out){
 					var last_item = this.items[this.items.length -1];
 					this.offset = last_item.created;
 					this.load = true;
-					this.get();
+					this.getAjax();
 				}
 				
 			}
@@ -707,7 +707,7 @@ function RealtimeTabManager(station_client){
 	TabManager.call(this, station_client);
 }
 
-RealtimeTabManager.prototype.get = function(){
+RealtimeTabManager.prototype.getAjax = function(){
 	var that = this;	
 	var data = this.getData();
 	

@@ -30,14 +30,14 @@ BufferManager.prototype.init = function(station_client){
 	this.recommandation_manager = null;
 		
 	// Init Methods
-	this.get();
+	this.getAjax();
 	this.moveListen();
 	this.deleteListen();
 }
 
 //--------------------------------- GET -----------------------------------
 
-BufferManager.prototype.get = function(){
+BufferManager.prototype.getAjax = function(){
 	var that = this;	
 	var data = this.getData();
 	

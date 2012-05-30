@@ -27,7 +27,7 @@ function SuggestionManager(station_client){
 	// Init methods
 	this.previewListen();
 	this.processListen();
-	this.get();
+	this.getAjax();
 }
 
 SuggestionManager.prototype.serverToLocalItem = function(raw_item){
