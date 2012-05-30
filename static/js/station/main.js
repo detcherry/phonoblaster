@@ -134,7 +134,7 @@ StationClient.prototype = {
 		}
 		
 		if(event == "new"){
-			manager.new(content);
+			manager.pushNew(content);
 		}
 		else{
 			manager.remove(content);
