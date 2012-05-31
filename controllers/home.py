@@ -1,6 +1,7 @@
 import logging
 from datetime import datetime
 from datetime import timedelta
+from calendar import timegm
 
 from google.appengine.ext import db
 
@@ -8,8 +9,7 @@ from base import BaseHandler
 from controllers import facebook
 from models.db.station import Station
 from models.api.station import StationApi
-from models.db.air import Air
-from models.db.track import Youtube
+from models.db.broadcast import Broadcast
 
 class HomeHandler(BaseHandler):
 	def get(self):
@@ -21,28 +21,103 @@ class HomeHandler(BaseHandler):
 			else:
 				user_stations = self.user_proxy.stations
 
-				q = Station.all()
-				q.order("-updated")
-				feed = q.fetch(30)
-
 				live_broadcasts = []
 				latest_active_stations = []
 
-				for station in feed:
-					station_proxy = StationApi(station.shortname)
-					buffer = station_proxy.reorder_buffer(station_proxy.buffer)
-					
-					if buffer:
-						if len(buffer['broadcasts'])>0:
-							latest_active_stations.append(station)
-							live_broadcast = buffer['broadcasts'][0]
-							live_broadcasts.append({
-								"id": live_broadcast['youtube_id'],
-								"title": live_broadcast['youtube_title'],
-								"duration": live_broadcast['youtube_duration'],
-							})
+				q = Station.all()
+				q.order("-updated")
+				feed = q.fetch(30)
+				logging.info("30 latest stations retrieved from datastore")
 
-			
+				sorted_broadcasts_by_station = [] # needed after accessing data from datastore
+				sorted_tracks_by_station = []
+				sorted_stations = []
+
+				broadcasts_keys = []
+				for i in xrange(0,len(feed)):
+					broadcasts_keys.extend(feed[i].broadcasts)
+					sorted_broadcasts_by_station.append([])
+					sorted_tracks_by_station.append([])
+
+				broadcasts = db.get(broadcasts_keys)
+				logging.info("Broadcasts associated with stations retrived from datastore")
+
+				# Retrieving tracks associated with tracks
+				tracks_keys = []
+				for i in xrange(0,len(broadcasts)):
+					tracks_keys.append(Broadcast.track.get_value_for_datastore(broadcasts[i]))
+
+				tracks = db.get(tracks_keys)
+				logging.info("Tracks associated with broadcasts retrived from datastore")
+
+				# Sorting broadcasts
+				while len(broadcasts) >0:
+					b = broadcasts.pop(0)
+					t = tracks.pop(0)
+					station_key = Broadcast.station.get_value_for_datastore(b)
+
+					for i in xrange(0,len(sorted_broadcasts_by_station)):
+
+						if len(sorted_broadcasts_by_station[i]) == 0 :
+							# Empty list, we fil it with the current broadcast
+							sorted_broadcasts_by_station[i].append(b)
+							sorted_tracks_by_station[i].append(t)
+
+							# Looking for corresponding station entity
+							for j in xrange(0,len(feed)):
+								key = feed[i].key()
+								if key == station_key:
+									sorted_stations.append(feed[i])
+									break
+							break
+						
+						if  station_key == Broadcast.station.get_value_for_datastore(sorted_broadcasts_by_station[i][0]):
+							# We found a not empty list corresponding to the right station
+							sorted_broadcasts_by_station[i].append(b)
+							sorted_tracks_by_station[i].append(t)
+							break
+				logging.info("Broadcasts sorted by station")
+
+				# What is the live track for each station?
+				now = datetime.utcnow()
+				for i in xrange(0, len(sorted_stations)):
+					station = sorted_stations[i]
+					tracks = sorted_tracks_by_station[i]
+					timestamp = station.timestamp
+
+					elapsed = 0
+					new_live_item = None
+					start = 0
+
+					buffer_duration = 0
+					for j in xrange(0,len(tracks)):
+						buffer_duration += tracks[j].youtube_duration
+
+					if buffer_duration > 0:
+						offset = (timegm(now.utctimetuple()) - timegm(timestamp.utctimetuple())) % buffer_duration
+
+						for j in xrange(0,len(tracks)):
+							item = tracks[j]
+							duration = item.youtube_duration
+
+							# This is the current broadcast
+							if elapsed + duration > offset :
+								live_item = {
+									'id': item.youtube_id,
+									'title': item.youtube_title,
+									'duration': item.youtube_duration
+								}
+								latest_active_stations.append(station)
+								live_broadcasts.append(live_item)
+								break
+
+							# We must keep browsing the list before finding the current track
+							else:
+								elapsed += duration
+					else:
+						logging.info("Buffer is empty")
+				logging.info("Live items found")
+		
 				# Display all the user stations
 				template_values = {
 					"user_stations": user_stations,
