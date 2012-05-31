@@ -111,7 +111,7 @@ class UpgradeHandler(webapp.RequestHandler):
 					incrementation_value = views - visits
 
 					if incrementation_value > 0:
-						station_proxy.increase_visits_counter()
+						station_proxy.increase_visits_counter(incrementation_value)
 						logging.info("Incrementing visits counter of station : "+station.shortname+" by : "+str(incrementation_value))
 					else:
 						logging.info("No need to increment visits counter of station : "+station.shortname)

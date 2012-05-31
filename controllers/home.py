@@ -23,15 +23,14 @@ class HomeHandler(BaseHandler):
 
 				live_broadcasts = []
 				latest_active_stations = []
+				sorted_broadcasts_by_station = [] # needed after accessing data from datastore
+				sorted_tracks_by_station = []
+				sorted_stations = []
 
 				q = Station.all()
 				q.order("-updated")
 				feed = q.fetch(30)
-				logging.info("30 latest stations retrieved from datastore")
-
-				sorted_broadcasts_by_station = [] # needed after accessing data from datastore
-				sorted_tracks_by_station = []
-				sorted_stations = []
+				logging.info(str(len(feed))+" latest stations retrieved from datastore")
 
 				broadcasts_keys = []
 				for i in xrange(0,len(feed)):
@@ -40,7 +39,7 @@ class HomeHandler(BaseHandler):
 					sorted_tracks_by_station.append([])
 
 				broadcasts = db.get(broadcasts_keys)
-				logging.info("Broadcasts associated with stations retrived from datastore")
+				logging.info(str(len(broadcasts))+" Broadcasts associated with stations retrived from datastore")
 
 				# Retrieving tracks associated with tracks
 				tracks_keys = []
@@ -48,7 +47,7 @@ class HomeHandler(BaseHandler):
 					tracks_keys.append(Broadcast.track.get_value_for_datastore(broadcasts[i]))
 
 				tracks = db.get(tracks_keys)
-				logging.info("Tracks associated with broadcasts retrived from datastore")
+				logging.info(str(len(tracks))+" Tracks associated with broadcasts retrived from datastore")
 
 				# Sorting broadcasts
 				while len(broadcasts) >0:
@@ -65,9 +64,9 @@ class HomeHandler(BaseHandler):
 
 							# Looking for corresponding station entity
 							for j in xrange(0,len(feed)):
-								key = feed[i].key()
+								key = feed[j].key()
 								if key == station_key:
-									sorted_stations.append(feed[i])
+									sorted_stations.append(feed[j])
 									break
 							break
 						
@@ -76,7 +75,7 @@ class HomeHandler(BaseHandler):
 							sorted_broadcasts_by_station[i].append(b)
 							sorted_tracks_by_station[i].append(t)
 							break
-				logging.info("Broadcasts sorted by station")
+				logging.info(str(len(sorted_broadcasts_by_station))+" Broadcasts sorted by station")
 
 				# What is the live track for each station?
 				now = datetime.utcnow()
@@ -116,7 +115,7 @@ class HomeHandler(BaseHandler):
 								elapsed += duration
 					else:
 						logging.info("Buffer is empty")
-				logging.info("Live items found")
+				logging.info(str(len(live_broadcasts))+" Live items found for "+str(len(latest_active_stations))+" stations")
 		
 				# Display all the user stations
 				template_values = {
