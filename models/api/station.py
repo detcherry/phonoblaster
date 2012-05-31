@@ -796,7 +796,7 @@ Global number of stations: %s
 		Shard.increase(shard_name, value)
 	
 
-
+	# TO BE REMOVED
 	@property
 	def number_of_views(self):
 		if not hasattr(self, "_number_of_views"):

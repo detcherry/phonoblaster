@@ -9,7 +9,7 @@ class UpgradeHandler(BaseHandler):
 	def post(self):
 		task = Task(
 				url = "/taskqueue/upgrade",
-				params = {},
+				params = {'typeUpgrade':'buffer'},
 				countdown = 1 ,
 			)
 		task.add(queue_name = "upgrade-queue")
