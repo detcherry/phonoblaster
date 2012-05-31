@@ -1,11 +1,11 @@
 import re
 import logging
 
-from controllers.station.secondary import SecondaryHandler
+from controllers.station.root import RootHandler
 from models.db.suggestion import Suggestion
 from models.api.station import StationApi
 
-class SuggestionHandler(SecondaryHandler):
+class SuggestionHandler(RootHandler):
 	def get(self, key_name):
 		suggestion = Suggestion.get_by_key_name(key_name)
 		
@@ -14,30 +14,21 @@ class SuggestionHandler(SecondaryHandler):
 			shortname = m.group(1)
 			self.station_proxy = StationApi(shortname)
 			
-			suggestions = [suggestion]
-			extended_suggestions = Suggestion.get_extended_suggestions(suggestions)
+			user_agent = self.request.headers["User-Agent"]
+			facebook_agent = "facebookexternalhit/1.1 (+http://www.facebook.com/externalhit_uatext.php)"
 			
-			if(extended_suggestions):
-				logging.info("Youtube track was found")
-				
-				extended_suggestion = extended_suggestions[0]
-				template_values = {
-					"suggestion": extended_suggestion,
-				}
-				
-				user_agent = self.request.headers["User-Agent"]
-				facebook_agent = "facebookexternalhit/1.1 (+http://www.facebook.com/externalhit_uatext.php)"
-			
-				if(user_agent == facebook_agent):
-					# Facebook linter 
-					self.facebook_render("station/facebook/suggestion.html", template_values)
-				else:
-					# Not facebook linter
-					self.render("station/suggestion.html", template_values)
-
-			else:
-				logging.info("Youtube track was not found")
+			if(user_agent != facebook_agent):
+				# Redirect to station
 				self.redirect("/" + shortname)
+			else:
+				# Facebook linter 
+				suggestions = [suggestion]
+				extended_suggestions = Suggestion.get_extended_suggestions(suggestions)				
+				template_values = {
+					"suggestion": extended_suggestions[0],
+				}
 			
+				self.render("station/facebook/suggestion.html", template_values)
 		else:
+			# 404 error
 			self.render("station/404.html", None)
