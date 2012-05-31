@@ -41,9 +41,31 @@ class UpgradeHandler(webapp.RequestHandler):
 					# Now we need to retrieve 30 latest broadcasts from datastore
 					q = Broadcast.all()
 					q.filter("station", station).order("-created")
-					broadcast_keys = q.fetch(30, keys_only=True) # We are only interested in the keys of the entities, not the entire entities.
-					logging.info("Broadcast Keys retrieved from datastore")
-					station.broadcasts = broadcast_keys
+					broadcasts = q.fetch(100)
+					logging.info("Broadcast retrieved from datastore")
+
+					# We want to add only broadcasts associated to different tracks.
+					track_keys = []
+					broadcast_keys = []
+					for b in broadcasts:
+						broadcast_keys.append(b.key())
+						track_keys.append(b.track.key())
+
+					# Removing doubloons
+					track_keys_unique = list(set(track_keys))
+					broadcast_keys_unique = []
+
+					while len(track_keys_unique)>0:
+						t = track_keys_unique.pop(0)
+
+						for i in xrange(0,len(broadcasts)):
+							b = broadcasts[i]
+
+							if b.track.key() == t:
+								broadcast_keys_unique.append(b.key())
+								break
+
+					station.broadcasts = broadcast_keys_unique[:30] # A maximum of 30 broadcasts in the buffer
 					station.timestamp = datetime.utcnow()
 
 				# Putting stations in datastore
