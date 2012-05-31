@@ -17,6 +17,7 @@ function ChatManager(station_client){
 	
 	// Init methods
 	this.init();
+	this.focus = true;
 	this.unread_messages = 0;
 }
 
@@ -34,28 +35,60 @@ ChatManager.prototype.toggleListen = function(){
 	// Toggle chat interface
 	$("#chat-header, #chat-alert").click(function(){
 		var chat = $(this).parent();
-		var status = chat.hasClass("opened")
 		
-		if(status){
-			// Close the chat interface
-			chat.removeClass("opened")
+		var chat_status = chat.hasClass("opened");
+		var notifications_status = false;
+		if(document.title != that.station_client.station.name){
+			notifications_status = true;
+		}
+		
+		// Chat window opened
+		if(chat_status){
+			// Notifications displayed
+			if(notifications_status){
+				
+				// Hide and reset notifications
+				that.unread_messages = 0;
+				
+				// Clear notifications in the tab header
+				document.title = that.station_client.station.name;
+				
+				// Hide notifications in the chat
+				$("#chat-alert").hide();
+				$("#chat-alert-number").html(that.unread_messages);
+			}
+			else{
+				// Close the chat interface
+				chat.removeClass("opened")
+			}
 		}
 		else{
-			// Open the chat interface
-			chat.addClass("opened")
-			
 			// Hide and reset notifications
 			that.unread_messages = 0;
+			
+			// Clear notifications in the tab header
+			document.title = that.station_client.station.name;
+			
+			// Hide notifications in the chat
 			$("#chat-alert").hide();
 			$("#chat-alert-number").html(that.unread_messages);
 			
-			chat.removeClass("unread");
-			$("#chat-title").html("Chat");
+			// Open the chat interface
+			chat.addClass("opened");
 			
 			// Scroll to the bottom
 			var height = $(that.selector).height();
 			$(that.selector).parent().scrollTop(height);
 		}
+	})
+	
+	// Listen to clicks on tab
+	$(window).focus(function(){
+		that.focus = true;
+	})
+	
+	$(window).blur(function(){
+		that.focus = false;
 	})
 }
 
@@ -110,14 +143,30 @@ ChatManager.prototype.inputListen = function(){
 }
 
 ChatManager.prototype.newEvent = function(){
-	var status = $("#chat").hasClass("opened");
+	var chat_status = $("#chat").hasClass("opened");
+	var tab_status = this.focus;
 	
-	if(status){
-		// do nothing
+	// Tab = current
+	if(tab_status){
+		// Chat window = opened
+		if(chat_status){
+			// Do nothing
+		}
+		else{
+			// Display notification in the chat header
+			this.unread_messages += 1;
+			$("#chat-alert-number").html(this.unread_messages);
+			$("#chat-alert").show();
+		}
+		
 	}
+	// Tab = not visible
 	else{
-		// display notification
 		this.unread_messages += 1;
+		// Display notification in the tab header
+		document.title = this.station_client.station.name + " (" + this.unread_messages + ")";
+		
+		// Display notification in the chat header
 		$("#chat-alert-number").html(this.unread_messages);
 		$("#chat-alert").show();
 	}

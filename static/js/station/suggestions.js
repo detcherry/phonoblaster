@@ -136,7 +136,7 @@ SuggestionManager.prototype.postListen = function(btn, item){
 		that.suggestion_on = false;
 		setTimeout(function(){
 			that.suggestion_on = true;
-		}, 180000)
+		}, 30000)
 		
 		// POST request to the server
 		that.postAjax(new_item, function(response){
