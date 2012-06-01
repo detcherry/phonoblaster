@@ -9,6 +9,7 @@ from controllers import facebook
 
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp import template
+import django_setup
 from django.utils import simplejson as json
 
 from models.api.user import UserApi

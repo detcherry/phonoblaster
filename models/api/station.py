@@ -1,7 +1,6 @@
 import logging
 import os
 import re
-from django.utils import simplejson as json
 
 from datetime import datetime
 from datetime import timedelta
