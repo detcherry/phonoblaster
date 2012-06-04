@@ -936,15 +936,15 @@ input#search:focus{
 
 /* ------- ITEMS (BUFFER) ------- */
 
-#buffer-tab .item:first-child:hover a.item-cross{
+#buffer-tab .tab-content:nth-child(2) .item:first-child:hover a.item-cross{
 	visibility:hidden;
 }
 
-#buffer-tab .item:hover{
+#buffer-tab .tab-content:nth-child(2) .item:hover{
 	cursor:move;
 }
 
-#buffer-tab .item:first-child:hover{
+#buffer-tab .tab-content:nth-child(2) .item:first-child:hover{
 	cursor:default;
 }
 
