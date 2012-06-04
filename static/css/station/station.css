@@ -936,10 +936,6 @@ input#search:focus{
 
 /* ------- ITEMS (BUFFER) ------- */
 
-#buffer-tab .tab-content:nth-child(2){
-	overflow: auto;
-}
-
 #buffer-tab .tab-content:nth-child(2) .item:first-child:hover a.item-cross{
 	visibility:hidden;
 }

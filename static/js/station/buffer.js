@@ -424,7 +424,16 @@ BufferManager.prototype.moveListen = function(){
 		// Prevent other items to be moved to the first position
 		items:".item:not(:first)",
 		zIndex: 4000,
-		axis: 'y',
+		axis: "y",
+		scrollSensitivity: 40,
+		scrollSpeed: 40,
+		
+		sort: function(event, ui){
+			// Necessary on Firefox to reposition the draggable element
+			if(SYSTEM.browser == "Firefox"){
+				ui.helper.css({'top' : ui.position.top + $(window).scrollTop() + 'px'});
+			}
+		},
 		
 		// Once sorting has stopped
 		update:function(event, ui){
