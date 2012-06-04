@@ -57,11 +57,13 @@ body{
 }
 
 #notifications.on{
+	cursor:pointer;
 	background:url("/static/images/new-sprits.png");
 	background-position:-158px -227px;
 }
 
 #notifications.off{
+	cursor:default;
 	background:url("/static/images/new-sprits.png");
 	background-position:-158px -180px;
 }
