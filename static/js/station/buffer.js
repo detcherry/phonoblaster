@@ -130,10 +130,8 @@ BufferManager.prototype.add = function(new_event){
 				}
 			}
 			
-			if(that.station_client.admin){
-				// Add it to the UI
-				that.UIAdd(item, previous_item);
-			}
+			// Add it to the UI
+			that.UIAdd(item, previous_item);
 		
 		});
 				
@@ -143,33 +141,8 @@ BufferManager.prototype.add = function(new_event){
 		that.processIncoming(new_event, function(previous_item){
 			var item = that.serverToLocalItem(new_event.item);
 
-			// In case there was no live item before
-			if(!that.live_item){
-				that.timestamp = PHB.now();
-
-				that.play();
-			}
-			
-			PHB.log(item);
-			
-			if(that.station_client.admin){
-				// Add it to the UI
-				that.UIAdd(item, previous_item);
-			}
-			else{
-				// If user not admin and incoming track suggestion, we display something on the station wall
-				var type = item.content.type;
-				if(!that.station_client.admin && type == "suggestion"){
-
-					// If user suggestion submitter, display notification
-					if(item.content.track_submitter_key_name == that.station_client.user.key_name){
-						$("#notifications").removeClass("off").addClass("on");
-					}
-
-					// Display the rebroadcast on the station wall
-					that.UIWallDisplay(item);
-				}	
-			}
+			// Add it to the UI
+			that.UIAdd(item, previous_item);
 			
 		})
 	}
@@ -240,10 +213,8 @@ BufferManager.prototype.pushRemove = function(new_event){
 	var that = this;
 	that.processIncoming(new_event, function(previous_item){	
 		
-		if(that.station_client.admin){
-			// Remove from the UI
-			that.UIRemove(new_event.id);
-		}
+		// Remove from the UI
+		that.UIRemove(new_event.id);
 		
 	});
 }
@@ -529,7 +500,6 @@ BufferManager.prototype.moveData = function(id, new_position){
 	return data
 }
 
-
 //--------------------------------- POST methods -----------------------------------
 
 // Before a track is submitted, we finish building it
@@ -600,19 +570,36 @@ BufferManager.prototype.UIFail = function(btn){
 },
 
 BufferManager.prototype.UIAdd = function(new_item, previous_item){
-	// If the item was initially displayed, we don't care (honey badger style) and remove it
-	this.UIRemove(new_item.id);
-	var new_item_div = this.UIBuild(new_item);		
+	
+	if(this.station_client.admin){
+		// If the item was initially displayed, we don't care (honey badger style) and remove it
+		this.UIRemove(new_item.id);
+		var new_item_div = this.UIBuild(new_item);		
 		
-	if(previous_item){
-		// If there was a previous item, we insert the new item just before
-		var re = RegExp("[.]","g");
-		var previous_item_selector = this.selector + " #" + previous_item.id.replace(re, "\\.");
-		this.UIInsert(new_item_div, previous_item_selector)
+		if(previous_item){
+			// If there was a previous item, we insert the new item just before
+			var re = RegExp("[.]","g");
+			var previous_item_selector = this.selector + " #" + previous_item.id.replace(re, "\\.");
+			this.UIInsert(new_item_div, previous_item_selector)
+		}
+		else{
+			// Else, we have to append the item at the top of the column
+			this.UIPrepend(new_item_div); // Specific to the BufferManager
+		}
 	}
 	else{
-		// Else, we have to append the item at the top of the column
-		this.UIPrepend(new_item_div); // Specific to the BufferManager
+		// If user not admin and incoming track suggestion, we display something on the station wall
+		var type = new_item.content.type;
+		if(!this.station_client.admin && type == "suggestion"){
+
+			// If user suggestion submitter, display notification
+			if(new_item.content.track_submitter_key_name == this.station_client.user.key_name){
+				$("#notifications").removeClass("off").addClass("on");
+			}
+
+			// Display the rebroadcast on the station wall
+			this.UIWallDisplay(new_item);
+		}
 	}
 }
 
