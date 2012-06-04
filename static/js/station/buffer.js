@@ -32,6 +32,7 @@ BufferManager.prototype.init = function(station_client){
 	// Init Methods
 	this.getAjax();
 	this.moveListen();
+	this.upListen();
 	this.deleteListen();
 }
 
@@ -509,6 +510,134 @@ BufferManager.prototype.moveData = function(id, new_position){
 	return data
 }
 
+//--------------------------------- UP LISTEN --------------------------------------
+
+BufferManager.prototype.upListen = function(){
+		
+	var that = this;
+	$("a.item-up").live("click", function(){
+				
+		var id = $(this).attr("name");
+		var re = RegExp("[.]","g");
+		var selector = "#" + id.replace(re, "\\.");
+		
+		var previous_item = null;
+		var item_to_move = null;
+		var existing_position = null;
+		for(var i=0, c= that.items.length; i<c; i++){
+			var item = that.items[i];
+			if(item.id == id){
+				previous_item = that.items[i-1];
+				item_to_move = item;
+				existing_position = i;
+				break;
+			}
+		}
+				
+		if(existing_position && existing_position != 1){
+			
+			// Make a fake animation
+			var first_anim_over = false;
+			var second_anim_over = false;
+			
+			var re = RegExp("[.]","g");
+			var selector = "#" + id.replace(re, "\\.");
+			var margin_top = 1 + 82 * existing_position;		
+			$(selector).animate(
+				{"marginTop": "-" + margin_top + "px"}, 
+				{
+					"duration": 400,
+					"complete": function(){
+						first_anim_over = true;
+					}
+				});
+			
+			var next_item = that.items[1]
+			var selector_next_item = "#" + next_item.id.replace(re, "\\.");
+			var margin_top_next_item = 81
+			$(selector_next_item).animate(
+				{"marginTop": margin_top_next_item + "px"},
+				{
+					"duration":400,
+					"complete": function(){
+						second_anim_over = true;
+					}
+				});
+			
+			// Once animation ended, replace items in html
+			setTimeout(function(){
+				$(selector)
+					.css("marginTop","-1px")
+					.insertAfter("#buffer-tab .tab-content:nth-child(2) .item:first-child")
+				
+				$(selector_next_item)
+					.css("marginTop","-1px")
+					.insertAfter(selector)				
+			}, 420)		
+			
+			// Submit the position change
+			that.up(id, function(response){
+				
+				if(!response){				
+					// Hack necessary to bypass bugs due to the jquery animation
+					var timeout = 0;
+					if(!first_anim_over || !second_anim_over){
+						PHB.log("increase timeout")
+						timeout = 420;
+					}
+					
+					setTimeout(function(){
+						// Remove item put up in the list
+						that.UIRemove(id)
+
+						// Put it back to his initial place
+						that.UIAdd(item_to_move, previous_item)
+					}, timeout)
+					
+					PHB.error("Broadcast position did not change")
+				}
+			})
+			
+		}
+		
+		$(this).blur();
+		return false;
+	})
+	
+}
+
+BufferManager.prototype.up = function(id, callback){
+	var data = this.upData(id);
+	var that = this;
+
+	$.ajax({
+		url: that.url,
+		type: "POST",
+		dataType: that.data_type,
+		timeout: 60000,
+		data: data,
+		error: function(xhr, status, error) {
+			callback(false)
+		},
+		success: function(json){
+			callback(json.response);
+		},
+	});
+
+}
+
+BufferManager.prototype.upData = function(id){
+	// Build data
+	var shortname = this.station_client.station.shortname;		
+	var data = {
+		shortname: shortname,
+		content: JSON.stringify(id),
+		position: 1,
+	}
+	return data
+}
+
+
 //--------------------------------- POST methods -----------------------------------
 
 // Before a track is submitted, we finish building it
@@ -645,6 +774,12 @@ BufferManager.prototype.UIBuild = function(item){
 		$("<div/>")
 			.addClass("item-title")
 			.append($("<span/>").addClass("middle").html(youtube_title))
+	)
+	.append(
+		$("<a/>")
+			.attr("href","#")
+			.addClass("item-up")
+			.attr("name", id)
 	)
 	.append(
 		$("<a/>")
