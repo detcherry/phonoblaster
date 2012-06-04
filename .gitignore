@@ -2,3 +2,5 @@ app.yaml
 controllers/config.py
 *.pyc
 ENV/*
+*.DS_Store
+

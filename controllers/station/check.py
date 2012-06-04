@@ -8,7 +8,6 @@ from controllers.base import login_required
 from models.db.station import Station
 
 class StationCheckHandler(BaseHandler):
-	@login_required
 	def post(self):
 		page_shortname = self.request.get("page_shortname")
 		

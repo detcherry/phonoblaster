@@ -1,7 +1,6 @@
 import logging
 import os
 import re
-from django.utils import simplejson as json
 
 from datetime import datetime
 from datetime import timedelta
@@ -462,8 +461,7 @@ Global number of stations: %s
 
 		# End of edge case
 
-
-		if (index_broadcast_to_find is not None) or (len(broadcasts)>0):
+		if index_broadcast_to_find is not None:
 			live_broadcast = broadcasts[0]
 			live_broadcast_key_name = live_broadcast['key_name']
 
@@ -479,7 +477,6 @@ Global number of stations: %s
 				# index retrived and corresponding to the currently plyayed track
 				logging.info("Broadcast with key_name="+key_name+" found but is the currently played track. Will NOT proceed to deletion.")
 				return (False, key_name)
-
 		else:
 			# index not retrieved, the id is not valid
 			logging.info("Broadcast with key_name="+key_name+" NOT found. Will NOT proceed to deletion.")
@@ -796,7 +793,7 @@ Global number of stations: %s
 		Shard.increase(shard_name, value)
 	
 
-
+	# TO BE REMOVED
 	@property
 	def number_of_views(self):
 		if not hasattr(self, "_number_of_views"):

@@ -927,14 +927,18 @@ input#search:focus{
 }
 
 #search-tab .item-title{
-	width:169px;
+	width:167px;
 }
 
 #search-tab .item-subtitle{
-	width:173px;
+	width:171px;
 }
 
 /* ------- ITEMS (BUFFER) ------- */
+
+#buffer-tab .tab-content:nth-child(2){
+	overflow: auto;
+}
 
 #buffer-tab .tab-content:nth-child(2) .item:first-child:hover a.item-cross{
 	visibility:hidden;
