@@ -130,8 +130,10 @@ BufferManager.prototype.add = function(new_event){
 				}
 			}
 			
-			// Add it to the UI
-			that.UIAdd(item, previous_item);
+			if(that.station_client.admin){
+				// Add it to the UI
+				that.UIAdd(item, previous_item);
+			}
 		
 		});
 				
@@ -140,9 +142,6 @@ BufferManager.prototype.add = function(new_event){
 	else{
 		that.processIncoming(new_event, function(previous_item){
 			var item = that.serverToLocalItem(new_event.item);
-
-			// Add it to the UI
-			that.UIAdd(item, previous_item);
 
 			// In case there was no live item before
 			if(!that.live_item){
@@ -153,18 +152,25 @@ BufferManager.prototype.add = function(new_event){
 			
 			PHB.log(item);
 			
-			// If user not admin and incoming track suggestion, we display something on the station wall
-			var type = item.content.type;
-			if(!that.station_client.admin && type == "suggestion"){
-				
-				// If user suggestion submitter, display notification
-				if(item.content.track_submitter_key_name == that.station_client.user.key_name){
-					$("#notifications").removeClass("off").addClass("on");
-				}
-	
-				// Display the rebroadcast on the station wall
-				that.UIWallDisplay(item);
+			if(that.station_client.admin){
+				// Add it to the UI
+				that.UIAdd(item, previous_item);
 			}
+			else{
+				// If user not admin and incoming track suggestion, we display something on the station wall
+				var type = item.content.type;
+				if(!that.station_client.admin && type == "suggestion"){
+
+					// If user suggestion submitter, display notification
+					if(item.content.track_submitter_key_name == that.station_client.user.key_name){
+						$("#notifications").removeClass("off").addClass("on");
+					}
+
+					// Display the rebroadcast on the station wall
+					that.UIWallDisplay(item);
+				}	
+			}
+			
 		})
 	}
 }
@@ -234,8 +240,10 @@ BufferManager.prototype.pushRemove = function(new_event){
 	var that = this;
 	that.processIncoming(new_event, function(previous_item){	
 		
-		// Remove from the UI
-		that.UIRemove(new_event.id);
+		if(that.station_client.admin){
+			// Remove from the UI
+			that.UIRemove(new_event.id);
+		}
 		
 	});
 }
