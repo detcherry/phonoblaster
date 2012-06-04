@@ -646,18 +646,14 @@ BufferManager.prototype.UIBuild = function(item){
 			.addClass("item-title")
 			.append($("<span/>").addClass("middle").html(youtube_title))
 	)
-	
-	if(this.station_client.admin){
-		div.append(
-			$("<a/>")
-				.attr("href","#")
-				.addClass("item-cross")
-				.attr("name", id)
-				.html("X")
-		)
-	}
-	
-	div.append(
+	.append(
+		$("<a/>")
+			.attr("href","#")
+			.addClass("item-cross")
+			.attr("name", id)
+			.html("X")
+	)
+	.append(
 		$("<div/>")
 			.addClass("item-subtitle")
 			.append($("<div/>").addClass("item-duration").html(youtube_duration))
