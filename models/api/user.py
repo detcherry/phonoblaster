@@ -100,7 +100,7 @@ class UserApi:
 		self._user = user
 
 		#Creating and storing the keys pointing to stations entities, even when a page is not associated with a phonoblaster station
-		logging.info('will proceed to station fields creation for user %s %s.'%(first_name, last_name))
+		logging.info('Proceeding to stations field creation for user %s %s.'%(first_name, last_name))
 		self.set_stations_field(contributions)
 		
 		# Increment admin counter of users
