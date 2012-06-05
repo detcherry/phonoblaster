@@ -25,7 +25,7 @@ from models.api.admin import AdminApi
 
 MEMCACHE_USER_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".user."
 MEMCACHE_USER_CONTRIBUTIONS_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".contributions.user."
-MEMCACHE_USER_FAVORITES_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".favorites.user."
+MEMCACHE_USER_FAVORITES_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".favorites.user." # TO BE MOVED TO stationapi
 COUNTER_OF_FAVORITES = "user.favorites.counter."
 
 class UserApi:
@@ -66,7 +66,7 @@ class UserApi:
 					self._access_token = token_response["access_token"][-1]
 		
 		return self._access_token
-			
+	
 	# Puts new user in the datastore	
 	def put_user(self, uid, first_name, last_name, email):
 		user = User(
@@ -225,6 +225,7 @@ Global number of users: %s
 		
 		return self._stations
 
+	# TO BE CHANGED : improvements possible without accessing facebook
 	# Tells if a user is an admin of a specific page 
 	def is_admin_of(self, page_id):
 		for contribution in self.contributions:
@@ -232,6 +233,7 @@ Global number of users: %s
 				return True
 		return False
 	
+	# TO BE CHANGED : get_favorites is now for a station not a user
 	def get_favorites(self, offset):
 		timestamp = timegm(offset.utctimetuple())
 		memcache_favorites_id = self._memcache_user_favorites_id + "." + str(timestamp)
@@ -252,7 +254,8 @@ Global number of users: %s
 			logging.info("Favorites already in memcache")
 		
 		return past_favorites
-		
+	
+	# TO BE CHANGED : move to stationapi
 	def favorites_query(self, offset):
 		q = Favorite.all()
 		q.filter("user", self.user.key())
@@ -262,6 +265,7 @@ Global number of users: %s
 		
 		return favorites
 
+	# TO BE CHANGED : move to stationapi
 	def add_to_favorites(self, track):
 		# Check if the favorite hasn't been stored yet
 		q = Favorite.all()
@@ -285,6 +289,7 @@ Global number of users: %s
 			Track.increment_favorites_counter(track.key().id())
 			logging.info("Track favorites counter incremented")
 		
+	# TO BE CHANGED : move to stationapi
 	def delete_from_favorites(self, track):
 		q = Favorite.all()
 		q.filter("user", self.user.key())
@@ -303,6 +308,7 @@ Global number of users: %s
 			Track.decrement_favorites_counter(track.key().id())
 			logging.info("Track favorites counter decremented")
 	
+	# TO BE CHANGED : move to stationapi
 	@property
 	def number_of_favorites(self):
 		if not hasattr(self, "_number_of_favorites"):
@@ -310,10 +316,12 @@ Global number of users: %s
 			self._number_of_favorites = Shard.get_count(shard_name)
 		return self._number_of_favorites
 	
+	# TO BE CHANGED : move to stationapi
 	def increment_favorites_counter(self):
 		shard_name = self._counter_of_favorites_id
 		Shard.task(shard_name, "increment")
 
+	# TO BE CHANGED : move to stationapi
 	def decrement_favorites_counter(self):
 		shard_name = self._counter_of_favorites_id
 		Shard.task(shard_name, "decrement")
