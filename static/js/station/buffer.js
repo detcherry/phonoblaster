@@ -142,8 +142,17 @@ BufferManager.prototype.add = function(new_event){
 		that.processIncoming(new_event, function(previous_item){
 			var item = that.serverToLocalItem(new_event.item);
 
-			// Add it to the UI
+			// In case there was no live item before
+			if(!that.live_item){
+				that.timestamp = PHB.now();
+
+				that.play();
+			}
+
+			// Add it to the UI anyway
 			that.UIAdd(item, previous_item);
+
+
 			
 		})
 	}
