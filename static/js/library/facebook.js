@@ -6,7 +6,7 @@ function Facebook(){
 	this.app_id = FACEBOOK_APP_ID;
 	this.version = VERSION;
 	this.scope = 'user_likes,email,publish_actions,read_stream,publish_stream,manage_pages'
-	// Note: recently publish_actions became a subset of publish_stream but we keep it because it might be useful
+	// Note: recently publish_actions became a subset of publish_stream but we keep it like that
 }
 
 Facebook.prototype = {
