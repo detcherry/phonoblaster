@@ -66,6 +66,7 @@ class StationApi():
 				logging.info("Station already in memcache")	
 		return self._station
 	
+	# TO BE CHANGED
 	def put_station(self, page_id, shortname, page_name, page_link):
 		station = Station(
 			key_name = page_id,
@@ -111,21 +112,14 @@ Global number of stations: %s
 		)
 		task.add(queue_name = "worker-queue")
 	
-	# Check if station is on air
-	def on_air(self):
-		on_air = False
-		if(len(self.queue) > 0):
-			on_air = True
-				
-		return on_air
-	
 	@property
 	def number_of_sessions(self):
 		if not hasattr(self, "_number_of_sessions"):
 			self._number_of_sessions = len(self.sessions)
 			
 		return self._number_of_sessions
-		
+	
+	# TO BE CHANGED : staion -> host
 	# Gives all the listeners (logged in a station)
 	@property
 	def sessions(self):
@@ -149,7 +143,8 @@ Global number of stations: %s
 				logging.info("Sessions already in memcache")
 		
 		return self._sessions
-		
+	
+	# TO BE CHANGED : user -> listener	
 	def add_to_sessions(self, channel_id):
 		# Get session
 		session = Session.get_by_key_name(channel_id)
@@ -177,6 +172,7 @@ Global number of stations: %s
 			
 		return extended_session
 	
+	# TO BE CHANGED : user -> listener
 	def remove_from_sessions(self, channel_id):
 		# Get session
 		session = Session.get_by_key_name(channel_id)
@@ -321,6 +317,7 @@ Global number of stations: %s
 
 		return buffer_duration
 
+	# TO BE CHANGED : user -> listener, type -> 'Rebroadcast' OR 'Track'
 	def add_track_to_buffer(self,incoming_track):
 		buffer = self.reorder_buffer(self.buffer)
 		new_broadcasts = buffer['broadcasts'][::]  # Copy array and resting broadcasts
@@ -551,6 +548,83 @@ Global number of stations: %s
 	#													END BUFFER
 	########################################################################################################################################
 
+
+	def task_visit(self):
+		task = Task(
+			url = "/taskqueue/visit",
+			params = {
+				"shortname": self._shortname,
+			}
+		)
+		task.add(queue_name = "worker-queue")
+	
+	
+	
+	# Visits counter
+	@property
+	def number_of_visits(self):
+		if not hasattr(self, "_number_of_visits"):
+			shard_name = self._counter_of_visits_id
+			self._number_of_visits = Shard.get_count(shard_name)
+		return self._number_of_visits
+	
+	def increase_visits_counter(self, value):
+		shard_name = self._counter_of_visits_id
+		Shard.increase(shard_name, value)
+	
+		
+	def get_tracks(self, offset):
+		timestamp = timegm(offset.utctimetuple())
+		memcache_tracks_id = self._memcache_station_tracks_id + "." + str(timestamp)
+		
+		past_tracks = memcache.get(memcache_tracks_id)
+		if past_tracks is None:
+			logging.info("Past tracks not in memcache")
+			
+			tracks = self.tracks_query(offset)
+			logging.info("Past tracks retrieved from datastore")
+			
+			past_tracks = Track.get_extended_tracks(tracks)
+			
+			memcache.set(memcache_tracks_id, past_tracks)
+			logging.info("Extended tracks put in memcache")
+		else:
+			logging.info("Past tracks already in memcache")
+		
+		return past_tracks
+	
+	def tracks_query(self, offset):		
+		q = Track.all()
+		q.filter("station", self.station.key())
+		q.filter("created <", offset)
+		q.order("-created")
+		tracks = q.fetch(10)
+		
+		return tracks
+		
+	@property
+	def number_of_suggestions(self):
+		if not hasattr(self, "_number_of_suggestions"):
+			shard_name = self._counter_of_suggestions_id
+			self._number_of_suggestions = Shard.get_count(shard_name)
+		return self._number_of_suggestions
+
+	def increment_suggestions_counter(self):
+		shard_name = self._counter_of_suggestions_id
+		Shard.task(shard_name, "increment")
+
+	########################################################################################################################################
+	#													DEPRECATED
+	########################################################################################################################################
+
+	# TO BE REMOVED
+	# Check if station is on air
+	def on_air(self):
+		on_air = False
+		if(len(self.queue) > 0):
+			on_air = True
+				
+		return on_air
 	#TO BE REMOVED AT THE END OF V4 DEV
 	# Returns the current station queue
 	@property
@@ -659,10 +733,12 @@ Global number of stations: %s
 
 		return extended_broadcast	
 	
+	# TO BE REMOVED
 	# Returns the room in the queue
 	def room(self):
 		return(10 - len(self.queue))
 	
+	# TO BE REMOVED
 	# Returns the station expiration time or the current time if there is no track in the tracklist
 	def expiration_time(self):
 		if not self.queue:
@@ -673,18 +749,10 @@ Global number of stations: %s
 			last_broadcast = self.queue[-1]
 			return datetime.utcfromtimestamp(last_broadcast["expired"])
 	
+	# TO BE REMOVED
 	def task_view(self):
 		task = Task(
 			url = "/taskqueue/view",
-			params = {
-				"shortname": self._shortname,
-			}
-		)
-		task.add(queue_name = "worker-queue")
-
-	def task_visit(self):
-		task = Task(
-			url = "/taskqueue/visit",
 			params = {
 				"shortname": self._shortname,
 			}
@@ -779,20 +847,6 @@ Global number of stations: %s
 	def decrement_broadcasts_counter(self):
 		shard_name = self._counter_of_broadcasts_id
 		Shard.task(shard_name, "decrement")
-	
-	# Visits counter
-	@property
-	def number_of_visits(self):
-		if not hasattr(self, "_number_of_visits"):
-			shard_name = self._counter_of_visits_id
-			self._number_of_visits = Shard.get_count(shard_name)
-		return self._number_of_visits
-	
-	def increase_visits_counter(self, value):
-		shard_name = self._counter_of_visits_id
-		Shard.increase(shard_name, value)
-	
-
 	# TO BE REMOVED
 	@property
 	def number_of_views(self):
@@ -801,6 +855,7 @@ Global number of stations: %s
 			self._number_of_views = Shard.get_count(shard_name)
 		return self._number_of_views
 	
+	# TO BE REMOVED
 	def increase_views_counter(self, value):
 		shard_name = self._counter_of_views_id
 		Shard.increase(shard_name, value)
@@ -837,45 +892,4 @@ Global number of stations: %s
 		broadcasts = q.fetch(10)
 		
 		return broadcasts
-		
-	def get_tracks(self, offset):
-		timestamp = timegm(offset.utctimetuple())
-		memcache_tracks_id = self._memcache_station_tracks_id + "." + str(timestamp)
-		
-		past_tracks = memcache.get(memcache_tracks_id)
-		if past_tracks is None:
-			logging.info("Past tracks not in memcache")
-			
-			tracks = self.tracks_query(offset)
-			logging.info("Past tracks retrieved from datastore")
-			
-			past_tracks = Track.get_extended_tracks(tracks)
-			
-			memcache.set(memcache_tracks_id, past_tracks)
-			logging.info("Extended tracks put in memcache")
-		else:
-			logging.info("Past tracks already in memcache")
-		
-		return past_tracks
-	
-	def tracks_query(self, offset):		
-		q = Track.all()
-		q.filter("station", self.station.key())
-		q.filter("created <", offset)
-		q.order("-created")
-		tracks = q.fetch(10)
-		
-		return tracks
-		
-	@property
-	def number_of_suggestions(self):
-		if not hasattr(self, "_number_of_suggestions"):
-			shard_name = self._counter_of_suggestions_id
-			self._number_of_suggestions = Shard.get_count(shard_name)
-		return self._number_of_suggestions
-
-	def increment_suggestions_counter(self):
-		shard_name = self._counter_of_suggestions_id
-		Shard.task(shard_name, "increment")
-		
 		
