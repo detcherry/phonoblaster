@@ -716,10 +716,11 @@ BufferManager.prototype.downListen = function(){
 				}
 
 			})
-			
-			$(this).blur()
-			return false;
+		
 		}
+		
+		$(this).blur()
+		return false;
 		
 	})
 	
