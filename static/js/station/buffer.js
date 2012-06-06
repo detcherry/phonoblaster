@@ -32,6 +32,7 @@ BufferManager.prototype.init = function(station_client){
 	// Init Methods
 	this.getAjax();
 	this.moveListen();
+	this.downListen();
 	this.upListen();
 	this.deleteListen();
 }
@@ -519,7 +520,7 @@ BufferManager.prototype.moveData = function(id, new_position){
 	return data
 }
 
-//--------------------------------- UP LISTEN --------------------------------------
+//-------------------------------------  UP  --------------------------------------
 
 BufferManager.prototype.upListen = function(){
 		
@@ -527,8 +528,6 @@ BufferManager.prototype.upListen = function(){
 	$("a.item-up").live("click", function(){
 				
 		var id = $(this).attr("name");
-		var re = RegExp("[.]","g");
-		var selector = "#" + id.replace(re, "\\.");
 		
 		var previous_item = null;
 		var item_to_move = null;
@@ -591,7 +590,6 @@ BufferManager.prototype.upListen = function(){
 					// Hack necessary to bypass bugs due to the jquery animation
 					var timeout = 0;
 					if(!first_anim_over || !second_anim_over){
-						PHB.log("increase timeout")
 						timeout = 420;
 					}
 					
@@ -646,6 +644,116 @@ BufferManager.prototype.upData = function(id){
 	return data
 }
 
+//------------------------------------- DOWN ---------------------------------------
+
+BufferManager.prototype.downListen = function(){
+	
+	var that = this;
+	$("a.item-down").live("click",function(){
+		
+		var id = $(this).attr("name");
+		
+		var previous_item = null;
+		var item_to_move = null;
+		var existing_position = null;
+		for(var i=0, c= that.items.length; i<c; i++){
+			var item = that.items[i];
+			if(item.id == id){
+				previous_item = that.items[i-1];
+				item_to_move = item;
+				existing_position = i;
+				break;
+			}
+		}
+		
+		if(existing_position && existing_position != that.items.length - 1){
+			
+			// Make a fake animation
+			var anim_over = false;
+			
+			var re = RegExp("[.]","g");
+			var selector = "#" + id.replace(re, "\\.");
+			var margin_top = 81 * (that.items.length - 1 - i);
+			var margin_bottom = margin_top + 83;	
+			$(selector).animate(
+				{
+					"marginTop": margin_top + "px",
+					"marginBottom": "-" + margin_bottom + "px",
+				},{
+					"duration": 400,
+					"complete": function(){
+						anim_over = true;
+					}
+				});
+				
+			// Once animation ended, replace items in html
+			setTimeout(function(){
+				$(selector)
+					.css("marginTop","-1px")
+					.css("marginBottom","0px")
+					.appendTo("#buffer-tab .tab-content")			
+			}, 420)
+			
+			// Submit the position change
+			that.down(id, function(response){
+				
+				if(!response){
+					var timeout = 0;
+					if(!anim_over){
+						timeout = 420;
+					}
+					
+					setTimeout(function(){
+						// Remove item put up in the list
+						that.UIRemove(id)
+
+						// Put it back to his initial place
+						that.UIAdd(item_to_move, previous_item)
+					}, timeout)
+
+					PHB.error("Broadcast position did not change")
+					
+				}
+
+			})
+			
+			$(this).blur()
+			return false;
+		}
+		
+	})
+	
+}
+
+BufferManager.prototype.down = function(id, callback){
+	var data = this.downData(id);
+	var that = this;
+
+	$.ajax({
+		url: that.url,
+		type: "POST",
+		dataType: that.data_type,
+		timeout: 60000,
+		data: data,
+		error: function(xhr, status, error) {
+			callback(false)
+		},
+		success: function(json){
+			callback(json.response);
+		},
+	});
+}
+
+BufferManager.prototype.downData = function(id){
+	// Build data
+	var shortname = this.station_client.station.shortname;		
+	var data = {
+		shortname: shortname,
+		content: JSON.stringify(id),
+		position: this.items.length - 1,
+	}
+	return data
+}
 
 //--------------------------------- POST methods -----------------------------------
 
@@ -788,6 +896,12 @@ BufferManager.prototype.UIBuild = function(item){
 		$("<a/>")
 			.attr("href","#")
 			.addClass("item-up")
+			.attr("name", id)
+	)
+	.append(
+		$("<a/>")
+			.attr("href","#")
+			.addClass("item-down")
 			.attr("name", id)
 	)
 	.append(
