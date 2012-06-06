@@ -950,7 +950,7 @@ input#search:focus{
 }
 
 #buffer-tab .tab-content:nth-child(2) .item-title{
-	width:290px;
+	width:278px;
 }
 
 .item a.item-up{
@@ -963,16 +963,30 @@ input#search:focus{
 	border-bottom:7px solid #7F7F7F;
 }
 
-.item:hover a.item-up{
-	visibility:visible;
-}
-
 .item:hover a.item-up:hover{
 	border:7px solid transparent;
 	border-bottom:7px solid #333;
 }
 
-.item:first-child:hover a.item-up{
+.item a.item-down{
+	display:block;
+	float:left;
+	visibility:hidden;
+	margin-top:2px;
+	border:7px solid transparent;
+	border-top:7px solid #7F7F7F;
+}
+
+.item:hover a.item-down:hover{
+	border:7px solid transparent;
+	border-top:7px solid #333;
+}
+
+.item:hover .item-up, .item:hover .item-down{
+	visibility:visible;
+}
+
+.item:first-child:hover .item-up, .item:first-child:hover .item-down{
 	visibility:hidden;
 }
 
