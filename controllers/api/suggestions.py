@@ -22,7 +22,7 @@ class ApiSuggestionsHandler(BaseHandler):
 		
 		if(station):
 			q = Suggestion.all()
-			q.filter("station", station.key())
+			q.filter("station", station.key()) # TO BE CHANGED
 			q.order("-created")
 			suggestions = q.fetch(20) # Arbitrary number
 		
@@ -36,7 +36,7 @@ class ApiSuggestionsHandler(BaseHandler):
 		shortname = self.request.get("shortname")
 		station_proxy = StationApi(shortname)
 		station = station_proxy.station
-		user = self.user_proxy.user
+		user = self.user_proxy.user # TO BE CHANGED
 		admin = self.user_proxy.is_admin_of(station.key().name())
 
 		suggestion_json = json.loads(self.request.get("content"))

@@ -40,8 +40,8 @@ application = webapp.WSGIApplication(
 	[
 		('/api/buffer',ApiBufferHandler),
 		('/api/buffer/([\w.]+)', ApiBufferDeleteHandler),
-		('/api/queue', ApiQueueHandler),
-		('/api/queue/([\w.]+)', ApiQueueDeleteHandler),
+		('/api/queue', ApiQueueHandler), # TO BE REMOVED
+		('/api/queue/([\w.]+)', ApiQueueDeleteHandler),  # TO BE REMOVED
 		('/api/suggestions', ApiSuggestionsHandler),
 		('/api/favorites', ApiFavoritesHandler),
 		('/api/favorites/(\w+)', ApiFavoritesDeleteHandler),
@@ -51,22 +51,22 @@ application = webapp.WSGIApplication(
 		('/api/sessions', ApiSessionsHandler),
 		('/api/comments', ApiCommentsHandler),
 		('/api/recommendations', ApiRecommendationsHandler),
-		('/api/air', ApiAirHandler),
+		('/api/air', ApiAirHandler),  # TO BE REMOVED
 		('/api/now', ApiNowHandler),
 		('/admin/dashboard', AdminDashboardHandler),
 		('/admin/upgrade', UpgradeHandler),
 		('/', HomeHandler),
-		('/station/create', StationCreateHandler),
+		('/station/create', StationCreateHandler),  # TO BE REMOVED
 		('/station/manage', StationManagelHandler),
 		('/station/check', StationCheckHandler),
 		('/(\w+)', StationHandler),
 		('/(\w+)/picture', StationPictureHandler),
 		('/broadcast/([\w.]+)', BroadcastHandler),
-		('/buffer/test/([\w.]+)',BufferHandler),
+		('/buffer/test/([\w.]+)',BufferHandler), # TO BE REMOVED
 		('/track/([0-9]+)', TrackHandler),
 		('/suggestion/([\w.]+)', SuggestionHandler),
 		('/station/page', StationPageHandler),
-		('/user/([0-9]+)', ProfileHandler),
+		('/user/([0-9]+)', ProfileHandler), # TO BE REMOVED
 		('/company/terms', TermsHandler),
 		('/company/faq', FaqHandler),
 		('/company/press', PressHandler),

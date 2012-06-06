@@ -119,7 +119,7 @@ Global number of stations: %s
 			
 		return self._number_of_sessions
 	
-	# TO BE CHANGED : staion -> host
+	# TO BE CHANGED : station -> host
 	# Gives all the listeners (logged in a station)
 	@property
 	def sessions(self):

@@ -13,6 +13,7 @@ class Comment(db.Model):
 	station = db.ReferenceProperty(Station, required = True, collection_name = "commentStation")
 	created = db.DateTimeProperty(auto_now_add = True)
 	
+	# TO BE CHANGED
 	# Format comments into extended comments
 	@staticmethod
 	def get_extended_comments(comments, station):
@@ -57,6 +58,7 @@ class Comment(db.Model):
 		#return extended_comments
 		return ordered_extended_comments
 	
+	# TO BE CHANGED
 	# Format a comment and a user into an extended comment entitity
 	@staticmethod
 	def get_extended_comment(comment, station, user):

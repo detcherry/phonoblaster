@@ -13,6 +13,7 @@ class Session(db.Model):
 	created = db.DateTimeProperty(auto_now_add = True)
 	ended = db.DateTimeProperty()
 	
+	# TO BE CHANGED
 	@staticmethod
 	def get_extended_sessions(sessions):		
 		user_keys = []
@@ -38,7 +39,7 @@ class Session(db.Model):
 		extended_sessions = user_extended_sessions + anonymous_extended_sessions
 		
 		return extended_sessions
-	
+	# TO BE CHANGED
 	@staticmethod
 	def get_extended_session(session, user):
 		if(user):	
