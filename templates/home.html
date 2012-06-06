@@ -22,28 +22,22 @@
 	<div id="home-user-stations">
 		{% if user_stations %}
 			{% for station in user_stations %}
-				<div class="home-user-station">
-					<a href="/{{ station.shortname }}">
-						<img src="https://graph.facebook.com/{{ station.key.name }}/picture"/>
-						<p><span class="middle">{{ station.name }}</span></p>
-					</a>
-				</div>
+			<div class="home-user-station">
+				<a href="/{{ station.shortname }}">
+					<img src="https://graph.facebook.com/{{ station.key.name }}/picture"/>
+					<p><span class="middle">{{ station.name }}</span></p>
+				</a>
+			</div>
 			{% endfor %}
-			<!---->
-				<div id = "other-stations">
-					<a href="/station/create"> Create a new station<a>
-				</div>
-				
+			<div id = "other-stations">
+				<a href="/station/create"> Create a new station</a>
+			</div>
 		{% else %}
 			<div id="home-create-new-station">
 				<p >Start brodcasting today: </p>
-				<a href="/station/create" class="btn primary"> Create your station! <a>
+				<a href="/station/create" class="btn primary"> Create your station!</a>
 			</div>
-		
 		{% endif %}
-		
-
-		
 	</div>
 </div>
 <div id="right-column">
@@ -55,9 +49,14 @@
 					<a href="/{{ s.shortname }}">
 						<img src="https://graph.facebook.com/{{ s.key.name }}/picture"/>
 					</a>
-					<p><a href="/{{ s.shortname }}"><span class="middle">{{ s.name }}</span></a></p>
+					<p>
+						<a href="/{{ s.shortname }}">
+							<span class="middle">{{ s.name }}</span>
+						</a>
+					</p>
 					<div class="home-feed-station-right">
-						<div class="fb-like" data-href="{{ s.link }}" data-send="false" data-layout="button_count"  data-show-faces="false"></div>
+						<div class="fb-like" data-href="{{ s.link }}" data-send="false" data-layout="button_count"  data-show-faces="false">
+						</div>
 					</div>
 				</div>
 				<div class="home-feed-track">
@@ -67,7 +66,11 @@
 							</span>
 						</a>
 					</div>
-					<p><a href="/{{ s.shortname }}"><span class="middle">{{ t.title }}</span></a></p>
+					<p>
+						<a href="/{{ s.shortname }}">
+							<span class="middle">{{ t.title }}</span>
+						</a>
+					</p>
 				</div>
 			</div>
 		{% endfor %}
