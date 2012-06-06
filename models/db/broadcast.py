@@ -20,6 +20,7 @@ class Broadcast(db.Model):
 	created = db.DateTimeProperty(auto_now_add = True)
 	expired = db.DateTimeProperty()
 
+	# TO BE CHANGED
 	@staticmethod
 	def get_extended_broadcasts(broadcasts, current_station):
 		extended_broadcasts = []
@@ -95,6 +96,7 @@ class Broadcast(db.Model):
 			
 		return ordered_extended_broadcasts	
 	
+	# TO BE CHANGED
 	@staticmethod
 	def get_extended_broadcast(broadcast, track, station, user):
 		extended_broadcast = None

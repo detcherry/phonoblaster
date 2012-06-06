@@ -17,7 +17,7 @@ class ApiFavoritesHandler(BaseHandler):
 		offset = self.request.get("offset")
 		
 		if(key_name and offset):
-			profile_proxy = UserApi(key_name)
+			profile_proxy = UserApi(key_name) # TO BE CHANGED
 			extended_favorites = profile_proxy.get_favorites(datetime.utcfromtimestamp(int(offset)))
 			self.response.out.write(json.dumps(extended_favorites))
 	

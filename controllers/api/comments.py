@@ -23,7 +23,7 @@ class ApiCommentsHandler(BaseHandler):
 		if(station):
 			q = Comment.all()
 			q.filter("station", station.key())
-			q.filter("created <", datetime.utcnow())
+			q.filter("created <", datetime.utcnow()) # TO BE CHANGED
 			q.order("-created")
 			comments = q.fetch(50) # Arbitrary number
 	

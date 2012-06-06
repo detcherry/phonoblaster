@@ -27,6 +27,7 @@ class Suggestion(db.Model):
 	user = db.ReferenceProperty(User, required = True, collection_name = "suggestionUser")
 	created = db.DateTimeProperty(auto_now_add = True)
 
+	# TO BE CHANGED
 	@staticmethod
 	def get_extended_suggestions(suggestions):
 		extended_suggestions = []
@@ -48,6 +49,7 @@ class Suggestion(db.Model):
 		logging.info("Extended suggestions generated")
 		return extended_suggestions
 
+	# TO BE CHANGED
 	@staticmethod
 	def get_extended_suggestion(suggestion, user):	
 		extended_suggestion = {

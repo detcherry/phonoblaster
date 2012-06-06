@@ -11,6 +11,7 @@ class Favorite(db.Model):
 	user = db.ReferenceProperty(User, required = True, collection_name = "favoriteUser")
 	created = db.DateTimeProperty(auto_now_add = True)
 	
+	# TO BE CHANGED
 	@staticmethod
 	def get_extended_favorites(favorites):
 		extended_favorites = []
@@ -37,7 +38,8 @@ class Favorite(db.Model):
 		
 		logging.info("Extended favorites generated")
 		return extended_favorites
-		
+	
+	# TO BE CHANGED
 	@staticmethod
 	def get_extended_favorite(favorite, track, station):
 		extended_favorite = {
