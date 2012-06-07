@@ -45,7 +45,7 @@ class Session(db.Model):
 				"key_name": session.key().name(),
 				"created": timegm(session.created.utctimetuple()),
 				"listener_key_name": listener.key().name(),
-				"listener_name": listener.first_name + " " + listener.last_name,
+				"listener_name": listener.name,
 				"listener_url": "/" + listener.key().name(),
 			}
 		else:
