@@ -25,6 +25,9 @@ from models.api.admin import AdminApi
 
 MEMCACHE_USER_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".user."
 MEMCACHE_USER_CONTRIBUTIONS_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".contributions.user."
+MEMCACHE_USER_NON_CREATED_PROFILES_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".non.created.profiles.user."
+MEMCACHE_USER_PROFILES_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".profiles.user."
+MEMCACHE_USER_PROFILE_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".profile.user."
 MEMCACHE_USER_FAVORITES_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".favorites.user." # TO BE MOVED TO stationapi
 COUNTER_OF_FAVORITES = "user.favorites.counter."
 
@@ -34,6 +37,9 @@ class UserApi:
 		self._code = code # only for an authenticated user
 		self._memcache_user_id = MEMCACHE_USER_PREFIX + self._uid
 		self._memcache_user_contributions_id = MEMCACHE_USER_CONTRIBUTIONS_PREFIX + self._uid
+		self._memcache_user_non_created_profiles_id = MEMCACHE_USER_NON_CREATED_PROFILES_PREFIX + self._uid
+		self._memcache_user_profiles_id = MEMCACHE_USER_PROFILES_PREFIX + self._uid
+		self._memcache_user_profile_id = MEMCACHE_USER_PROFILE_PREFIX + self._uid
 		self._memcache_user_favorites_id = MEMCACHE_USER_FAVORITES_PREFIX + self._uid
 		self._counter_of_favorites_id = COUNTER_OF_FAVORITES + self._uid
 	
@@ -326,7 +332,112 @@ Global number of users: %s
 		shard_name = self._counter_of_favorites_id
 		Shard.task(shard_name, "decrement")
 
-	
-		
-		
-		
+################################################################################################################################################
+##											PROFILE ITERATION
+################################################################################################################################################
+	@property
+	def profile(self):
+		if not hasattr(self, "_profile"):
+			self._profile = memcache.get(self._memcache_user_profile_id)
+			if self._profile is None:
+				logging.info("User Profile not in memcache")
+				user = self.user
+				if user is not None:
+					profile_ref = self.user.profile
+					if profile_ref is not None:
+						station = User.station.get_value_for_datastore(profile_ref)
+						if station:
+							self._profile = {
+								"key_name": station.key().name(),
+								"shortname": station.shortname,
+								"name": station.name,
+								"type": station.type,
+							}
+							memcache.set(self._memcache_user_profile_id, self._profile)
+							logging.info("%s %s's profile put in memcache"%(user.first_name, user.last_name))
+						else:
+							logging.error("Profile reffers to a non existing station!")
+					else:
+						logging.info("User has no profile yet.")
+				else:
+					logging.info("User does not exist")
+			else:
+				logging.info("%s %s's profile already in memcache"%(self.user.first_name, self.user.last_name))
+		return self._profile	
+
+	@property
+	def profiles(self):
+		if not hasattr(self, "_profiles"):
+			self._profiles = memcache.get(self._memcache_user_profiles_id)
+			if self._profiles is None:
+				self._profiles = []
+				stations = self.stations
+				for i in xrange(0,len(stations)):
+					station = stations[i]
+					self._profiles.append(
+						{
+							"key_name":s.key().name(),
+							"name": s.name, 
+							"shortname": s.shortname,
+							"type": s.type
+						})
+				memcache.set(self._memcache_user_profiles_id, self._profiles)
+				logging.info("%s %s's profiles put in memcache"%(user.first_name, user.last_name))
+			else:
+				logging.info("%s %s's profiles already in memcache"%(self.user.first_name, self.user.last_name))
+		return self._profiles
+
+	@property
+	def non_created_profiles(self):
+		if not hasattr(self, "_non_created_profiles"):
+			self._non_created_profiles = memcache.get(self._memcache_user_non_created_profiles_id)
+			if self._non_created_profiles is None:
+				self._non_created_profiles = []
+
+				# Pages
+				contributions = self.contributions
+				profiles = self.profiles
+				for i in xrange(0,len(contributions)):
+					# If contribution page_id not in profiles add it to the list of non created profiles
+					contribution = contributions[i]
+					is_created = False
+					for j in xrange(0,len(profiles)):
+						profile = profiles[j]
+						if contribution["page_id"] == profile["key_name"]:
+							# Profile associated to facebook fan page already creted
+							is_created = True
+							break
+
+					if not is_created:
+						# Profile associated to fan page non existing, adding it to the list
+						self._non_created_profiles.append(
+							{
+								"key_name": contribution["page_id"],
+								"name": contribution["page_name"],
+								"type": "page"
+							})
+
+				# Profile
+				is_created = False
+				for j in xrange(0,len(profiles)):
+					profile = profiles[j]
+					if self.user.key().name()  == profile["key_name"]:
+						# Profile associated to user already creted
+						is_created = True
+						break
+
+				if not is_created:
+					self._non_created_profiles.append(
+						{
+							"key_name": self.user.key().name(),
+							"name": self.user.first_name+" "+self.user.last_name,
+							"type": "user"
+						})
+
+				memcache.set(self._memcache_user_non_created_profiles_id, self._non_created_profiles)
+				logging.info("%s %s's non created profiles put in memcache"%(user.first_name, user.last_name))
+
+			else:
+				logging.info("%s %s's non created profiles already in memcache"%(self.user.first_name, self.user.last_name))
+
+		return self._non_created_profiles
