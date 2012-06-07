@@ -1,6 +1,6 @@
 import logging
 
-from base import profile_required
+from controllers.base import profile_required
 
 from controllers.station.root import RootHandler
 

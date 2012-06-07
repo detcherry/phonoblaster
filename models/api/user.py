@@ -373,7 +373,7 @@ Global number of users: %s
 				self._profiles = []
 				stations = self.stations
 				for i in xrange(0,len(stations)):
-					station = stations[i]
+					s = stations[i]
 					self._profiles.append(
 						{
 							"key_name":s.key().name(),
