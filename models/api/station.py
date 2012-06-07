@@ -67,12 +67,13 @@ class StationApi():
 		return self._station
 	
 	# TO BE CHANGED
-	def put_station(self, page_id, shortname, page_name, page_link):
+	def put_station(self, id, shortname, name, link, type):
 		station = Station(
-			key_name = page_id,
+			key_name = id,
 			shortname = shortname,
 			name = page_name,
 			link = page_link,
+			type = type,
 		)
 		station.put()
 		logging.info("Station put in datastore")
