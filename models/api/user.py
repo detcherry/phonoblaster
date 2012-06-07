@@ -441,3 +441,27 @@ Global number of users: %s
 				logging.info("%s %s's non created profiles already in memcache"%(self.user.first_name, self.user.last_name))
 
 		return self._non_created_profiles
+
+	def set_profile(self, key_name):
+		# We first need to check if key_name is in the profiles of the user
+		is_in_profiles = False
+		for i in xrange(0,len(self.profiles)):
+			if key_name == self.profiles[i]["key_name"]:
+				is_in_profiles = True
+				break
+
+		if is_in_profiles:
+			# Retrieving the associated station
+			station = Station.get_by_key_name(key_name)
+			logging.info("Station retrieved from datastore")
+
+			user = self.user
+
+			user.profile = station.key()
+			user.put()
+			logging.info("User put in datastore")
+			memcache.set(self._memcache_user_id, self.user)
+			logging.info("User put in memcache")
+			self._user = user
+
+
