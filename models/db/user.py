@@ -1,4 +1,5 @@
 from google.appengine.ext import db
+from models.db.station import Station
 
 class User(db.Model):
 	# key_name = uid
