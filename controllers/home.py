@@ -5,6 +5,7 @@ from calendar import timegm
 
 from google.appengine.ext import db
 
+from base import profile_required
 from base import BaseHandler
 from controllers import facebook
 from models.db.station import Station
@@ -12,6 +13,7 @@ from models.api.station import StationApi
 from models.db.broadcast import Broadcast
 
 class HomeHandler(BaseHandler):
+	@profile_required
 	def get(self):
 		if(self.user_proxy):
 			user = self.user_proxy.user

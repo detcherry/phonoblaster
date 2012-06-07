@@ -382,7 +382,7 @@ Global number of users: %s
 							"type": s.type
 						})
 				memcache.set(self._memcache_user_profiles_id, self._profiles)
-				logging.info("%s %s's profiles put in memcache"%(user.first_name, user.last_name))
+				logging.info("%s %s's profiles put in memcache"%(self.user.first_name, self.user.last_name))
 			else:
 				logging.info("%s %s's profiles already in memcache"%(self.user.first_name, self.user.last_name))
 		return self._profiles
@@ -435,7 +435,7 @@ Global number of users: %s
 						})
 
 				memcache.set(self._memcache_user_non_created_profiles_id, self._non_created_profiles)
-				logging.info("%s %s's non created profiles put in memcache"%(user.first_name, user.last_name))
+				logging.info("%s %s's non created profiles put in memcache"%(self.user.first_name, self.user.last_name))
 
 			else:
 				logging.info("%s %s's non created profiles already in memcache"%(self.user.first_name, self.user.last_name))

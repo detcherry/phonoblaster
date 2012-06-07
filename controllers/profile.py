@@ -24,8 +24,7 @@ class ProfileHandler(BaseHandler):
 			for i in xrange(0,len(self.user_proxy.non_created_profiles)):
 				if key_name == self.user_proxy.non_created_profiles[i]["key_name"]:
 					is_non_created = True
-					profile = 
-						{
+					profile = {
 							"key_name": key_name,
 							"name": self.user_proxy.non_created_profiles[i]["name"],
 							"type": self.user_proxy.non_created_profiles[i]["type"]
@@ -34,8 +33,7 @@ class ProfileHandler(BaseHandler):
 
 			if is_non_created:
 				# The key_name was found in non created profile of current user
-				template_values = 
-					{
+				template_values = {
 						"proceed": True,
 						"unique": True,
 						"profile": profile
@@ -59,22 +57,19 @@ class ProfileHandler(BaseHandler):
 			# Global process
 			profiles = self.user_proxy.non_created_profiles
 			if len(profiles) > 1:
-				template_values = 
-					{
+				template_values = {
 						"proceed": True,
 						"unique": False,
 						"profiles": profiles
 					}
 			elif len(profiles) == 1:
-				template_values =
-					{
+				template_values = {
 						"proceed": True,
 						"unique": True,
 						"profile": profiles[0]
 					}
 			else:
-				template_values =
-					{
+				template_values = {
 						"proceed": False
 					}
 

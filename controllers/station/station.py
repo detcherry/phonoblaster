@@ -1,10 +1,13 @@
 import logging
 
+from base import profile_required
+
 from controllers.station.root import RootHandler
 
 from models.api.station import StationApi
 
 class StationHandler(RootHandler):
+	@profile_required
 	def get(self, shortname):
 		self.station_proxy = StationApi(shortname)
 		
