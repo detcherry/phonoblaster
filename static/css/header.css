@@ -9,7 +9,6 @@
 
 .topbar-inner{
 	padding-top:10px;
-	padding-bottom:10px;
 	width:100%;
 }
 
@@ -33,23 +32,27 @@
 	background-position:0px 0px;
 }
 
-.topbar-inner #menu{
+ul#menu{
 	float:right;
+	margin:0px;
+	margin-top:-10px;
 }
 
-.topbar-inner #menu div{
+ul#menu li{
 	float:left;
-	padding-right:10px;
-	padding-left:10px;
+	padding:10px;
+	padding-top:12px;
 	line-height:28px;
 	color:white;
 }
 
-.topbar-inner #menu div a{
+ul#menu li a{
 	float:left;
+	padding:0px;
+	line-height:28px;
 }
 
-.topbar-inner a.login{
+ul#menu a.login{
 	display:block;
 	margin-top:0px;
 	width:178px;
@@ -60,15 +63,118 @@
 	border-radius: 6px;
 }
 
-.topbar-inner a.profile{
-	width:70px;
-}
-
-.topbar-inner a.profile img{
+ul#menu a.profile img{
 	display:block;
 	float:left;
 	width:25px;
 	margin-right:10px;
 }
+
+ul#menu li.show{
+	margin-right:-4px;
+}
+
+ul#menu a.dropdown{
+	margin-top:10px;
+}
+
+li.show a.dropdown{
+	border:5px solid transparent;
+	border-top:5px solid #BFBFBF;
+}
+
+li.show a.dropdown:hover{
+	border:5px solid transparent;
+	border-top:5px solid white;
+}
+
+ul#menu li.hide{
+	margin-right:-4px;
+	padding-bottom:18px;
+	color:#7F7F7F;
+	background:white;
+	opacity:1;
+}
+
+li.hide a.dropdown{
+	border:5px solid transparent;
+	border-top:5px solid #7F7F7F;
+}
+
+#dropdown-menu{
+	display:none;
+	position:absolute;
+	top:50px;
+	right:-5px;
+	z-index:1000;
+	width:200px;
+	background:white;
+	border:1px solid #E1E1E1;
+	border-top:none;
+}
+
+#dropdown-stations-title{
+	padding:10px;
+	padding-bottom:0px;
+}
+
+ul#dropdown-stations{
+	position:static;
+	margin:0px;
+	width:100%;
+	max-height:105px;
+	padding-top:5px;
+	padding-bottom:5px;
+	overflow:hidden;
+}
+
+ul#dropdown-stations li{
+	padding:10px;
+	padding-top:5px;
+	padding-bottom:5px;
+	width:180px;
+	line-height:15px;
+	color:#333;
+}
+
+ul#dropdown-stations li a{
+	width:100%;
+	color:#7F7F7F;
+	line-height:25px;
+}
+
+ul#dropdown-stations li a:hover{
+	color:#636363;
+}
+
+ul#dropdown-stations li a span{
+	display:block;
+	float:left;
+	height:25px;
+	width:145px;
+	overflow:hidden;
+	text-shadow:none;
+}
+
+#dropdown-menu .limiter{
+	margin-right:10px;
+	margin-left:10px;
+	width:180px;
+	border-bottom:1px solid #E1E1E1;
+}
+
+#dropdown-menu .logout{
+	padding-top:3px;
+	padding-bottom:5px;
+	padding-left:10px;
+	text-shadow:none;
+	width:100%;
+}
+
+#dropdown-menu .logout:hover{
+	color:#636363;
+}
+
+
 
 

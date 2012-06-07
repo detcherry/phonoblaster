@@ -23,35 +23,6 @@
 	<link type="text/css" rel="stylesheet" href="/{{tag}}/static/css/station/station.css">
 {% endblock %}
 
-{% block header %}
-<div class="topbar">
-	<div class="topbar-inner">
-		<div class="container">
-			<h1>Phonoblaster</h1>
-			<a id="logo" href="/"></a>
-			<a href="#" id="notifications" class="off"></a>
-			<div id="menu">
-			{% if user_proxy %}
-				<div>
-					<a href="/">Home</a>
-				</div>
-				<div>
-					<a href="/user/{{ user_proxy.user.key.name }}" class="profile">
-						<img src="https://graph.facebook.com/{{ user_proxy.user.key.name }}/picture?type=square"/>
-						<span>Profile</span>
-					</a>
-				</div>
-				<div><a href="#" class="logout">Logout</a></div>
-			{% else %}
-				<div>Broadcast your music now!</div>
-				<div><a href="#" class="login">Login with Facebook</a></div>
-			{% endif %}
-			</div>
-		</div>
-	</div>
-</div>
-{% endblock %}
-
 {% block main %}
 	<!-- Background -->
 	<div id="background" class="stretch">
@@ -351,8 +322,6 @@
 {% endblock %}
 
 {% block script %}
-<!-- Jquery UI -->
-<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js"></script>
 <!-- Pubnub -->
 <div sub-key="sub-aa6b101e-24e9-11e1-ab04-3b69d50a7fd4" ssl="off" origin="pubsub.pubnub.com" id="pubnub"></div>
 <script src="https://pubnub.s3.amazonaws.com/pubnub-3.1.min.js"></script>
