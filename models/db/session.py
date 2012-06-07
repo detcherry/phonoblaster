@@ -2,7 +2,6 @@ from calendar import timegm
 
 from google.appengine.ext import db
 
-from models.db.user import User
 from models.db.station import Station
 
 class Session(db.Model):
@@ -33,7 +32,7 @@ class Session(db.Model):
 		
 		listeners = db.get(listeners_keys)
 		
-		listener_extended_sessions = [Session.get_extended_session(s, l) for s, l in zip(user_sessions, listeners)]
+		listener_extended_sessions = [Session.get_extended_session(s, l) for s, l in zip(listener_sessions, listeners)]
 		anonymous_extended_sessions = [Session.get_extended_session(s, al) for s, al in zip(anonymous_sessions, anonymous_listeners)]
 		extended_sessions = listener_extended_sessions + anonymous_extended_sessions
 		
