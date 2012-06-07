@@ -66,7 +66,6 @@ class StationApi():
 				logging.info("Station already in memcache")	
 		return self._station
 	
-	# TO BE CHANGED
 	def put_station(self, id, shortname, name, link, type):
 		station = Station(
 			key_name = id,

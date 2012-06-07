@@ -203,6 +203,7 @@ Global number of users: %s
 	def set_stations_field(self, contributions):
 		# Creating and storing the keys pointing to stations entities, even when a page is not associated with a phonoblaster station
 		keys = [db.Key.from_path('Station', c["page_id"]) for c in contributions]
+		keys.append(db.Key.from_path('Station', self.user.key().name())) # Adding user's station
 		self.user.stations = keys
 		self.user.put()
 		logging.info("Stations field updated in datastore")
