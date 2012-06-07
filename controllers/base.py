@@ -27,7 +27,7 @@ def login_required(method):
         else:
         	profile = user_proxy.profile
 
-        	if profile or self.request.path == '/profile/change' or self.request.path == '/profile/init':
+        	if profile or self.request.path == '/profile/switch' or self.request.path == '/profile/init':
         		return method(self, *args, **kwargs)
         	else:
         		self.redirect('/profile/init')

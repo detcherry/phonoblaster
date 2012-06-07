@@ -11,14 +11,14 @@ from controllers import facebook
 from models.db.station import Station
 from models.api.station import StationApi
 
-class ProfileHandler(BaseHandler):
+class ProfileInitHandler(BaseHandler):
 	@login_required
 	def get(self):
 		template_values = {}
 		key_name = self.request.get("key_name")
 
 		if key_name is not None:
-			# Specific Process
+			# Unique profile
 			# Checking if key_name in user non created profiles
 			is_non_created = False
 			for i in xrange(0,len(self.user_proxy.non_created_profiles)):
@@ -54,7 +54,7 @@ class ProfileHandler(BaseHandler):
 					self.error(404)
 
 		else:
-			# Global process
+			# Multiple profiles
 			profiles = self.user_proxy.non_created_profiles
 			if len(profiles) > 1:
 				template_values = {
@@ -124,7 +124,7 @@ class ProfileHandler(BaseHandler):
 			else:
 				self.error(403)
 
-class SwitchProfileHandler(BaseHandler):
+class ProfileSwitchHandler(BaseHandler):
 	@login_required
 	def get(self, key_name):
 		# First we need to check if the key_name is in the non_created_profiles
