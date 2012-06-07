@@ -6,10 +6,10 @@ from controllers.all import AllHandler
 from controllers.admin.dashboard import AdminDashboardHandler
 from controllers.admin.upgrade import UpgradeHandler
 from controllers.buffer_test import BufferHandler
-from controllers.profile import ProfileHandler
-from controllers.profile import SwitchProfileHandler
+from controllers.profile import ProfileInitHandler
+from controllers.profile import ProfileSwitchHandler
 from controllers.station.create import StationCreateHandler
-from controllers.station.manage import StationManagelHandler
+from controllers.station.manage import StationManageHandler
 from controllers.station.check import StationCheckHandler
 from controllers.station.station import StationHandler
 from controllers.station.picture import StationPictureHandler
@@ -58,14 +58,14 @@ application = webapp.WSGIApplication(
 		('/admin/upgrade', UpgradeHandler),
 		('/', HomeHandler),
 		('/station/create', StationCreateHandler),  # TO BE REMOVED
-		('/station/manage', StationManagelHandler),
+		('/station/manage', StationManageHandler),
 		('/station/check', StationCheckHandler),
 		('/(\w+)', StationHandler),
 		('/(\w+)/picture', StationPictureHandler),
 		('/broadcast/([\w.]+)', BroadcastHandler),
 		('/buffer/test/([\w.]+)',BufferHandler), # TO BE REMOVED
-		('/profile/init', ProfileHandler),
-		('/profile/switch/([0-9]+)', SwitchProfileHandler),
+		('/profile/init', ProfileInitHandler),
+		('/profile/switch/([0-9]+)', ProfileSwitchHandler),
 		('/track/([0-9]+)', TrackHandler),
 		('/suggestion/([\w.]+)', SuggestionHandler),
 		('/station/page', StationPageHandler),

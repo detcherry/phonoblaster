@@ -8,7 +8,7 @@ from controllers import facebook
 from models.db.station import Station
 from models.api.station import StationApi
 
-class StationManagelHandler(BaseHandler):
+class StationManageHandler(BaseHandler):
 	@login_required
 	def get(self):
 		template_values = {}
