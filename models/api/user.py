@@ -345,7 +345,7 @@ Global number of users: %s
 				if user is not None:
 					profile_ref = self.user.profile
 					if profile_ref is not None:
-						station = User.station.get_value_for_datastore(profile_ref)
+						station = db.get(profile_ref.key())
 						if station:
 							self._profile = {
 								"key_name": station.key().name(),
