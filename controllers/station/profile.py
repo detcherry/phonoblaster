@@ -1,5 +1,6 @@
 import logging
 import re
+import urllib
 import django_setup
 from django.utils import simplejson as json
 
@@ -102,6 +103,7 @@ class ProfileHandler(BaseHandler):
 				
 				station_proxy = StationApi(shortname)
 				station_proxy.put_station(key_name, shortname, page_information["name"], page_information["link"], "page")
+				user_proxy.set_profile(key_name)
 
 				# Putting tracks in buffer
 				for i in xrange(0,len(tracks)):
@@ -114,6 +116,7 @@ class ProfileHandler(BaseHandler):
 				# Station associated with User
 				station_proxy = StationApi(shortname)
 				station_proxy.put_station(key_name, shortname, self.user_proxy.user.first_name + ' ' + self.user_proxy.user.last_name, None, "user")
+				user_proxy.set_profile(key_name)
 
 				# Putting tracks in buffer
 				for i in xrange(0,len(tracks)):
@@ -125,3 +128,33 @@ class ProfileHandler(BaseHandler):
 
 			else:
 				self.error(403)
+
+class SwitchProfileHandler(BaseHandler):
+	@login_required
+	def get(self, key_name):
+		# First we need to check if the key_name is in the non_created_profiles
+		is_non_created = False
+		for i in xrange(0,len(self.user_proxy.non_created_profiles)):
+			if key_name == self.user_proxy.non_created_profiles[i]["key_name"]:
+				is_non_created = True
+				break
+
+		if is_non_created:
+			# The key_name was found in non created profile of current user, redirecting to /profile/init
+			self.redirect("/profile/init?"+urllib.urlencode({ "key_name": key_name}))
+
+		# Now we need to check if the key_name is in the created_profiles
+		is_created = False
+		for i in xrange(0,len(self.user_proxy.profiles)):
+			if key_name == self.user_proxy.profiles[i]["key_name"]:
+				is_created = True
+				break
+
+		if is_created:
+			user_proxy.set_profile(key_name)
+			shortname = user_proxy.profile["shortname"]
+			self.redirect("/"+shortname)
+
+		# If not created or created, it means key_name does not appear in user profiles -> unothorised
+		self.error(404)
+
