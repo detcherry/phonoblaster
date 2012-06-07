@@ -49,7 +49,7 @@ class Message(db.Model):
 				"created": timegm(message.created.utctimetuple()),
 				"author_key_name": author.key().name(),
 				"author_name": author.name,
-				"author_url": "/" + author.key().name(),
+				"author_url": "/" + author.shortname,
 			}
 
 		return extended_comment

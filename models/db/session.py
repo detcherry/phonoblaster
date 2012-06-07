@@ -46,7 +46,7 @@ class Session(db.Model):
 				"created": timegm(session.created.utctimetuple()),
 				"listener_key_name": listener.key().name(),
 				"listener_name": listener.name,
-				"listener_url": "/" + listener.key().name(),
+				"listener_url": "/" + listener.shortname,
 			}
 		else:
 			extended_session = {
