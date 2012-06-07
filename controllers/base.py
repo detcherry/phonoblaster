@@ -25,7 +25,12 @@ def login_required(method):
 				return
             self.error(403)
         else:
-            return method(self, *args, **kwargs)
+        	profile = user_proxy.profile
+
+        	if profile or self.request.path == '/profile/change' or self.request.path == '/profile/init':
+        		return method(self, *args, **kwargs)
+        	else:
+        		self.error(403)
     return wrapper
 
 def admin_required(method):
