@@ -84,30 +84,11 @@ class UserApi:
 		user.put()
 		logging.info("User put in datastore")
 
-		#Adding contributions to user
-		graph = facebook.GraphAPI(self.access_token)
-		try:
-			accounts = graph.get_connections(user.key().name(),"accounts")["data"]
-		except GraphAPIError:
-			logging.info("User did not accept that Phonoblaster can manage his pages.")
-			accounts = []
-			
-		contributions = []
-		if isinstance(accounts, list):
-			for account in accounts:
-				if(account["category"] != "Application"):
-					contribution = {
-						"page_name": account["name"],
-						"page_id": account["id"],
-					}
-					contributions.append(contribution)
-
 		# Put the user in the proxy
 		self._user = user
 
-		#Creating and storing the keys pointing to stations entities, even when a page is not associated with a phonoblaster station
-		logging.info('Proceeding to stations field creation for user %s %s.'%(first_name, last_name))
-		self.set_stations_field(contributions)
+		# Initialize contributions
+		contributions = self.contributions
 		
 		# Increment admin counter of users
 		admin_proxy = AdminApi()
@@ -172,8 +153,7 @@ Global number of users: %s
 			else:
 				logging.info("User contributions already in memcache")
 
-
-			# Updating stations fileds
+			# Updating stations field
 			doStationUpdate = False # boolean that will let the system know if it has to perform an update
 			if(self.user.stations):
 				logging.info('Time since last stations field update for user %s %s (in hours) : %s'% (self.user.first_name, self.user.last_name, str((timegm(datetime.utcnow().utctimetuple()) - timegm(self.user.updated.utctimetuple()))/3600)))
@@ -185,31 +165,28 @@ Global number of users: %s
 					logging.info('Last update less than 24h ago, user stations field update not needed.')
 					doStationUpdate = False
 			else:
-				logging.info('No stations were found for user %s %s, will proceed to station fields creation.'%(self.user.first_name, self.user.last_name))
+				logging.info('No field for stations were found for user %s %s, will proceed to station fields creation.'%(self.user.first_name, self.user.last_name))
 				doStationUpdate = True
 
-			# Performing update or not depending on doStationUpdate
-			if( doStationUpdate ):
-				if(not self.user.stations):
-					self.user.stations = []
-
-				# Performing update
+			if(doStationUpdate):
+				# Performing update 
 				self.set_stations_field(self._contributions)
-
-				
 
 		return self._contributions
 
 	def set_stations_field(self, contributions):
-		# Creating and storing the keys pointing to stations entities, even when a page is not associated with a phonoblaster station
+		# Create and store the keys pointing to stations entities, even when a page is not associated with a phonoblaster station
 		keys = [db.Key.from_path('Station', c["page_id"]) for c in contributions]
-		keys.append(db.Key.from_path('Station', self.user.key().name())) # Adding user's station
+		
+		# Adding station corresponding to the user 
+		keys.append(db.Key.from_path('Station', self.user.key().name())) 
 		self.user.stations = keys
 		self.user.put()
 		logging.info("Stations field updated in datastore")
-		memcache.set(self._memcache_user_id, self.user) #keeping the memcache up to date
+		
+		# Keep the memcache up to date
+		memcache.set(self._memcache_user_id, self.user)
 		logging.info("Stations field updated in memcache")
-
 	
 	def reset_contributions(self):
 		memcache.delete(self._memcache_user_contributions_id)
