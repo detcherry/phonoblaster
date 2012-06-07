@@ -35,7 +35,7 @@ class Message(db.Model):
 						break
 		
 		logging.info("Extended messages generated")
-		#return extended_comments
+
 		return ordered_extended_messages
 	
 	@staticmethod
