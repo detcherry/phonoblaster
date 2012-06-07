@@ -39,7 +39,7 @@ class HomeHandler(BaseHandler):
 					sorted_tracks_by_station.append([])
 
 				broadcasts = db.get(broadcasts_keys)
-				logging.info(str(len(broadcasts))+" Broadcasts associated with stations retrived from datastore")
+				logging.info(str(len(broadcasts))+" Broadcasts associated with stations retrieved from datastore")
 
 				# Retrieving tracks associated with tracks
 				tracks_keys = []
@@ -47,7 +47,7 @@ class HomeHandler(BaseHandler):
 					tracks_keys.append(Broadcast.track.get_value_for_datastore(broadcasts[i]))
 
 				tracks = db.get(tracks_keys)
-				logging.info(str(len(tracks))+" Tracks associated with broadcasts retrived from datastore")
+				logging.info(str(len(tracks))+" Tracks associated with broadcasts retrieved from datastore")
 
 				# Sorting broadcasts
 				while len(broadcasts) >0:
