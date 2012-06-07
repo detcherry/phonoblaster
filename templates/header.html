@@ -3,23 +3,66 @@
 		<div class="container">
 			<h1>Phonoblaster</h1>
 			<a id="logo" href="/"></a>
-			<div id="menu">
+			{% if station_proxy %}
+			<a href="#" id="notifications" class="off"></a>
+			{% endif %}
+			<ul id="menu">
 			{% if user_proxy %}
-				<div>
+				<li>
 					<a href="/">Home</a>
-				</div>
-				<div>
+				</li>
+				<li>
 					<a href="/user/{{ user_proxy.user.key.name }}" class="profile">
 						<img src="https://graph.facebook.com/{{ user_proxy.user.key.name }}/picture?type=square"/>
 						<span>Profile</span>
 					</a>
-				</div>
-				<div><a href="#" class="logout">Logout</a></div>
+				</li>
+				<li>
+					<a href="#" class="logout">Logout</a>
+				</li>
+				<!--
+				<li class="show">
+					<a href="#" class="dropdown"></a>
+					<div id="dropdown-menu">
+						<div id="dropdown-stations-title">Use Phonoblaster as</div>
+						<ul id="dropdown-stations">
+							<li>
+								<a href="/user/{{ user_proxy.user.key.name }}" class="profile">
+									<img src="https://graph.facebook.com/{{ user_proxy.user.key.name }}/picture?type=square"/>
+									<span>Damien Detcherry</span>
+								</a>
+							</li>
+							<li>
+								<a href="/user/{{ user_proxy.user.key.name }}" class="profile">
+									<img src="https://graph.facebook.com/{{ user_proxy.user.key.name }}/picture?type=square"/>
+									<span>Damien Detcherry</span>
+								</a>
+							</li>
+							<li>
+								<a href="/user/{{ user_proxy.user.key.name }}" class="profile">
+									<img src="https://graph.facebook.com/{{ user_proxy.user.key.name }}/picture?type=square"/>
+									<span>Damien Detcherry</span>
+								</a>
+							</li>
+							<li>
+								<a href="/user/{{ user_proxy.user.key.name }}" class="profile">
+									<img src="https://graph.facebook.com/{{ user_proxy.user.key.name }}/picture?type=square"/>
+									<span>Damien Detcherry</span>
+								</a>
+							</li>
+						</ul>
+						<div class="limiter"></div>
+						<div>
+							<a href="#" class="logout">Logout</a>
+						</div>
+					</div>
+				</li>
+				-->
 			{% else %}
-				<div>Broadcast your music now!</div>
-				<div><a href="#" class="login">Login with Facebook</a></div>
+				<li>Broadcast your music now!</li>
+				<li><a href="#" class="login">Login with Facebook</a></li>
 			{% endif %}
-			</div>
+			</ul>
 		</div>
 	</div>
 </div>
