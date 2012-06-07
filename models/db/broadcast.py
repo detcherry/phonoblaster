@@ -3,7 +3,6 @@ from calendar import timegm
 
 from google.appengine.ext import db
 
-from models.db.user import User
 from models.db.station import Station
 from models.db.track import Track
 
@@ -11,18 +10,17 @@ class Broadcast(db.Model):
 	"""
 		track - track being broadcast
 		station - where the track is being broadcast
-		user (optional) - if the broadcast has been suggested by a user (e.g. a listener)
+		submitter (optional) - if the broadcast has been suggested by a submitter (e.g. a listener)
 	"""
 	
 	track = db.ReferenceProperty(Track, required = True, collection_name = "broadcastTrack")
 	station = db.ReferenceProperty(Station, required = True, collection_name = "broadcastStation")
-	user = db.ReferenceProperty(User, required = False, collection_name = "broadcastUser")
+	submitter = db.ReferenceProperty(User, required = False, collection_name = "broadcastSubmitter")
 	created = db.DateTimeProperty(auto_now_add = True)
 	expired = db.DateTimeProperty()
 
-	# TO BE CHANGED
 	@staticmethod
-	def get_extended_broadcasts(broadcasts, current_station):
+	def get_extended_broadcasts(broadcasts, host):
 		extended_broadcasts = []
 		ordered_extended_broadcasts = []
 		
@@ -40,26 +38,26 @@ class Broadcast(db.Model):
 
 			suggested_broadcasts = []
 			suggested_tracks = []
-			user_keys = []
+			suggestions_submitter_keys = []
 	
 			favorited_broadcasts = []
 			favorited_tracks = []
-			station_keys = []
+			favorite_submitter_keys = []
 	
 			for broadcast, track in zip(broadcasts, tracks):
-				user_key = Broadcast.user.get_value_for_datastore(broadcast)
+				suggestions_submitter_key = Broadcast.user.get_value_for_datastore(broadcast)
 				
 				# Broadcast suggested by a user
-				if(user_key):
+				if(suggestions_submitter_key):
 					suggested_broadcasts.append(broadcast)
 					suggested_tracks.append(track)
 					
-					user_keys.append(user_key)
+					suggestions_submitter_keys.append(suggestions_submitter_key)
 				else:
-					station_key = Track.station.get_value_for_datastore(track)
+					favorited_submitter_key = Track.station.get_value_for_datastore(track)
 					
 					# Regular broadcast
-					if(station_key == current_station.key()):
+					if(favorite_submitter_keys == host.key()):
 						regular_broadcasts.append(broadcast)
 						regular_tracks.append(track)
 					# Rebroadcast from another station
@@ -67,23 +65,23 @@ class Broadcast(db.Model):
 						favorited_broadcasts.append(broadcast)
 						favorited_tracks.append(track)
 
-						station_keys.append(station_key)
+						favorite_submitter_keys.append(station_key)
 
 			# First let's format the regular broadcasts
 			for broadcast, track in zip(regular_broadcasts, regular_tracks):
-				extended_broadcast = Broadcast.get_extended_broadcast(broadcast, track, current_station, None)
+				extended_broadcast = Broadcast.get_extended_broadcast(broadcast, track, host, None)
 				extended_broadcasts.append(extended_broadcast)
 
 			# Then retrieve users and format suggested broadcasts
-			users = db.get(user_keys)
-			for broadcast, track, user in zip(suggested_broadcasts, suggested_tracks, users):
-				extended_broadcast = Broadcast.get_extended_broadcast(broadcast, track, None, user)
+			submitters = db.get(suggestions_submitter_keys)
+			for broadcast, track, submitter in zip(suggested_broadcasts, suggested_tracks, submitter):
+				extended_broadcast = Broadcast.get_extended_broadcast(broadcast, track, None, submitter)
 				extended_broadcasts.append(extended_broadcast)
 
 			# Finally retrieve stations and format broadcasts from tracks favorited somewhere else
-			stations = db.get(station_keys)
-			for broadcast, track, station in zip(favorited_broadcasts, favorited_tracks, stations):
-				extended_broadcast = Broadcast.get_extended_broadcast(broadcast, track, station, None)
+			favorite_submitters = db.get(favorite_submitter_keys)
+			for broadcast, track, favorite_submitter_keys in zip(favorited_broadcasts, favorited_tracks, favorite_submitters):
+				extended_broadcast = Broadcast.get_extended_broadcast(broadcast, track, favorite_submitter_key, None)
 				extended_broadcasts.append(extended_broadcast)
 			
 			# Order the broadcasts that have been built from different sources (same order as the Datastore entities)
@@ -98,7 +96,7 @@ class Broadcast(db.Model):
 	
 	# TO BE CHANGED
 	@staticmethod
-	def get_extended_broadcast(broadcast, track, station, user):
+	def get_extended_broadcast(broadcast, track, host,  submitter):
 		extended_broadcast = None
 
 		extended_broadcast = {
@@ -111,23 +109,16 @@ class Broadcast(db.Model):
 			"track_created": timegm(track.created.utctimetuple()),
 		}
 		
-		# It's a suggested broadcast
-		if(user):
-			extended_broadcast["track_submitter_key_name"] = user.key().name()
-			extended_broadcast["track_submitter_name"] = user.first_name + " " + user.last_name
-			extended_broadcast["track_submitter_url"] = "/user/" + user.key().name()
-			extended_broadcast["type"] = "suggestion"
+		# It's a broadcast
+		if(submitter):
+			extended_broadcast["track_submitter_key_name"] = submitter.key().name()
+			extended_broadcast["track_submitter_name"] = submitter.name
+			extended_broadcast["track_submitter_url"] = "/" + submitter.shortname
+			extended_broadcast["type"] = "rebrodcast"
 		else:
-			extended_broadcast["track_submitter_key_name"] = station.key().name()
-			extended_broadcast["track_submitter_name"] = station.name
-			extended_broadcast["track_submitter_url"] = "/" + station.shortname
-
-			broadcast_station_key = Broadcast.station.get_value_for_datastore(broadcast)
-			# It's a regular broadcast
-			if(broadcast_station_key == station.key()):
-				extended_broadcast["type"] = "track"
-			# It's a rebrodcast
-			else:
-				extended_broadcast["type"] = "favorite"
+			extended_broadcast["track_submitter_key_name"] = host.key().name()
+			extended_broadcast["track_submitter_name"] = host.name
+			extended_broadcast["track_submitter_url"] = "/" + host.shortname
+			extended_broadcast["type"] = "track"
 		
 		return extended_broadcast
