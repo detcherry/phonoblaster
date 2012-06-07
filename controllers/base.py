@@ -30,7 +30,10 @@ def login_required(method):
         	if profile or self.request.path == '/profile/switch' or self.request.path == '/profile/init':
         		return method(self, *args, **kwargs)
         	else:
-        		self.redirect('/profile/init')
+        		if self.request.method == "GET":
+					self.redirect('/profile/init')
+					return
+	            self.error(403)
     return wrapper
 
 def profile_required(method):
