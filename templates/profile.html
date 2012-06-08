@@ -16,7 +16,7 @@
 {% endblock %}
 
 {% block main %}
-<div id="steps-wrapper" style="margin-left:{% if unique %}-600px{% endif %}">
+<div id="steps-wrapper" style="margin-left:{% if unique %}-600px{% else %}0px{% endif %}">
 	<div class="step" id="choose">
 		<div class="box-wrapper">
 			<div class="box">
@@ -27,7 +27,7 @@
 				{% if unique %}
 				{% else %}
 					{% for p in profiles %}
-					<a href="#" class="item">
+					<a href="#" class="item" id="{{ p.key_name }}">
 						<div class="picture">
 							<img src="https://graph.facebook.com/{{ p.key_name }}/picture?type=square">
 						</div>
@@ -43,38 +43,24 @@
 		<div class="box-wrapper">
 			<div class="box">
 				<div class="box-header">
+					{% if not unique %}
 					<a href="#" class="box-previous">
 						<span></span>
 					</a>
-					<h1>
-						<span class="round">1</span>
-						<span class="title">Your username</span>
-					</h1>
+					{% endif %}
+					<h1>Your username</h1>
 				</div>
 				<div class="box-content">
-				</div>
-				<div class="box-footer">
-					<a href="#" class="box-next">Next</a>
-				</div>
-			</div>
-		</div>
-	</div>
-	<div class="step" id="selection">
-		<div class="box-wrapper">
-			<div class="box">
-				<div class="box-header">
-					<a href="#" class="box-previous">
-						<span></span>
-					</a>
-					<h1>
-						<span class="round">2</span>
-						<span class="title">Your selection</span>
-					</h1>
-				</div>
-				<div class="box-content">
+					<div class="picture"></div>
+					<div class="shortname">
+						<div class="prefix">@</div>
+						<input type="text" name="shortname" autocomplete="off">
+						<div class="status">Available</div>
+					</div>
 				</div>
 				<div class="box-footer">
 					<a href="#" class="box-next">Complete</a>
+					<div class="warning">Please, choose a correct username</div>
 				</div>
 			</div>
 		</div>
@@ -83,4 +69,27 @@
 {% endblock %}
 
 {% block footer %}
+{% endblock %}
+
+{% block script %}
+<script type="text/javascript" src="/{{tag}}/static/js/profile.js"></script>
+<script type="text/javascript">
+	PROFILES = [];
+	
+	{% if unique %}
+		PROFILES = [{
+			key_name: {{ profile.key_name}},
+			name: "{{ profile.name }}",
+			type: "{{ profile.type }}"
+		}];
+	{% else %}
+		{% for p in profiles %}
+			PROFILES.push({
+				key_name: {{ p.key_name }},
+				name: "{{ p.name }}",
+				type: "{{ p.type }}",
+			});
+		{% endfor %}
+	{% endif %}
+</script>
 {% endblock %}
