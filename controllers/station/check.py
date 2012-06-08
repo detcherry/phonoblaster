@@ -9,13 +9,11 @@ from models.db.station import Station
 
 class StationCheckHandler(BaseHandler):
 	def post(self):
-		page_shortname = self.request.get("page_shortname")
+		shortname = self.request.get("shortname")
 		
 		availability = False
-		existing_station = Station.all().filter("shortname", page_shortname).get()
+		existing_station = Station.all().filter("shortname", shortname).get()
 		if not existing_station:
 			availability = True
 			
-		self.response.out.write(simplejson.dumps({
-			"availability": availability
-		}))
+		self.response.out.write(simplejson.dumps({"availability": availability}))

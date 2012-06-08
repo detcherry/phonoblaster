@@ -8,7 +8,6 @@ from models.api.user import UserApi
 from models.db.youtube import Youtube
 
 class ApiRecommendationsHandler(BaseHandler):
-	@login_required
 	def get(self):
 		yt = self.request.get("youtube_ids")
 		youtube_ids = yt.split(",")			 
