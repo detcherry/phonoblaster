@@ -41,8 +41,20 @@ indexes:
 - kind: Session
   properties:
   - name: ended
+  - name: host
+  - name: created
+
+- kind: Session
+  properties:
+  - name: ended
   - name: station
   - name: created
+
+- kind: Suggestion
+  properties:
+  - name: host
+  - name: created
+    direction: desc
 
 - kind: Suggestion
   properties:
