@@ -102,7 +102,7 @@ class ProfileInitHandler(BaseHandler):
 					track["type"] = "track"
 					station_proxy.add_track_to_buffer(track)
 			
-				self.redirect("/"+shortname)
+				self.response.out.write(json.dumps({'response': True}))
 			elif key_name == self.user_proxy.user.key().name():
 				# Station associated with User
 				station_proxy = StationApi(shortname)
@@ -115,7 +115,7 @@ class ProfileInitHandler(BaseHandler):
 					track["type"] = "track"
 					station_proxy.add_track_to_buffer(track)
 
-				self.redirect("/"+shortname)
+				self.response.out.write(json.dumps({'response': True}))
 
 			else:
 				self.error(403)
