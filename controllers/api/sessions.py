@@ -19,7 +19,7 @@ from models.db.session import Session
 from models.api.station import StationApi
 
 class ApiSessionsHandler(BaseHandler):
-	def get(self):		
+	def get(self):
 		shortname = self.request.get("shortname")
 		station_proxy = StationApi(shortname)
 		
@@ -52,16 +52,16 @@ class ApiSessionsHandler(BaseHandler):
 			new_channel_id = shortname + "." + time_now + random_integer
 			new_channel_token = channel.create_channel(new_channel_id)
 			
-			user_key = None
+			listener_key = None
 			if(self.user_proxy):
-				user_key = self.user_proxy.user.key()
+				listener_key = self.user_proxy.user.profile.key()
 			
 			# Put new session in datastore
 			new_session = Session(
 				key_name = new_channel_id,
 				channel_token = new_channel_token,
-				user = user_key,
-				station = station.key(),
+				listener = listener_key,
+				host = station.key(),
 			)
 			new_session.put()
 			logging.info("New session saved in datastore")
