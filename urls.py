@@ -28,7 +28,6 @@ from controllers.api.tracks import ApiTracksHandler
 from controllers.api.tracks import ApiTracksDeleteHandler
 from controllers.api.broadcasts import ApiBroadcastsHandler
 from controllers.api.sessions import ApiSessionsHandler
-from controllers.api.comments import ApiCommentsHandler
 from controllers.api.recommendations import ApiRecommendationsHandler
 from controllers.api.air import ApiAirHandler
 from controllers.api.now import ApiNowHandler
@@ -50,7 +49,6 @@ application = webapp.WSGIApplication(
 		('/api/tracks/([\w.]+)', ApiTracksDeleteHandler),
 		('/api/broadcasts', ApiBroadcastsHandler),
 		('/api/sessions', ApiSessionsHandler),
-		('/api/comments', ApiCommentsHandler),
 		('/api/recommendations', ApiRecommendationsHandler),
 		('/api/air', ApiAirHandler),  # TO BE REMOVED
 		('/api/now', ApiNowHandler),

@@ -14,7 +14,6 @@ from controllers import config
 
 from models.db.station import Station
 from models.db.session import Session
-from models.db.comment import Comment
 from models.db.broadcast import Broadcast
 from models.db.track import Track
 from models.db.counter import Shard
