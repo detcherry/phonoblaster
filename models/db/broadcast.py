@@ -94,7 +94,6 @@ class Broadcast(db.Model):
 			
 		return ordered_extended_broadcasts	
 	
-	# TO BE CHANGED
 	@staticmethod
 	def get_extended_broadcast(broadcast, track, host,  submitter):
 		extended_broadcast = None
