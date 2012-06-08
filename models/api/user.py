@@ -204,11 +204,10 @@ Global number of users: %s
 		
 		return self._stations
 
-	# TO BE CHANGED : improvements possible without accessing facebook
 	# Tells if a user is an admin of a specific page 
-	def is_admin_of(self, page_id):
-		for contribution in self.contributions:
-			if(contribution["page_id"] == page_id):
+	def is_admin_of(self, key_name):
+		for station_key in self.user.stations:
+			if(station_key.name() == key_name):
 				return True
 		return False
 
