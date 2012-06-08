@@ -28,7 +28,7 @@ MEMCACHE_STATION_SESSIONS_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".sessions
 MEMCACHE_STATION_BROADCASTS_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".broadcasts.station."
 MEMCACHE_STATION_TRACKS_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".tracks.station."
 MEMCACHE_STATION_BUFFER_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".buffer.station."
-MEMCACHE_USER_LIKES_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".likes.user."
+MEMCACHE_STATION_LIKES_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".likes.station."
 COUNTER_OF_BROADCASTS_PREFIX = "station.broadcasts.counter."
 COUNTER_OF_VIEWS_PREFIX = "station.views.counter."
 COUNTER_OF_SUGGESTIONS_PREFIX = "station.suggestions.counter."
@@ -45,7 +45,7 @@ class StationApi():
 		self._memcache_station_broadcasts_id = MEMCACHE_STATION_BROADCASTS_PREFIX + self._shortname
 		self._memcache_station_tracks_id = MEMCACHE_STATION_TRACKS_PREFIX + self._shortname
 		self._memcache_station_buffer_id = MEMCACHE_STATION_BUFFER_PREFIX + self._shortname
-		self._memcache_user_likes_id = MEMCACHE_USER_LIKES_PREFIX + self._uid
+		self._memcache_station_likes_id = MEMCACHE_STATION_LIKES_PREFIX + self._uid
 		self._counter_of_broadcasts_id = COUNTER_OF_BROADCASTS_PREFIX + self._shortname
 		self._counter_of_views_id = COUNTER_OF_VIEWS_PREFIX + self._shortname
 		self._counter_of_suggestions_id = COUNTER_OF_SUGGESTIONS_PREFIX + self._shortname
@@ -123,7 +123,6 @@ Global number of stations: %s
 			
 		return self._number_of_sessions
 	
-	# TO BE CHANGED : station -> host
 	# Gives all the listeners (logged in a station)
 	@property
 	def sessions(self):
@@ -133,12 +132,12 @@ Global number of stations: %s
 				logging.info("Sessions not in memcache")
 				
 				q = Session.all()
-				q.filter("station", self.station.key())
+				q.filter("host", self.station.key())
 				q.filter("ended", None)
 				q.filter("created >", datetime.utcnow() - timedelta(0,7200))
 				sessions = q.fetch(100)
 
-				extended_sessions = Session.get_extended_sessions(sessions)				
+				extended_sessions = Session.get_extended_sessions(sessions)
 				memcache.set(self._memcache_station_sessions_id, extended_sessions)
 				logging.info("Sessions put in memcache")
 				
@@ -148,7 +147,6 @@ Global number of stations: %s
 		
 		return self._sessions
 	
-	# TO BE CHANGED : user -> listener	
 	def add_to_sessions(self, channel_id):
 		# Get session
 		session = Session.get_by_key_name(channel_id)
@@ -158,16 +156,16 @@ Global number of stations: %s
 			session.put()
 			logging.info("Session had ended (probable reconnection). Corrected session put.")
 		
-		# Init user
-		user = None
-		user_key = Session.user.get_value_for_datastore(session)
-		if(user_key):
-			# Load user proxy
-			user_key_name = user_key.name()
-			user_proxy = UserApi(user_key_name)
-			user = user_proxy.user
+		# Init listener
+		listener = None
+		listener_key = Session.listener.get_value_for_datastore(session)
+		if(listener_key):
+			# Load station proxy
+			listener_key_name = listener_key.name()
+			listener_proxy = StationApi(listener_key_name)
+			listener = listener_proxy.station
 
-		extended_session = Session.get_extended_session(session, user)
+		extended_session = Session.get_extended_session(session, listener)
 		
 		new_sessions = self.sessions
 		new_sessions.append(extended_session)
@@ -176,7 +174,6 @@ Global number of stations: %s
 			
 		return extended_session
 	
-	# TO BE CHANGED : user -> listener
 	def remove_from_sessions(self, channel_id):
 		# Get session
 		session = Session.get_by_key_name(channel_id)
@@ -184,17 +181,17 @@ Global number of stations: %s
 		session.put()
 		logging.info("Session ended in datastore")
 		
-		# Init user
-		user = None
-		user_key = Session.user.get_value_for_datastore(session)
-		if(user_key):
-			# Load user proxy
-			user_key_name = user_key.name()
-			user_proxy = UserApi(user_key_name)
-			user = user_proxy.user
+		# Init listener
+		listener = None
+		listener_key = Session.listener.get_value_for_datastore(session)
+		if(listener_key):
+			# Load station proxy
+			listener_key_name = listener_key.name()
+			listener_proxy = StationApi(listener_key_name)
+			listener = listener_proxy.station
+
+		extended_session = Session.get_extended_session(session, listener)
 		
-		extended_session = Session.get_extended_session(session, user)
-				
 		new_sessions = []
 		for s in self.sessions:
 			if s["key_name"] != channel_id:
@@ -321,7 +318,6 @@ Global number of stations: %s
 
 		return buffer_duration
 
-	# TO BE CHANGED : user -> listener, type -> 'Rebroadcast' OR 'Track'
 	def add_track_to_buffer(self,incoming_track):
 		buffer = self.reorder_buffer(self.buffer)
 		new_broadcasts = buffer['broadcasts'][::]  # Copy array and resting broadcasts
@@ -361,17 +357,17 @@ Global number of stations: %s
 			if track:
 				logging.info("Track found")
 
-				user_key = None
+				submitter_key = None
 
 				if(incoming_track["type"] == "suggestion"):
-					user_key_name = incoming_track["track_submitter_key_name"]
-					user_key = db.Key.from_path("User", user_key_name)
+					submitter_key_name = incoming_track["track_submitter_key_name"]
+					submitter_key = db.Key.from_path("Station", submitter_key_name)
 
 				new_broadcast = Broadcast(
 					key_name = incoming_track["key_name"],
 					track = track.key(),
 					station = self.station.key(),
-					user = user_key,
+					submitter = submitter_key,
 				)
 
 				new_broadcast.put()
@@ -380,14 +376,14 @@ Global number of stations: %s
 				extended_broadcast = Track.get_extended_track(track)
 
 				# Suggested broadcast
-				if(user_key):
+				if(submitter_key):
 					logging.info("Suggested Broadcast")
 
-					user = db.get(user_key)
-					extended_broadcast["track_submitter_key_name"] = user.key().name()
-					extended_broadcast["track_submitter_name"] = user.first_name + " " + user.last_name
-					extended_broadcast["track_submitter_url"] = "/user/" + user.key().name()
-					extended_broadcast["type"] = "suggestion"
+					submitter = db.get(submitter_key)
+					extended_broadcast["track_submitter_key_name"] = submitter.key().name()
+					extended_broadcast["track_submitter_name"] = submitter.name
+					extended_broadcast["track_submitter_url"] = "/" + submitter.shortname
+					extended_broadcast["type"] = "rebroadcast"
 				else:
 					station_key = Track.station.get_value_for_datastore(track)	
 					
@@ -400,7 +396,7 @@ Global number of stations: %s
 					else:
 						logging.info("Regular Broadcast")
 						station = db.get(station_key)
-						extended_broadcast["type"] = "favorite"
+						extended_broadcast["type"] = "rebroadcast"
 
 					extended_broadcast["track_submitter_key_name"] = station.key().name()
 					extended_broadcast["track_submitter_name"] = station.name
@@ -622,7 +618,7 @@ Global number of stations: %s
 	########################################################################################################################################
 	def get_likes(self, offset):
 		timestamp = timegm(offset.utctimetuple())
-		memcache_likes_id = self._memcache_user_likes_id + "." + str(timestamp)
+		memcache_likes_id = self._memcache_station_likes_id + "." + str(timestamp)
 		
 		past_likes = memcache.get(memcache_likes_id)
 		if past_likes is None:
@@ -643,7 +639,7 @@ Global number of stations: %s
 
 	def likes_query(self, offset):
 		q = Like.all()
-		q.filter("listener", self.user.profile)
+		q.filter("listener", self.station)
 		q.filter("created <", offset)
 		q.order("-created")
 		likes = q.fetch(10)
