@@ -39,7 +39,7 @@ class ApiLikesHandler(BaseHandler):
 		self.response.out.write(json.dumps({ "response": response }))
 					
 
-class ApiFavoritesDeleteHandler(BaseHandler):
+class ApiLikesDeleteHandler(BaseHandler):
 	
 	@login_required
 	def delete(self, id):
