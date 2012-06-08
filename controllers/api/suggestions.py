@@ -11,18 +11,19 @@ from controllers.base import BaseHandler
 from controllers.base import login_required
 
 from models.api.station import StationApi
+from models.db.station import Station
 from models.db.suggestion import Suggestion
 from models.db.youtube import Youtube
 
 class ApiSuggestionsHandler(BaseHandler):
 	def get(self):
 		shortname = self.request.get("shortname")
-		station_proxy = StationApi(shortname)
-		station = station_proxy.station
+		host_proxy = StationApi(shortname)
+		host = host_proxy.station
 		
-		if(station):
+		if(host):
 			q = Suggestion.all()
-			q.filter("station", station.key()) # TO BE CHANGED
+			q.filter("host", host.key())
 			q.order("-created")
 			suggestions = q.fetch(20) # Arbitrary number
 		
@@ -34,10 +35,11 @@ class ApiSuggestionsHandler(BaseHandler):
 	@login_required
 	def post(self):
 		shortname = self.request.get("shortname")
-		station_proxy = StationApi(shortname)
-		station = station_proxy.station
-		user = self.user_proxy.user # TO BE CHANGED
-		admin = self.user_proxy.is_admin_of(station.key().name())
+		host_proxy = StationApi(shortname)
+		host = station_proxy.station
+		# Retriving submitter station
+		submitter = db.get(self.user_proxy.user.profile)
+		admin = self.user_proxy.is_admin_of(submitter.key().name())
 
 		suggestion_json = json.loads(self.request.get("content"))
 
@@ -45,32 +47,32 @@ class ApiSuggestionsHandler(BaseHandler):
 			track = None
 			extended_track = None
 
-			# Check when the user submitted his last suggestion
+			# Check when the submitter submitted his last suggestion
 			q = Suggestion.all()
-			q.filter("user", user)
-			q.filter("station", station)
+			q.filter("submitter", submitter)
+			q.filter("host", host)
 			q.filter("created >", datetime.utcnow() - timedelta(0,30))
-			user_last_suggestion = q.get()
+			submitter_last_suggestion = q.get()
 
-			if(user_last_suggestion):
+			if(submitter_last_suggestion):
 				extended_suggestion = None
-				logging.info("User submitted a suggestion shortly")
+				logging.info("Submitter submitted a suggestion shortly")
 			else:
-				logging.info("User did not submit a suggestion shortly")
+				logging.info("Submitter did not submit a suggestion shortly")
 				suggestion = Suggestion(
 					key_name = suggestion_json["key_name"],
 					message = suggestion_json["message"][:140].replace("\n"," "),
 					youtube_id = suggestion_json["youtube_id"],
 					youtube_title = suggestion_json["youtube_title"],
 					youtube_duration = suggestion_json["youtube_duration"],
-					station = station.key(),
-					user = user.key(),
+					host = host.key(),
+					submitter = submitter.key(),
 				)
 	
 				suggestion.put()
 				logging.info("New suggestion saved into the datastore")
 	
-				extended_suggestion = Suggestion.get_extended_suggestion(suggestion, user)
+				extended_suggestion = Suggestion.get_extended_suggestion(suggestion, submitter)
 				
 				# Increment the user number of suggestions
 				station_proxy.increment_suggestions_counter()

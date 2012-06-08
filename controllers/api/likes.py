@@ -9,17 +9,17 @@ from controllers.base import login_required
 
 from models.db.track import Track
 
-from models.api.user import UserApi
+from models.api.station import StationApi
 
-class ApiFavoritesHandler(BaseHandler):
+class ApiLikesHandler(BaseHandler):
 	def get(self):
 		key_name = self.request.get("key_name")
 		offset = self.request.get("offset")
 		
 		if(key_name and offset):
-			profile_proxy = UserApi(key_name) # TO BE CHANGED
-			extended_favorites = profile_proxy.get_favorites(datetime.utcfromtimestamp(int(offset)))
-			self.response.out.write(json.dumps(extended_favorites))
+			listener_proxy = StationApi(key_name) 
+			extended_likes = listener_proxy.get_likes(datetime.utcfromtimestamp(int(offset)))
+			self.response.out.write(json.dumps(extended_likes))
 	
 	@login_required
 	def post(self):
@@ -31,13 +31,15 @@ class ApiFavoritesHandler(BaseHandler):
 			
 			# Check if the track exists on Phonoblaster
 			if(track):
-				self.user_proxy.add_to_favorites(track)
+				profile = self.user_proxy.profile
+				profile_proxy = StationApi(profile["shortname"])
+				profile_proxy.add_to_likes(track)
 				response = True
 		
 		self.response.out.write(json.dumps({ "response": response }))
 					
 
-class ApiFavoritesDeleteHandler(BaseHandler):
+class ApiLikesDeleteHandler(BaseHandler):
 	
 	@login_required
 	def delete(self, id):
@@ -45,7 +47,9 @@ class ApiFavoritesDeleteHandler(BaseHandler):
 		
 		response = False
 		if(track):
-			self.user_proxy.delete_from_favorites(track) 
+			profile = self.user_proxy.profile
+			profile_proxy = StationApi(profile["shortname"])
+			profile_proxy.add_to_likes(track)
 			response = True
 			
 		self.response.out.write(json.dumps({ "response": response }))

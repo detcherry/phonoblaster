@@ -12,7 +12,7 @@ from controllers.base import login_required
 
 from models.db.track import Track
 from models.db.broadcast import Broadcast
-from models.db.favorite import Favorite
+from models.db.like import Like
 
 from models.api.station import StationApi
 
