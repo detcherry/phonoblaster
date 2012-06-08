@@ -273,9 +273,27 @@ Global number of users: %s
 			if self._non_created_profiles is None:
 				self._non_created_profiles = []
 
+				profiles = self.profiles
+
+				# Profile
+				is_created = False
+				for j in xrange(0,len(profiles)):
+					profile = profiles[j]
+					if self.user.key().name()  == profile["key_name"]:
+						# Profile associated to user already creted
+						is_created = True
+						break
+
+				if not is_created:
+					self._non_created_profiles.append(
+						{
+							"key_name": self.user.key().name(),
+							"name": self.user.first_name+" "+self.user.last_name,
+							"type": "user"
+						})
+
 				# Pages
 				contributions = self.contributions
-				profiles = self.profiles
 				for i in xrange(0,len(contributions)):
 					# If contribution page_id not in profiles add it to the list of non created profiles
 					contribution = contributions[i]
@@ -295,23 +313,6 @@ Global number of users: %s
 								"name": contribution["page_name"],
 								"type": "page"
 							})
-
-				# Profile
-				is_created = False
-				for j in xrange(0,len(profiles)):
-					profile = profiles[j]
-					if self.user.key().name()  == profile["key_name"]:
-						# Profile associated to user already creted
-						is_created = True
-						break
-
-				if not is_created:
-					self._non_created_profiles.append(
-						{
-							"key_name": self.user.key().name(),
-							"name": self.user.first_name+" "+self.user.last_name,
-							"type": "user"
-						})
 
 				memcache.set(self._memcache_user_non_created_profiles_id, self._non_created_profiles)
 				logging.info("%s %s's non created profiles put in memcache"%(self.user.first_name, self.user.last_name))
