@@ -15,7 +15,7 @@ class Broadcast(db.Model):
 	
 	track = db.ReferenceProperty(Track, required = True, collection_name = "broadcastTrack")
 	station = db.ReferenceProperty(Station, required = True, collection_name = "broadcastStation")
-	submitter = db.ReferenceProperty(User, required = False, collection_name = "broadcastSubmitter")
+	submitter = db.ReferenceProperty(Station, required = False, collection_name = "broadcastSubmitter")
 	created = db.DateTimeProperty(auto_now_add = True)
 	expired = db.DateTimeProperty()
 
