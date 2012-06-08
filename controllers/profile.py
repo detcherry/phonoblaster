@@ -95,12 +95,6 @@ class ProfileInitHandler(BaseHandler):
 				station_proxy = StationApi(shortname)
 				station_proxy.put_station(key_name, shortname, page_information["name"], page_information["link"], "page")
 				user_proxy.set_profile(key_name)
-
-				# Putting tracks in buffer
-				for i in xrange(0,len(tracks)):
-					track = tracks[i]
-					track["type"] = "track"
-					station_proxy.add_track_to_buffer(track)
 			
 				self.response.out.write(json.dumps({'response': True}))
 			elif key_name == self.user_proxy.user.key().name():
@@ -108,12 +102,6 @@ class ProfileInitHandler(BaseHandler):
 				station_proxy = StationApi(shortname)
 				station_proxy.put_station(key_name, shortname, self.user_proxy.user.first_name + ' ' + self.user_proxy.user.last_name, None, "user")
 				user_proxy.set_profile(key_name)
-
-				# Putting tracks in buffer
-				for i in xrange(0,len(tracks)):
-					track = tracks[i]
-					track["type"] = "track"
-					station_proxy.add_track_to_buffer(track)
 
 				self.response.out.write(json.dumps({'response': True}))
 
