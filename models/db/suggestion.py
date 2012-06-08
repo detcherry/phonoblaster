@@ -5,6 +5,7 @@ from google.appengine.ext import db
 
 from models.db.track import Track
 from models.db.station import Station
+from models.db.user import User
 from models.db.youtube import Youtube
 
 class Suggestion(db.Model):

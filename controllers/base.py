@@ -16,43 +16,43 @@ from models.api.user import UserApi
 
 from functools import wraps
 def login_required(method):
-    @wraps(method)
-    def wrapper(self, *args, **kwargs):
-        user_proxy = self.user_proxy
-        if not user_proxy:
-            if self.request.method == "GET":
+	@wraps(method)
+	def wrapper(self, *args, **kwargs):
+		user_proxy = self.user_proxy
+		if not user_proxy:
+			if self.request.method == "GET":
 				self.redirect("/")
 				return
-            self.error(403)
-        else:
-        	profile = user_proxy.profile
-
-        	if profile or self.request.path == '/profile/switch' or self.request.path == '/profile/init':
-        		return method(self, *args, **kwargs)
-        	else:
-        		if self.request.method == "GET":
+			self.error(403)
+		else:
+			profile = user_proxy.profile
+			
+			if profile or self.request.path == '/profile/switch' or self.request.path == '/profile/init':
+				return method(self, *args, **kwargs)
+			else:
+				if self.request.method == "GET":
 					self.redirect('/profile/init')
 					return
-	            self.error(403)
-    return wrapper
+				self.error(403)
+	return wrapper
 
 def profile_required(method):
-    @wraps(method)
-    def wrapper(self, *args, **kwargs):
-        user_proxy = self.user_proxy
-        if not user_proxy:
-        	return method(self, *args, **kwargs)
-        else:
-        	profile = user_proxy.profile
-
-        	if profile or self.request.path == '/profile/switch' or self.request.path == '/profile/init':
-        		return method(self, *args, **kwargs)
-        	else:
-        		if self.request.method == "GET":
+	@wraps(method)
+	def wrapper(self, *args, **kwargs):
+		user_proxy = self.user_proxy
+		if not user_proxy:
+			return method(self, *args, **kwargs)
+		else:
+			profile = user_proxy.profile
+			
+			if profile or self.request.path == '/profile/switch' or self.request.path == '/profile/init':
+				return method(self, *args, **kwargs)
+			else:
+				if self.request.method == "GET":
 					self.redirect('/profile/init')
 					return
-	            self.error(403)
-    return wrapper
+				self.error(403)
+	return wrapper
 
 def admin_required(method):
 	@wraps(method)
