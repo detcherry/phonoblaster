@@ -17,27 +17,27 @@ class ProfileInitHandler(BaseHandler):
 		template_values = {}
 		key_name = self.request.get("key_name")
 
-		if key_name is not None:
-			# Unique profile
+		# Unique profile
+		if key_name is not "":
+			
 			# Checking if key_name in user non created profiles
 			is_non_created = False
 			for i in xrange(0,len(self.user_proxy.non_created_profiles)):
 				if key_name == self.user_proxy.non_created_profiles[i]["key_name"]:
 					is_non_created = True
 					profile = {
-							"key_name": key_name,
-							"name": self.user_proxy.non_created_profiles[i]["name"],
-							"type": self.user_proxy.non_created_profiles[i]["type"]
-						}
+						"key_name": key_name,
+						"name": self.user_proxy.non_created_profiles[i]["name"],
+						"type": self.user_proxy.non_created_profiles[i]["type"]
+					}
 					break
 
 			if is_non_created:
 				# The key_name was found in non created profile of current user
 				template_values = {
-						"proceed": True,
-						"unique": True,
-						"profile": profile
-					}
+					"unique": True,
+					"profile": profile
+				}
 			else:
 				is_created = False
 				# The key_name was not found in non created profiles, is the key_name associated with an existing station?
@@ -53,27 +53,23 @@ class ProfileInitHandler(BaseHandler):
 					# Throwing error
 					self.error(404)
 
-		else:
+		else:			
 			# Multiple profiles
 			profiles = self.user_proxy.non_created_profiles
 			if len(profiles) > 1:
 				template_values = {
-						"proceed": True,
-						"unique": False,
-						"profiles": profiles
-					}
+					"unique": False,
+					"profiles": profiles
+				}
 			elif len(profiles) == 1:
 				template_values = {
-						"proceed": True,
-						"unique": True,
-						"profile": profiles[0]
-					}
+					"unique": True,
+					"profile": profiles[0]
+				}
 			else:
-				template_values = {
-						"proceed": False
-					}
+				self.redirect("/")
 
-		self.render("station/create.html", template_values)
+		self.render("profile.html", template_values)
 	
 	@login_required
 	def post(self):
@@ -146,7 +142,7 @@ class ProfileSwitchHandler(BaseHandler):
 						"unique": True,
 						"profile": profile
 					}
-			self.render("station/create.html", template_values)
+			self.render("profile.html", template_values)
 
 		# Now we need to check if the key_name is in the created_profiles
 		is_created = False
