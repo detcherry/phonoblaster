@@ -179,7 +179,7 @@ Global number of users: %s
 		keys = [db.Key.from_path('Station', c["page_id"]) for c in contributions]
 		
 		# Adding station corresponding to the user 
-		keys.append(db.Key.from_path('Station', self.user.key().name())) 
+		keys.prepend(db.Key.from_path('Station', self.user.key().name())) 
 		self.user.stations = keys
 		self.user.put()
 		logging.info("Stations field updated in datastore")
