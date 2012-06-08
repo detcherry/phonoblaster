@@ -194,9 +194,17 @@ a.box-next:hover{
 }
 
 #username .status.error{
-	color:#C43C35;
+	color:#D42222;
 }
 
 #username .status.checking{
 	font-style:italic;
+}
+
+#username .loader{
+	float:right;
+	display:none;
+	margin-top:10px;
+	margin-right:10px;
+	height:20px;
 }

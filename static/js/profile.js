@@ -47,7 +47,14 @@ ProfileManager.prototype = {
 		var that = this;
 		
 		$("a.box-next").click(function(){
-			that.finalize();
+			
+			var status = $(".status").html();
+			if(status == "Available"){
+				that.finalize();
+			}
+			else{
+				$(".warning").show();
+			}
 			
 			$(this).blur();
 			return false;
@@ -185,6 +192,8 @@ ProfileManager.prototype = {
 					.removeClass("unavailable")
 					.addClass("available")
 					.html("Available");
+					
+				$(".warning").hide();
 			}
 			else{
 				$("#username .status")
@@ -209,6 +218,40 @@ ProfileManager.prototype = {
 	},
 	
 	finalize: function(){
-		PHB.log("I have to finalize")
+		// Show loader
+		$("#username .loader").show();
+		
+		// Prevent any typing events
+		$("#username input").keydown(function(event){
+			event.preventDefault();
+		})
+		
+		// Prevent any back events
+		$("a.box-previous").unbind("click");
+		$("a.box-previous").click(function(){
+			$(this).blur();
+			return false;
+		});
+		
+		var that = this;
+		$.ajax({
+			url: "/profile/init",
+			type: "POST",
+			dataType: "json",
+			timeout: 60000,
+			data: {
+				key_name: that.choosen.key_name,
+				shortname: that.shortname,
+			},
+			error: function(xhr, status, error) {
+				PHB.log('An error occurred: ' + error + '\nPlease retry.');
+			},
+			success: function(json){
+				if(json){
+					window.href = PHB.site_url + "/" + that.shortname;
+				}
+			},
+		});
+		
 	},
 }

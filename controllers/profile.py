@@ -75,37 +75,34 @@ class ProfileInitHandler(BaseHandler):
 	def post(self):
 		key_name = self.request.get("key_name")
 		shortname = self.request.get("shortname")[:30].lower()
-		tracks = json.loads(self.request.get("tracks"))
-		logging.info(key_name)
 		
 		# We have to check if shortname is ok
 		forbidden_characters = re.search("[^a-zA-Z0-9_]", shortname)
 		existing_station = Station.all().filter("shortname", shortname).get()
 		
 		if(forbidden_characters or existing_station):
+			logging.info("Forbidden characters or Existing station")
 			self.error(403)
 		else:
-			# We check if the user is a page admin
-			user_admin = self.user_proxy.is_admin_of(key_name)
-			if(user_admin):
+			if(key_name == self.user_proxy.user.key().name()):
+				# Station associated with User
+				station_proxy = StationApi(shortname)
+				station_proxy.put_station(key_name, shortname, self.user_proxy.user.first_name + ' ' + self.user_proxy.user.last_name, None, "user")
+				self.user_proxy.set_profile(key_name)
+
+				self.response.out.write(json.dumps({'response': True}))
+			elif(self.user_proxy.is_admin_of(key_name)):
 				# We fetch some information about the facebook page (just the link in fact...)
 				graph = facebook.GraphAPI(self.user_proxy.access_token)
 				page_information = graph.get_object(key_name)
 				
 				station_proxy = StationApi(shortname)
 				station_proxy.put_station(key_name, shortname, page_information["name"], page_information["link"], "page")
-				user_proxy.set_profile(key_name)
+				self.user_proxy.set_profile(key_name)
 			
 				self.response.out.write(json.dumps({'response': True}))
-			elif key_name == self.user_proxy.user.key().name():
-				# Station associated with User
-				station_proxy = StationApi(shortname)
-				station_proxy.put_station(key_name, shortname, self.user_proxy.user.first_name + ' ' + self.user_proxy.user.last_name, None, "user")
-				user_proxy.set_profile(key_name)
-
-				self.response.out.write(json.dumps({'response': True}))
-
 			else:
+				logging.info("User not admin")
 				self.error(403)
 
 class ProfileSwitchHandler(BaseHandler):
