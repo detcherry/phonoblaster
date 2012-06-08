@@ -3,23 +3,22 @@ from calendar import timegm
 
 from google.appengine.ext import db
 
-from models.db.user import User
+from models.db.station import Station
 from models.db.track import Track
 
-class Favorite(db.Model):
-	track = db.ReferenceProperty(Track, required = True, collection_name = "favoriteTrack")
-	user = db.ReferenceProperty(User, required = True, collection_name = "favoriteUser")
+class Like(db.Model):
+	track = db.ReferenceProperty(Track, required = True, collection_name = "likeTrack")
+	listener = db.ReferenceProperty(Station, required = True, collection_name = "likeListener")
 	created = db.DateTimeProperty(auto_now_add = True)
 	
-	# TO BE CHANGED
 	@staticmethod
-	def get_extended_favorites(favorites):
-		extended_favorites = []
+	def get_extended_likes(likes):
+		extended_likes = []
 		
-		if(favorites):
+		if(likes):
 			track_keys = []
-			for f in favorites:
-				track_key = Favorite.track.get_value_for_datastore(f)
+			for l in likes:
+				track_key = Like.track.get_value_for_datastore(l)
 				track_keys.append(track_key)
 		
 			tracks = db.get(track_keys)
@@ -32,19 +31,18 @@ class Favorite(db.Model):
 			stations = db.get(station_keys)
 			logging.info("Stations retrieved from datastore")
 			
-			for favorite, track, station in zip(favorites, tracks, stations):
-				extended_favorite = Favorite.get_extended_favorite(favorite, track, station)
-				extended_favorites.append(extended_favorite)
+			for like, track, station in zip(likes, tracks, stations):
+				extended_like = Like.get_extended_like(like, track, station)
+				extended_likes.append(extended_like)
 		
-		logging.info("Extended favorites generated")
-		return extended_favorites
+		logging.info("Extended likes generated")
+		return extended_likes
 	
-	# TO BE CHANGED
 	@staticmethod
-	def get_extended_favorite(favorite, track, station):
-		extended_favorite = {
-			"type": "favorite",
-			"created":  timegm(favorite.created.utctimetuple()),
+	def get_extended_like(like, track, station):
+		extended_like = {
+			"type": "rebroadcast",
+			"created":  timegm(like.created.utctimetuple()),
 			"youtube_id": track.youtube_id,
 			"youtube_title": track.youtube_title,
 			"youtube_duration": track.youtube_duration,
@@ -55,10 +53,4 @@ class Favorite(db.Model):
 			"track_submitter_url": "/" + station.shortname,
 		}
 		
-		return extended_favorite
-		
-		
-		
-		
-			
-			
+		return extended_like
