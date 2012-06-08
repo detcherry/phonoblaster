@@ -45,12 +45,12 @@ class StationApi():
 		self._memcache_station_broadcasts_id = MEMCACHE_STATION_BROADCASTS_PREFIX + self._shortname
 		self._memcache_station_tracks_id = MEMCACHE_STATION_TRACKS_PREFIX + self._shortname
 		self._memcache_station_buffer_id = MEMCACHE_STATION_BUFFER_PREFIX + self._shortname
-		self._memcache_station_likes_id = MEMCACHE_STATION_LIKES_PREFIX + self._uid
+		self._memcache_station_likes_id = MEMCACHE_STATION_LIKES_PREFIX + self._shortname
 		self._counter_of_broadcasts_id = COUNTER_OF_BROADCASTS_PREFIX + self._shortname
 		self._counter_of_views_id = COUNTER_OF_VIEWS_PREFIX + self._shortname
 		self._counter_of_suggestions_id = COUNTER_OF_SUGGESTIONS_PREFIX + self._shortname
 		self._counter_of_visits_id = COUNTER_OF_VISITS_PREFIX + self._shortname
-		self._counter_of_likes_id = COUNTER_OF_LIKES + self._uid
+		self._counter_of_likes_id = COUNTER_OF_LIKES + self._shortname
 	
 	# Return the station
 	@property
@@ -74,8 +74,8 @@ class StationApi():
 		station = Station(
 			key_name = id,
 			shortname = shortname,
-			name = page_name,
-			link = page_link,
+			name = name,
+			link = link,
 			type = type,
 		)
 		station.put()
