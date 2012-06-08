@@ -12,6 +12,7 @@ from google.appengine.api.taskqueue import Task
 
 from controllers import config
 
+from models.db.like import Like
 from models.db.station import Station
 from models.db.session import Session
 from models.db.broadcast import Broadcast
@@ -27,10 +28,12 @@ MEMCACHE_STATION_SESSIONS_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".sessions
 MEMCACHE_STATION_BROADCASTS_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".broadcasts.station."
 MEMCACHE_STATION_TRACKS_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".tracks.station."
 MEMCACHE_STATION_BUFFER_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".buffer.station."
+MEMCACHE_USER_LIKES_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".likes.user."
 COUNTER_OF_BROADCASTS_PREFIX = "station.broadcasts.counter."
 COUNTER_OF_VIEWS_PREFIX = "station.views.counter."
 COUNTER_OF_SUGGESTIONS_PREFIX = "station.suggestions.counter."
 COUNTER_OF_VISITS_PREFIX = "station.visits.counter."
+COUNTER_OF_LIKES = "station.likes.counter."
 
 class StationApi():
 	
@@ -42,10 +45,12 @@ class StationApi():
 		self._memcache_station_broadcasts_id = MEMCACHE_STATION_BROADCASTS_PREFIX + self._shortname
 		self._memcache_station_tracks_id = MEMCACHE_STATION_TRACKS_PREFIX + self._shortname
 		self._memcache_station_buffer_id = MEMCACHE_STATION_BUFFER_PREFIX + self._shortname
+		self._memcache_user_likes_id = MEMCACHE_USER_LIKES_PREFIX + self._uid
 		self._counter_of_broadcasts_id = COUNTER_OF_BROADCASTS_PREFIX + self._shortname
 		self._counter_of_views_id = COUNTER_OF_VIEWS_PREFIX + self._shortname
 		self._counter_of_suggestions_id = COUNTER_OF_SUGGESTIONS_PREFIX + self._shortname
 		self._counter_of_visits_id = COUNTER_OF_VISITS_PREFIX + self._shortname
+		self._counter_of_likes_id = COUNTER_OF_LIKES + self._uid
 	
 	# Return the station
 	@property
@@ -611,6 +616,95 @@ Global number of stations: %s
 	def increment_suggestions_counter(self):
 		shard_name = self._counter_of_suggestions_id
 		Shard.task(shard_name, "increment")
+
+	########################################################################################################################################
+	#													LIKES
+	########################################################################################################################################
+	def get_likes(self, offset):
+		timestamp = timegm(offset.utctimetuple())
+		memcache_likes_id = self._memcache_user_likes_id + "." + str(timestamp)
+		
+		past_likes = memcache.get(memcache_likes_id)
+		if past_likes is None:
+			logging.info("Past likes not in memcache")
+			
+			likes = self.likes_query(offset)
+			logging.info("Past likes retrieved from datastore")
+			
+			extended_likes = Like.get_extended_likes(likes)
+			past_likes = extended_likes
+			
+			memcache.set(memcache_likes_id, past_likes)
+			logging.info("Extended likes put in memcache")
+		else:
+			logging.info("Likes already in memcache")
+		
+		return past_likes
+
+	def likes_query(self, offset):
+		q = Like.all()
+		q.filter("listener", self.user.profile)
+		q.filter("created <", offset)
+		q.order("-created")
+		likes = q.fetch(10)
+		
+		return likes
+
+	def add_to_likes(self, track):
+		# Check if the like hasn't been stored yet
+		q = Like.all()
+		q.filter("listener", self.station.key())
+		q.filter("track", track.key())
+		existing_like = q.get()
+		
+		if(existing_like):
+			logging.info("Track already liked by this listener")
+		else:
+			like = Like(
+				track = track.key(),
+				listener = self.station.key(),
+			)
+			like.put()
+			logging.info("Like saved into datastore")
+	
+			self.increment_likes_counter()
+			logging.info("Listener likes counter incremented")
+			
+			Track.increment_likes_counter(track.key().id())
+			logging.info("Track likes counter incremented")
+
+	def delete_from_likes(self, track):
+		q = Like.all()
+		q.filter("listener", self.station.key())
+		q.filter("track", track.key()) 
+		like = q.get()
+				
+		if like is None:
+			logging.info("This track has never been liked by this listener")
+		else:
+			like.delete()
+			logging.info("Like deleted from datastore")
+			
+			self.decrement_likes_counter()
+			logging.info("Listener Likes counter decremented")
+			
+			Track.decrement_likes_counter(track.key().id())
+			logging.info("Track likes counter decremented")
+	
+	@property
+	def number_of_likes(self):
+		if not hasattr(self, "_number_of_likes"):
+			shard_name = self._counter_of_likes_id
+			self._number_of_likes = Shard.get_count(shard_name)
+		return self._number_of_likes
+	
+	def increment_likes_counter(self):
+		shard_name = self._counter_of_likes_id
+		Shard.task(shard_name, "increment")
+
+	def decrement_likes_counter(self):
+		shard_name = self._counter_of_likes_id
+		Shard.task(shard_name, "decrement")
 
 	########################################################################################################################################
 	#													DEPRECATED

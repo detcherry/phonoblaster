@@ -14,7 +14,6 @@ from controllers import facebook
 from controllers import config
 
 from models.db.user import User
-from models.db.favorite import Favorite
 from models.db.track import Track
 from models.db.counter import Shard
 from models.db.station import Station
@@ -28,8 +27,6 @@ MEMCACHE_USER_CONTRIBUTIONS_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".contri
 MEMCACHE_USER_NON_CREATED_PROFILES_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".non.created.profiles.user."
 MEMCACHE_USER_PROFILES_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".profiles.user."
 MEMCACHE_USER_PROFILE_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".profile.user."
-MEMCACHE_USER_FAVORITES_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".favorites.user." # TO BE MOVED TO stationapi
-COUNTER_OF_FAVORITES = "user.favorites.counter."
 
 class UserApi:
 	def __init__(self, uid, code = None):
@@ -40,8 +37,6 @@ class UserApi:
 		self._memcache_user_non_created_profiles_id = MEMCACHE_USER_NON_CREATED_PROFILES_PREFIX + self._uid
 		self._memcache_user_profiles_id = MEMCACHE_USER_PROFILES_PREFIX + self._uid
 		self._memcache_user_profile_id = MEMCACHE_USER_PROFILE_PREFIX + self._uid
-		self._memcache_user_favorites_id = MEMCACHE_USER_FAVORITES_PREFIX + self._uid
-		self._counter_of_favorites_id = COUNTER_OF_FAVORITES + self._uid
 	
 	# Return the user 
 	@property
@@ -216,99 +211,6 @@ Global number of users: %s
 			if(contribution["page_id"] == page_id):
 				return True
 		return False
-	
-	# TO BE CHANGED : get_favorites is now for a station not a user
-	def get_favorites(self, offset):
-		timestamp = timegm(offset.utctimetuple())
-		memcache_favorites_id = self._memcache_user_favorites_id + "." + str(timestamp)
-		
-		past_favorites = memcache.get(memcache_favorites_id)
-		if past_favorites is None:
-			logging.info("Past favorites not in memcache")
-			
-			favorites = self.favorites_query(offset)
-			logging.info("Past favorites retrieved from datastore")
-			
-			extended_favorites = Favorite.get_extended_favorites(favorites)
-			past_favorites = extended_favorites
-			
-			memcache.set(memcache_favorites_id, past_favorites)
-			logging.info("Extended favorites put in memcache")
-		else:
-			logging.info("Favorites already in memcache")
-		
-		return past_favorites
-	
-	# TO BE CHANGED : move to stationapi
-	def favorites_query(self, offset):
-		q = Favorite.all()
-		q.filter("user", self.user.key())
-		q.filter("created <", offset)
-		q.order("-created")
-		favorites = q.fetch(10)
-		
-		return favorites
-
-	# TO BE CHANGED : move to stationapi
-	def add_to_favorites(self, track):
-		# Check if the favorite hasn't been stored yet
-		q = Favorite.all()
-		q.filter("user", self.user.key())
-		q.filter("track", track.key())
-		existing_favorite = q.get()
-		
-		if(existing_favorite):
-			logging.info("Track already favorited by this user")
-		else:			
-			favorite = Favorite(
-				track = track.key(),
-				user = self.user.key(),
-			)
-			favorite.put()
-			logging.info("Favorite saved into datastore")
-	
-			self.increment_favorites_counter()
-			logging.info("User favorites counter incremented")
-			
-			Track.increment_favorites_counter(track.key().id())
-			logging.info("Track favorites counter incremented")
-		
-	# TO BE CHANGED : move to stationapi
-	def delete_from_favorites(self, track):
-		q = Favorite.all()
-		q.filter("user", self.user.key())
-		q.filter("track", track.key()) 
-		favorite = q.get()
-				
-		if favorite is None:
-			logging.info("This track has never been favorited by this user")
-		else:
-			favorite.delete()
-			logging.info("Favorite deleted from datastore")
-			
-			self.decrement_favorites_counter()
-			logging.info("User Favorites counter decremented")
-			
-			Track.decrement_favorites_counter(track.key().id())
-			logging.info("Track favorites counter decremented")
-	
-	# TO BE CHANGED : move to stationapi
-	@property
-	def number_of_favorites(self):
-		if not hasattr(self, "_number_of_favorites"):
-			shard_name = self._counter_of_favorites_id
-			self._number_of_favorites = Shard.get_count(shard_name)
-		return self._number_of_favorites
-	
-	# TO BE CHANGED : move to stationapi
-	def increment_favorites_counter(self):
-		shard_name = self._counter_of_favorites_id
-		Shard.task(shard_name, "increment")
-
-	# TO BE CHANGED : move to stationapi
-	def decrement_favorites_counter(self):
-		shard_name = self._counter_of_favorites_id
-		Shard.task(shard_name, "decrement")
 
 ################################################################################################################################################
 ##											PROFILE ITERATION
