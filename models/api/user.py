@@ -191,9 +191,9 @@ Global number of users: %s
 	def stations(self):
 		if not hasattr(self, "_stations"):
 			contributions = self.contributions
-			page_ids = [c["page_id"] for c in contributions]
-			
-			results = Station.get_by_key_name(page_ids)
+			keys = [c["page_id"] for c in contributions]
+			keys.append(self.user.key().name())
+			results = Station.get_by_key_name(keys)
 			stations = []
 			
 			for result in results:
@@ -323,6 +323,11 @@ Global number of users: %s
 		return self._non_created_profiles
 
 	def set_profile(self, key_name):
+		# Resetting memcache
+		memcache.delete(self._memcache_user_profiles_id)
+		memcache.delete(self._memcache_user_profile_id)
+		memcache.delete(self._memcache_user_non_created_profiles_id)
+		logging.info("Profile, Profiles and Non Created Profiles deleted from memcache")
 		# We first need to check if key_name is in the profiles of the user
 		is_in_profiles = False
 		for i in xrange(0,len(self.profiles)):
@@ -332,16 +337,17 @@ Global number of users: %s
 
 		if is_in_profiles:
 			# Retrieving the associated station
-			station = Station.get_by_key_name(key_name)
-			logging.info("Station retrieved from datastore")
+			station_key = db.Key.from_path("Station", key_name)
 
 			user = self.user
 
-			user.profile = station.key()
+			user.profile = station_key
 			user.put()
 			logging.info("User put in datastore")
 			memcache.set(self._memcache_user_id, self.user)
 			logging.info("User put in memcache")
 			self._user = user
+		else:
+			logging.info("Rejected, key_name not in user profiles")
 
 
