@@ -45,9 +45,9 @@ class Broadcast(db.Model):
 			favorite_submitter_keys = []
 	
 			for broadcast, track in zip(broadcasts, tracks):
-				suggestions_submitter_key = Broadcast.user.get_value_for_datastore(broadcast)
+				suggestions_submitter_key = Broadcast.submitter.get_value_for_datastore(broadcast)
 				
-				# Broadcast suggested by a user
+				# Broadcast suggested by a submitter
 				if(suggestions_submitter_key):
 					suggested_broadcasts.append(broadcast)
 					suggested_tracks.append(track)
@@ -65,23 +65,23 @@ class Broadcast(db.Model):
 						favorited_broadcasts.append(broadcast)
 						favorited_tracks.append(track)
 
-						favorite_submitter_keys.append(station_key)
+						favorite_submitter_keys.append(favorited_submitter_key)
 
 			# First let's format the regular broadcasts
 			for broadcast, track in zip(regular_broadcasts, regular_tracks):
 				extended_broadcast = Broadcast.get_extended_broadcast(broadcast, track, host, None)
 				extended_broadcasts.append(extended_broadcast)
 
-			# Then retrieve users and format suggested broadcasts
+			# Then retrieve submitters and format suggested broadcasts
 			submitters = db.get(suggestions_submitter_keys)
-			for broadcast, track, submitter in zip(suggested_broadcasts, suggested_tracks, submitter):
+			for broadcast, track, submitter in zip(suggested_broadcasts, suggested_tracks, submitters):
 				extended_broadcast = Broadcast.get_extended_broadcast(broadcast, track, None, submitter)
 				extended_broadcasts.append(extended_broadcast)
 
 			# Finally retrieve stations and format broadcasts from tracks favorited somewhere else
 			favorite_submitters = db.get(favorite_submitter_keys)
-			for broadcast, track, favorite_submitter_keys in zip(favorited_broadcasts, favorited_tracks, favorite_submitters):
-				extended_broadcast = Broadcast.get_extended_broadcast(broadcast, track, favorite_submitter_key, None)
+			for broadcast, track, favorite_submitter in zip(favorited_broadcasts, favorited_tracks, favorite_submitters):
+				extended_broadcast = Broadcast.get_extended_broadcast(broadcast, track, favorite_submitter, None)
 				extended_broadcasts.append(extended_broadcast)
 			
 			# Order the broadcasts that have been built from different sources (same order as the Datastore entities)
