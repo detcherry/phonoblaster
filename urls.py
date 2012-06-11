@@ -5,7 +5,6 @@ from controllers.home import HomeHandler
 from controllers.all import AllHandler
 from controllers.admin.dashboard import AdminDashboardHandler
 from controllers.admin.upgrade import UpgradeHandler
-from controllers.buffer_test import BufferHandler
 from controllers.profile import ProfileInitHandler
 from controllers.profile import ProfileSwitchHandler
 from controllers.station.manage import StationManageHandler
