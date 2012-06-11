@@ -122,7 +122,7 @@ YoutubeManager.prototype = {
 		var that = this;
 
 		$("a.fav").live("click", function(){
-			var user = that.buffer_manager.station_client.user
+			var user = that.buffer_manager.client.listener
 			
 			if(!user){
 				FACEBOOK.login()
@@ -172,7 +172,7 @@ YoutubeManager.prototype = {
 		var that = this;
 
 		$.ajax({
-			url: "/api/favorites",
+			url: "/api/likes",
 			type: "POST",
 			dataType: "json",
 			timeout: 60000,

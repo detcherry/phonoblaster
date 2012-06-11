@@ -12,7 +12,7 @@ function FavoriteManager(client){
 
 FavoriteManager.prototype.init = function(){
 	// Settings
-	this.url = "/api/favorites"
+	this.url = "/api/likes"
 	this.data_type = "json"
 	this.offset = null;
 	
