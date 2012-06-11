@@ -344,22 +344,23 @@ Global number of users: %s
 			station_key = db.Key.from_path("Station", key_name)
 			
 			user = self.user
-
 			user.profile = station_key
-			
 			user.put()
-			
-			logging.info("User put in datastore")
-			memcache.set(self._memcache_user_id, self.user)
-			logging.info("User put in memcache")
 			self._user = user
+			logging.info("User put in datastore")
+			memcache.set(self._memcache_user_id, self._user)
+			logging.info("User put in memcache")
 
+
+			# Setting profile in memecache and runtime
 			self._profile = {
 				"name": user.first_name+ " "+user.last_name,
 				"key_name": key_name,
 				"shortname": shortname,
 				"type": type
 			}
+			memcache.set(self._memcache_user_profile_id, self._profile)
+			logging.info("User profile set in memcache.")
 		else:
 			logging.info("Rejected, key_name not in user profiles")
 
