@@ -2,14 +2,14 @@
 // CHAT MANAGER
 // ---------------------------------------------------------------------------
 
-ChatManager.prototype = new RealtimeTabManager();
-ChatManager.prototype.constructor = ChatManager;
+MessageManager.prototype = new RealtimeTabManager();
+MessageManager.prototype.constructor = MessageManager;
 
-function ChatManager(station_client){
-	RealtimeTabManager.call(this, station_client);
+function MessageManager(client){
+	RealtimeTabManager.call(this, client);
 	
 	// Settings
-	this.url = "/api/comments"
+	this.url = "/api/messages"
 	this.data_type = "json"
 	
 	// UI Settings
@@ -21,7 +21,7 @@ function ChatManager(station_client){
 	this.unread_messages = 0;
 }
 
-ChatManager.prototype.init = function(){
+MessageManager.prototype.init = function(){
 	this.toggleListen();
 	this.inputListen();
 	
@@ -29,7 +29,7 @@ ChatManager.prototype.init = function(){
 	this.getAjax();
 }
 
-ChatManager.prototype.toggleListen = function(){	
+MessageManager.prototype.toggleListen = function(){	
 	var that = this;
 	
 	// Toggle chat interface
@@ -38,7 +38,7 @@ ChatManager.prototype.toggleListen = function(){
 		
 		var chat_status = chat.hasClass("opened");
 		var notifications_status = false;
-		if(document.title != that.station_client.station.name){
+		if(document.title != that.client.host.name){
 			notifications_status = true;
 		}
 		
@@ -51,7 +51,7 @@ ChatManager.prototype.toggleListen = function(){
 				that.unread_messages = 0;
 				
 				// Clear notifications in the tab header
-				document.title = that.station_client.station.name;
+				document.title = that.client.host.name;
 				
 				// Hide notifications in the chat
 				$("#chat-alert").hide();
@@ -67,7 +67,7 @@ ChatManager.prototype.toggleListen = function(){
 			that.unread_messages = 0;
 			
 			// Clear notifications in the tab header
-			document.title = that.station_client.station.name;
+			document.title = that.client.host.name;
 			
 			// Hide notifications in the chat
 			$("#chat-alert").hide();
@@ -92,7 +92,7 @@ ChatManager.prototype.toggleListen = function(){
 	})
 }
 
-ChatManager.prototype.inputListen = function(){
+MessageManager.prototype.inputListen = function(){
 
 	var that = this;
 	
@@ -107,7 +107,7 @@ ChatManager.prototype.inputListen = function(){
 		}
 		
 		// If user not authenticated, display popup
-		if(!that.station_client.user){
+		if(!that.client.listener){
 			FACEBOOK.login();
 			$(this).blur();
 		}
@@ -142,7 +142,7 @@ ChatManager.prototype.inputListen = function(){
 	});
 }
 
-ChatManager.prototype.newEvent = function(){
+MessageManager.prototype.newEvent = function(){
 	var chat_status = $("#chat").hasClass("opened");
 	var tab_status = this.focus;
 	
@@ -164,7 +164,7 @@ ChatManager.prototype.newEvent = function(){
 	else{
 		this.unread_messages += 1;
 		// Display notification in the tab header
-		document.title = this.station_client.station.name + " (" + this.unread_messages + ")";
+		document.title = this.client.host.name + " (" + this.unread_messages + ")";
 		
 		// Display notification in the chat header
 		$("#chat-alert-number").html(this.unread_messages);
@@ -172,10 +172,10 @@ ChatManager.prototype.newEvent = function(){
 	}
 }
 
-ChatManager.prototype.prePostBuild = function(message){
+MessageManager.prototype.prePostBuild = function(message){
 	
 	// Build a comment key name
-	var channel_id = this.station_client.channel_id;
+	var channel_id = this.client.channel_id;
 	if(channel_id){
 		var created = PHB.now();
 		var random = Math.floor(Math.random()*100).toString();
@@ -184,20 +184,20 @@ ChatManager.prototype.prePostBuild = function(message){
 	else{
 		var created = PHB.now();
 		var random = Math.floor(Math.random()*100).toString();
-		var comment_key_name = this.station_client.station.shortname + ".offline.comment." + created + random
+		var comment_key_name = this.client.host.shortname + ".offline.comment." + created + random
 	}
 
 	
-	if(this.station_client.admin){
-		var author_key_name = this.station_client.station.key_name;
-		var author_name = this.station_client.station.name;
-		var author_url = "/" + this.station_client.station.shortname;
+	if(this.client.admin){
+		var author_key_name = this.client.host.key_name;
+		var author_name = this.client.host.name;
+		var author_url = "/" + this.client.host.shortname;
 		var admin = true;
 	}
 	else{
-		var author_key_name = this.station_client.user.key_name;
-		var author_name = this.station_client.user.name;
-		var author_url = "/user/" + this.station_client.user.key_name;
+		var author_key_name = this.client.listener.key_name;
+		var author_name = this.client.listener.name;
+		var author_url = "/user/" + this.client.listener.key_name;
 		var admin = false; 
 	}
 	
@@ -217,7 +217,7 @@ ChatManager.prototype.prePostBuild = function(message){
 	return new_item;	
 }
 
-ChatManager.prototype.UIBuild = function(item){
+MessageManager.prototype.UIBuild = function(item){
 
 	var id = item.id;
 	var content = item.content;
@@ -255,7 +255,7 @@ ChatManager.prototype.UIBuild = function(item){
 	return div
 }
 
-ChatManager.prototype.UIAdd = function(new_item, previous_item){
+MessageManager.prototype.UIAdd = function(new_item, previous_item){
 	// If the item was initially displayed, we don't care (honey badger style) and remove it
 	this.UIRemove(new_item.id);
 	var new_item_div = this.UIBuild(new_item);		
@@ -276,6 +276,6 @@ ChatManager.prototype.UIAdd = function(new_item, previous_item){
 	$(this.selector).parent().scrollTop(height);
 }
 
-ChatManager.prototype.UIInsert = function(new_item_div, previous_item_selector){
+MessageManager.prototype.UIInsert = function(new_item_div, previous_item_selector){
 	new_item_div.insertAfter(previous_item_selector)
 }

@@ -2,8 +2,8 @@
 // SESSION MANAGER
 // ---------------------------------------------------------------------------
 
-function SessionManager(station_client){
-	this.station_client = station_client;
+function SessionManager(client){
+	this.client = client;
 	
 	this.sessions_counter = null;
 	
@@ -18,7 +18,7 @@ SessionManager.prototype = {
 	// Fetch sessions
 	init: function(){
 		var that = this;	
-		var shortname = this.station_client.station.shortname;
+		var shortname = this.client.host.shortname;
 		// Fetch station presences
 		$.ajax({
 			url: "/api/sessions",

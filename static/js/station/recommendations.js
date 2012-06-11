@@ -5,8 +5,8 @@
 RecommendationManager.prototype = new ScrollTabManager();
 RecommendationManager.prototype.constructor = RecommendationManager;
 
-function RecommendationManager(station_client){
-	ScrollTabManager.call(this, station_client);
+function RecommendationManager(client){
+	ScrollTabManager.call(this, client);
 	
 	// Settings
 	this.url = null;
@@ -22,11 +22,9 @@ function RecommendationManager(station_client){
 }
 
 RecommendationManager.prototype.dispatch = function(){
-	var number_of_broadcasts = this.station_client.broadcasts_counter.count;
-	var that = this;
-	
 	$("#popup-recommendations h3 strong").html("Facebook")
 	
+	var that = this;
 	// Call Facebook API to know which tracks the user has posted on his wall
 	FACEBOOK.retrieveWallLinks(function(items){
 		that.filterFacebook(items);
@@ -93,15 +91,6 @@ RecommendationManager.prototype.closeListen = function(){
 		
 		// Put volume back
 		$("#media-volume").trigger("click");
-		
-		/*
-		if(that.station_client.queue_manager.UILive()){
-			// Popup to share station delayed after 1 sec
-			setTimeout(function(){
-				$("#social-block-share").trigger("click");
-			}, 1000)
-		}
-		*/
 	})
 }
 
@@ -115,9 +104,9 @@ RecommendationManager.prototype.serverToLocalItem = function(content){
 		"youtube_duration": content.duration,
 		"track_id": null,
 		"track_created": null,
-		"track_submitter_key_name": this.station_client.station.key_name,
-		"track_submitter_name": this.station_client.station.name,
-		"track_submitter_url": "/" + this.station_client.station.shortname,
+		"track_submitter_key_name": this.client.host.key_name,
+		"track_submitter_name": this.client.host.name,
+		"track_submitter_url": "/" + this.client.host.shortname,
 	};
 	
 	var item = {

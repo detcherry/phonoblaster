@@ -1,32 +1,27 @@
 $(function(){
-	STATION_CLIENT = new StationClient(USER, ADMIN, STATION)
+	CLIENT = new Client(LISTENER, ADMIN, HOST)
 })
 
-function StationClient(user, admin, station){
-	this.init(user, admin, station);
+function Client(listener, admin, host){
+	this.init(listener, admin, host);
 }
 
-StationClient.prototype = {
+Client.prototype = {
 	
-	init: function(user, admin, station){
-		this.user = user;
+	init: function(listener, admin, host){
+		this.listener = listener;
 		this.admin = admin;
-		this.station = station;
+		this.host = host;
 		this.channel_id = null;
 
-		this.broadcasts_counter = new Counter("#broadcasts");
-		this.views_counter = new Counter("#views");
-
 		this.session_manager = null;
-		this.chat_manager = null;
+		this.message_manager = null;
 		this.suggestion_manager = null;
 		this.buffer_manager = null;
 		this.search_manager = null;
 		this.track_manager = null;
 		this.favorite_manager = null;
 		this.share_manager = null;
-
-		this.favorite_sdk = null;
 
 		this.connect();
 	},
@@ -41,7 +36,7 @@ StationClient.prototype = {
 			dataType: "json",
 			timeout: 60000,
 			data: {
-				shortname: that.station.shortname,
+				shortname: that.host.shortname,
 			},
 			error: function(xhr, status, error) {
 				PHB.log('An error occurred: ' + error + '\nPlease retry.');
@@ -58,10 +53,10 @@ StationClient.prototype = {
 				socket.onerror = window.location.reload;
 				socket.onclose = window.location.reload;
 				
-				// Subscribe to the station channel
-				var station_client = that;
+				// Subscribe to the host channel
+				var host_client = that;
 				socket.onopen = function(){
-					station_client.pubnub();
+					host_client.pubnub();
 				}
 				
 				// We do not hook the following callback
@@ -70,11 +65,11 @@ StationClient.prototype = {
 		});
 	},
 	
-	// Subscribe to the station channel with Pubnub
+	// Subscribe to the host channel with Pubnub
 	pubnub: function(){
 		var that = this;
-		var pubnub_channel = PHB.version + "-" + this.station.shortname
-		// Subscribe to the station channel with Pubnub
+		var pubnub_channel = PHB.version + "-" + this.host.shortname
+		// Subscribe to the host channel with Pubnub
 		PUBNUB.subscribe({
 	        channel: pubnub_channel,      
 	        error: function(){
@@ -96,13 +91,13 @@ StationClient.prototype = {
 		
 		// Once time has been initialized, initialize everything else
 		var that = this;
-		var pubnub_channel = PHB.version + "-" + this.station.shortname
+		var pubnub_channel = PHB.version + "-" + this.host.shortname
 		
 		PHB.time(function(){
 			that.buffer_manager = new BufferManager(that); // Fetching
 			that.search_manager = new SearchManager(that); // No Fetching
 			
-			that.chat_manager = new ChatManager(that); // Fetching
+			that.message_manager = new MessageManager(that); // Fetching
 			that.suggestion_manager = new SuggestionManager(that); // Fetching	
 			that.track_manager = new TrackManager(that); // Lazy fetching
 			that.favorite_manager = new FavoriteManager(that); // Lazy fetching
@@ -127,7 +122,7 @@ StationClient.prototype = {
 			manager = this.buffer_manager;
 		}
 		if(entity == "comment"){
-			manager = this.chat_manager;
+			manager = this.message_manager;
 		}
 		if(entity == "suggestion"){
 			manager = this.suggestion_manager;

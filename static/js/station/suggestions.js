@@ -5,8 +5,8 @@
 SuggestionManager.prototype = new RealtimeTabManager();
 SuggestionManager.prototype.constructor = SuggestionManager;
 
-function SuggestionManager(station_client){
-	RealtimeTabManager.call(this, station_client);
+function SuggestionManager(client){
+	RealtimeTabManager.call(this, client);
 	
 	// Settings
 	this.url = "/api/suggestions";
@@ -14,7 +14,7 @@ function SuggestionManager(station_client){
 	
 	// UI Settings
 	this.name = "#suggestions-tab";
-	if(this.station_client.admin){
+	if(this.client.admin){
 		this.selector = this.name + " .tab-content";
 	}
 	else{
@@ -70,7 +70,7 @@ SuggestionManager.prototype.postSubmit = function(btn, item){
 
 // Before sending to the server and displaying in the UI, build suggestion item
 SuggestionManager.prototype.prePostBuild = function(item, message){
-	var channel_id = this.station_client.channel_id;
+	var channel_id = this.client.channel_id;
 	var created = PHB.now();
 	
 	var content = item.content;
@@ -223,7 +223,7 @@ SuggestionManager.prototype.UIBuild = function(item){
 	)
 	
 	
-	if(this.station_client.admin){
+	if(this.client.admin){
 		div.find(".item-subtitle").append(
 			$("<div/>")
 				.addClass("item-process")
@@ -252,7 +252,7 @@ SuggestionManager.prototype.UIBuild = function(item){
 SuggestionManager.prototype.postAction = function(new_item){
 	var suggestion_key_name = new_item.content.key_name;
 	var suggestion_url = PHB.site_url + "/suggestion/" + suggestion_key_name;
-	var station_url = PHB.site_url + "/" + this.station_client.station.shortname;
+	var station_url = PHB.site_url + "/" + this.client.host.shortname;
 	var obj = { "suggestion": suggestion_url };
 	var extra = { "station": station_url };
 	var expires_in = 0;
@@ -265,7 +265,7 @@ SuggestionManager.prototype.postAction = function(new_item){
 
 SuggestionManager.prototype.newEvent = function(){
 	// If user admin, display notification for incoming suggestion
-	if(this.station_client.admin){
+	if(this.client.admin){
 		$("#notifications").removeClass("off").addClass("on")
 	}
 }

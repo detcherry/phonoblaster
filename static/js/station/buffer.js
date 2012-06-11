@@ -5,14 +5,14 @@
 BufferManager.prototype = new RealtimeTabManager();
 BufferManager.prototype.constructor = BufferManager;
 
-function BufferManager(station_client){
-	this.init(station_client);
+function BufferManager(client){
+	this.init(client);
 }
 
 //-------------------------------- INIT -----------------------------------
 
-BufferManager.prototype.init = function(station_client){
-	RealtimeTabManager.call(this, station_client);
+BufferManager.prototype.init = function(client){
+	RealtimeTabManager.call(this, client);
 	
 	// Settings
 	this.url = "/api/buffer"
@@ -76,9 +76,9 @@ BufferManager.prototype.noData = function(){
 	$("#youtube-player").append($("<p/>").html("No live track."));
 	$("#media-title").html("No current track.")
 	
-	if(this.station_client.admin){
+	if(this.client.admin){
 		// Open the recommandation manager
-		this.recommandation_manager = new RecommendationManager(this.station_client)
+		this.recommandation_manager = new RecommendationManager(this.client)
 	}
 }
 
@@ -172,7 +172,7 @@ BufferManager.prototype.UIWallDisplay = function(item){
 	var track_submitter_name = content.track_submitter_name;
 	var track_submitter_url = content.track_submitter_url;
 	
-	var station = this.station_client.station;
+	var station = this.client.host;
 	var station_name = station.name;
 	var station_url = PHB.site_url + "/" + station.shortname;
 	var station_picture = "https://graph.facebook.com/" + station.key_name + "/picture?type=square";
@@ -511,7 +511,7 @@ BufferManager.prototype.move = function(id, new_position, callback){
 
 BufferManager.prototype.moveData = function(id, new_position){
 	// Build data
-	var shortname = this.station_client.station.shortname;		
+	var shortname = this.client.host.shortname;		
 	var data = {
 		shortname: shortname,
 		content: JSON.stringify(id),
@@ -635,7 +635,7 @@ BufferManager.prototype.up = function(id, callback){
 
 BufferManager.prototype.upData = function(id){
 	// Build data
-	var shortname = this.station_client.station.shortname;		
+	var shortname = this.client.host.shortname;		
 	var data = {
 		shortname: shortname,
 		content: JSON.stringify(id),
@@ -747,7 +747,7 @@ BufferManager.prototype.down = function(id, callback){
 
 BufferManager.prototype.downData = function(id){
 	// Build data
-	var shortname = this.station_client.station.shortname;		
+	var shortname = this.client.host.shortname;		
 	var data = {
 		shortname: shortname,
 		content: JSON.stringify(id),
@@ -760,7 +760,7 @@ BufferManager.prototype.downData = function(id){
 
 // Before a track is submitted, we finish building it
 BufferManager.prototype.prePostBuild = function(item){
-	var channel_id = this.station_client.channel_id;
+	var channel_id = this.client.channel_id;
 	var created = PHB.now();
 
 	content = item.content;
@@ -795,7 +795,7 @@ BufferManager.prototype.postSubmit = function(btn, incoming_item){
 }
 
 BufferManager.prototype.postData = function(item){
-	var shortname = this.station_client.station.shortname;		
+	var shortname = this.client.host.shortname;		
 	var data = {
 		shortname: shortname,
 		content: JSON.stringify(item.content),
@@ -827,7 +827,7 @@ BufferManager.prototype.UIFail = function(btn){
 
 BufferManager.prototype.UIAdd = function(new_item, previous_item){
 	
-	if(this.station_client.admin){
+	if(this.client.admin){
 		// If the item was initially displayed, we don't care (honey badger style) and remove it
 		this.UIRemove(new_item.id);
 		var new_item_div = this.UIBuild(new_item);		
@@ -846,10 +846,10 @@ BufferManager.prototype.UIAdd = function(new_item, previous_item){
 	else{
 		// If user not admin and incoming track suggestion, we display something on the station wall
 		var type = new_item.content.type;
-		if(!this.station_client.admin && type == "suggestion"){
+		if(!this.client.admin && type == "suggestion"){
 
 			// If user suggestion submitter, display notification
-			if(new_item.content.track_submitter_key_name == this.station_client.user.key_name){
+			if(new_item.content.track_submitter_key_name == this.client.listener.key_name){
 				$("#notifications").removeClass("off").addClass("on");
 			}
 
@@ -1009,14 +1009,14 @@ BufferManager.prototype.UIRefresh = function(){
 }
 
 BufferManager.prototype.postAction = function(item){	
-	if(this.station_client.user){
+	if(this.client.listener){
 		var broadcast_url = PHB.site_url + "/broadcast/" + item.id;
 		
 		var obj = { "live": broadcast_url };
 		var extra = {};
 		var expires_in = item.content.youtube_duration;
 		
-		if(this.station_client.admin){
+		if(this.client.admin){
 			// BROADCAST action
 			var action = "broadcast";
 		}

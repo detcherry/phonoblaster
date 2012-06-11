@@ -38,6 +38,12 @@ indexes:
   - name: created
     direction: desc
 
+- kind: Message
+  properties:
+  - name: host
+  - name: created
+    direction: desc
+
 - kind: Session
   properties:
   - name: ended
