@@ -79,6 +79,10 @@ class HomeHandler(BaseHandler):
 			now = datetime.utcnow()
 			for i in xrange(0, len(sorted_stations)):
 				station = sorted_stations[i]
+				if station.type == "user":
+					station.is_page = False
+				else:
+					station.is_page = True
 				tracks = sorted_tracks_by_station[i]
 				timestamp = station.timestamp
 
