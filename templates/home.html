@@ -6,38 +6,11 @@
 {% block main %}
 <div id="left-column">
 	<div id="home-profile">
-		<a href="/user/{{ user_proxy.user.key.name }}">
-			<img src="https://graph.facebook.com/{{ user_proxy.user.key.name }}/picture?type=square"/>
+		<a href="/{{ user_proxy.profile.shortname }}">
+			<img src="https://graph.facebook.com/{{ user_proxy.profile.key_name }}/picture?type=square"/>
 		</a>	
-		<p>
-			<a href="/user/{{ user_proxy.user.key.name }}">
-				{{ user_proxy.user.first_name }} {{user_proxy.user.last_name }}
-			</a>
-		</p>
-		<div class="stat">
-			<span class="figure">{{ user_proxy.number_of_favorites }}</span>
-			<span class="title">Favorites</span>
-		</div>
-	</div>
-	<div id="home-user-stations">
-		{% if user_stations %}
-			{% for station in user_stations %}
-			<div class="home-user-station">
-				<a href="/{{ station.shortname }}">
-					<img src="https://graph.facebook.com/{{ station.key.name }}/picture"/>
-					<p><span class="middle">{{ station.name }}</span></p>
-				</a>
-			</div>
-			{% endfor %}
-			<div id = "other-stations">
-				<a href="/station/create"> Create a new station</a>
-			</div>
-		{% else %}
-			<div id="home-create-new-station">
-				<p >Start brodcasting today: </p>
-				<a href="/station/create" class="btn primary"> Create your station!</a>
-			</div>
-		{% endif %}
+		<p class="name"><a href="/{{ user_proxy.profile.shortname }}">{{ user_proxy.profile.name }}</a></p>
+		<p class="shortname">@{{ user_proxy.profile.shortname }}</p>
 	</div>
 </div>
 <div id="right-column">
