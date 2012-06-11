@@ -157,12 +157,7 @@ Global number of stations: %s
 			logging.info("Session had ended (probable reconnection). Corrected session put.")
 		
 		# Init listener
-		listener = None
-		listener_key = Session.listener.get_value_for_datastore(session)
-		if(listener_key):
-			# Get listener from datastore
-			listener = db.get(listener_key)
-			logging.info("Listener retrieved from datastore")
+		listener = session.listener
 
 		extended_session = Session.get_extended_session(session, listener)
 		
@@ -181,12 +176,7 @@ Global number of stations: %s
 		logging.info("Session ended in datastore")
 		
 		# Init listener
-		listener = None
-		listener_key = Session.listener.get_value_for_datastore(session)
-		if(listener_key):
-			# Get listener from datastore
-			listener = db.get(listener_key)
-			logging.info("Listener retrieved from datastore")
+		listener = session.listener
 
 		extended_session = Session.get_extended_session(session, listener)
 		
