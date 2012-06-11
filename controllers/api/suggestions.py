@@ -36,7 +36,7 @@ class ApiSuggestionsHandler(BaseHandler):
 	def post(self):
 		shortname = self.request.get("shortname")
 		host_proxy = StationApi(shortname)
-		host = station_proxy.station
+		host = host_proxy.station
 		# Retriving submitter station
 		submitter = db.get(self.user_proxy.user.profile)
 		admin = self.user_proxy.is_admin_of(submitter.key().name())
