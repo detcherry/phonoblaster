@@ -57,7 +57,7 @@
 	margin-left: 20px;
 }
 
-#home-profile p{
+#home-profile p.name{
 	margin-bottom: 14px;
 	width: 306px;
 	font-size: 18px;
