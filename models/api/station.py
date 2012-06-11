@@ -312,7 +312,6 @@ Global number of stations: %s
 		timestamp = buffer['timestamp']
 		room = self.room_in_buffer()
 
-
 		# Edge Case, if adding track to position 1 5 seconds before the live track ends, we reject the operation.
 		# This is due to the latency of Pubnub.
 		if len(new_broadcasts) == 1:
@@ -328,19 +327,16 @@ Global number of stations: %s
 				return None
 
 		# End of edge case
-
-
+		
 		extended_broadcast = None
 		if room > 0 :
-			logging.info("Room found in buffer.")
-
+			logging.info("Room in buffer")
 			track = Track.get_or_insert_by_youtube_id(incoming_track, self.station)
 
 			if track:
 				logging.info("Track found")
 
 				submitter_key = None
-
 				if(incoming_track["track_submitter_key_name"] != self.station.key().name()):
 					submitter_key_name = incoming_track["track_submitter_key_name"]
 					submitter_key = db.Key.from_path("Station", submitter_key_name)
@@ -359,8 +355,10 @@ Global number of stations: %s
 
 				# Injecting traks in buffer
 				new_broadcasts.append(extended_broadcast)
-
-				new_buffer = {'broadcasts':new_broadcasts, 'timestamp':timestamp}
+				new_buffer = {
+					'broadcasts': new_broadcasts,
+					'timestamp': timestamp
+				}
 
 				#Saving data
 				self.put_buffer(new_buffer)
@@ -500,7 +498,6 @@ Global number of stations: %s
 	#													END BUFFER
 	########################################################################################################################################
 
-
 	def task_visit(self):
 		task = Task(
 			url = "/taskqueue/visit",
@@ -509,8 +506,6 @@ Global number of stations: %s
 			}
 		)
 		task.add(queue_name = "worker-queue")
-	
-	
 	
 	# Visits counter
 	@property
@@ -568,6 +563,7 @@ Global number of stations: %s
 	########################################################################################################################################
 	#													LIKES
 	########################################################################################################################################
+	
 	def get_likes(self, offset):
 		timestamp = timegm(offset.utctimetuple())
 		memcache_likes_id = self._memcache_station_likes_id + "." + str(timestamp)
