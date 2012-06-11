@@ -28,10 +28,10 @@ FavoriteManager.prototype.init = function(){
 }
 
 FavoriteManager.prototype.getData = function(){
-	var key_name = this.client.listener.key_name;
+	var shortname = this.client.host.shortname;
 	var offset = this.offset;
 	var data = {
-		key_name: key_name,
+		shortname: shortname,
 		offset: offset,
 	}
 	return data
