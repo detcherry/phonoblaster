@@ -7,7 +7,7 @@ from models.db.station import Station
 
 class Message(db.Model):
 	message = db.StringProperty(default ="", required = True)
-	author = db.ReferenceProperty(User, required = True, collection_name = "commentAuthor")
+	author = db.ReferenceProperty(Station, required = True, collection_name = "commentAuthor")
 	host = db.ReferenceProperty(Station, required = True, collection_name = "commentHost")
 	created = db.DateTimeProperty(auto_now_add = True)
 	
