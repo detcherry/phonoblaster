@@ -20,7 +20,7 @@ Client.prototype = {
 		this.buffer_manager = null;
 		this.search_manager = null;
 		this.track_manager = null;
-		this.favorite_manager = null;
+		this.like_manager = null;
 		this.share_manager = null;
 
 		this.connect();
@@ -100,7 +100,7 @@ Client.prototype = {
 			that.message_manager = new MessageManager(that); // Fetching
 			that.suggestion_manager = new SuggestionManager(that); // Fetching	
 			that.track_manager = new TrackManager(that); // Lazy fetching
-			that.favorite_manager = new FavoriteManager(that); // Lazy fetching
+			that.like_manager = new LikeManager(that); // Lazy fetching
 			that.share_manager = new ShareManager(that);			
 		})
 	},

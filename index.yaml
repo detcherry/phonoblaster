@@ -38,6 +38,12 @@ indexes:
   - name: created
     direction: desc
 
+- kind: Like
+  properties:
+  - name: listener
+  - name: created
+    direction: desc
+
 - kind: Message
   properties:
   - name: host
