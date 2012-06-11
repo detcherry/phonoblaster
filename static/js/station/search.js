@@ -179,7 +179,7 @@ SearchManager.prototype.serverToLocalItem = function(raw_item){
 		new_track["track_admin"] = false;
 		new_track["track_submitter_key_name"] = this.client.listener.key_name;
 		new_track["track_submitter_name"] = this.client.listener.name;
-		new_track["track_submitter_url"] = "/user/" + this.client.listener.key_name;
+		new_track["track_submitter_url"] = "/" + this.client.listener.shortname;
 	}
 	
 	var item = {
