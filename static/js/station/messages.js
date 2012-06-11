@@ -187,19 +187,11 @@ MessageManager.prototype.prePostBuild = function(message){
 		var comment_key_name = this.client.host.shortname + ".offline.comment." + created + random
 	}
 
-	
-	if(this.client.admin){
-		var author_key_name = this.client.host.key_name;
-		var author_name = this.client.host.name;
-		var author_url = "/" + this.client.host.shortname;
-		var admin = true;
-	}
-	else{
-		var author_key_name = this.client.listener.key_name;
-		var author_name = this.client.listener.name;
-		var author_url = "/user/" + this.client.listener.key_name;
-		var admin = false; 
-	}
+	var author_key_name = this.client.listener.key_name;
+	var author_name = this.client.listener.name;
+	var author_url = "/" + this.client.listener.shortname;
+	var admin = false; 
+
 	
 	// Build content
 	var content = {
