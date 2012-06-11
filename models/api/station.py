@@ -160,10 +160,9 @@ Global number of stations: %s
 		listener = None
 		listener_key = Session.listener.get_value_for_datastore(session)
 		if(listener_key):
-			# Load station proxy
-			listener_key_name = listener_key.name()
-			listener_proxy = StationApi(listener_key_name)
-			listener = listener_proxy.station
+			# Get listener from datastore
+			listener = db.get(listener_key)
+			logging.info("Listener retrieved from datastore")
 
 		extended_session = Session.get_extended_session(session, listener)
 		
@@ -185,10 +184,9 @@ Global number of stations: %s
 		listener = None
 		listener_key = Session.listener.get_value_for_datastore(session)
 		if(listener_key):
-			# Load station proxy
-			listener_key_name = listener_key.name()
-			listener_proxy = StationApi(listener_key_name)
-			listener = listener_proxy.station
+			# Get listener from datastore
+			listener = db.get(listener_key)
+			logging.info("Listener retrieved from datastore")
 
 		extended_session = Session.get_extended_session(session, listener)
 		
