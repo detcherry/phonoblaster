@@ -24,7 +24,7 @@ class Message(db.Model):
 			
 			# Then we format the regular messages
 			for message, author in zip(messages, authors):
-				extended_author = Message.get_extended_message(message, author)
+				extended_message = Message.get_extended_message(message, author)
 				extended_messages.append(extended_message)
 				
 			for m in messages:
