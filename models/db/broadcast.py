@@ -40,24 +40,12 @@ class Broadcast(db.Model):
 					submitters.append(b.submitter)
 				else:
 					submitters.append(host)
-					
-			# Then retrieve submitters and format extended_broadcasts
-			#submitters = db.get(submitter_keys)
-			#logging.info("Submitters retrieved from datastore")
 
 			for broadcast, track, submitter in zip(broadcasts, tracks, submitters):
 				extended_broadcast = Broadcast.get_extended_broadcast(broadcast, track, submitter)
 				extended_broadcasts.append(extended_broadcast)
-			
-			# Order the broadcasts that have been built from different sources (same order as the Datastore entities)
-			for b in broadcasts:
-				key_name = b.key().name()
-				for e in extended_broadcasts:
-					if(e["key_name"] == key_name):
-						ordered_extended_broadcasts.append(e)
-						break
-			
-		return ordered_extended_broadcasts	
+	
+		return extended_broadcasts
 	
 	@staticmethod
 	def get_extended_broadcast(broadcast, track, submitter):
@@ -72,8 +60,8 @@ class Broadcast(db.Model):
 			"track_id": track.key().id(),
 			"track_created": timegm(track.created.utctimetuple()),
 			"track_submitter_key_name": submitter.key().name(),
-			 "track_submitter_name": submitter.name,
-			 "track_submitter_url": submitter.shortname
+			"track_submitter_name": submitter.name,
+			"track_submitter_url": submitter.shortname
 		}
 		
 		return extended_broadcast
