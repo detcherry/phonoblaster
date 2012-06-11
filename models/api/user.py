@@ -329,24 +329,37 @@ Global number of users: %s
 		memcache.delete(self._memcache_user_non_created_profiles_id)
 		logging.info("Profile, Profiles and Non Created Profiles deleted from memcache")
 		# We first need to check if key_name is in the profiles of the user
+		shortname = None
+		type = None
 		is_in_profiles = False
 		for i in xrange(0,len(self.profiles)):
 			if key_name == self.profiles[i]["key_name"]:
 				is_in_profiles = True
+				shortname = self.profiles[i]["shortname"]
+				type = self.profiles[i]["type"]
 				break
 
 		if is_in_profiles:
 			# Retrieving the associated station
 			station_key = db.Key.from_path("Station", key_name)
-
+			
 			user = self.user
 
 			user.profile = station_key
+			
 			user.put()
+			
 			logging.info("User put in datastore")
 			memcache.set(self._memcache_user_id, self.user)
 			logging.info("User put in memcache")
 			self._user = user
+
+			self._profile = {
+				"name": user.first_name+ " "+user.last_name,
+				"key_name": key_name,
+				"shortname": shortname,
+				"type": type
+			}
 		else:
 			logging.info("Rejected, key_name not in user profiles")
 
