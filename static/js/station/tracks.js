@@ -63,13 +63,6 @@ TrackManager.prototype.UIBuild = function(item){
 	var youtube_thumbnail = "https://i.ytimg.com/vi/" + youtube_id + "/default.jpg";
 	var preview = "https://www.youtube.com/embed/" + youtube_id + "?autoplay=1"
 	
-	var process_action = "Suggest"
-	var process_info = "Suggest this track to the broadcaster"
-	if(this.client.admin){
-		process_action = "Add"
-		process_info = "Add this track to your selection"
-	}
-	
 	var div = $("<div/>").addClass("item").attr("id",id)
 	div.append(
 		$("<div/>")
@@ -81,18 +74,14 @@ TrackManager.prototype.UIBuild = function(item){
 			.addClass("item-title")
 			.append($("<span/>").addClass("middle").html(youtube_title))
 	)
-
-	if(this.client.admin){
-		div.append(
-			$("<a/>")
-				.attr("href","#")
-				.addClass("item-cross")
-				.attr("name", id)
-				.html("X")
-		)
-	}
-	
-	div.append(
+	.append(
+		$("<a/>")
+			.attr("href","#")
+			.addClass("item-cross")
+			.attr("name", id)
+			.html("X")
+	)
+	.append(
 		$("<div/>")
 			.addClass("item-subtitle")
 			.append($("<div/>").addClass("item-duration").html(youtube_duration))
@@ -103,9 +92,9 @@ TrackManager.prototype.UIBuild = function(item){
 						$("<a/>")
 							.addClass("btn")
 							.attr("name", id)
-							.html(process_action)
+							.html("Add")
 							.addClass("tuto")
-							.attr("data-original-title", process_info)
+							.attr("data-original-title", "Add this track to your selection")
 					)
 					.append(
 						$("<a/>")
