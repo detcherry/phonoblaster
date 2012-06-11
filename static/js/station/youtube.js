@@ -72,7 +72,8 @@ YoutubeManager.prototype = {
 		$("#media-submitter").empty();
 
 		var mention = null;
-		if(type == "rebroadcast"){
+		// If submitter different than host, display rebroadcast mention
+		if(this.buffer_manager.client.host.key_name != content.track_submitter_key_name){
 			mention = "Rebroadcast of"
 		}
 
