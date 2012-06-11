@@ -9,7 +9,7 @@ from models.db.counter import Shard
 from models.db.youtube import Youtube
 
 COUNTER_OF_VIEWS_PREFIX = "track.views."
-COUNTER_OF_FAVORITES_PREFIX = "track.favorites."
+COUNTER_OF_LIKES_PREFIX = "track.likes."
 
 class Track(db.Model):
 	"""
@@ -88,19 +88,19 @@ class Track(db.Model):
 		Shard.increase(shard_name, value)
 	
 	@staticmethod
-	def number_of_favorites(track_id):
-		shard_name = COUNTER_OF_FAVORITES_PREFIX + str(track_id)
+	def number_of_likes(track_id):
+		shard_name = COUNTER_OF_LIKES_PREFIX + str(track_id)
 		count = Shard.get_count(shard_name)
 		return count
 	
 	@staticmethod
-	def increment_favorites_counter(track_id):
-		shard_name = COUNTER_OF_FAVORITES_PREFIX + str(track_id)
+	def increment_likes_counter(track_id):
+		shard_name = COUNTER_OF_LIKES_PREFIX + str(track_id)
 		Shard.task(shard_name, "increment")
 	
 	@staticmethod
-	def decrement_favorites_counter(track_id):
-		shard_name = COUNTER_OF_FAVORITES_PREFIX + str(track_id)
+	def decrement_likes_counter(track_id):
+		shard_name = COUNTER_OF_LIKES_PREFIX + str(track_id)
 		Shard.task(shard_name, "decrement")
 		
 		
