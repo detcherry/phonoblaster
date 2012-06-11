@@ -191,7 +191,6 @@ MessageManager.prototype.prePostBuild = function(message){
 	var author_name = this.client.listener.name;
 	var author_url = "/" + this.client.listener.shortname;
 	var admin = false; 
-
 	
 	// Build content
 	var content = {
