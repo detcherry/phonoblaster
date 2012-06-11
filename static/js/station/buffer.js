@@ -874,7 +874,8 @@ BufferManager.prototype.UIBuild = function(item){
 	var track_submitter_picture = "https://graph.facebook.com/" + content.track_submitter_key_name + "/picture?type=square";	
 	
 	var mention = null;
-	if(type == "rebroadcast"){
+	// If submitter different than host, display rebroadcast mention
+	if(this.client.host.key_name != content.track_submitter_key_name){
 		mention = "Rebroadcast of"
 	}
 	
