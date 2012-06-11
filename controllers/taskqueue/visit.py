@@ -9,8 +9,6 @@ from google.appengine.ext.webapp.util import run_wsgi_app
 from google.appengine.ext import db
 
 from models.db.track import Track
-from models.db.view import View
-from models.db.air import Air
 from models.api.station import StationApi
 from google.appengine.api.taskqueue import Task
 
