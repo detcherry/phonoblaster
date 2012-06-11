@@ -6,8 +6,6 @@ from django.utils import simplejson as json
 
 from google.appengine.api.taskqueue import Task
 
-from google.appengine.ext import db
-
 from controllers import config
 from controllers.base import BaseHandler
 from controllers.base import login_required
@@ -40,7 +38,7 @@ class ApiSuggestionsHandler(BaseHandler):
 		host_proxy = StationApi(shortname)
 		host = host_proxy.station
 		# Retriving submitter station
-		submitter = db.get(self.user_proxy.user.profile)
+		submitter = self.user_proxy.user.profile
 		admin = self.user_proxy.is_admin_of(submitter.key().name())
 
 		suggestion_json = json.loads(self.request.get("content"))
