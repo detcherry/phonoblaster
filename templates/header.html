@@ -17,15 +17,17 @@
 						<span>@{{ user_proxy.profile.shortname }}</span>
 					</a>
 				</li>
+				{% if unique %}
 				<li>
 					<a href="#" class="logout">Logout</a>
 				</li>
-				<!--
+				{% else %}
 				<li class="show">
 					<a href="#" class="dropdown"></a>
 					<div id="dropdown-menu">
 						<div id="dropdown-stations-title">Use Phonoblaster as</div>
 						<ul id="dropdown-stations">
+							<!--
 							<li>
 								<a href="/user/{{ user_proxy.user.key.name }}" class="profile">
 									<img src="https://graph.facebook.com/{{ user_proxy.user.key.name }}/picture?type=square"/>
@@ -50,6 +52,15 @@
 									<span>Damien Detcherry</span>
 								</a>
 							</li>
+							-->
+							{% for p in non_default_profiles %}
+							<li>
+								<a href="/profile/switch/{{ p.key_name }}" class="profile">
+									<img src="https://graph.facebook.com/{{ p.key_name }}/picture?type=square"/>
+									<span>{{ p.name }}</span>
+								</a>
+							</li>
+							{% endfor %}
 						</ul>
 						<div class="limiter"></div>
 						<div>
@@ -57,7 +68,7 @@
 						</div>
 					</div>
 				</li>
-				-->
+				{% endif %}
 			{% else %}
 				<li>Broadcast your music now!</li>
 				<li><a href="#" class="login">Login with Facebook</a></li>
