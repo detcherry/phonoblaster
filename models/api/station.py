@@ -334,20 +334,14 @@ Global number of stations: %s
 		if room > 0 :
 			logging.info("Room found in buffer.")
 
-			track = None
-
-			if incoming_track["track_id"]:
-				track = Track.get_by_id(int(incoming_track["track_id"]))
-			else:
-				if(incoming_track["youtube_id"]):
-					track = Track.get_or_insert_by_youtube_id(incoming_track, self.station)
+			track = Track.get_or_insert_by_youtube_id(incoming_track, self.station)
 
 			if track:
 				logging.info("Track found")
 
 				submitter_key = None
 
-				if(incoming_track["type"] == "suggestion"):
+				if(incoming_track["track_submitter_key_name"] != self.station.key().name()):
 					submitter_key_name = incoming_track["track_submitter_key_name"]
 					submitter_key = db.Key.from_path("Station", submitter_key_name)
 
@@ -361,40 +355,10 @@ Global number of stations: %s
 				new_broadcast.put()
 				logging.info("New broadcast put in datastore")
 
-				extended_broadcast = Track.get_extended_track(track)
-
-				# Suggested broadcast
-				if(submitter_key):
-					logging.info("Suggested Broadcast")
-
-					submitter = db.get(submitter_key)
-					extended_broadcast["track_submitter_key_name"] = submitter.key().name()
-					extended_broadcast["track_submitter_name"] = submitter.name
-					extended_broadcast["track_submitter_url"] = "/" + submitter.shortname
-					extended_broadcast["type"] = "rebroadcast"
-				else:
-					station_key = Track.station.get_value_for_datastore(track)	
-					
-					# Regular broadcast
-					if(station_key == self.station.key()):
-						logging.info("Regular Broadcast")
-						station = self.station
-						extended_broadcast["type"] = "track"
-					# Rebroadcast
-					else:
-						logging.info("Regular Broadcast")
-						station = db.get(station_key)
-						extended_broadcast["type"] = "rebroadcast"
-
-					extended_broadcast["track_submitter_key_name"] = station.key().name()
-					extended_broadcast["track_submitter_name"] = station.name
-					extended_broadcast["track_submitter_url"] = "/" + station.shortname
-
-				extended_broadcast['key_name'] = incoming_track['key_name']
+				extended_broadcast = Broadcast.get_extended_broadcasts([new_broadcast], self.station)[0]
 
 				# Injecting traks in buffer
 				new_broadcasts.append(extended_broadcast)
-
 
 				new_buffer = {'broadcasts':new_broadcasts, 'timestamp':timestamp}
 
