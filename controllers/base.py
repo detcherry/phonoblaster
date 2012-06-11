@@ -134,15 +134,15 @@ class BaseHandler(webapp.RequestHandler):
 
 			# Adding all profiles associated with users
 			user_profiles = self.user_proxy.profiles + self.user_proxy.non_created_profiles
-			self._template_values["profiles"] = []
+			self._template_values["non_default_profiles"] = []
 			for p in user_profiles:
 				if self.user_proxy.profile is None:
-					self._template_values["profiles"].append({
+					self._template_values["non_default_profiles"].append({
 						"key_name": p["key_name"],
 						"name": p["name"],
 						})
 				elif self.user_proxy.profile["key_name"] != p["key_name"]:
-					self._template_values["profiles"].append({
+					self._template_values["non_default_profiles"].append({
 						"key_name": p["key_name"],
 						"name": p["name"],
 						})
