@@ -160,7 +160,6 @@ SearchManager.prototype.get = function(scrolling){
 // Specific to Youtube
 SearchManager.prototype.serverToLocalItem = function(raw_item){
 	var new_track = {
-		"type": "track",
 		"youtube_id": raw_item.id, // Here it's specific to Youtube
 		"youtube_title": raw_item.title, // Here it's specific to Youtube
 		"youtube_duration": raw_item.duration, // Here it's specific to Youtube
@@ -170,13 +169,11 @@ SearchManager.prototype.serverToLocalItem = function(raw_item){
 	
 	// The condition below is specific to Youtube search because the track has not been posted to Phonoblaster yet
 	if(this.client.admin){
-		new_track["track_admin"] = true;
 		new_track["track_submitter_key_name"] = this.client.host.key_name;
 		new_track["track_submitter_name"] = this.client.host.name;
 		new_track["track_submitter_url"] = "/" + this.client.host.shortname;
 	}
 	else{
-		new_track["track_admin"] = false;
 		new_track["track_submitter_key_name"] = this.client.listener.key_name;
 		new_track["track_submitter_name"] = this.client.listener.name;
 		new_track["track_submitter_url"] = "/" + this.client.listener.shortname;

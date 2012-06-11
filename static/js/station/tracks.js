@@ -39,7 +39,6 @@ TrackManager.prototype.getData = function(){
 }
 
 TrackManager.prototype.serverToLocalItem = function(content){
-	content["type"] = "track";
 	content["track_submitter_key_name"] = this.client.host.key_name;
 	content["track_submitter_name"] = this.client.host.name;
 	content["track_submitter_url"] = "/" + this.client.host.shortname;
