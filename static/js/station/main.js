@@ -121,7 +121,7 @@ Client.prototype = {
 		if(entity == "buffer"){
 			manager = this.buffer_manager;
 		}
-		if(entity == "comment"){
+		if(entity == "message"){
 			manager = this.message_manager;
 		}
 		if(entity == "suggestion"){
