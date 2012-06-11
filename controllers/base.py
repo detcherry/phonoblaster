@@ -135,10 +135,11 @@ class BaseHandler(webapp.RequestHandler):
 		user_profiles = self.user_proxy.profiles + self.user_proxy.non_created_profiles
 		self._template_values["profiles"] = []
 		for p in user_profiles:
-			self._template_values["profiles"].append({
-				"key_name": p["key_name"],
-				"name": p["name"],
-				})
+			if self.user_proxy.profile["key_name"] != p["key_name"]:
+				self._template_values["profiles"].append({
+					"key_name": p["key_name"],
+					"name": p["name"],
+					})
 
 		
 		relative_path = os.path.join("../templates/", template_path)
