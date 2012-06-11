@@ -125,22 +125,27 @@ class BaseHandler(webapp.RequestHandler):
 		self._template_values["version"] = config.VERSION
 		self._template_values["tag"] = config.TAG
 
-		# Profiles information
-		if len(self.user_proxy.contributions) > 0:
-			self._template_values["unique"] = True
-		else:
-			self._template_values["unique"] = False
+		if self.user_proxy:
+			# Profiles information
+			if len(self.user_proxy.contributions) > 0:
+				self._template_values["unique"] = False
+			else:
+				self._template_values["unique"] = True
 
-		# Adding all profiles associated with users
-		user_profiles = self.user_proxy.profiles + self.user_proxy.non_created_profiles
-		self._template_values["profiles"] = []
-		for p in user_profiles:
-			if self.user_proxy.profile["key_name"] != p["key_name"]:
-				self._template_values["profiles"].append({
-					"key_name": p["key_name"],
-					"name": p["name"],
-					})
-
+			# Adding all profiles associated with users
+			user_profiles = self.user_proxy.profiles + self.user_proxy.non_created_profiles
+			self._template_values["profiles"] = []
+			for p in user_profiles:
+				if self.user_proxy.profile is None:
+					self._template_values["profiles"].append({
+						"key_name": p["key_name"],
+						"name": p["name"],
+						})
+				elif self.user_proxy.profile["key_name"] != p["key_name"]:
+					self._template_values["profiles"].append({
+						"key_name": p["key_name"],
+						"name": p["name"],
+						})
 		
 		relative_path = os.path.join("../templates/", template_path)
 		path = os.path.join(os.path.dirname(__file__), relative_path)
