@@ -70,6 +70,12 @@ indexes:
 
 - kind: Suggestion
   properties:
+  - name: host
+  - name: submitter
+  - name: created
+
+- kind: Suggestion
+  properties:
   - name: station
   - name: created
     direction: desc

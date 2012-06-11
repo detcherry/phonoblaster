@@ -37,16 +37,15 @@ class ApiSuggestionsHandler(BaseHandler):
 		shortname = self.request.get("shortname")
 		host_proxy = StationApi(shortname)
 		host = host_proxy.station
+		
 		# Retriving submitter station
 		submitter = self.user_proxy.user.profile
-		admin = self.user_proxy.is_admin_of(submitter.key().name())
+		admin = self.user_proxy.is_admin_of(host.key().name())
 
 		suggestion_json = json.loads(self.request.get("content"))
-
-		if(suggestion_json and not admin):
-			track = None
-			extended_track = None
-
+		
+		extended_suggestion = None
+		if(suggestion_json and not admin):			
 			# Check when the submitter submitted his last suggestion
 			q = Suggestion.all()
 			q.filter("submitter", submitter)
@@ -55,7 +54,6 @@ class ApiSuggestionsHandler(BaseHandler):
 			submitter_last_suggestion = q.get()
 
 			if(submitter_last_suggestion):
-				extended_suggestion = None
 				logging.info("Submitter submitted a suggestion shortly")
 			else:
 				logging.info("Submitter did not submit a suggestion shortly")
@@ -75,7 +73,7 @@ class ApiSuggestionsHandler(BaseHandler):
 				extended_suggestion = Suggestion.get_extended_suggestion(suggestion, submitter)
 				
 				# Increment the user number of suggestions
-				station_proxy.increment_suggestions_counter()
+				host_proxy.increment_suggestions_counter()
 		
 		response = False
 		if(extended_suggestion):
