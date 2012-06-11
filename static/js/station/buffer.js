@@ -874,10 +874,7 @@ BufferManager.prototype.UIBuild = function(item){
 	var track_submitter_picture = "https://graph.facebook.com/" + content.track_submitter_key_name + "/picture?type=square";	
 	
 	var mention = null;
-	if(type == "suggestion"){
-		mention = "Suggested by"
-	}
-	if(type == "favorite"){
+	if(type == "rebroadcast"){
 		mention = "Rebroadcast of"
 	}
 	

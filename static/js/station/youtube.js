@@ -72,10 +72,7 @@ YoutubeManager.prototype = {
 		$("#media-submitter").empty();
 
 		var mention = null;
-		if(type == "suggestion"){
-			mention = "Suggested by"
-		}
-		if(type == "favorite"){
+		if(type == "rebroadcast"){
 			mention = "Rebroadcast of"
 		}
 
