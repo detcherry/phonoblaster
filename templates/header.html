@@ -12,9 +12,9 @@
 					<a href="/">Home</a>
 				</li>
 				<li>
-					<a href="/user/{{ user_proxy.user.key.name }}" class="profile">
-						<img src="https://graph.facebook.com/{{ user_proxy.user.key.name }}/picture?type=square"/>
-						<span>Profile</span>
+					<a href="/{{ user_proxy.profile.shortname }}" class="profile">
+						<img src="https://graph.facebook.com/{{ user_proxy.profile.key_name }}/picture?type=square"/>
+						<span>@{{ user_proxy.profile.shortname }}</span>
 					</a>
 				</li>
 				<li>
