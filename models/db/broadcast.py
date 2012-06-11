@@ -33,21 +33,36 @@ class Broadcast(db.Model):
 			tracks = db.get(track_keys)
 			logging.info("Tracks retrieved from datastore")
 
-			submitter_keys = []
-			submitters = []
+			# Differentiate regular broadcast from rebroadcasts
+			regular_broadcasts = []
+			rebroadcasts = []
+
+			rebroadcasts_submitter_keys = []
+			regular_broadcasts_submitter = []
+
+			rebroadcasts_tracks = []
+			regular_broadcasts_tracks = []
+
 			for i in xrange(0,len(broadcasts)):
 				b = broadcasts[i]
 				if b.submitter is not None:
-					submitter_keys.append(b.submitter.key())
+					rebroadcasts_submitter_keys.append(Broadcast.submitter.get_value_for_datastore(b))
+					rebroadcasts_tracks.append(tracks[i])
+					rebroadcasts.append(b)
 				else:
-					submitters.append(host)
+					regular_broadcasts_submitter.append(host)
+					regular_broadcasts_tracks.append(tracks[i])
+					regular_broadcasts.append(b)
 					
 			# Then retrieve submitters and format extended_broadcasts
-			submitters_from_datastore = db.get(submitter_keys)
-			submitters.extend( submitters_from_datastore )
+			rebroadcasts_submitter = db.get(rebroadcasts_submitter_keys)
 			logging.info("Submitters retrieved from datastore")
 
-			for broadcast, track, submitter in zip(broadcasts, tracks, submitters):
+			submitters = rebroadcasts_submitter + regular_broadcasts_submitter
+			unordered_broadcasts = rebroadcasts + regular_broadcasts
+			tracks = rebroadcasts_tracks + regular_broadcasts_tracks
+
+			for broadcast, track, submitter in zip(unordered_broadcasts, tracks, submitters):
 				extended_broadcast = Broadcast.get_extended_broadcast(broadcast, track, submitter)
 				extended_broadcasts.append(extended_broadcast)
 
