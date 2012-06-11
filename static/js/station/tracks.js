@@ -5,8 +5,8 @@
 TrackManager.prototype = new ScrollTabManager();
 TrackManager.prototype.constructor = TrackManager;
 
-function TrackManager(station_client){
-	ScrollTabManager.call(this, station_client);
+function TrackManager(client){
+	ScrollTabManager.call(this, client);
 	this.init();
 }
 
@@ -29,7 +29,7 @@ TrackManager.prototype.init = function(){
 }
 
 TrackManager.prototype.getData = function(){
-	var shortname = this.station_client.station.shortname;
+	var shortname = this.client.host.shortname;
 	var offset = this.offset;
 	var data = {
 		shortname: shortname,
@@ -40,9 +40,9 @@ TrackManager.prototype.getData = function(){
 
 TrackManager.prototype.serverToLocalItem = function(content){
 	content["type"] = "track";
-	content["track_submitter_key_name"] = this.station_client.station.key_name;
-	content["track_submitter_name"] = this.station_client.station.name;
-	content["track_submitter_url"] = "/" + this.station_client.station.shortname;
+	content["track_submitter_key_name"] = this.client.host.key_name;
+	content["track_submitter_name"] = this.client.host.name;
+	content["track_submitter_url"] = "/" + this.client.host.shortname;
 	
 	var item = {
 		id: content.track_id,
@@ -65,7 +65,7 @@ TrackManager.prototype.UIBuild = function(item){
 	
 	var process_action = "Suggest"
 	var process_info = "Suggest this track to the broadcaster"
-	if(this.station_client.admin){
+	if(this.client.admin){
 		process_action = "Add"
 		process_info = "Add this track to your selection"
 	}
@@ -82,7 +82,7 @@ TrackManager.prototype.UIBuild = function(item){
 			.append($("<span/>").addClass("middle").html(youtube_title))
 	)
 
-	if(this.station_client.admin){
+	if(this.client.admin){
 		div.append(
 			$("<a/>")
 				.attr("href","#")

@@ -335,9 +335,9 @@
 <script type="text/javascript" src="/{{tag}}/static/js/player/swfobject.js"></script>
 <script type="text/javascript" src="/{{tag}}/static/js/station/counter.js"></script>
 <script type="text/javascript" src="/{{tag}}/static/js/station/share.js"></script>
-<script type="text/javascript" src="/{{tag}}/static/js/station/session.js"></script>
+<script type="text/javascript" src="/{{tag}}/static/js/station/sessions.js"></script>
 <script type="text/javascript" src="/{{tag}}/static/js/station/tab.js"></script>
-<script type="text/javascript" src="/{{tag}}/static/js/station/chat.js"></script>
+<script type="text/javascript" src="/{{tag}}/static/js/station/messages.js"></script>
 <script type="text/javascript" src="/{{tag}}/static/js/station/search.js"></script>
 <script type="text/javascript" src="/{{tag}}/static/js/station/suggestions.js"></script>
 <script type="text/javascript" src="/{{tag}}/static/js/station/favorites.js"></script>
@@ -348,14 +348,15 @@
 <script type="text/javascript" src="/{{tag}}/static/js/station/main.js"></script>
 <script type="text/javascript">
 	/*--- Reset ---*/
-	USER = null;
+	LISTENER = null;
 	ADMIN = false;
- 	STATION = null;
+ 	HOST = null;
 	/*--- User Initialization ---*/
 	{% if user_proxy %} 
-	USER = {
-		"key_name": "{{ user_proxy.user.key.name }}",
-		"name": "{{ user_proxy.user.first_name }} {{ user_proxy.user.last_name }}",
+	LISTENER = {
+		"key_name": "{{ user_proxy.profile.key_name }}",
+		"shortname": "{{ user_proxy.profile.shortname }}",
+		"name": "{{ user_proxy.profile.name }}",
 	}
 	{% endif %}
 	/*--- Admin Initialization ---*/
@@ -363,7 +364,7 @@
 	ADMIN = true;
 	{% endif %}
 	/*--- Station Initialization ---*/
-	STATION = {
+	HOST = {
 		"key_name": "{{ station_proxy.station.key.name }}",
 		"shortname": "{{ station_proxy.station.shortname }}",
 		"name": "{{ station_proxy.station.name}}",

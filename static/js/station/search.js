@@ -5,8 +5,8 @@
 SearchManager.prototype = new ScrollTabManager();
 SearchManager.prototype.constructor = SearchManager;
 
-function SearchManager(station_client){
-	ScrollTabManager.call(this, station_client);
+function SearchManager(client){
+	ScrollTabManager.call(this, client);
 	
 	// Settings 
 	this.url = "https://gdata.youtube.com/feeds/api/videos"
@@ -37,7 +37,7 @@ SearchManager.prototype.inputListen = function(){
 		$(this).twipsy("hide");
 		
 		var default_content = "Suggest a track to the broadcaster"	
-		if(that.station_client.admin){
+		if(that.client.admin){
 			var default_content = "Add a track to your selection"
 		}
 			
@@ -53,7 +53,7 @@ SearchManager.prototype.inputListen = function(){
 		}
 		
 		// If user not authenticated, display popup
-		if(!that.station_client.user){
+		if(!that.client.listener){
 			FACEBOOK.login();
 			$(this).blur();
 		}
@@ -169,17 +169,17 @@ SearchManager.prototype.serverToLocalItem = function(raw_item){
 	}
 	
 	// The condition below is specific to Youtube search because the track has not been posted to Phonoblaster yet
-	if(this.station_client.admin){
+	if(this.client.admin){
 		new_track["track_admin"] = true;
-		new_track["track_submitter_key_name"] = this.station_client.station.key_name;
-		new_track["track_submitter_name"] = this.station_client.station.name;
-		new_track["track_submitter_url"] = "/" + this.station_client.station.shortname;
+		new_track["track_submitter_key_name"] = this.client.host.key_name;
+		new_track["track_submitter_name"] = this.client.host.name;
+		new_track["track_submitter_url"] = "/" + this.client.host.shortname;
 	}
 	else{
 		new_track["track_admin"] = false;
-		new_track["track_submitter_key_name"] = this.station_client.user.key_name;
-		new_track["track_submitter_name"] = this.station_client.user.name;
-		new_track["track_submitter_url"] = "/user/" + this.station_client.user.key_name;
+		new_track["track_submitter_key_name"] = this.client.listener.key_name;
+		new_track["track_submitter_name"] = this.client.listener.name;
+		new_track["track_submitter_url"] = "/user/" + this.client.listener.key_name;
 	}
 	
 	var item = {

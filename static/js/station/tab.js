@@ -64,8 +64,8 @@ TabDisplayer.prototype = {
 // TAB MANAGER
 // ---------------------------------------------------------------------------
 
-function TabManager(station_client){
-	this.station_client = station_client;
+function TabManager(client){
+	this.client = client;
 	this.items = [];
 	
 	// Settings
@@ -121,19 +121,19 @@ TabManager.prototype = {
 	// Dispatch if the user is admin (buffer) or not (suggest)
 	process: function(btn, to_submit){
 		// If station admin it's a broadcast
-		if(this.station_client.admin){
-			var process_manager = this.station_client.buffer_manager;
+		if(this.client.admin){
+			var process_manager = this.client.buffer_manager;
 		}
 		// Otherwise it's a suggestion
 		else{
-			var process_manager = this.station_client.suggestion_manager;
+			var process_manager = this.client.suggestion_manager;
 		}
 		process_manager.postSubmit(btn, to_submit);
 	},
 	
 	// Collect the data necessary to GET items from the server
 	getData: function(){
-		var shortname = this.station_client.station.shortname;
+		var shortname = this.client.host.shortname;
 		var data = {
 			shortname: shortname,
 		}
@@ -177,7 +177,7 @@ TabManager.prototype = {
 	addToItems: function(new_item, callback){},
 	
 	postData: function(item){
-		var shortname = this.station_client.station.shortname;		
+		var shortname = this.client.host.shortname;		
 		var data = {
 			shortname: shortname,
 			content: JSON.stringify(item.content),
@@ -335,8 +335,8 @@ TabManager.prototype = {
 ScrollTabManager.prototype = new TabManager();
 ScrollTabManager.prototype.constructor = ScrollTabManager;
 
-function ScrollTabManager(station_client){
-	TabManager.call(this, station_client);
+function ScrollTabManager(client){
+	TabManager.call(this, client);
 	
 	// Additional attributes
 	this.offset = null;
@@ -445,7 +445,7 @@ ScrollTabManager.prototype.UIBuild = function(item){
 	
 	var process_action = "Suggest"
 	var process_info = "Suggest this track to the broadcaster"
-	if(this.station_client.admin){
+	if(this.client.admin){
 		process_action = "Add"
 		process_info = "Add this track to your selection"
 	}
@@ -553,8 +553,8 @@ ScrollTabManager.prototype.UIRemoveLoader = function(){
 RealtimeTabManager.prototype = new TabManager();
 RealtimeTabManager.prototype.constructor = RealtimeTabManager;
 
-function RealtimeTabManager(station_client){
-	TabManager.call(this, station_client);
+function RealtimeTabManager(client){
+	TabManager.call(this, client);
 }
 
 RealtimeTabManager.prototype.getAjax = function(){

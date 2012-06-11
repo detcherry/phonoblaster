@@ -2,8 +2,8 @@
 // SHARE MANAGER
 // ---------------------------------------------------------------------------
 
-function ShareManager(station_client){
-	this.station_client = station_client;
+function ShareManager(client){
+	this.client = client;
 	this.listen();
 }
 
@@ -14,19 +14,19 @@ ShareManager.prototype = {
 		
 		$("a#fb-share").click(function(){
 			var from = null;
-			if(that.station_client.user){
-				if(that.station_client.admin){
-					from = that.station_client.station.key_name;
+			if(that.client.listener){
+				if(that.client.admin){
+					from = that.client.host.key_name;
 				}
 				else{
-					from = that.station_client.user.key_name;
+					from = that.client.listener.key_name;
 				}
 			}
 			
-			var link = PHB.site_url + "/" + that.station_client.station.shortname;
-			var picture = PHB.site_url + "/" + that.station_client.station.shortname + "/picture";
-			var name = that.station_client.station.name;
-			var facebook_id = that.station_client.station.key_name;
+			var link = PHB.site_url + "/" + that.client.host.shortname;
+			var picture = PHB.site_url + "/" + that.client.host.shortname + "/picture";
+			var name = that.client.host.name;
+			var facebook_id = that.client.host.key_name;
 			FACEBOOK.shareStation(from, link, picture, name);
 			
 			return false;

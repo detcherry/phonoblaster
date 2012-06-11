@@ -5,8 +5,8 @@
 FavoriteManager.prototype = new ScrollTabManager();
 FavoriteManager.prototype.constructor = FavoriteManager;
 
-function FavoriteManager(station_client){
-	ScrollTabManager.call(this, station_client);
+function FavoriteManager(client){
+	ScrollTabManager.call(this, client);
 	this.init();
 }
 
@@ -28,7 +28,7 @@ FavoriteManager.prototype.init = function(){
 }
 
 FavoriteManager.prototype.getData = function(){
-	var key_name = this.station_client.user.key_name;
+	var key_name = this.client.listener.key_name;
 	var offset = this.offset;
 	var data = {
 		key_name: key_name,
