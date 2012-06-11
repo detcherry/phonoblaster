@@ -39,8 +39,10 @@
 			<div id="station-shortname">@{{ station_proxy.station.shortname }}</div>
 			<div id="station-name">
 				<p>{{ station_proxy.station.name }}</p>
+				{% if is_page %}
 				<a href="{{ station_proxy.station.link }}" class="fb-page" target="_blank"></a>
 				<div class="fb-like" data-href="{{ station_proxy.station.link }}" data-send="false" data-layout="button_count"  data-show-faces="false"></div>
+				{% endif %}
 			</div>
 		</div>
 		<div id="no-scrolling-box">

@@ -27,9 +27,9 @@ class RootHandler(BaseHandler):
 			self._template_values["number_of_visits"] = self.station_proxy.number_of_visits
 
 			if self.station_proxy.station.type == 'user':
-				self._template_values["is_fan_page"] = False
+				self._template_values["is_page"] = False
 			else:
-				self._template_values["is_fan_page"] = True
+				self._template_values["is_page"] = True
 
 		except (AttributeError, TypeError):
 			# in case of a 404 error
