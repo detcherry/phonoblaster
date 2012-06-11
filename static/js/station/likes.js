@@ -1,16 +1,16 @@
 // ---------------------------------------------------------------------------
-// FAVORITE MANAGER
+// LIKES MANAGER
 // ---------------------------------------------------------------------------
 
-FavoriteManager.prototype = new ScrollTabManager();
-FavoriteManager.prototype.constructor = FavoriteManager;
+LikeManager.prototype = new ScrollTabManager();
+LikeManager.prototype.constructor = LikeManager;
 
-function FavoriteManager(client){
+function LikeManager(client){
 	ScrollTabManager.call(this, client);
 	this.init();
 }
 
-FavoriteManager.prototype.init = function(){
+LikeManager.prototype.init = function(){
 	// Settings
 	this.url = "/api/likes"
 	this.data_type = "json"
@@ -27,7 +27,7 @@ FavoriteManager.prototype.init = function(){
 	this.scrollListen();
 }
 
-FavoriteManager.prototype.getData = function(){
+LikeManager.prototype.getData = function(){
 	var shortname = this.client.host.shortname;
 	var offset = this.offset;
 	var data = {
@@ -37,7 +37,7 @@ FavoriteManager.prototype.getData = function(){
 	return data
 }
 
-FavoriteManager.prototype.UIBuild = function(item){
+LikeManager.prototype.UIBuild = function(item){
 	var id = item.id;
 	var content = item.content;
 	var created = PHB.convert(item.created);
