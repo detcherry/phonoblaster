@@ -41,7 +41,6 @@ class Like(db.Model):
 	@staticmethod
 	def get_extended_like(like, track, station):
 		extended_like = {
-			"type": "rebroadcast",
 			"created":  timegm(like.created.utctimetuple()),
 			"youtube_id": track.youtube_id,
 			"youtube_title": track.youtube_title,

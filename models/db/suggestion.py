@@ -53,7 +53,6 @@ class Suggestion(db.Model):
 		extended_suggestion = {
 			"key_name": suggestion.key().name(),
 			"message": suggestion.message,
-			"type": "rebroadcast",
 			"created": timegm(suggestion.created.utctimetuple()),
 			"youtube_id": suggestion.youtube_id,
 			"youtube_title": suggestion.youtube_title,
