@@ -12,26 +12,6 @@
 		<p class="name"><a href="/{{ user_proxy.profile.shortname }}">{{ user_proxy.profile.name }}</a></p>
 		<p class="shortname">@{{ user_proxy.profile.shortname }}</p>
 	</div>
-	<div id="home-user-stations">
-		{% if user_stations %}
-			{% for station in user_stations %}
-			<div class="home-user-station">
-				<a href="/{{ station.shortname }}">
-					<img src="https://graph.facebook.com/{{ station.key.name }}/picture"/>
-					<p><span class="middle">{{ station.name }}</span></p>
-				</a>
-			</div>
-			{% endfor %}
-			<div id = "other-stations">
-				<a href="/station/create"> Create a new station</a>
-			</div>
-		{% else %}
-			<div id="home-create-new-station">
-				<p >Start brodcasting today: </p>
-				<a href="/station/create" class="btn primary"> Create your station!</a>
-			</div>
-		{% endif %}
-	</div>
 </div>
 <div id="right-column">
 	<p id="feed-title">ACTIVE RECENTLY</p>
