@@ -6,6 +6,8 @@ from django.utils import simplejson as json
 
 from google.appengine.api.taskqueue import Task
 
+from google.appengine.ext import db
+
 from controllers import config
 from controllers.base import BaseHandler
 from controllers.base import login_required
