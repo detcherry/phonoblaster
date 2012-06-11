@@ -13,13 +13,17 @@ from models.api.station import StationApi
 
 class ApiLikesHandler(BaseHandler):
 	def get(self):
-		key_name = self.request.get("key_name")
+		shortname = self.request.get("shortname")
 		offset = self.request.get("offset")
 		
-		if(key_name and offset):
-			listener_proxy = StationApi(key_name) 
-			extended_likes = listener_proxy.get_likes(datetime.utcfromtimestamp(int(offset)))
+		host_proxy = StationApi(shortname)
+		host = host_proxy.station
+
+		if(host and offset):
+			extended_likes = host_proxy.get_likes(datetime.utcfromtimestamp(int(offset)))
 			self.response.out.write(json.dumps(extended_likes))
+		else:
+			self.error(404)
 	
 	@login_required
 	def post(self):
