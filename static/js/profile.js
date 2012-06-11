@@ -246,9 +246,12 @@ ProfileManager.prototype = {
 			error: function(xhr, status, error) {
 				PHB.log('An error occurred: ' + error + '\nPlease retry.');
 			},
-			success: function(json){
-				if(json){
-					window.href = PHB.site_url + "/" + that.shortname;
+			success: function(json){				
+				if(json.response){
+					window.location.href = PHB.site_url + "/" + that.shortname;
+				}
+				else{
+					PHB.error("Your station could not be created. Please reload this page.")
 				}
 			},
 		});
