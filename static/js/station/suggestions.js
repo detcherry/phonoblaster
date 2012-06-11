@@ -132,7 +132,7 @@ SuggestionManager.prototype.postListen = function(btn, item){
 		var new_item_div = that.UIBuild(new_item)
 		that.UIPrepend(new_item_div);
 		
-		// Prevent any suggestion submission before a 3 minutes period
+		// Prevent any suggestion submission before a 30 secs period
 		that.suggestion_on = false;
 		setTimeout(function(){
 			that.suggestion_on = true;
@@ -221,7 +221,6 @@ SuggestionManager.prototype.UIBuild = function(item){
 					)
 			)
 	)
-	
 	
 	if(this.client.admin){
 		div.find(".item-subtitle").append(
