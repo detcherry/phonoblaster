@@ -235,7 +235,7 @@ Global number of users: %s
 							memcache.set(self._memcache_user_profile_id, self._profile)
 							logging.info("%s %s's profile put in memcache"%(user.first_name, user.last_name))
 						else:
-							logging.error("Profile reffers to a non existing station!")
+							logging.error("Profile refers to a non existing station!")
 					else:
 						logging.info("User has no profile yet.")
 				else:
