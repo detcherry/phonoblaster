@@ -47,8 +47,9 @@ class ApiMessagesHandler(BaseHandler):
 		# Check if the user is the author
 		if(self.user_proxy.is_admin_of(author_key_name)):
 			# Building author db key
-			author_key = db.Key_from_path("Station", author_key_name )
+			author_key = db.Key.from_path("Station", author_key_name )
 			author = db.get(author_key)
+			logging.info("Author retrieved from datastore.")
 			# Put the new message to the datastore
 			new_message = Message(
 				key_name = message["key_name"],
