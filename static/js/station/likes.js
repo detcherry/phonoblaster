@@ -17,7 +17,7 @@ LikeManager.prototype.init = function(){
 	this.offset = null;
 	
 	// UI Settings
-	this.name = "#favorites-tab";
+	this.name = "#likes-tab";
 	this.selector = this.name + " .tab-content";
 	
 	// Init methods

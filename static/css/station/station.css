@@ -697,12 +697,12 @@ ul#tabs a#suggestions-header.current{
 	background-position:-71px -406px;
 }
 
-ul#tabs a#favorites-header{
+ul#tabs a#likes-header{
 	background-image:url("/static/images/new-sprits.png");
 	background-position:-170px -406px;
 }
 
-ul#tabs a#favorites-header.current{
+ul#tabs a#likes-header.current{
 	background-image:url("/static/images/new-sprits.png");
 	background-position:-137px -406px;
 }
