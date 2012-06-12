@@ -45,16 +45,29 @@ ProfileManager.prototype = {
 	nextListen: function(){
 		
 		var that = this;
-		
-		$("a.box-next").click(function(){
+
+		// Username next button
+		$("#username a.box-next").click(function(){
 			
 			var status = $(".status").html();
 			if(status == "Available"){
-				that.finalize();
+				that.moveRight();
 			}
 			else{
 				$(".warning").show();
 			}
+			
+			$(this).blur();
+			return false;
+		})
+
+		// Background next button
+		$("#background a.box-next").click(function(){
+			
+			alert("Finalize!")
+			
+			// Later on 
+			// that.finalize();
 			
 			$(this).blur();
 			return false;

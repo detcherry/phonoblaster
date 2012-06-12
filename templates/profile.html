@@ -16,52 +16,78 @@
 {% endblock %}
 
 {% block main %}
-<div id="steps-wrapper" style="margin-left:{% if unique %}-600px{% else %}0px{% endif %}">
-	<div class="step" id="choose">
-		<div class="box-wrapper">
-			<div class="box">
-				<div class="box-header">
-					<h1>Use Phonoblaster as</h1>
-				</div>
-				<div class="box-content">
-				{% if unique %}
-				{% else %}
-					{% for p in profiles %}
-					<a href="#" class="item" id="{{ p.key_name }}">
-						<div class="picture">
-							<img src="https://graph.facebook.com/{{ p.key_name }}/picture?type=square">
-						</div>
-						<span>{{ p.name }}</span>
-					</a>
-					{% endfor %}
-				{% endif %}
+<!-- Background img -->
+<div id="img">
+	<!-- Example -- >
+	<!-- <img src="/{{tag}}/static/images/smoking.jpg" class="stretch"/>-->
+</div>
+<div id="steps-overflow">
+	<div id="steps-wrapper" style="margin-left:{% if unique %}-600px{% else %}0px{% endif %}">
+		<div class="step" id="choose">
+			<div class="box-wrapper">
+				<div class="box">
+					<div class="box-header">
+						<h1>Use Phonoblaster as</h1>
+					</div>
+					<div class="box-content">
+					{% if unique %}
+					{% else %}
+						{% for p in profiles %}
+						<a href="#" class="item" id="{{ p.key_name }}">
+							<div class="picture">
+								<img src="https://graph.facebook.com/{{ p.key_name }}/picture?type=square">
+							</div>
+							<span>{{ p.name }}</span>
+						</a>
+						{% endfor %}
+					{% endif %}
+					</div>
 				</div>
 			</div>
 		</div>
-	</div>
-	<div class="step" id="username">
-		<div class="box-wrapper">
-			<div class="box">
-				<div class="box-header">
-					{% if not unique %}
-					<a href="#" class="box-previous">
-						<span></span>
-					</a>
-					{% endif %}
-					<h1>Your username</h1>
-				</div>
-				<div class="box-content">
-					<div class="picture"></div>
-					<div class="shortname">
-						<div class="prefix">@</div>
-						<input type="text" name="shortname" autocomplete="off">
-						<div class="status">Available</div>
+		<div class="step" id="username">
+			<div class="box-wrapper">
+				<div class="box">
+					<div class="box-header">
+						{% if not unique %}
+						<a href="#" class="box-previous">
+							<span></span>
+						</a>
+						{% endif %}
+						<h1>Your username</h1>
+					</div>
+					<div class="box-content">
+						<div class="picture"></div>
+						<div class="shortname">
+							<div class="prefix">@</div>
+							<input type="text" name="shortname" autocomplete="off">
+							<div class="status">Available</div>
+						</div>
+					</div>
+					<div class="box-footer">
+						<a href="#" class="box-next">Next</a>
+						<img src="/{{tag}}/static/images/loader.gif" class="loader"/>
+						<div class="warning">Please, choose a correct username</div>
 					</div>
 				</div>
-				<div class="box-footer">
-					<a href="#" class="box-next">Complete</a>
-					<img src="/{{tag}}/static/images/loader.gif" class="loader"/>
-					<div class="warning">Please, choose a correct username</div>
+			</div>
+		</div>
+		<div class="step" id="background">
+			<div class="box-wrapper">
+				<div class="box">
+					<div class="box-header">
+						<a href="#" class="box-previous">
+							<span></span>
+						</a>
+						<h1>Your station background</h1>
+					</div>
+					<div class="box-content">
+					</div>
+					<div class="box-footer">
+						<a href="#" class="box-next">Complete</a>
+						<img src="/{{tag}}/static/images/loader.gif" class="loader"/>
+						<div class="warning">Please, choose a background</div>
+					</div>
 				</div>
 			</div>
 		</div>
