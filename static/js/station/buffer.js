@@ -134,7 +134,6 @@ BufferManager.prototype.add = function(new_event){
 			
 			// Add it to the UI
 			that.UIAdd(item, previous_item);
-		
 		});
 				
 	}
@@ -151,10 +150,7 @@ BufferManager.prototype.add = function(new_event){
 			}
 
 			// Add it to the UI anyway
-			that.UIAdd(item, previous_item);
-
-
-			
+			that.UIAdd(item, previous_item);			
 		})
 	}
 }
@@ -845,13 +841,14 @@ BufferManager.prototype.UIAdd = function(new_item, previous_item){
 	}
 	else{
 		// If user not admin and incoming track suggestion, we display something on the station wall
-		var type = new_item.content.type;
-		if(!this.client.admin && type == "suggestion"){
-
+		if(!this.client.admin && new_item.track_submitter_key_name != this.client.host){
 			// If user suggestion submitter, display notification
 			if(new_item.content.track_submitter_key_name == this.client.listener.key_name){
 				$("#notifications").removeClass("off").addClass("on");
 			}
+
+			// In case rebroadcast was already displayed somewhere else
+			this.UIRemove(new_item.id);
 
 			// Display the rebroadcast on the station wall
 			this.UIWallDisplay(new_item);
