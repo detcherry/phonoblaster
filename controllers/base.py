@@ -128,9 +128,9 @@ class BaseHandler(webapp.RequestHandler):
 		if self.user_proxy:
 			# Profiles information
 			if len(self.user_proxy.contributions) > 0:
-				self._template_values["unique"] = False
+				self._template_values["one_profile"] = False
 			else:
-				self._template_values["unique"] = True
+				self._template_values["one_profile"] = True
 
 			# Adding all profiles associated with users
 			user_profiles = self.user_proxy.profiles + self.user_proxy.non_created_profiles
