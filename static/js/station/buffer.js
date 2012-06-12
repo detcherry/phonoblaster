@@ -247,11 +247,6 @@ BufferManager.prototype.filter = function(new_event, callback){
 		}
 	}
 	
-	PHB.log("past states")
-	PHB.log(past_states)
-	PHB.log("next events")
-	PHB.log(next_events)
-	
 	// Determine which buffer state to build on top of
 	var buffer_before = {};
 	// If the past states list is not empty, get the last item buffer
@@ -269,9 +264,6 @@ BufferManager.prototype.filter = function(new_event, callback){
 			"timestamp": this.timestamp,
 		}		
 	}
-	
-	PHB.log("buffer before")
-	PHB.log(buffer_before)
 	
 	callback(buffer_before, next_events);
 }
@@ -399,9 +391,6 @@ BufferManager.prototype.processIncoming = function(new_event, callback){
 				var new_history = that.history.reverse().slice(0,30).reverse();
 				that.history = new_history;
 				
-				PHB.log("new history")
-				PHB.log(that.history)
-				
 				// Necessary for the next round in the loop
 				buffer_before = buffer_after;	
 			});
@@ -410,11 +399,7 @@ BufferManager.prototype.processIncoming = function(new_event, callback){
 		
 		// At the end of the buffer recalculation, set the new items list and timestamp
 		that.timestamp = buffer_after.timestamp
-		PHB.log("new timestamp")
-		PHB.log(that.timestamp)
 		that.items = buffer_after.broadcasts
-		PHB.log("new broadcasts")
-		PHB.log(that.items)
 			
 		// Callback necessary to make UI changes
 		callback(previous_item);
