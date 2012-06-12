@@ -248,7 +248,17 @@ ProfileManager.prototype = {
 			},
 			success: function(json){				
 				if(json.response){
-					window.location.href = PHB.site_url + "/" + that.shortname;
+					// Create application if Facebook page
+					if(that.choosen.type == "page"){
+						FACEBOOK.putTab(that.choosen.key_name, function(response){
+							// Redirect user to his new station
+							window.location.href = PHB.site_url + "/" + that.shortname;
+						})
+					}
+					else{
+						// Redirect user to his new station
+						window.location.href = PHB.site_url + "/" + that.shortname;
+					}
 				}
 				else{
 					PHB.error("Your station could not be created. Please reload this page.")
