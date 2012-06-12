@@ -118,8 +118,6 @@ class ProfileSwitchHandler(BaseHandler):
 			is_non_created = False
 			
 			for i in xrange(0,len(self.user_proxy.non_created_profiles)):
-				logging.info(self.user_proxy.non_created_profiles[i]["key_name"])
-				
 				if key_name == self.user_proxy.non_created_profiles[i]["key_name"]:
 					is_non_created = True
 					profile = {
@@ -127,11 +125,9 @@ class ProfileSwitchHandler(BaseHandler):
 						"name": self.user_proxy.non_created_profiles[i]["name"],
 						"type": self.user_proxy.non_created_profiles[i]["type"]
 					}
-					logging.info(profile)
 					break
 
 			if is_non_created:
-				logging.info("Is Non Created!")
 				# The key_name was found in non created profile of current user, redirecting to /profile/init
 				template_values = {
 					"unique": True,
@@ -149,7 +145,6 @@ class ProfileSwitchHandler(BaseHandler):
 					break
 
 			if is_created:
-				logging.info("Is Created!")
 				self.user_proxy.set_profile(key_name)
 
 		if is_non_created:
@@ -159,11 +154,3 @@ class ProfileSwitchHandler(BaseHandler):
 				self.redirect(redirection)
 			else:
 				self.error(404)
-
-
-		"""
-		self.redirect("/")
-
-		# If not created or created, it means key_name does not appear in user profiles -> unothorised
-		self.error(404)
-		"""
