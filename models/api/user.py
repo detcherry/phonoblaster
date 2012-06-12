@@ -24,7 +24,6 @@ from models.api.admin import AdminApi
 
 MEMCACHE_USER_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".user."
 MEMCACHE_USER_CONTRIBUTIONS_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".contributions.user."
-MEMCACHE_USER_NON_CREATED_PROFILES_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".non.created.profiles.user."
 MEMCACHE_USER_PROFILES_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".profiles.user."
 MEMCACHE_USER_PROFILE_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".profile.user."
 
@@ -34,7 +33,6 @@ class UserApi:
 		self._code = code # only for an authenticated user
 		self._memcache_user_id = MEMCACHE_USER_PREFIX + self._uid
 		self._memcache_user_contributions_id = MEMCACHE_USER_CONTRIBUTIONS_PREFIX + self._uid
-		self._memcache_user_non_created_profiles_id = MEMCACHE_USER_NON_CREATED_PROFILES_PREFIX + self._uid
 		self._memcache_user_profiles_id = MEMCACHE_USER_PROFILES_PREFIX + self._uid
 		self._memcache_user_profile_id = MEMCACHE_USER_PROFILE_PREFIX + self._uid
 	
@@ -289,7 +287,6 @@ Global number of users: %s
 		# Resetting memcache
 		memcache.delete(self._memcache_user_profiles_id)
 		memcache.delete(self._memcache_user_profile_id)
-		memcache.delete(self._memcache_user_non_created_profiles_id)
 		logging.info("Profile, Profiles and Non Created Profiles deleted from memcache")
 		# We first need to check if key_name is in the profiles of the user
 		profile = None
