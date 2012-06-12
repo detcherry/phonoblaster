@@ -67,6 +67,7 @@ ProfileManager.prototype = {
 		var that = this;
 		$("a.item").click(function(){
 			
+			// Find the item clicked by the user
 			var id = $(this).attr("id");
 			for(var i=0, c=that.profiles.length; i<c; i++){
 				var profile = that.profiles[i]
@@ -75,9 +76,18 @@ ProfileManager.prototype = {
 				}
 			}
 			
-			that.fillUsername();
-			
-			that.moveRight();
+			// Profile not created already, go to username screen
+			if(!that.choosen.shortname){
+				// Automatically fill box with a default username
+				that.fillUsername();
+
+				// Move to the username screen
+				that.moveRight();
+			}
+			// Profile already created, go to station
+			else{
+				window.location.href = "/" + that.choosen.shortname;
+			}
 			
 			$(this).blur();
 			return false;

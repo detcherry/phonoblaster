@@ -81,13 +81,15 @@
 		PROFILES = [{
 			key_name: {{ profile.key_name}},
 			name: "{{ profile.name }}",
-			type: "{{ profile.type }}"
+			shortname : {% if profile.shortname %}"{{ profile.shortname }}"{% else %}null{% endif %},
+			type: "{{ profile.type }}",
 		}];
 	{% else %}
 		{% for p in profiles %}
 			PROFILES.push({
 				key_name: {{ p.key_name }},
 				name: "{{ p.name }}",
+				shortname : {% if p.shortname %}"{{ p.shortname }}"{% else %}null{% endif %},
 				type: "{{ p.type }}",
 			});
 		{% endfor %}
