@@ -111,10 +111,9 @@ class BaseHandler(webapp.RequestHandler):
 
 	# Custom rendering function
 	def render(self, template_path, template_values):
+		self._template_values = {}
 		if template_values:
 			self._template_values = template_values
-		else:
-			self._template_values = {}
 		
 		# Standard template values
 		self._template_values["user_proxy"] = self.user_proxy
@@ -125,14 +124,15 @@ class BaseHandler(webapp.RequestHandler):
 		self._template_values["version"] = config.VERSION
 		self._template_values["tag"] = config.TAG
 
-		if self.user_proxy:
-			# Profiles information
+		# Information below necessary for header
+		if self.user_proxy and self.user_proxy.profile:
+			
+			# Only user profile owned by user or more than that?
+			self._template_values["one_profile"] = True
 			if len(self.user_proxy.contributions) > 0:
 				self._template_values["one_profile"] = False
-			else:
-				self._template_values["one_profile"] = True
 
-			# Adding all profiles associated with users
+			# Retrieving all profiles associated with user except the current profile
 			user_profiles = self.user_proxy.profiles + self.user_proxy.non_created_profiles
 			self._template_values["non_default_profiles"] = []
 			for p in user_profiles:
