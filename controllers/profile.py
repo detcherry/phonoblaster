@@ -14,58 +14,50 @@ from models.api.station import StationApi
 class ProfileInitHandler(BaseHandler):
 	@login_required
 	def get(self):
-		template_values = {}
+		template_values = None
+		redirection = None
 		key_name = self.request.get("key_name")
+		user_profiles = self.user_proxy.profiles
 
 		# Unique profile
 		if key_name is not "":
+			profile = None
 			
-			# Checking if key_name in user non created profiles
-			is_non_created = False
-			for i in xrange(0,len(self.user_proxy.non_created_profiles)):
-				if key_name == self.user_proxy.non_created_profiles[i]["key_name"]:
-					is_non_created = True
-					profile = self.user_proxy.non_created_profiles[i]
-					break
-
-			if is_non_created:
-				# The key_name was found in non created profile of current user
-				template_values = {
-					"unique": True,
-					"profile": profile
-				}
-			else:
-				is_created = False
-				# The key_name was not found in non created profiles, is the key_name associated with an existing station?
-				for i in xrange(0,len(self.user_proxy.profiles)):
-					if key_name == self.user_proxy.profiles[i]["key_name"]:
-						# key_name is actually the one of a created station
-						is_created = True
+			# Checking if key_name is in non created profiles or is associated to a created profile
+			for i in xrange(0,len(user_profiles)):
+				if key_name == user_profiles[i]["key_name"]:
+					if user_profiles[i]["created"] is None: 
+						template_values = {
+							"unique": True,
+							"profile": user_profiles[i]
+						}
 						break
-				
-				if is_created:
-					self.redirect('/'+self.user_proxy.profiles[i]["shortname"])
-				else:
-					# Throwing error
-					self.error(404)
-
+					else:
+						redirection = "/"+user_profiles[i]["shortname"]
 		else:			
 			# Multiple profiles
-			profiles = self.user_proxy.non_created_profiles + self.user_proxy.profiles
-			if len(profiles) > 1:
+			if len(user_profiles) >1:
 				template_values = {
 					"unique": False,
-					"profiles": profiles
+					"profiles": user_profiles
 				}
-			elif len(profiles) == 1:
+			elif len(user_profiles) == 1 and (user_profiles[0]["created"] is None):
 				template_values = {
 					"unique": True,
-					"profile": profiles[0]
+					"profiles": user_profiles[0]
 				}
 			else:
-				self.redirect("/")
+				redirection = "/"+self.user_proxy.profile["shortname"]
 
-		self.render("profile.html", template_values)
+		# Deciding what to return
+		if redirection is not None:
+			self.redirect(redirection)
+		elif template_values is not None:
+			self.render("profile.html", template_values)
+		else:
+			# Throwing error
+			self.error(404)
+		
 	
 	@login_required
 	def post(self):
@@ -80,23 +72,29 @@ class ProfileInitHandler(BaseHandler):
 			logging.info("Forbidden characters or Existing station")
 			self.error(403)
 		else:
-			if(key_name == self.user_proxy.user.key().name()):
-				# Station associated with User
-				station_proxy = StationApi(shortname)
-				station_proxy.put_station(key_name, shortname, self.user_proxy.user.first_name + ' ' + self.user_proxy.user.last_name, None, "user")
-				self.user_proxy.set_profile(key_name)
-
-				self.response.out.write(json.dumps({'response': True}))
-			elif(self.user_proxy.is_admin_of(key_name)):
-				# We fetch some information about the facebook page (just the link in fact...)
+			if key_name == self.user_proxy.user.key().name():
+				# Station associated with User, we have to know first if associated station was created
+				user_profiles = self.user_proxy.profiles
+				for i in xrange(0,len(user_profiles)):
+					if key_name == user_profiles[i]["key_name"] and user_profiles[i]["created"] is None:
+						station_proxy = StationApi(shortname)
+						station_proxy.put_station(key_name, shortname, self.user_proxy.user.first_name + ' ' + self.user_proxy.user.last_name, None, "user")
+						self.user_proxy.set_profile(key_name)
+						self.response.out.write(json.dumps({'response': True}))
+						break
+			elif self.user_proxy.is_admin_of(key_name):
+				# We fetch some information about the facebook page
 				graph = facebook.GraphAPI(self.user_proxy.access_token)
 				page_information = graph.get_object(key_name)
-				
-				station_proxy = StationApi(shortname)
-				station_proxy.put_station(key_name, shortname, page_information["name"], page_information["link"], "page")
-				self.user_proxy.set_profile(key_name)
-			
-				self.response.out.write(json.dumps({'response': True}))
+				user_profiles = self.user_proxy.profiles
+
+				for i in xrange(0,len(user_profiles)):
+					if key_name == user_profiles[i]["key_name"] and user_profiles[i]["created"] is None:
+						station_proxy = StationApi(shortname)
+						station_proxy.put_station(key_name, shortname, page_information["name"], page_information["link"], "page")
+						self.user_proxy.set_profile(key_name)
+						self.response.out.write(json.dumps({'response': True}))
+						break
 			else:
 				logging.info("User not admin")
 				self.error(403)
@@ -106,47 +104,31 @@ class ProfileSwitchHandler(BaseHandler):
 	def get(self, key_name):
 		# First we need to check if the key_name is in the non_created_profiles
 		logging.info(key_name)
-		
+
+		user_profiles = self.user_proxy.profiles	
 		redirection = None
 		template_values = None
 
 		if self.user_proxy:
 			is_non_created = False
 			
-			for i in xrange(0,len(self.user_proxy.non_created_profiles)):
-				if key_name == self.user_proxy.non_created_profiles[i]["key_name"]:
-					is_non_created = True
-					profile = {
-						"key_name": key_name,
-						"name": self.user_proxy.non_created_profiles[i]["name"],
-						"type": self.user_proxy.non_created_profiles[i]["type"]
+			for i in xrange(0,len(user_profiles)):
+				if key_name == user_profiles[i]["key_name"] and user_profiles[i]["created"] is None:
+					profile = user_profiles[i]
+					template_values = {
+						"unique": True,
+						"profile": profile
 					}
 					break
-
-			if is_non_created:
-				# The key_name was found in non created profile of current user, redirecting to /profile/init
-				template_values = {
-					"unique": True,
-					"profile": profile
-				}
-				self.render("profile.html", template_values)
-
-			# Now we need to check if the key_name is in the created_profiles
-			is_created = False
-			for i in xrange(0,len(self.user_proxy.profiles)):
-				if key_name == self.user_proxy.profiles[i]["key_name"]:
+				elif key_name == user_profiles[i]["key_name"] and user_profiles[i]["created"] is not None:
 					shortname = self.user_proxy.profiles[i]["shortname"]
 					redirection = "/" + shortname
-					is_created = True
+					self.user_proxy.set_profile(key_name)
 					break
 
-			if is_created:
-				self.user_proxy.set_profile(key_name)
-
-		if is_non_created:
+		if template_values:
 			self.render("profile.html", template_values)
+		elif redirection:
+			self.redirect(redirection)
 		else:
-			if redirection:
-				self.redirect(redirection)
-			else:
-				self.error(404)
+			self.error(404)

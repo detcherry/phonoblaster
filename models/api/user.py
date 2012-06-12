@@ -185,29 +185,12 @@ Global number of users: %s
 	
 	def reset_contributions(self):
 		memcache.delete(self._memcache_user_contributions_id)
-	
-	# Return the user stations (stations created he's admin of)
-	@property
-	def stations(self):
-		if not hasattr(self, "_stations"):
-			contributions = self.contributions
-			keys = [c["page_id"] for c in contributions]
-			keys.append(self.user.key().name())
-			results = Station.get_by_key_name(keys)
-			stations = []
-			
-			for result in results:
-				if result is not None:
-					stations.append(result)
-					
-			self._stations = stations
-		
-		return self._stations
 
 	# Tells if a user is an admin of a specific page 
 	def is_admin_of(self, key_name):
-		for station_key in self.user.stations:
-			if(station_key.name() == key_name):
+		for i in xrange(0,len(self.profiles)):
+			profile = self.profiles[i]
+			if profile["key_name"] == key_name:
 				return True
 		return False
 
@@ -231,6 +214,7 @@ Global number of users: %s
 								"shortname": station.shortname,
 								"name": station.name,
 								"type": station.type,
+								"link": station.link
 							}
 							memcache.set(self._memcache_user_profile_id, self._profile)
 							logging.info("%s %s's profile put in memcache"%(user.first_name, user.last_name))
@@ -243,86 +227,63 @@ Global number of users: %s
 			else:
 				logging.info("%s %s's profile already in memcache"%(self.user.first_name, self.user.last_name))
 		return self._profile	
-
+	
 	@property
 	def profiles(self):
 		if not hasattr(self, "_profiles"):
 			self._profiles = memcache.get(self._memcache_user_profiles_id)
 			if self._profiles is None:
 				self._profiles = []
-				stations = self.stations
+				# Pages
+				contributions = self.contributions
+				# Station keys to retrive from datastore
+				station_keys = [db.Key.from_path("Station", c["page_id"]) for c in contributions]
+				# Adding User station at the begining of the station_keys list
+				station_keys.insert(0, db.Key.from_path("Station", self.user.key().name()))
+
+				# Retrieving stations from datastore
+				stations = db.get(station_keys)
+				logging.info("Retrieving stations from datastore")
+
 				for i in xrange(0,len(stations)):
-					s = stations[i]
-					self._profiles.append(
-						{
-							"key_name":s.key().name(),
-							"name": s.name, 
-							"shortname": s.shortname,
-							"type": s.type
-						})
+					p = {}
+					station = stations[i]
+					if station:
+						# Profile was created
+						p = {
+							"key_name": station.key().name(),
+							"shortname": station.shortname,
+							"name": station.name,
+							"type": station.type,
+							"link": station.link,
+							"created": station.created
+						}
+					else:
+						# Associated profile not created yet
+						p = {
+							"shortname": None,
+							"link": None,
+							"created": None
+						}
+
+						if i == 0:
+							# index corresponding to the user station
+							p["key_name"] = self.user.key().name()
+							p["name"] = self.user.first_name + ' ' + self.user.last_name
+							p["type"] = "user"
+						else:
+							# it is a facebook page
+							p["key_name"] = contributions[i-1]["page_id"]
+							p["name"] = contributions[i-1]["page_name"]
+							p["type"] = "page"
+
+					self._profiles.append(p)
+
 				memcache.set(self._memcache_user_profiles_id, self._profiles)
 				logging.info("%s %s's profiles put in memcache"%(self.user.first_name, self.user.last_name))
 			else:
 				logging.info("%s %s's profiles already in memcache"%(self.user.first_name, self.user.last_name))
 		return self._profiles
-
-	@property
-	def non_created_profiles(self):
-		if not hasattr(self, "_non_created_profiles"):
-			self._non_created_profiles = memcache.get(self._memcache_user_non_created_profiles_id)
-			if self._non_created_profiles is None:
-				self._non_created_profiles = []
-
-				profiles = self.profiles
-
-				# Profile
-				is_created = False
-				for j in xrange(0,len(profiles)):
-					profile = profiles[j]
-					if self.user.key().name()  == profile["key_name"]:
-						# Profile associated to user already creted
-						is_created = True
-						break
-
-				if not is_created:
-					self._non_created_profiles.append(
-						{
-							"key_name": self.user.key().name(),
-							"name": self.user.first_name+" "+self.user.last_name,
-							"shortname": None,
-							"type": "user"
-						})
-
-				# Pages
-				contributions = self.contributions
-				for i in xrange(0,len(contributions)):
-					# If contribution page_id not in profiles add it to the list of non created profiles
-					contribution = contributions[i]
-					is_created = False
-					for j in xrange(0,len(profiles)):
-						profile = profiles[j]
-						if contribution["page_id"] == profile["key_name"]:
-							# Profile associated to facebook fan page already creted
-							is_created = True
-							break
-
-					if not is_created:
-						# Profile associated to fan page non existing, adding it to the list
-						self._non_created_profiles.append(
-							{
-								"key_name": contribution["page_id"],
-								"name": contribution["page_name"],
-								"shortname": None,
-								"type": "page"
-							})
-
-				memcache.set(self._memcache_user_non_created_profiles_id, self._non_created_profiles)
-				logging.info("%s %s's non created profiles put in memcache"%(self.user.first_name, self.user.last_name))
-
-			else:
-				logging.info("%s %s's non created profiles already in memcache"%(self.user.first_name, self.user.last_name))
-
-		return self._non_created_profiles
 
 	def set_profile(self, key_name):
 		# Resetting memcache
@@ -331,19 +292,16 @@ Global number of users: %s
 		memcache.delete(self._memcache_user_non_created_profiles_id)
 		logging.info("Profile, Profiles and Non Created Profiles deleted from memcache")
 		# We first need to check if key_name is in the profiles of the user
-		shortname = None
-		type = None
-		is_in_profiles = False
+		profile = None
 		for i in xrange(0,len(self.profiles)):
 			if key_name == self.profiles[i]["key_name"]:
-				is_in_profiles = True
-				shortname = self.profiles[i]["shortname"]
-				type = self.profiles[i]["type"]
+				profile = self.profiles[i]
 				break
 
-		if is_in_profiles:
+		if profile:
 			# Retrieving the associated station
-			station_key = db.Key.from_path("Station", key_name)
+			station_key = db.Key.from_path("Station", profile["key_name"])
+			station = db.get(station_key)
 			
 			user = self.user
 			user.profile = station_key
@@ -353,16 +311,17 @@ Global number of users: %s
 			memcache.set(self._memcache_user_id, self._user)
 			logging.info("User put in memcache")
 
-
 			# Setting profile in memecache and runtime
 			self._profile = {
-				"name": user.first_name+ " "+user.last_name,
-				"key_name": key_name,
-				"shortname": shortname,
-				"type": type
+				"key_name": station.key().name(),
+				"shortname": station.shortname,
+				"name": station.name,
+				"type": station.type,
+				"link": station.link
 			}
 			memcache.set(self._memcache_user_profile_id, self._profile)
 			logging.info("User profile set in memcache.")
+
 		else:
 			logging.info("Rejected, key_name not in user profiles")
 

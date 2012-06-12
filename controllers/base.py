@@ -129,18 +129,15 @@ class BaseHandler(webapp.RequestHandler):
 			
 			# Only user profile owned by user or more than that?
 			self._template_values["one_profile"] = True
-			if len(self.user_proxy.contributions) > 0:
+			if len(self.user_proxy.profiles) > 1:
 				self._template_values["one_profile"] = False
 
 			# Retrieving all profiles associated with user except the current profile
-			user_profiles = self.user_proxy.profiles + self.user_proxy.non_created_profiles
+			user_profiles = self.user_proxy.profiles
 			self._template_values["non_default_profiles"] = []
 			for p in user_profiles:
 				if self.user_proxy.profile["key_name"] != p["key_name"]:
-					self._template_values["non_default_profiles"].append({
-						"key_name": p["key_name"],
-						"name": p["name"],
-					})
+					self._template_values["non_default_profiles"].append(p)
 		
 		relative_path = os.path.join("../templates/", template_path)
 		path = os.path.join(os.path.dirname(__file__), relative_path)
