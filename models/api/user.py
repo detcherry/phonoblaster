@@ -289,6 +289,7 @@ Global number of users: %s
 						{
 							"key_name": self.user.key().name(),
 							"name": self.user.first_name+" "+self.user.last_name,
+							"shortname": None,
 							"type": "user"
 						})
 
@@ -311,6 +312,7 @@ Global number of users: %s
 							{
 								"key_name": contribution["page_id"],
 								"name": contribution["page_name"],
+								"shortname": None,
 								"type": "page"
 							})
 

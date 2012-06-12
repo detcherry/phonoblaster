@@ -25,11 +25,7 @@ class ProfileInitHandler(BaseHandler):
 			for i in xrange(0,len(self.user_proxy.non_created_profiles)):
 				if key_name == self.user_proxy.non_created_profiles[i]["key_name"]:
 					is_non_created = True
-					profile = {
-						"key_name": key_name,
-						"name": self.user_proxy.non_created_profiles[i]["name"],
-						"type": self.user_proxy.non_created_profiles[i]["type"]
-					}
+					profile = self.user_proxy.non_created_profiles[i]
 					break
 
 			if is_non_created:
@@ -55,7 +51,7 @@ class ProfileInitHandler(BaseHandler):
 
 		else:			
 			# Multiple profiles
-			profiles = self.user_proxy.non_created_profiles
+			profiles = self.user_proxy.non_created_profiles + self.user_proxy.profiles
 			if len(profiles) > 1:
 				template_values = {
 					"unique": False,
