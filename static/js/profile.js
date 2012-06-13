@@ -437,9 +437,7 @@ ProfileManager.prototype = {
 		var new_value = value + offset;
 		var newMarginLeft = new_value + "px";
 		
-		$("#carousel-list").animate({
-			"marginLeft": newMarginLeft,
-		})
+		$("#carousel-list").css("marginLeft", newMarginLeft);
 	},
 	
 	browseRight: function(){
