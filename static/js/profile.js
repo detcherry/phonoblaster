@@ -84,6 +84,7 @@ function ProfileManager(profiles){
 	this.typeListen();
 	this.nextListen();
 	this.browseListen();
+	this.selectListen();
 }
 
 ProfileManager.prototype = {
@@ -267,8 +268,6 @@ ProfileManager.prototype = {
 			this.backgrounds = this.default_backgrounds;
 			this.fillThumbnails();
 		}
-		
-		
 	},
 	
 	fillThumbnails: function(){
@@ -339,7 +338,7 @@ ProfileManager.prototype = {
 						success: function(json){
 							that.request_counter--;
 
-							callback(json.availability)
+							callback(json.availability);
 						},
 					});
 				}
@@ -394,7 +393,7 @@ ProfileManager.prototype = {
 			var re = new RegExp("px","g");
 			var value = parseInt(marginLeft.replace(re, ""),10);
 			if(value < -122*(that.backgrounds.length-5)){
-				$("a#right-carousel").css("visibility", "hidden")	
+				$("a#right-carousel").css("visibility", "hidden");	
 			}
 			
 			// Browse in the right direction
@@ -413,7 +412,7 @@ ProfileManager.prototype = {
 			var re = new RegExp("px","g");
 			var value = parseInt(marginLeft.replace(re, ""),10);
 			if(value > -122){
-				$("a#left-carousel").css("visibility", "hidden")
+				$("a#left-carousel").css("visibility", "hidden");
 			}
 			
 			// Browse in the right direction
@@ -436,7 +435,7 @@ ProfileManager.prototype = {
 		var re = new RegExp("px","g");
 		var value = parseInt(marginLeft.replace(re, ""),10);
 		var new_value = value + offset;
-		var newMarginLeft = new_value + "px"
+		var newMarginLeft = new_value + "px";
 		
 		$("#carousel-list").animate({
 			"marginLeft": newMarginLeft,
@@ -449,6 +448,37 @@ ProfileManager.prototype = {
 	
 	browseLeft: function(){
 		this.browse(122)
+	},
+	
+	selectListen: function(){
+		
+		var that = this;
+		$("a.carousel-img").live("click", function(){
+			var id = $(this).attr("name");
+			
+			// Find the corresponding background
+			for(var i=0, c=that.backgrounds.length; i<c; i++){
+				var background = that.backgrounds[i];
+				if(id == background.id){
+					that.background = background;
+					break;
+				}
+			}
+			
+			// Put borders in blue
+			$(this).siblings().css("borderColor","transparent");
+			$(this).css("borderColor","#00BBED");
+			
+			// Put big image in the background
+			$("<img/>")
+				.attr("src", that.background.src_full)
+				.addClass("stretch")
+				.prependTo($("#img"))
+			
+			$(this).blur();
+			return false;
+		})
+		
 	},
 	
 	finalize: function(){
