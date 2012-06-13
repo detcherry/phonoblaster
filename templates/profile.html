@@ -100,7 +100,7 @@
 					<div class="box-footer">
 						<a href="#" class="box-next">Complete</a>
 						<img src="/{{tag}}/static/images/loader.gif" class="loader"/>
-						<div class="warning">Please, choose a background</div>
+						<div class="warning">Please, select a background</div>
 					</div>
 				</div>
 			</div>
@@ -113,6 +113,7 @@
 {% endblock %}
 
 {% block script %}
+<script type="text/javascript" src="/{{tag}}/static/js/library/json2.js"></script>
 <script type="text/javascript" src="/{{tag}}/static/js/profile.js"></script>
 <script type="text/javascript">
 	PROFILES = [];

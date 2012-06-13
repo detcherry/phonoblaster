@@ -130,7 +130,7 @@ ProfileManager.prototype = {
 				that.moveRight();
 			}
 			else{
-				$(".warning").show();
+				$("#username .warning").show();
 			}
 			
 			$(this).blur();
@@ -140,10 +140,12 @@ ProfileManager.prototype = {
 		// Background next button
 		$("#background a.box-next").click(function(){
 			
-			alert("Finalize!")
-			
-			// Later on 
-			// that.finalize();
+			if(that.background){
+				that.finalize();
+			}
+			else{
+				$("#background .warning").show();
+			}
 			
 			$(this).blur();
 			return false;
@@ -473,6 +475,9 @@ ProfileManager.prototype = {
 				.addClass("stretch")
 				.prependTo($("#img"))
 			
+			// Remove warning
+			$("#background .warning").hide();
+			
 			$(this).blur();
 			return false;
 		})
@@ -481,12 +486,7 @@ ProfileManager.prototype = {
 	
 	finalize: function(){
 		// Show loader
-		$("#username .loader").show();
-		
-		// Prevent any typing events
-		$("#username input").keydown(function(event){
-			event.preventDefault();
-		})
+		$("#background .loader").show();
 		
 		// Prevent any back events
 		$("a.box-previous").unbind("click");
@@ -504,6 +504,7 @@ ProfileManager.prototype = {
 			data: {
 				key_name: that.choosen.key_name,
 				shortname: that.shortname,
+				background: JSON.stringify(that.background),
 			},
 			error: function(xhr, status, error) {
 				PHB.log('An error occurred: ' + error + '\nPlease retry.');
