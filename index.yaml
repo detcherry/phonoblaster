@@ -26,18 +26,6 @@ indexes:
   - name: track
   - name: expired
 
-- kind: Comment
-  properties:
-  - name: station
-  - name: created
-    direction: desc
-
-- kind: Favorite
-  properties:
-  - name: user
-  - name: created
-    direction: desc
-
 - kind: Like
   properties:
   - name: listener
@@ -56,12 +44,6 @@ indexes:
   - name: host
   - name: created
 
-- kind: Session
-  properties:
-  - name: ended
-  - name: station
-  - name: created
-
 - kind: Suggestion
   properties:
   - name: host
@@ -72,18 +54,6 @@ indexes:
   properties:
   - name: host
   - name: submitter
-  - name: created
-
-- kind: Suggestion
-  properties:
-  - name: station
-  - name: created
-    direction: desc
-
-- kind: Suggestion
-  properties:
-  - name: station
-  - name: user
   - name: created
 
 - kind: Track
