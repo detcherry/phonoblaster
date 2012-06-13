@@ -180,7 +180,7 @@ ProfileManager.prototype = {
 			}
 			// Profile already created, go to station
 			else{
-				window.location.href = "/" + that.choosen.shortname;
+				window.location.href = "/profile/switch/" + that.choosen.key_name;
 			}
 			
 			$(this).blur();
