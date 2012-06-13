@@ -426,6 +426,7 @@ ProfileManager.prototype = {
 	},
 	
 	browseReset: function(){
+		$("a#left-carousel").css("visibility","hidden");
 		$("#carousel-list").css("marginLeft","122px");
 	},
 	
