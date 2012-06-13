@@ -46,7 +46,7 @@ def profile_required(method):
 		else:
 			profile = user_proxy.profile
 			
-			if profile or self.request.path == '/profile/switch' or self.request.path == '/profile/init':
+			if re.match('/profile/switch/([0-9]+)',self.request.path) or self.request.path == '/profile/init' or profile:
 				return method(self, *args, **kwargs)
 			else:
 				if self.request.method == "GET":
