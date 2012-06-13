@@ -253,3 +253,83 @@ a.box-next:hover{
 	font-style:italic;
 }
 
+/* ------------ BACKGROUND -------------- */
+
+#carousel-wrapper{
+	margin-top:52px;
+	width:100%;
+	height:104px;
+}
+
+.arrow-wrapper{
+	padding:10px;
+	height:84px;
+	width:20px;
+}
+
+.arrow-wrapper a{
+	display:block;
+	float:left;
+	margin-top:32px;
+}
+
+a#left-carousel{
+	visibility:hidden;
+	border:10px solid transparent;
+	border-right:10px solid #C4C4C4;
+}
+
+a#left-carousel:hover{
+	border:10px solid transparent;
+	border-right:10px solid #7F7F7F;
+}
+
+a#right-carousel{
+	border:10px solid transparent;
+	border-left:10px solid #C4C4C4;
+}
+
+a#right-carousel:hover{
+	border:10px solid transparent;
+	border-left:10px solid #7F7F7F;
+}
+
+#carousel{
+	height:104px;
+	width:420px;
+	overflow:hidden;
+}
+
+#carousel-mine{
+	position:relative;
+	top:0px;
+	left:0px;
+	z-index:1;
+	height:100px;
+	width:100px;
+	background:#E1E1E1;
+	border:2px solid transparent;
+}
+
+#carousel-list{
+	position:relative;
+	margin-left:122px;
+	top:-104px;
+	z-index: 0;
+	height:104px;
+	width:10000px;
+}
+
+a.carousel-img{
+	display:block;
+	float:left;
+	margin-right:18px;
+	height:100px;
+	width:100px;
+	overflow:hidden;
+	border:2px solid transparent;
+}
+
+a.carousel-img img{
+	max-height:100px;
+}

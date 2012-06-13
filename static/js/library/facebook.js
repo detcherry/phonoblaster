@@ -191,4 +191,14 @@ Facebook.prototype = {
 		
 		FB.ui(obj, function(response){})
 	},
+	
+	retrievePagePhotos: function(page_id, callback){
+		var query = "SELECT src_big, src_big_width, src_big_height FROM photo WHERE aid IN (SELECT aid FROM album WHERE owner="+ page_id +")"
+		var url = "/fql?q=" + encodeURIComponent(query)
+		
+		FB.api(url, function(response){
+			callback(response.data)
+		})
+		
+	}
 }

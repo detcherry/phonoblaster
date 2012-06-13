@@ -8,11 +8,82 @@ function ProfileManager(profiles){
 	this.shortname = null;
 	this.recommendations = false;
 	this.request_counter = 0;
+	this.backgrounds = [];
+	this.background = null;
+	
+	this.default_backgrounds = [{
+		"id": 1,
+		"blob_full": null,
+		"blob_thumb": null,
+		"src_full": "/static/images/backgrounds/full/sea.jpg",
+		"src_thumb": "/static/images/backgrounds/thumb/sea.jpg",
+	},{
+		"id": 2,
+		"blob_full": null,
+		"blob_thumb": null,
+		"src_full": "/static/images/backgrounds/full/legs.jpg",
+		"src_thumb": "/static/images/backgrounds/thumb/legs.jpg",
+	},{
+		"id": 3,
+		"blob_full": null,
+		"blob_thumb": null,
+		"src_full": "/static/images/backgrounds/full/pool.jpg",
+		"src_thumb": "/static/images/backgrounds/thumb/pool.jpg",
+	},{
+		"id": 4,
+		"blob_full": null,
+		"blob_thumb": null,
+		"src_full": "/static/images/backgrounds/full/river.jpg",
+		"src_thumb": "/static/images/backgrounds/thumb/river.jpg",
+	},{
+		"id": 5,
+		"blob_full": null,
+		"blob_thumb": null,
+		"src_full": "/static/images/backgrounds/full/egg.jpg",
+		"src_thumb": "/static/images/backgrounds/thumb/egg.jpg",
+	},{
+		"id": 6,
+		"blob_full": null,
+		"blob_thumb": null,
+		"src_full": "/static/images/backgrounds/full/road.jpg",
+		"src_thumb": "/static/images/backgrounds/thumb/road.jpg",
+	},{
+		"id": 7,
+		"blob_full": null,
+		"blob_thumb": null,
+		"src_full": "/static/images/backgrounds/full/statue.jpg",
+		"src_thumb": "/static/images/backgrounds/thumb/statue.jpg",
+	},{
+		"id": 8,
+		"blob_full": null,
+		"blob_thumb": null,
+		"src_full": "/static/images/backgrounds/full/tower.jpg",
+		"src_thumb": "/static/images/backgrounds/thumb/tower.jpg",
+	},{
+		"id": 9,
+		"blob_full": null,
+		"blob_thumb": null,
+		"src_full": "/static/images/backgrounds/full/wheat.jpg",
+		"src_thumb": "/static/images/backgrounds/thumb/wheat.jpg",
+	},{
+		"id": 10,
+		"blob_full": null,
+		"blob_thumb": null,
+		"src_full": "/static/images/backgrounds/full/skate.jpg",
+		"src_thumb": "/static/images/backgrounds/thumb/skate.jpg",
+	},{
+		"id": 11,
+		"blob_full": null,
+		"blob_thumb": null,
+		"src_full": "/static/images/backgrounds/full/deers.jpg",
+		"src_thumb": "/static/images/backgrounds/thumb/deers.jpg",
+	}]
 	
 	this.init();
 	this.previousListen();
 	this.typeListen();
 	this.nextListen();
+	this.browseListen();
 }
 
 ProfileManager.prototype = {
@@ -51,6 +122,10 @@ ProfileManager.prototype = {
 			
 			var status = $(".status").html();
 			if(status == "Available"){
+				// Reset the carousel position
+				that.browseReset();
+				
+				// Move to the background screen
 				that.moveRight();
 			}
 			else{
@@ -90,12 +165,15 @@ ProfileManager.prototype = {
 			}
 			
 			// Profile not created already, go to username screen
-			if(!that.choosen.shortname){
+			if(!that.choosen.shortname){	
 				// Automatically fill box with a default username
 				that.fillUsername();
 
 				// Move to the username screen
 				that.moveRight();
+				
+				// Automatically fill backgrounds in the backgrounds screen
+				that.retrieveBackgrounds();
 			}
 			// Profile already created, go to station
 			else{
@@ -133,9 +211,7 @@ ProfileManager.prototype = {
 	
 	fillUsername: function(){
 		var src = "https://graph.facebook.com/" + this.choosen.key_name + "/picture?type=square"
-		$("#username .picture")
-			.empty()
-			.append($("<img/>").attr("src", src));
+		$("#username .picture").empty().append($("<img/>").attr("src", src));
 		
 		var name = this.choosen.name.substr(0,29).toLowerCase().replace(/ /g,'');
 		var re = new RegExp("[^a-zA-Z0-9_]","g");
@@ -146,6 +222,72 @@ ProfileManager.prototype = {
 		that.checkShortname(function(response){
 			that.displayAvailability(response);
 		});
+	},
+	
+	retrieveBackgrounds: function(){
+		this.backgrounds = [];
+		
+		var that = this
+		if(this.choosen.type == "page"){
+			// Fetch photos from Facebook
+			FACEBOOK.retrievePagePhotos(this.choosen.key_name, function(urls){
+				// If at least 5 pictures in page photos
+				if(urls.length > 5){
+					var max = 50;
+					if(urls.length < max){
+						max = urls.length
+					}
+
+					for(var i=0, c=max; i<c; i++){
+						var src_big = urls[i].src_big;
+						var src_big_width = urls[i].src_big_width;
+						var src_big_height = urls[i].src_big_height;
+						if(src_big && src_big.length > 0 && src_big_width >= src_big_height){
+							that.backgrounds.push({
+								"id": i,
+								"blob_full": null,
+								"blob_thumb": null,
+								"src_full": src_big,
+								"src_thumb": src_big,
+							})
+						}
+					}
+				}
+				// If less than 5 pictures, default backgrounds are proposed
+				else{
+					that.backgrounds = that.default_backgrounds;
+				}
+				
+				that.fillThumbnails();
+				
+			});
+		}
+		else{
+			// Propose default backgrounds
+			this.backgrounds = this.default_backgrounds;
+			this.fillThumbnails();
+		}
+		
+		
+	},
+	
+	fillThumbnails: function(){
+		// Empty list and fill it with new photos
+		$("#carousel-list").empty();
+		
+		for(var i=0, c=this.backgrounds.length; i<c; i++){
+			var background = this.backgrounds[i];
+			
+			$("#carousel-list").append(
+				$("<a/>")
+					.attr("href","#")
+					.attr("name", background.id)
+					.addClass("carousel-img")
+					.append(
+						$("<img/>").attr("src", background.src_thumb)
+					)
+			)
+		}
 	},
 	
 	checkShortname: function(callback){
@@ -238,6 +380,74 @@ ProfileManager.prototype = {
 			})
 		})
 		
+	},
+	
+	browseListen: function(){
+		
+		var that = this;
+		$("a#right-carousel").click(function(){
+			// Display left carousel
+			$("a#left-carousel").css("visibility","visible");
+			
+			// Hide right icon if no photo anymore
+			var marginLeft = $("#carousel-list").css("marginLeft");
+			var re = new RegExp("px","g");
+			var value = parseInt(marginLeft.replace(re, ""),10);
+			if(value < -122*(that.backgrounds.length-5)){
+				$("a#right-carousel").css("visibility", "hidden")	
+			}
+			
+			// Browse in the right direction
+			that.browseRight();
+			
+			$(this).blur();
+			return false;
+		})
+		
+		$("a#left-carousel").click(function(){
+			// Display right carousel
+			$("a#right-carousel").css("visibility","visible");
+			
+			// Hide left icon if no photo anymore
+			var marginLeft = $("#carousel-list").css("marginLeft");
+			var re = new RegExp("px","g");
+			var value = parseInt(marginLeft.replace(re, ""),10);
+			if(value > -122){
+				$("a#left-carousel").css("visibility", "hidden")
+			}
+			
+			// Browse in the right direction
+			that.browseLeft();
+			
+			$(this).blur();
+			return false;
+		})
+		
+	},
+	
+	browseReset: function(){
+		$("#carousel-list").css("marginLeft","122px");
+	},
+	
+	browse: function(offset){
+		
+		var marginLeft = $("#carousel-list").css("marginLeft");
+		var re = new RegExp("px","g");
+		var value = parseInt(marginLeft.replace(re, ""),10);
+		var new_value = value + offset;
+		var newMarginLeft = new_value + "px"
+		
+		$("#carousel-list").animate({
+			"marginLeft": newMarginLeft,
+		})
+	},
+	
+	browseRight: function(){
+		this.browse(-122)
+	},
+	
+	browseLeft: function(){
+		this.browse(122)
 	},
 	
 	finalize: function(){
