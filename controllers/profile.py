@@ -44,7 +44,7 @@ class ProfileInitHandler(BaseHandler):
 			elif len(user_profiles) == 1 and (user_profiles[0]["created"] is None):
 				template_values = {
 					"unique": True,
-					"profiles": user_profiles[0]
+					"profile": user_profiles[0]
 				}
 			else:
 				redirection = "/"+self.user_proxy.profile["shortname"]
