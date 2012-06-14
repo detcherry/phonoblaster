@@ -1,12 +1,11 @@
 import logging
+import webapp2
 
-from google.appengine.ext import webapp
-from google.appengine.ext.webapp.util import run_wsgi_app
 from google.appengine.ext import db
 
 from controllers.pubnub import Pubnub
 
-class MulticastHandler(webapp.RequestHandler):
+class MulticastHandler(webapp2.RequestHandler):
 	def post(self):
 		station = self.request.get("station")
 		data = self.request.get("data")
@@ -26,17 +25,6 @@ class MulticastHandler(webapp.RequestHandler):
 		})
 		
 		logging.info("Broadcast state on %s via pubnub: %s" % (station, state))
-		
 
-application = webapp.WSGIApplication([
-	(r"/taskqueue/multicast", MulticastHandler),
-], debug=True)
-
-def main():
-	run_wsgi_app(application)
-
-if __name__ == "__main__":
-    main()
-		
 		
 		

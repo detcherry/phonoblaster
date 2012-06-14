@@ -1,7 +1,5 @@
+import json
 from datetime import datetime
-
-import django_setup
-from django.utils import simplejson as json
 
 from controllers.base import BaseHandler
 

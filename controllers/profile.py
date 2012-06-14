@@ -1,8 +1,7 @@
 import logging
 import re
 import urllib
-import django_setup
-from django.utils import simplejson as json
+import json
 
 from controllers.base import BaseHandler
 from controllers.base import login_required

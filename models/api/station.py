@@ -498,15 +498,6 @@ Global number of stations: %s
 	#													END BUFFER
 	########################################################################################################################################
 
-	def task_visit(self):
-		task = Task(
-			url = "/taskqueue/visit",
-			params = {
-				"shortname": self._shortname,
-			}
-		)
-		task.add(queue_name = "worker-queue")
-	
 	# Visits counter
 	@property
 	def number_of_visits(self):
@@ -515,11 +506,10 @@ Global number of stations: %s
 			self._number_of_visits = Shard.get_count(shard_name)
 		return self._number_of_visits
 	
-	def increase_visits_counter(self, value):
+	def increment_visits_counter(self):
 		shard_name = self._counter_of_visits_id
-		Shard.increase(shard_name, value)
+		Shard.task(shard_name, "increment")
 	
-		
 	def get_tracks(self, offset):
 		timestamp = timegm(offset.utctimetuple())
 		memcache_tracks_id = self._memcache_station_tracks_id + "." + str(timestamp)

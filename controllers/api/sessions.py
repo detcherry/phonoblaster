@@ -7,8 +7,7 @@ from random import randrange
 from calendar import timegm
 from time import gmtime
 
-import django_setup
-from django.utils import simplejson as json
+import json
 
 from google.appengine.api import channel
 
@@ -43,8 +42,8 @@ class ApiSessionsHandler(BaseHandler):
 		
 		output = {}
 		if(station):
-			# Lanching queue for visits counter 
-			station_proxy.task_visit()
+			# Increment visits counter 
+			station_proxy.increment_visits_counter()
 			
 			# Channel ID and token generation
 			time_now = str(timegm(gmtime()))

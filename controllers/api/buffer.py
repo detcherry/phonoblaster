@@ -1,8 +1,7 @@
 import math
 import logging
 import re
-import django_setup
-from django.utils import simplejson as json
+import json
 
 from datetime import datetime
 from calendar import timegm

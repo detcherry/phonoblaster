@@ -1,16 +1,14 @@
 import logging
 import re
-import django_setup
-from django.utils import simplejson as json
+import json
 
-from google.appengine.ext import webapp
-from google.appengine.ext.webapp.util import run_wsgi_app
+import webapp2
 from google.appengine.api.taskqueue import Task
 
 from controllers import config
 from models.api.station import StationApi
 
-class ConnectHandler(webapp.RequestHandler):
+class ConnectHandler(webapp2.RequestHandler):
 	def post(self):
 		channel_id = str(self.request.get('from'))
 		logging.info("%s is ready to receive messages" %(channel_id))
@@ -36,14 +34,3 @@ class ConnectHandler(webapp.RequestHandler):
 			}
 		)
 		task.add(queue_name="sessions-queue")
-
-
-application = webapp.WSGIApplication([
-	(r"/_ah/channel/connected/", ConnectHandler),
-], debug=True)
-
-def main():
-	run_wsgi_app(application)
-
-if __name__ == "__main__":
-    main()

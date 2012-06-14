@@ -1,13 +1,11 @@
 import logging
 import traceback
 import sys
+import webapp2
 
 from datetime import datetime
 
-from google.appengine.ext import webapp
-from google.appengine.ext.webapp.util import run_wsgi_app
 from google.appengine.ext import db
-
 from google.appengine.api.taskqueue import Task
 
 from models.api.station import StationApi
@@ -15,7 +13,7 @@ from models.api.station import StationApi
 from models.db.station import Station
 from models.db.broadcast import Broadcast
 
-class UpgradeHandler(webapp.RequestHandler):
+class UpgradeHandler(webapp2.RequestHandler):
 	def post(self):
 		cursor = self.request.get("cursor")
 		typeUpgrade = self.request.get("typeUpgrade")
@@ -139,17 +137,3 @@ class UpgradeHandler(webapp.RequestHandler):
 					}
 				)
 				task.add(queue_name = "worker-queue")
-
-
-
-
-
-application = webapp.WSGIApplication([
-	(r"/taskqueue/upgrade", UpgradeHandler),
-], debug=True)
-
-def main():
-	run_wsgi_app(application)
-
-if __name__ == "__main__":
-    main()	

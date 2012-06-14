@@ -1,8 +1,7 @@
 import logging
+import json
 from calendar import timegm
 from time import gmtime 
-import django_setup
-from django.utils import simplejson as json
 
 from controllers.base import BaseHandler
 
