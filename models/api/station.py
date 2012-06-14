@@ -99,13 +99,22 @@ class StationApi():
 		admin_proxy = AdminApi()
 		
 		subject = "New phonoblaster station: %s" % (self.station.name)
-		body = """
-A new station (%s/%s) has been created on Phonoblaster:
-%s, %s
+		if self.station.type == 'page':
+			body = """
+	A new station (%s/%s) has been created on Phonoblaster:
+	%s, %s
+			
+	Global number of stations: %s
+			""" %(config.SITE_URL, self.station.shortname, self.station.name, self.station.link, admin_proxy.number_of_stations)
+		else:
+			body = """
+	A new station (%s/%s) has been created on Phonoblaster:
+	%s, %s
+			
+	Global number of stations: %s
+			""" %(config.SITE_URL, self.station.shortname, self.station.name, "https://graph.facebook.com/"+self.station.key().name(), admin_proxy.number_of_stations)
 		
-Global number of stations: %s
-		""" %(config.SITE_URL, self.station.shortname, self.station.name, self.station.link, admin_proxy.number_of_stations)
-		
+		logging.info(body)
 		task = Task(
 			url = "/taskqueue/mail",
 			params = {
