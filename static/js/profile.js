@@ -8,10 +8,9 @@ function ProfileManager(profiles){
 	this.shortname = null;
 	this.recommendations = false;
 	this.request_counter = 0;
-	this.backgrounds = [];
 	this.background = null;
 	
-	this.default_backgrounds = [{
+	this.backgrounds = [{
 		"id": 1,
 		"blob_full": null,
 		"blob_thumb": null,
@@ -99,14 +98,15 @@ ProfileManager.prototype = {
 			
 			// Automatically fill box with a default username
 			this.fillUsername();
-			
-			// Automatically fill backgrounds in the backgrounds screen
-			this.retrieveBackgrounds();
 		}
 		// Case 2+ profiles
 		else{
 			this.chooseListen();
 		}
+		
+		// Fill thumbnails in background screen
+		this.fillThumbnails();
+		
 	},
 	
 	previousListen: function(){
@@ -181,9 +181,6 @@ ProfileManager.prototype = {
 
 				// Move to the username screen
 				that.moveRight();
-				
-				// Automatically fill backgrounds in the backgrounds screen
-				that.retrieveBackgrounds();
 			}
 			// Profile already created, go to station
 			else{
@@ -234,62 +231,7 @@ ProfileManager.prototype = {
 		});
 	},
 	
-	retrieveBackgrounds: function(){
-		this.backgrounds = [];
-		
-		var that = this
-		try{
-			if(this.choosen.type == "page" && FB){
-				// Fetch photos from Facebook
-				FACEBOOK.retrievePagePhotos(this.choosen.key_name, function(urls){
-					// If at least 5 pictures in page photos
-					if(urls.length > 5){
-						var max = 50;
-						if(urls.length < max){
-							max = urls.length
-						}
-
-						for(var i=0, c=max; i<c; i++){
-							var src_big = urls[i].src_big;
-							var src_big_width = urls[i].src_big_width;
-							var src_big_height = urls[i].src_big_height;
-							if(src_big && src_big.length > 0 && src_big_width >= src_big_height){
-								that.backgrounds.push({
-									"id": i+1,
-									"blob_full": null,
-									"blob_thumb": null,
-									"src_full": src_big,
-									"src_thumb": src_big,
-								})
-							}
-						}
-					}
-					// If less than 5 pictures, default backgrounds are proposed
-					else{
-						that.backgrounds = that.default_backgrounds;
-					}
-
-					that.fillThumbnails();
-
-				});
-			}
-			else{
-				// Propose default backgrounds
-				this.backgrounds = this.default_backgrounds;
-				this.fillThumbnails();
-			}
-		}
-		catch(err){
-			// Propose default backgrounds
-			this.backgrounds = this.default_backgrounds;
-			this.fillThumbnails();
-		}
-
-	},
-	
 	fillThumbnails: function(){
-		// Empty list and fill it with new photos
-		$("#carousel-list").empty();
 		
 		for(var i=0, c=this.backgrounds.length; i<c; i++){
 			var background = this.backgrounds[i];
@@ -554,9 +496,7 @@ ProfileManager.prototype = {
 		var json = responseText;
 		var response_class = "";
 		var response_message = "<span>Your picture</span><br/><span>(.jpg, .png, .gif)</span><br/><span>Max 1 Mo</span>";
-		
-		PHB.log(json)
-		
+				
 		try{
 			if(json.response){
 				
