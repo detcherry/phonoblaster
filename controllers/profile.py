@@ -61,48 +61,54 @@ class ProfileInitHandler(BaseHandler):
 			self.render("profile.html", template_values)
 		else:
 			# Throwing error
-			self.error(404)
-		
+			self.error(404)	
 	
 	@login_required
 	def post(self):
 		key_name = self.request.get("key_name")
 		shortname = self.request.get("shortname")[:30].lower()
-		
+		background = json.loads(self.request.get("background"))
+		full = background["src_full"]
+		thumb = background["src_thumb"]
+				
 		# We have to check if shortname is ok
 		forbidden_characters = re.search("[^a-zA-Z0-9_]", shortname)
 		existing_station = Station.all().filter("shortname", shortname).get()
 		
-		if(forbidden_characters or existing_station or len(shortname) < 4):
+		if(forbidden_characters or existing_station or len(shortname) < 4 or len(full) == 0 or len(thumb) == 0):
 			logging.info("Forbidden characters or Existing station")
 			self.error(403)
 		else:
 			if key_name == self.user_proxy.user.key().name():
 				# Station associated with User, we have to know first if associated station was created
-				user_profiles = self.user_proxy.profiles
-				for i in xrange(0,len(user_profiles)):
-					if key_name == user_profiles[i]["key_name"] and user_profiles[i]["created"] is None:
-						station_proxy = StationApi(shortname)
-						station_proxy.put_station(key_name, shortname, self.user_proxy.user.first_name + ' ' + self.user_proxy.user.last_name, None, "user")
-						self.user_proxy.set_profile(key_name)
-						self.response.out.write(json.dumps({'response': True}))
-						break
+				self.saveProfile(key_name, shortname, self.user_proxy.user.first_name + ' ' + self.user_proxy.user.last_name, None, "user", full, thumb)
+				
 			elif self.user_proxy.is_admin_of(key_name):
 				# We fetch some information about the facebook page
 				graph = facebook.GraphAPI(self.user_proxy.access_token)
 				page_information = graph.get_object(key_name)
 				user_profiles = self.user_proxy.profiles
 
-				for i in xrange(0,len(user_profiles)):
-					if key_name == user_profiles[i]["key_name"] and user_profiles[i]["created"] is None:
-						station_proxy = StationApi(shortname)
-						station_proxy.put_station(key_name, shortname, page_information["name"], page_information["link"], "page")
-						self.user_proxy.set_profile(key_name)
-						self.response.out.write(json.dumps({'response': True}))
-						break
+				# Save the profile
+				self.saveProfile(key_name, shortname, page_information["name"], page_information["link"], "page", full, thumb)
+
 			else:
 				logging.info("User not admin")
 				self.error(403)
+	
+	def saveProfile(self, key_name, shortname, name, link, type, full, thumb):
+		user_profiles = self.user_proxy.profiles
+		for i in xrange(0,len(user_profiles)):
+			if key_name == user_profiles[i]["key_name"] and user_profiles[i]["created"] is None:
+				
+				station_proxy = StationApi(shortname)
+				station_proxy.put_station(key_name, shortname, name, link, type, full, thumb)
+				
+				self.user_proxy.set_profile(key_name)
+				self.response.out.write(json.dumps({'response': True}))
+				
+				break
+
 
 class ProfileSwitchHandler(BaseHandler):
 	@login_required

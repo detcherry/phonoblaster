@@ -509,8 +509,6 @@ ProfileManager.prototype = {
 
 				var background = {
 					"id": 0,
-					"blob_full": blob_full,
-					"blob_thumb": blob_thumb,
 					"src_full": src_full,
 					"src_thumb": src_thumb,
 				}
@@ -618,7 +616,7 @@ ProfileManager.prototype = {
 	
 	finalize: function(){
 		// Show loader
-		$("#background .loader").show();
+		$("#background .box-footer .loader").show();
 		
 		// Prevent any back events
 		$("a.box-previous").unbind("click");

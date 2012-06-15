@@ -70,13 +70,16 @@ class StationApi():
 				logging.info("Station already in memcache")	
 		return self._station
 	
-	def put_station(self, id, shortname, name, link, type):
+	#def put_station(self, id, shortname, name, link, type):
+	def put_station(self, id, shortname, name, link, type, full, thumb):
 		station = Station(
 			key_name = id,
 			shortname = shortname,
 			name = name,
 			link = link,
 			type = type,
+			full = full,
+			thumb = thumb,
 		)
 		station.put()
 		logging.info("Station put in datastore")
