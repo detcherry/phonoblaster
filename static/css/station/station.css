@@ -990,7 +990,7 @@ input#search:focus{
 	visibility:hidden;
 }
 
-/* ------- ITEM WRAPPER (SUGGESTIONS & FAVORITES) ----- */
+/* ------- ITEM WRAPPER (SUGGESTIONS & LIKES) ----- */
 
 .item-wrapper{
 	padding:10px;
@@ -1017,7 +1017,7 @@ input#search:focus{
 }
 
 .item-wrapper-content p{
-	width:100%;
+	width: 300px;
 	font-size:11px;
 	line-height:15px;
 	overflow:hidden;
@@ -1040,6 +1040,17 @@ input#search:focus{
 
 .item-wrapper .item-subtitle{
 	width:314px;
+}
+
+.item-wrapper-content a.item-cross{
+	float: right;
+	visibility: hidden;
+	height: 12px;
+	width: 10px;
+}
+
+.item-wrapper:hover a.item-cross{
+	visibility: visible;
 }
 
 /* ------- ITEM WRAPPER (SUGGESTIONS - ADMIN) -------- */

@@ -45,7 +45,7 @@ class Like(db.Model):
 			"youtube_id": track.youtube_id,
 			"youtube_title": track.youtube_title,
 			"youtube_duration": track.youtube_duration,
-			"track_id": track.key().id(),
+			"track_id": str(track.key().id()),
 			"track_created": timegm(track.created.utctimetuple()),
 			"track_submitter_key_name": station.key().name(),
 			"track_submitter_name": station.name,

@@ -25,6 +25,7 @@ LikeManager.prototype.init = function(){
 	this.previewListen();
 	this.processListen();
 	this.scrollListen();
+	this.deleteListen();
 }
 
 LikeManager.prototype.getData = function(){
@@ -61,6 +62,13 @@ LikeManager.prototype.UIBuild = function(item){
 	.append(
 		$("<div/>")
 			.addClass("item-wrapper-content")
+			.append(
+				$("<a/>")
+					.attr("href","#")
+					.addClass("item-cross")
+					.attr("name", id)
+					.html("X")
+			)
 			.append($("<p/>").append($("<a/>").attr("href", track_submitter_url).html(track_submitter_name)))
 			.append(
 				$("<div/>")
