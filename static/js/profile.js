@@ -425,7 +425,6 @@ ProfileManager.prototype = {
 			}
 			
 			// Put borders in blue
-			//$("a.carousel-img").css("borderColor","transparent");
 			$(this).css("borderColor","#00BBED");
 			
 			that.displayBackground();
@@ -490,6 +489,9 @@ ProfileManager.prototype = {
 	},
 	
 	uploadCallback: function(responseText, statusText, xhr, form){
+		// Remove warning
+		$("#background .warning").hide();
+		
 		// Hide loader
 		$("#carousel-mine img.loader").hide();
 		
@@ -542,20 +544,22 @@ ProfileManager.prototype = {
 					response_message = "Picture too big:<br/> > 1 Mo.<br/>Please retry.";
 				}
 				// File not a picture
-				else{
+				else if(json.error == 2){
 					response_message = "Only .jpeg, .jpg, .png, .gif pictures.<br/>Please retry."
 				}
+				// No picture
+				else{
+					response_message = "No picture uploaded.<br/>Please retry."
+				}
 			}
-			
-			//Reinitialize the form destination in case the user would like to change the picture
+			// Reinitialize the form destination in case the user would like to change the picture
 			$("form#upload").attr("action", json.blobstore_url)
-			
 		}
 		catch(e){
 			var response_class = "error";
 			var response_message = "An error occurred. Please reload the page."	
 		}
-		
+				
 		// Display text
 		$("#carousel-mine p").removeClass("error").addClass(response_class).css("visibility","visible").html(response_message)
 		
@@ -569,8 +573,10 @@ ProfileManager.prototype = {
 			// Remove carousel img
 			$("#carousel-mine a.carousel-img").remove();
 			
-			// Unselect current background
-			that.selectReset();
+			if(that.background.id == 0){
+				// Unselect current background
+				that.selectReset();
+			}
 			
 			// Remove background from backgrounds list
 			var to_remove = that.backgrounds.pop();

@@ -16,49 +16,55 @@ class PictureUploadHandler(blobstore_handlers.BlobstoreUploadHandler):
 	def post(self):
 		logging.info("Picture upload request")
 		upload_files = self.get_uploads("picture")
-		blob_info = upload_files[0]
-		self.redirect("/picture/%s/process" % blob_info.key())
 		
-class PictureProcessHandler(webapp2.RequestHandler):
-	def get(self, resource):
-		logging.info("Picture process request")
-		self.blob_key = str(urllib.unquote(resource))
-		self.blob_info = BlobInfo.get(self.blob_key)
+		if(len(upload_files)>0):
+			self.blob_info = upload_files[0]
+			self.blob_key = str(self.blob_info.key())
+			
+			if(self.blobIsPicture()):
+				if(self.sizeIsOk()):
+					logging.info("Picture ok")
+					
+					self.image_url = "/picture/" + self.blob_key + "/view"
+					self.thumbnail = self.generateThumbnail()
+					self.thumbnail_blob_key = str(self.saveThumbnail())
+					self.thumbnail_url = "/picture/" + self.thumbnail_blob_key + "/view"
 
-		if(self.blobIsPicture()):
-			if(self.sizeIsOk()):
-				self.image_url = "/picture/" + self.blob_key + "/view"
-				self.thumbnail = self.generateThumbnail()
-				self.thumbnail_blob_key = str(self.saveThumbnail())
-				self.thumbnail_url = "/picture/" + self.thumbnail_blob_key + "/view"
-
-				response = {
-					"response": True,
-					"blob_full": self.blob_key,
-					"src_full": self.image_url,
-					"blob_thumb": self.thumbnail_blob_key,
-					"src_thumb": self.thumbnail_url,
-				}
-			else:
+					response = {
+						"response": True,
+						"blob_full": self.blob_key,
+						"src_full": self.image_url,
+						"blob_thumb": self.thumbnail_blob_key,
+						"src_thumb": self.thumbnail_url,
+					}
+				else:					
+					self.blob_info.delete()
+					response = {
+						"response": False,
+						"error": 1,
+						"message": "Picture too big: > 1 Mo. Please retry.",
+					}				
+			else:				
 				self.blob_info.delete()
 				response = {
 					"response": False,
-					"error": 1,
-					"message": "Picture too big: > 1 Mo. Please retry.",
-				}				
+					"error": 2,
+					"message": "Only .jpeg, .jpg, .png, .gif pictures. Please retry.",
+				}
 		else:
-			self.blob_info.delete()
+			logging.info("No image")
+			
 			response = {
 				"response": False,
-				"error": 2,
-				"message": "Only .jpeg, .jpg, .png, .gif pictures. Please retry.",
+				"error": 3,
+				"message": "No picture uploaded. Please retry."
 			}
-
+		
 		logging.info("We generate another blobstore url in case the user would like to change his picture")
 		response["blobstore_url"] = blobstore.create_upload_url('/picture/upload')
 
 		self.response.out.write(json.dumps(response))
-	
+
 	def blobIsPicture(self):		
 		image_types = ('image/jpeg', 'image/jpg', 'image/png', 'image/gif')
 
@@ -124,4 +130,4 @@ class PictureProcessHandler(webapp2.RequestHandler):
 			else:
 				logging.info("Thumbnail blob key is still None")
 				time.sleep(0.05)
-				thumbnail_blob_key = files.blobstore.get_blob_key(file_name)
+				thumbnail_blob_key = files.blobstore.get_blob_key(file_name)		
