@@ -208,6 +208,35 @@ MessageManager.prototype.prePostBuild = function(message){
 	return new_item;	
 }
 
+function replaceURLWithHTMLLinks(text) {
+	words = text.split(" ");
+	result = "";
+	var re = /(?:(?:https?|ftp|file):\/\/|www\.|ftp\.)(?:\([-A-Z0-9+&@#\/%=~_|$?!:;,.]*\)|[-A-Z0-9+&@#\/%=~_|$?!:;,.])*(?:\([-A-Z+++0-9+&@#\/%=~_|$?!:;,.]*\)|[A-Z0-9+&@#\/%=~_|$])/i;
+	var is_http = /^https?:\/\//i;
+
+	for (var i = 0; i < words.length; i++) {
+		word = words[i];
+		// Is the word a URL?
+		if (re.test(word)){
+			new_word = re.exec(word)[0]
+
+			// Does the URL start with http:// or https:// ?
+			if(is_http.test(new_word)){
+				new_word = "<a href="+new_word+">"+new_word+"</a>";
+			}else{
+				new_word = "<a href=http://"+new_word+">"+new_word+"</a>";
+			};
+			result = result+ new_word+" ";
+
+		}else{
+			result = result + word+" ";
+		}
+
+	};
+
+    return result; 
+}
+
 MessageManager.prototype.UIBuild = function(item){
 
 	var id = item.id;
@@ -238,7 +267,7 @@ MessageManager.prototype.UIBuild = function(item){
 				$("<div/>")
 					.addClass("im-text")
 					.append($("<a/>").attr("href", author_url).html(author_name))
-					.append(" " + message)
+					.append(" " + replaceURLWithHTMLLinks(message))
 			)
 			.append($("<div/>").addClass("im-time").html(created))
 	)
