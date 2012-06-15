@@ -132,7 +132,10 @@ class ProfileSwitchHandler(BaseHandler):
 					break
 
 		if template_values:
+			
+			template_values["blobstore_url"] = blobstore.create_upload_url('/picture/upload')
 			self.render("profile.html", template_values)
+			
 		elif redirection:
 			self.redirect(redirection)
 		else:
