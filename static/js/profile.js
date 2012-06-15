@@ -85,6 +85,8 @@ function ProfileManager(profiles){
 	this.nextListen();
 	this.browseListen();
 	this.selectListen();
+	this.uploadListen();
+	this.removeListen();
 }
 
 ProfileManager.prototype = {
@@ -94,7 +96,12 @@ ProfileManager.prototype = {
 		// Case one profile
 		if(this.profiles.length == 1){
 			this.choosen = this.profiles[0]
+			
+			// Automatically fill box with a default username
 			this.fillUsername();
+			
+			// Automatically fill backgrounds in the backgrounds screen
+			this.retrieveBackgrounds();
 		}
 		// Case 2+ profiles
 		else{
@@ -231,45 +238,53 @@ ProfileManager.prototype = {
 		this.backgrounds = [];
 		
 		var that = this
-		if(this.choosen.type == "page"){
-			// Fetch photos from Facebook
-			FACEBOOK.retrievePagePhotos(this.choosen.key_name, function(urls){
-				// If at least 5 pictures in page photos
-				if(urls.length > 5){
-					var max = 50;
-					if(urls.length < max){
-						max = urls.length
-					}
+		try{
+			if(this.choosen.type == "page" && FB){
+				// Fetch photos from Facebook
+				FACEBOOK.retrievePagePhotos(this.choosen.key_name, function(urls){
+					// If at least 5 pictures in page photos
+					if(urls.length > 5){
+						var max = 50;
+						if(urls.length < max){
+							max = urls.length
+						}
 
-					for(var i=0, c=max; i<c; i++){
-						var src_big = urls[i].src_big;
-						var src_big_width = urls[i].src_big_width;
-						var src_big_height = urls[i].src_big_height;
-						if(src_big && src_big.length > 0 && src_big_width >= src_big_height){
-							that.backgrounds.push({
-								"id": i,
-								"blob_full": null,
-								"blob_thumb": null,
-								"src_full": src_big,
-								"src_thumb": src_big,
-							})
+						for(var i=0, c=max; i<c; i++){
+							var src_big = urls[i].src_big;
+							var src_big_width = urls[i].src_big_width;
+							var src_big_height = urls[i].src_big_height;
+							if(src_big && src_big.length > 0 && src_big_width >= src_big_height){
+								that.backgrounds.push({
+									"id": i+1,
+									"blob_full": null,
+									"blob_thumb": null,
+									"src_full": src_big,
+									"src_thumb": src_big,
+								})
+							}
 						}
 					}
-				}
-				// If less than 5 pictures, default backgrounds are proposed
-				else{
-					that.backgrounds = that.default_backgrounds;
-				}
-				
-				that.fillThumbnails();
-				
-			});
+					// If less than 5 pictures, default backgrounds are proposed
+					else{
+						that.backgrounds = that.default_backgrounds;
+					}
+
+					that.fillThumbnails();
+
+				});
+			}
+			else{
+				// Propose default backgrounds
+				this.backgrounds = this.default_backgrounds;
+				this.fillThumbnails();
+			}
 		}
-		else{
+		catch(err){
 			// Propose default backgrounds
 			this.backgrounds = this.default_backgrounds;
 			this.fillThumbnails();
 		}
+
 	},
 	
 	fillThumbnails: function(){
@@ -454,6 +469,8 @@ ProfileManager.prototype = {
 		
 		var that = this;
 		$("a.carousel-img").live("click", function(){
+			that.selectReset();
+			
 			var id = $(this).attr("name");
 			
 			// Find the corresponding background
@@ -466,14 +483,10 @@ ProfileManager.prototype = {
 			}
 			
 			// Put borders in blue
-			$(this).siblings().css("borderColor","transparent");
+			//$("a.carousel-img").css("borderColor","transparent");
 			$(this).css("borderColor","#00BBED");
 			
-			// Put big image in the background
-			$("<img/>")
-				.attr("src", that.background.src_full)
-				.addClass("stretch")
-				.prependTo($("#img"))
+			that.displayBackground();
 			
 			// Remove warning
 			$("#background .warning").hide();
@@ -481,6 +494,179 @@ ProfileManager.prototype = {
 			$(this).blur();
 			return false;
 		})
+		
+	},
+	
+	selectReset: function(){
+		// No background selected
+		this.background = null;
+		
+		// Empty background
+		$("#img").empty();
+		
+		// Remove blue borders
+		$("a.carousel-img").css("borderColor","transparent");
+	},
+	
+	displayBackground: function(){
+		// Put big image in the background
+		$("<img/>")
+			.attr("src", this.background.src_full)
+			.addClass("stretch")
+			.prependTo($("#img"))
+	},
+	
+	uploadListen: function(){
+		var that = this
+		
+		// We listen to any image upload
+		$("input[id='picture']").bind("change", function(event){
+			
+			// Hide text
+			$("#carousel-mine p").css("visibility","hidden")
+			
+			// Show loader
+			$("#carousel-mine img.loader").show();
+			
+			// Unselect other background
+			that.selectReset();
+			
+			// Submit
+			$("form#upload").submit();
+		})
+		
+		// We listen to any form submit event
+		$("form#upload").bind("submit",function(){
+			$(this).ajaxSubmit({
+				success: that.uploadCallback,
+				dataType: "json",
+				timeout: 60000,
+			});
+			
+			return false;	
+		});
+	},
+	
+	uploadCallback: function(responseText, statusText, xhr, form){
+		// Hide loader
+		$("#carousel-mine img.loader").hide();
+		
+		var json = responseText;
+		var response_class = "";
+		var response_message = "<span>Your picture</span><br/><span>(.jpg, .png, .gif)</span><br/><span>Max 1 Mo</span>";
+		
+		PHB.log(json)
+		
+		try{
+			if(json.response){
+				
+				var blob_full = json.blob_full;
+				var blob_thumb = json.blob_thumb;
+				var src_full = json.src_full;
+				var src_thumb = json.src_thumb;
+
+				var background = {
+					"id": 0,
+					"blob_full": blob_full,
+					"blob_thumb": blob_thumb,
+					"src_full": src_full,
+					"src_thumb": src_thumb,
+				}
+				
+				PROFILE_MANAGER.background = background;
+				PROFILE_MANAGER.backgrounds.push(background);
+				
+				// Add image in the background (full size)
+				PROFILE_MANAGER.displayBackground();
+				
+				// Add image in the carousel (thumbnail)
+				$("#carousel-mine").append(
+					$("<a/>")
+						.attr("href","#")
+						.addClass("carousel-img")
+						.attr("name", 0)
+						.css("borderColor", "#00BBED")
+						.append($("<img/>").addClass("thumb").attr("src", src_thumb))
+				)
+				.append(
+					$("<a/>")
+						.attr("href","#")
+						.addClass("remove-carousel-img")
+						.html("X")
+				)			
+			}
+			else{				
+				var response_class = "error";
+				// Picture too big
+				if(json.error == 1){
+					response_message = "Picture too big:<br/> > 1 Mo.<br/>Please retry.";
+				}
+				// File not a picture
+				else{
+					response_message = "Only .jpeg, .jpg, .png, .gif pictures.<br/>Please retry."
+				}
+			}
+			
+			//Reinitialize the form destination in case the user would like to change the picture
+			$("form#upload").attr("action", json.blobstore_url)
+			
+		}
+		catch(e){
+			var response_class = "error";
+			var response_message = "An error occurred. Please reload the page."	
+		}
+		
+		// Display text
+		$("#carousel-mine p").removeClass("error").addClass(response_class).css("visibility","visible").html(response_message)
+		
+	},
+	
+	removeListen: function(){
+		
+		var that = this;
+		$("a.remove-carousel-img").live("click", function(){
+			
+			// Remove carousel img
+			$("#carousel-mine a.carousel-img").remove();
+			
+			// Unselect current background
+			that.selectReset();
+			
+			// Remove background from backgrounds list
+			var to_remove = that.backgrounds.pop();
+			
+			// Remove cross
+			$(this).remove();
+			
+			// Ajax call to remove both full size image and thumbnail
+			var blob_full = to_remove.blob_full;
+			var blob_thumb = to_remove.blob_thumb;
+			that.remove(blob_full);
+			that.remove(blob_thumb);
+			
+			$(this).blur()
+			return false;
+		})
+		
+	},
+	
+	remove: function(blob_key){
+		
+		var that = this;
+		var delete_url = "/picture/" + blob_key + "/delete"
+		
+		$.ajax({
+			url: delete_url,
+			type: "DELETE",
+			dataType: "json",
+			timeout: 60000,
+			error: function(xhr, status, error) {
+				PHB.log("An error occured " + error)
+			},
+			success: function(json){
+				PHB.log("Blob removed from blobstore")
+			},
+		});
 		
 	},
 	

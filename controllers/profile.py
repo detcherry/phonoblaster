@@ -10,6 +10,8 @@ from controllers import facebook
 from models.db.station import Station
 from models.api.station import StationApi
 
+from google.appengine.ext import blobstore
+
 class ProfileInitHandler(BaseHandler):
 	@login_required
 	def get(self):
@@ -43,7 +45,7 @@ class ProfileInitHandler(BaseHandler):
 			elif len(user_profiles) == 1 and (user_profiles[0]["created"] is None):
 				template_values = {
 					"unique": True,
-					"profiles": user_profiles[0]
+					"profile": user_profiles[0]
 				}
 			else:
 				redirection = "/"+self.user_proxy.profile["shortname"]
@@ -52,6 +54,10 @@ class ProfileInitHandler(BaseHandler):
 		if redirection is not None:
 			self.redirect(redirection)
 		elif template_values is not None:
+			
+			# Add a blobstore url
+			template_values["blobstore_url"] = blobstore.create_upload_url('/picture/upload')
+			
 			self.render("profile.html", template_values)
 		else:
 			# Throwing error
@@ -67,7 +73,7 @@ class ProfileInitHandler(BaseHandler):
 		forbidden_characters = re.search("[^a-zA-Z0-9_]", shortname)
 		existing_station = Station.all().filter("shortname", shortname).get()
 		
-		if(forbidden_characters or existing_station):
+		if(forbidden_characters or existing_station or len(shortname) < 4):
 			logging.info("Forbidden characters or Existing station")
 			self.error(403)
 		else:

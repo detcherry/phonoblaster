@@ -37,9 +37,17 @@ from controllers.taskqueue.multicast import MulticastHandler
 from controllers.taskqueue.mail import MailHandler
 from controllers.taskqueue.track import TrackDeleteHandler
 from controllers.taskqueue.upgrade import UpgradeHandler
+from controllers.picture.upload import PictureUploadHandler
+from controllers.picture.upload import PictureProcessHandler
+from controllers.picture.view import PictureViewHandler
+from controllers.picture.delete import PictureDeleteHandler
 
 app = webapp2.WSGIApplication(
 	[
+		("/picture/upload", PictureUploadHandler),
+		("/picture/([^/]+)?/process", PictureProcessHandler),
+		("/picture/([^/]+)?/view", PictureViewHandler),
+		("/picture/([^/]+)?/delete", PictureDeleteHandler),
 		("/taskqueue/counter", CounterHandler),
 		("/taskqueue/multicast", MulticastHandler),
 		("/taskqueue/deletetrack", TrackDeleteHandler),

@@ -88,6 +88,15 @@
 							</div>
 							<div id="carousel">
 								<div id="carousel-mine">
+									<form action="{{ blobstore_url }}" method="post" enctype="multipart/form-data" id="upload">
+										<p>
+											<span>Your picture</span><br/>
+											<span>(.jpg, .png, .gif)</span><br/>
+											<span>Max 1 Mo</span>
+										</p>
+										<img src="/{{tag}}/static/images/loader.gif" style="display:none" class="loader"/>
+										<input type="file" name="picture" id="picture"/>
+									</form>								
 								</div>
 								<div id="carousel-list">
 								</div>
@@ -114,6 +123,7 @@
 
 {% block script %}
 <script type="text/javascript" src="/{{tag}}/static/js/library/json2.js"></script>
+<script type="text/javascript" src="/{{tag}}/static/js/library/jquery.form.js"></script>
 <script type="text/javascript" src="/{{tag}}/static/js/profile.js"></script>
 <script type="text/javascript">
 	PROFILES = [];

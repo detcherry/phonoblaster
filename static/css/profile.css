@@ -254,6 +254,10 @@ a.box-next:hover{
 
 /* ------------ BACKGROUND -------------- */
 
+#background .box-content{
+	height:200px;
+}
+
 #carousel-wrapper{
 	margin-top:52px;
 	width:100%;
@@ -307,7 +311,74 @@ a#right-carousel:hover{
 	height:100px;
 	width:100px;
 	background:#E1E1E1;
-	border:2px solid transparent;
+	border:2px solid white;
+}
+
+#carousel-mine p{
+	position:absolute;
+	padding-top:25px;
+	height:75px;
+	width:100px;
+	top:0px;
+	left:0px;
+	z-index:2;
+	text-align:center;
+	color:#7F7F7F;
+}
+
+#carousel-mine p.error{
+	color:#D42222;
+}
+
+#carousel-mine p span:first-child{
+	color:#636363;
+}
+
+#carousel-mine form{
+	height:100px;
+	width:100px;
+	overflow:hidden;
+}
+
+#carousel-mine input{
+	position:absolute;
+	cursor:pointer;
+	top:0px;
+	left:0px;
+	z-index:3;
+	height:100px;
+	width:100px;
+	opacity:0;
+}
+
+#carousel-mine img.loader{
+	position:absolute;
+	float:none;
+	display:block;
+	margin:0px;
+	z-index:4;
+	top:40px;
+	left:40px;
+}
+
+#carousel-mine a.remove-carousel-img{
+	display:block;
+	position:absolute;
+	top:4px;
+	left:86px;
+	z-index:6;
+	padding:7px;
+	padding-top:5px;
+	padding-bottom:4px;
+	width:8px;
+	height:16px;
+	color:#7F7F7F;
+	background:#E1E1E1;
+}
+
+#carousel-mine a.remove-carousel-img:hover{
+	color:#636363;
+	text-decoration:none;
 }
 
 #carousel-list{
@@ -327,6 +398,14 @@ a.carousel-img{
 	width:100px;
 	overflow:hidden;
 	border:2px solid transparent;
+}
+
+#carousel-mine a.carousel-img{
+	position:absolute;
+	margin:0px;
+	top:-2px;
+	left:-2px;
+	z-index:5;
 }
 
 a.carousel-img img{
