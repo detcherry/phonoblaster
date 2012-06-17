@@ -40,7 +40,7 @@ application = webapp.WSGIApplication(
 		('/api/likes', ApiLikesHandler),
 		('/api/likes/(\w+)', ApiLikesDeleteHandler),
 		('/api/tracks', ApiTracksHandler),
-		('/api/tracks/([\w.]+)', ApiTracksDeleteHandler),
+		('/api/tracks/([\w.]+)/([\w.]+)', ApiTracksDeleteHandler),
 		('/api/broadcasts', ApiBroadcastsHandler),
 		('/api/sessions', ApiSessionsHandler),
 		('/api/messages', ApiMessagesHandler),

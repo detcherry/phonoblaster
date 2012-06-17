@@ -1053,6 +1053,12 @@ input#search:focus{
 	visibility: visible;
 }
 
+#likes-tab .item-wrapper:hover a.item-cross:hover{
+	color:#333;
+	text-decoration:none;
+}
+
+
 /* ------- ITEM WRAPPER (SUGGESTIONS - ADMIN) -------- */
 
 #tabs-wrapper.admin .item-wrapper-content{
@@ -1065,12 +1071,6 @@ input#search:focus{
 
 #tabs-wrapper.admin .item-wrapper .item-subtitle{
 	width:271px;
-}
-
-/* ------ ITEM (TRACKS) ------ */
-
-#tracks-tab .item:hover a.item-cross{
-	visibility:hidden;
 }
 
 /* ------ POPUP RECOMMENDATIONS ------ */

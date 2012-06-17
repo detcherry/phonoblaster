@@ -26,6 +26,7 @@ TrackManager.prototype.init = function(){
 	this.processListen();
 	this.scrollListen();
 	this.deleteListen();
+
 }
 
 TrackManager.prototype.getData = function(){
@@ -137,12 +138,44 @@ TrackManager.prototype.deleteListen = function(){
 		
 		// We check if the item is in the list (sometimes it has not been received by PUBNUB yet...)
 		if(item_to_delete){
-			if (confirm("Do you want to delete the track : "+item_to_delete.content.youtube_title+" ?")) {
-				console.log("Deleting track");
-				that.deleteSubmit(item_to_delete);
+			// First we check if the track is not in the buffer
+			var items = that.client.buffer_manager.items;
+			var item_to_delete_is_in_buffer = false;
+
+			for(var i = 0; i < items.length; i++){
+				if (item_to_delete.id == items[i].content.track_id){
+					item_to_delete_is_in_buffer = true;
+					alert("You have to remove "+items[i].content.youtube_title+" from your buffer first.");
+					break;
+				}
+			}
+
+			if (!item_to_delete_is_in_buffer){
+				if (confirm("Do you want to delete the track : "+item_to_delete.content.youtube_title+" ?")) {
+					that.deleteSubmit(item_to_delete);
+				}
 			}
 		}
 		
 		return false;
 	})
+}
+
+TrackManager.prototype.deleteAjax = function(item, callback){
+	var that = this;
+	var delete_url = that.url +"/"+ this.client.host.shortname + "/" + item.id
+	
+	$.ajax({
+		url: delete_url,
+		type: "DELETE",
+		dataType: that.data_type,
+		timeout: 60000,
+		error: function(xhr, status, error) {
+			callback(false)
+		},
+		success: function(json){
+			callback(json.response);
+		},
+	});
+	
 }
