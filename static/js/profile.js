@@ -12,68 +12,46 @@ function ProfileManager(profiles){
 	
 	this.backgrounds = [{
 		"id": 1,
-		"blob_full": null,
-		"blob_thumb": null,
 		"src_full": "/static/images/backgrounds/full/sea.jpg",
 		"src_thumb": "/static/images/backgrounds/thumb/sea.jpg",
 	},{
 		"id": 2,
-		"blob_full": null,
-		"blob_thumb": null,
 		"src_full": "/static/images/backgrounds/full/legs.jpg",
 		"src_thumb": "/static/images/backgrounds/thumb/legs.jpg",
 	},{
 		"id": 3,
-		"blob_full": null,
-		"blob_thumb": null,
 		"src_full": "/static/images/backgrounds/full/pool.jpg",
 		"src_thumb": "/static/images/backgrounds/thumb/pool.jpg",
 	},{
 		"id": 4,
-		"blob_full": null,
-		"blob_thumb": null,
 		"src_full": "/static/images/backgrounds/full/river.jpg",
 		"src_thumb": "/static/images/backgrounds/thumb/river.jpg",
 	},{
 		"id": 5,
-		"blob_full": null,
-		"blob_thumb": null,
 		"src_full": "/static/images/backgrounds/full/egg.jpg",
 		"src_thumb": "/static/images/backgrounds/thumb/egg.jpg",
 	},{
 		"id": 6,
-		"blob_full": null,
-		"blob_thumb": null,
 		"src_full": "/static/images/backgrounds/full/road.jpg",
 		"src_thumb": "/static/images/backgrounds/thumb/road.jpg",
 	},{
 		"id": 7,
-		"blob_full": null,
-		"blob_thumb": null,
 		"src_full": "/static/images/backgrounds/full/statue.jpg",
 		"src_thumb": "/static/images/backgrounds/thumb/statue.jpg",
 	},{
 		"id": 8,
-		"blob_full": null,
-		"blob_thumb": null,
 		"src_full": "/static/images/backgrounds/full/tower.jpg",
 		"src_thumb": "/static/images/backgrounds/thumb/tower.jpg",
 	},{
 		"id": 9,
-		"blob_full": null,
-		"blob_thumb": null,
 		"src_full": "/static/images/backgrounds/full/wheat.jpg",
 		"src_thumb": "/static/images/backgrounds/thumb/wheat.jpg",
 	},{
 		"id": 10,
-		"blob_full": null,
-		"blob_thumb": null,
 		"src_full": "/static/images/backgrounds/full/skate.jpg",
 		"src_thumb": "/static/images/backgrounds/thumb/skate.jpg",
 	},{
 		"id": 11,
-		"blob_full": null,
-		"blob_thumb": null,
 		"src_full": "/static/images/backgrounds/full/deers.jpg",
 		"src_thumb": "/static/images/backgrounds/thumb/deers.jpg",
 	}]
@@ -502,8 +480,6 @@ ProfileManager.prototype = {
 		try{
 			if(json.response){
 				
-				var blob_full = json.blob_full;
-				var blob_thumb = json.blob_thumb;
 				var src_full = json.src_full;
 				var src_thumb = json.src_thumb;
 
@@ -583,10 +559,12 @@ ProfileManager.prototype = {
 			$(this).remove();
 			
 			// Ajax call to remove both full size image and thumbnail
-			var blob_full = to_remove.blob_full;
-			var blob_thumb = to_remove.blob_thumb;
-			that.remove(blob_full);
-			that.remove(blob_thumb);
+			var re = new RegExp("/view")
+			var delete_full_url = to_remove.src_full.replace(re, "/delete")
+			var delete_thumb_url = to_remove.src_thumb.replace(re, "/delete")
+			
+			that.deleteAjax(delete_full_url);
+			that.deleteAjax(delete_thumb_url);
 			
 			$(this).blur()
 			return false;
@@ -594,10 +572,7 @@ ProfileManager.prototype = {
 		
 	},
 	
-	remove: function(blob_key){
-		
-		var that = this;
-		var delete_url = "/picture/" + blob_key + "/delete"
+	deleteAjax: function(delete_url){
 		
 		$.ajax({
 			url: delete_url,

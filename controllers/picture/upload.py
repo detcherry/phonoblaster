@@ -13,78 +13,86 @@ from google.appengine.api import files
 
 class PictureUploadHandler(blobstore_handlers.BlobstoreUploadHandler):
 	def post(self):
-		logging.info("Picture upload request")
-		upload_files = self.get_uploads("picture")
+		self.process()
 		
-		if(len(upload_files)>0):
-			self.blob_info = upload_files[0]
-			self.blob_key = str(self.blob_info.key())
+	def process(self):
+		logging.info("Picture upload request")
+		uploaded_files = self.get_uploads("picture")
+		
+		self.json = {}
+		
+		if(len(uploaded_files) > 0):
+			file = uploaded_files[0]
+			self.check_type(file)
 			
-			if(self.blobIsPicture()):
-				if(self.sizeIsOk()):
-					logging.info("Picture ok")
-					
-					self.image_url = "/picture/" + self.blob_key + "/view"
-					self.thumbnail = self.generateThumbnail()
-					self.thumbnail_blob_key = str(self.saveThumbnail())
-					self.thumbnail_url = "/picture/" + self.thumbnail_blob_key + "/view"
-
-					response = {
-						"response": True,
-						"blob_full": self.blob_key,
-						"src_full": self.image_url,
-						"blob_thumb": self.thumbnail_blob_key,
-						"src_thumb": self.thumbnail_url,
-					}
-				else:					
-					self.blob_info.delete()
-					response = {
-						"response": False,
-						"error": 1,
-						"message": "Picture too big: > 1 Mo. Please retry.",
-					}				
-			else:				
-				self.blob_info.delete()
-				response = {
-					"response": False,
-					"error": 2,
-					"message": "Only .jpeg, .jpg, .png, .gif pictures. Please retry.",
-				}
 		else:
 			logging.info("No image")
 			
-			response = {
+			self.json = {
 				"response": False,
 				"error": 3,
 				"message": "No picture uploaded. Please retry."
 			}
 		
 		logging.info("We generate another blobstore url in case the user would like to change his picture")
-		response["blobstore_url"] = blobstore.create_upload_url('/picture/upload')
+		self.json["blobstore_url"] = blobstore.create_upload_url('/picture/upload')
 
-		self.response.out.write(json.dumps(response))
-
-	def blobIsPicture(self):		
+		self.response.out.write(json.dumps(self.json))
+	
+	# File must be jpeg, jpg, png or gif
+	def check_type(self, file):
 		image_types = ('image/jpeg', 'image/jpg', 'image/png', 'image/gif')
 
-		if(self.blob_info.content_type in image_types):
+		if(file.content_type in image_types):
 			logging.info("File is a jpeg, jpg, png or gif image")
-			return True
+			image = file
+			
+			self.check_size(image)
+		
 		else:
 			logging.info("File is not an image (jpeg, jpg, png or gif)")
-			return False
-
+			
+			file.delete()
+			logging.info("File deleted from blobstore")
+			
+			self.json = {
+				"response": False,
+				"error": 2,
+				"message": "Only .jpeg, .jpg, .png, .gif pictures. Please retry.",
+			}
+	
 	# Size must be below 1 octet = 1 048 576 octets
-	def sizeIsOk(self):
-		if(self.blob_info.size < 1048576):
+	def check_size(self, image):
+		if(image.size < 1048576):
 			logging.info("Image size below 1 Mo")
-			return True
+			self.save(image)
+			
 		else:
 			logging.info("Image size above 1 Mo")
-			return False
+			
+			image.delete()
+			logging.info("Image deleted from blobstore")
+			
+			self.json = {
+				"response": False,
+				"error": 1,
+				"message": "Picture too big: > 1 Mo. Please retry.",
+			}
+	
+	def save(self, image):
+		
+		image_url = "/picture/" + str(image.key()) + "/view"
+		thumbnail_blob_key = self.save_thumbnail(image) 
+		thumbnail_url = "/picture/" + str(thumbnail_blob_key) + "/view"
 
-	def generateThumbnail(self):
-		img = images.Image(blob_key = self.blob_key)
+		self.json = {
+			"response": True,
+			"src_full": image_url,
+			"src_thumb": thumbnail_url,
+		}
+	
+	def generate_thumbnail(self, image):
+		img = images.Image(blob_key = image.key())
 
 		#Necessary to perform at least one transformation to get the actual image data (and therefore its width and height)
 		img.im_feeling_lucky()
@@ -111,12 +119,14 @@ class PictureUploadHandler(blobstore_handlers.BlobstoreUploadHandler):
 		logging.info("image width and height resized to 100px")
 
 		return thumbnail
-
-	def saveThumbnail(self):
-		#Thumbnail insertion in the blobstore
+	
+	def save_thumbnail(self, image):
+		thumbnail = self.generate_thumbnail(image)
+		
+		# Thumbnail insertion in the blobstore
 		file_name = files.blobstore.create(mime_type='image/png')
 		with files.open(file_name, 'a') as f:
-			f.write(self.thumbnail)
+			f.write(thumbnail)
 		files.finalize(file_name)
 
 		# Sometimes the blob key is None...
@@ -129,4 +139,6 @@ class PictureUploadHandler(blobstore_handlers.BlobstoreUploadHandler):
 			else:
 				logging.info("Thumbnail blob key is still None")
 				time.sleep(0.05)
-				thumbnail_blob_key = files.blobstore.get_blob_key(file_name)		
+				thumbnail_blob_key = files.blobstore.get_blob_key(file_name)
+		
+		return thumbnail_blob_key
