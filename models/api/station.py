@@ -7,6 +7,7 @@ from datetime import timedelta
 from calendar import timegm
 
 from google.appengine.ext import db
+from google.appengine.ext.blobstore import BlobInfo
 from google.appengine.api import memcache
 from google.appengine.api.taskqueue import Task
 
@@ -120,6 +121,10 @@ Global number of stations: %s
 		
 	def update_background(self, full, thumb):
 		station = self.station
+				
+		old_full_blob_key = re.match(r"/picture/([^/]+)?/view", station.full).group(1)
+		old_thumb_blob_key = re.match(r"/picture/([^/]+)?/view", station.thumb).group(1)
+		
 		station.full = full
 		station.thumb = thumb
 		
@@ -131,6 +136,15 @@ Global number of stations: %s
 		
 		# Update in runtime
 		self._station = station
+		
+		old_full = BlobInfo.get(old_full_blob_key)
+		old_full.delete()
+		logging.info("Old full size background removed from blobstore")
+		
+		old_thumb = BlobInfo.get(old_thumb_blob_key)
+		old_thumb.delete()
+		logging.info("Old thumbnail removed from blobstore")	
+		
 	
 	########################################################################################################################################
 	#													SESSIONS
