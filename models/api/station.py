@@ -121,9 +121,17 @@ Global number of stations: %s
 		
 	def update_background(self, full, thumb):
 		station = self.station
-				
-		old_full_blob_key = re.match(r"/picture/([^/]+)?/view", station.full).group(1)
-		old_thumb_blob_key = re.match(r"/picture/([^/]+)?/view", station.thumb).group(1)
+		
+		old_full_blob_key = None
+		old_thumb_blob_key = None
+		m1 = re.match(r"/picture/([^/]+)?/view", station.full)
+		m2 = re.match(r"/picture/([^/]+)?/view", station.thumb)
+		if m1 and m2:
+			logging.info("Background is a blob")
+			old_full_blob_key = m1.group(1)
+			old_thumb_blob_key = m2.group(1)
+		else:
+			logging.info("Background is a static file")
 		
 		station.full = full
 		station.thumb = thumb
@@ -137,13 +145,14 @@ Global number of stations: %s
 		# Update in runtime
 		self._station = station
 		
-		old_full = BlobInfo.get(old_full_blob_key)
-		old_full.delete()
-		logging.info("Old full size background removed from blobstore")
+		if old_full_blob_key and old_thumb_blob_key:
+			old_full = BlobInfo.get(old_full_blob_key)
+			old_full.delete()
+			logging.info("Old full size background removed from blobstore")
 		
-		old_thumb = BlobInfo.get(old_thumb_blob_key)
-		old_thumb.delete()
-		logging.info("Old thumbnail removed from blobstore")	
+			old_thumb = BlobInfo.get(old_thumb_blob_key)
+			old_thumb.delete()
+			logging.info("Old thumbnail removed from blobstore")	
 		
 	
 	########################################################################################################################################

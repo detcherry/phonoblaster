@@ -116,7 +116,7 @@ class PictureUploadHandler(blobstore_handlers.BlobstoreUploadHandler):
 
 		img.resize(width = 100, height = 100)
 		thumbnail = img.execute_transforms()
-		logging.info("image width and height resized to 100px")
+		logging.info("Image width and height resized to 100px")
 
 		return thumbnail
 	
