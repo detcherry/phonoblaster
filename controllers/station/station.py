@@ -12,7 +12,7 @@ class StationHandler(RootHandler):
 		self.station_proxy = StationApi(shortname)
 	
 		if(self.station_proxy.station):
-			url = "/api/" + shortname + "/edit"
+			url = "/api/" + shortname + "/background"
 			template_values = {
 				"blobstore_url": blobstore.create_upload_url(url),
 			}

@@ -14,6 +14,7 @@ from controllers.station.broadcast import BroadcastHandler
 from controllers.station.track import TrackHandler
 from controllers.station.suggestion import SuggestionHandler
 from controllers.station.page import StationPageHandler
+from controllers.api.background import ApiBackgroundHandler
 from controllers.api.buffer import ApiBufferHandler
 from controllers.api.buffer import ApiBufferDeleteHandler
 from controllers.api.suggestions import ApiSuggestionsHandler
@@ -52,6 +53,7 @@ app = webapp2.WSGIApplication(
 		("/taskqueue/mail", MailHandler),
 		("/_ah/channel/connected/", ConnectHandler),
 		("/_ah/channel/disconnected/", DisconnectHandler),
+		('/api/(\w+)/background', ApiBackgroundHandler),
 		('/api/buffer', ApiBufferHandler),
 		('/api/buffer/([\w.]+)', ApiBufferDeleteHandler),
 		('/api/suggestions', ApiSuggestionsHandler),

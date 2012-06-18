@@ -117,7 +117,25 @@ Global number of stations: %s
 			}
 		)
 		task.add(queue_name = "worker-queue")
+		
+	def update_background(self, full, thumb):
+		station = self.station
+		station.full = full
+		station.thumb = thumb
+		
+		station.put()
+		logging.info("Station updated in datastore")
+		
+		memcache.set(self._memcache_station_id, station)
+		logging.info("Station updated in memcache")
+		
+		# Update in runtime
+		self._station = station
 	
+	########################################################################################################################################
+	#													SESSIONS
+	########################################################################################################################################
+
 	@property
 	def number_of_sessions(self):
 		if not hasattr(self, "_number_of_sessions"):

@@ -22,6 +22,7 @@ Client.prototype = {
 		this.track_manager = null;
 		this.like_manager = null;
 		this.share_manager = null;
+		this.background_manager = null;
 
 		this.connect();
 	},
@@ -101,7 +102,8 @@ Client.prototype = {
 			that.suggestion_manager = new SuggestionManager(that); // Fetching	
 			that.track_manager = new TrackManager(that); // Lazy fetching
 			that.like_manager = new LikeManager(that); // Lazy fetching
-			that.share_manager = new ShareManager(that);			
+			that.share_manager = new ShareManager(that);
+			that.background_manager = new BackgroundManager(that);			
 		})
 	},
 	
@@ -126,6 +128,9 @@ Client.prototype = {
 		}
 		if(entity == "suggestion"){
 			manager = this.suggestion_manager;
+		}
+		if(entity == "background"){
+			manager = this.background_manager;
 		}
 		
 		if(event == "new"){
