@@ -22,7 +22,6 @@ from controllers.api.likes import ApiLikesDeleteHandler
 from controllers.api.messages import ApiMessagesHandler
 from controllers.api.tracks import ApiTracksHandler
 from controllers.api.tracks import ApiTracksDeleteHandler
-from controllers.api.broadcasts import ApiBroadcastsHandler
 from controllers.api.sessions import ApiSessionsHandler
 from controllers.api.recommendations import ApiRecommendationsHandler
 from controllers.api.now import ApiNowHandler
@@ -60,7 +59,6 @@ app = webapp2.WSGIApplication(
 		('/api/likes/(\w+)', ApiLikesDeleteHandler),
 		('/api/tracks', ApiTracksHandler),
 		('/api/tracks/([\w.]+)', ApiTracksDeleteHandler),
-		('/api/broadcasts', ApiBroadcastsHandler),
 		('/api/sessions', ApiSessionsHandler),
 		('/api/messages', ApiMessagesHandler),
 		('/api/recommendations', ApiRecommendationsHandler),
