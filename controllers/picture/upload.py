@@ -1,7 +1,6 @@
 from __future__ import with_statement
 
 import logging
-import webapp2
 import urllib
 import json
 
