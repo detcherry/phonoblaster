@@ -84,16 +84,12 @@ BackgroundManager.prototype.uploadCallback = function(responseText, statusText, 
 }
 
 BackgroundManager.prototype.pushNew = function(new_background){
-	
 	var current_background = $("#background img").attr("src")
 	if(current_background != new_background){
 		this.display(new_background)
 	}
-	
 }
 
 BackgroundManager.prototype.display = function(url){
-	$("#background img").replaceWith(
-		$("<img/>").addClass("stretch").attr("src", url)
-	)
+	$("#background img").attr("src", url)
 }
