@@ -198,9 +198,7 @@ ProfileManager.prototype = {
 		var src = "https://graph.facebook.com/" + this.choosen.key_name + "/picture?type=square"
 		$("#username .picture").empty().append($("<img/>").attr("src", src));
 		
-		var name = this.choosen.name.substr(0,29).toLowerCase().replace(/ /g,'');
-		var re = new RegExp("[^a-zA-Z0-9_]","g");
-		var shortname = name.replace(re,"");
+		var shortname = this.choosen.name.substr(0,29).toLowerCase().replace(/ /g,'');
 		$("#username input").val(shortname);
 		
 		var that = this;
@@ -237,7 +235,7 @@ ProfileManager.prototype = {
 				.addClass("error")
 				.removeClass("available")
 				.removeClass("checking")
-				.html("Incorrect");
+				.html("No special character");
 		}
 		else{
 			if(this.shortname.length < 4){
@@ -249,35 +247,45 @@ ProfileManager.prototype = {
 					.html("Too short");
 			}
 			else{
-				if(this.shortname.length <= 30 && this.shortname != old_shortname){
+				if(this.shortname.length <= 30){	
+					if(this.shortname != old_shortname){
+						// Display checking message
+						$("#username .status")
+							.removeClass("error")
+							.removeClass("available")
+							.addClass("checking")
+							.html("Checking...");
+
+						this.request_counter++
+
+						var that = this;
+						$.ajax({
+							url: "/station/check",
+							type: "POST",
+							dataType: "json",
+							timeout: 60000,
+							data: {
+								shortname: that.shortname,
+							},
+							error: function(xhr, status, error) {
+								PHB.log('An error occurred: ' + error + '\nPlease retry.');
+								callback(false);
+							},
+							success: function(json){
+								that.request_counter--;
+
+								callback(json.availability);
+							},
+						});
+					}
+				}
+				else{
 					// Display checking message
 					$("#username .status")
-						.removeClass("error")
+						.removeClass("checking")
 						.removeClass("available")
-						.addClass("checking")
-						.html("Checking...");
-
-					this.request_counter++
-
-					var that = this;
-					$.ajax({
-						url: "/station/check",
-						type: "POST",
-						dataType: "json",
-						timeout: 60000,
-						data: {
-							shortname: that.shortname,
-						},
-						error: function(xhr, status, error) {
-							PHB.log('An error occurred: ' + error + '\nPlease retry.');
-							callback(false);
-						},
-						success: function(json){
-							that.request_counter--;
-
-							callback(json.availability);
-						},
-					});
+						.addClass("error")
+						.html("Too long");
 				}
 			}
 		}
@@ -300,6 +308,7 @@ ProfileManager.prototype = {
 				$("#username .status")
 					.removeClass("checking")
 					.removeClass("available")
+					.addClass("error")
 					.addClass("unavailable")
 					.html("Unavailable");
 			}
