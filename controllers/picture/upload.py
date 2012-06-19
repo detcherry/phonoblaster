@@ -11,10 +11,7 @@ from google.appengine.ext import blobstore
 from google.appengine.api import images
 from google.appengine.api import files
 
-class PictureUploadHandler(blobstore_handlers.BlobstoreUploadHandler):
-	def post(self):
-		self.process()
-		
+class PictureHandler(blobstore_handlers.BlobstoreUploadHandler):
 	def process(self):
 		logging.info("Picture upload request")
 		uploaded_files = self.get_uploads("picture")
@@ -27,17 +24,12 @@ class PictureUploadHandler(blobstore_handlers.BlobstoreUploadHandler):
 			
 		else:
 			logging.info("No image")
-			
-			self.json = {
+			self.response.out.write(json.dumps({
 				"response": False,
 				"error": 3,
-				"message": "No picture uploaded. Please retry."
-			}
-		
-		logging.info("We generate another blobstore url in case the user would like to change his picture")
-		self.json["blobstore_url"] = blobstore.create_upload_url('/picture/upload')
-
-		self.response.out.write(json.dumps(self.json))
+				"message": "No picture uploaded. Please retry.",
+				"blobstore_url": self.blobstore_url,
+			}))
 	
 	# File must be jpeg, jpg, png or gif
 	def check_type(self, file):
@@ -55,11 +47,12 @@ class PictureUploadHandler(blobstore_handlers.BlobstoreUploadHandler):
 			file.delete()
 			logging.info("File deleted from blobstore")
 			
-			self.json = {
+			self.response.out.write(json.dumps({
 				"response": False,
 				"error": 2,
 				"message": "Only .jpeg, .jpg, .png, .gif pictures. Please retry.",
-			}
+				"blobstore_url": self.blobstore_url,
+			}))
 	
 	# Size must be below 1 octet = 1 048 576 octets
 	def check_size(self, image):
@@ -73,23 +66,12 @@ class PictureUploadHandler(blobstore_handlers.BlobstoreUploadHandler):
 			image.delete()
 			logging.info("Image deleted from blobstore")
 			
-			self.json = {
+			self.response.out.write(json.dumps({
 				"response": False,
 				"error": 1,
 				"message": "Picture too big: > 1 Mo. Please retry.",
-			}
-	
-	def save(self, image):
-		
-		image_url = "/picture/" + str(image.key()) + "/view"
-		thumbnail_blob_key = self.save_thumbnail(image) 
-		thumbnail_url = "/picture/" + str(thumbnail_blob_key) + "/view"
-
-		self.json = {
-			"response": True,
-			"src_full": image_url,
-			"src_thumb": thumbnail_url,
-		}
+				"blobstore_url": self.blobstore_url,
+			}))
 	
 	def generate_thumbnail(self, image):
 		img = images.Image(blob_key = image.key())
@@ -142,3 +124,21 @@ class PictureUploadHandler(blobstore_handlers.BlobstoreUploadHandler):
 				thumbnail_blob_key = files.blobstore.get_blob_key(file_name)
 		
 		return thumbnail_blob_key
+
+
+class PictureUploadHandler(PictureHandler):
+	def post(self):
+		self.blobstore_url = blobstore.create_upload_url("/picture/upload")
+		self.process()
+
+	def save(self, image):
+		image_url = "/picture/" + str(image.key()) + "/view"
+		thumbnail_blob_key = self.save_thumbnail(image) 
+		thumbnail_url = "/picture/" + str(thumbnail_blob_key) + "/view"
+
+		self.response.out.write(json.dumps({
+			"response": True,
+			"src_full": image_url,
+			"src_thumb": thumbnail_url,
+			"blobstore_url": self.blobstore_url,
+		}))
