@@ -1,11 +1,9 @@
 import logging
-
-from google.appengine.ext import webapp
-from google.appengine.ext.webapp.util import run_wsgi_app
+import webapp2
 
 from google.appengine.api import mail
 
-class MailHandler(webapp.RequestHandler):
+class MailHandler(webapp2.RequestHandler):
 	def post(self):
 		to = self.request.get("to")
 		subject = self.request.get("subject")
@@ -20,13 +18,3 @@ class MailHandler(webapp.RequestHandler):
 		
 		email.send()
 		logging.info("Mail sent")
-
-application = webapp.WSGIApplication([
-	(r"/taskqueue/mail", MailHandler),
-], debug=True)
-
-def main():
-	run_wsgi_app(application)
-
-if __name__ == "__main__":
-    main()

@@ -16,52 +16,101 @@
 {% endblock %}
 
 {% block main %}
-<div id="steps-wrapper" style="margin-left:{% if unique %}-600px{% else %}0px{% endif %}">
-	<div class="step" id="choose">
-		<div class="box-wrapper">
-			<div class="box">
-				<div class="box-header">
-					<h1>Use Phonoblaster as</h1>
-				</div>
-				<div class="box-content">
-				{% if unique %}
-				{% else %}
-					{% for p in profiles %}
-					<a href="#" class="item" id="{{ p.key_name }}">
-						<div class="picture">
-							<img src="https://graph.facebook.com/{{ p.key_name }}/picture?type=square">
-						</div>
-						<span>{{ p.name }}</span>
-					</a>
-					{% endfor %}
-				{% endif %}
+<!-- Background img -->
+<div id="img">
+	<!-- Example -->
+	<!-- <img src="/{{tag}}/static/images/smoking.jpg" class="stretch"/>-->
+</div>
+<div id="steps-overflow">
+	<div id="steps-wrapper" style="margin-left:{% if unique %}-600px{% else %}0px{% endif %}">
+		<div class="step" id="choose">
+			<div class="box-wrapper">
+				<div class="box">
+					<div class="box-header">
+						<h1>Use Phonoblaster as</h1>
+					</div>
+					<div class="box-content">
+					{% if unique %}
+					{% else %}
+						{% for p in profiles %}
+						<a href="#" class="item" id="{{ p.key_name }}">
+							<div class="picture">
+								<img src="https://graph.facebook.com/{{ p.key_name }}/picture?type=square">
+							</div>
+							<span>{{ p.name }}</span>
+						</a>
+						{% endfor %}
+					{% endif %}
+					</div>
 				</div>
 			</div>
 		</div>
-	</div>
-	<div class="step" id="username">
-		<div class="box-wrapper">
-			<div class="box">
-				<div class="box-header">
-					{% if not unique %}
-					<a href="#" class="box-previous">
-						<span></span>
-					</a>
-					{% endif %}
-					<h1>Your username</h1>
-				</div>
-				<div class="box-content">
-					<div class="picture"></div>
-					<div class="shortname">
-						<div class="prefix">@</div>
-						<input type="text" name="shortname" autocomplete="off">
-						<div class="status">Available</div>
+		<div class="step" id="username">
+			<div class="box-wrapper">
+				<div class="box">
+					<div class="box-header">
+						{% if not unique %}
+						<a href="#" class="box-previous">
+							<span></span>
+						</a>
+						{% endif %}
+						<h1>Your username</h1>
+					</div>
+					<div class="box-content">
+						<div class="picture"></div>
+						<div class="shortname">
+							<div class="prefix">@</div>
+							<input type="text" name="shortname" autocomplete="off">
+							<div class="status">Available</div>
+						</div>
+					</div>
+					<div class="box-footer">
+						<a href="#" class="box-next">Next</a>
+						<img src="/{{tag}}/static/images/loader.gif" class="loader"/>
+						<div class="warning">Please, choose a correct username</div>
 					</div>
 				</div>
-				<div class="box-footer">
-					<a href="#" class="box-next">Complete</a>
-					<img src="/{{tag}}/static/images/loader.gif" class="loader"/>
-					<div class="warning">Please, choose a correct username</div>
+			</div>
+		</div>
+		<div class="step" id="background">
+			<div class="box-wrapper">
+				<div class="box">
+					<div class="box-header">
+						<a href="#" class="box-previous">
+							<span></span>
+						</a>
+						<h1>Your station background</h1>
+					</div>
+					<div class="box-content">
+						<div id="carousel-wrapper">
+							<div class="arrow-wrapper">
+								<a href="#" id="left-carousel"></a>
+							</div>
+							<div id="carousel">
+								<div id="carousel-mine">
+									<form action="{{ blobstore_url }}" method="post" enctype="multipart/form-data" id="upload">
+										<p>
+											<span>Your picture</span><br/>
+											<span>(.jpg, .png, .gif)</span><br/>
+											<span>Max 1 Mo</span>
+										</p>
+										<img src="/{{tag}}/static/images/loader.gif" style="display:none" class="loader"/>
+										<input type="file" name="picture" id="picture"/>
+									</form>								
+								</div>
+								<div id="carousel-list">
+								</div>
+							</div>
+							<div class="arrow-wrapper">
+								<a href="#" id="right-carousel"></a>
+							</div>
+						</div>
+					</div>
+					<div class="box-footer">
+						<a href="#" class="box-next">Complete</a>
+						<img src="/{{tag}}/static/images/loader.gif" class="loader"/>
+						<div class="warning">Please, select a background</div>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -73,6 +122,8 @@
 {% endblock %}
 
 {% block script %}
+<script type="text/javascript" src="/{{tag}}/static/js/library/json2.js"></script>
+<script type="text/javascript" src="/{{tag}}/static/js/library/jquery.form.js"></script>
 <script type="text/javascript" src="/{{tag}}/static/js/profile.js"></script>
 <script type="text/javascript">
 	PROFILES = [];

@@ -165,12 +165,6 @@ body{
 	color:#C4C4C4;
 }
 
-#no-scrolling-box{
-	position:fixed;
-	top:150px;
-	width:400px;
-}
-
 /* ---------- MEDIA ---------- */
 
 #media{

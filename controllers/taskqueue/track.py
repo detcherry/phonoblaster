@@ -1,11 +1,9 @@
 import logging
 from datetime import datetime
 
-import django_setup
-from django.utils import simplejson as json
+import json
+import webapp2
 
-from google.appengine.ext import webapp
-from google.appengine.ext.webapp.util import run_wsgi_app
 from google.appengine.ext import db
 from google.appengine.api.taskqueue import Task
 
@@ -18,8 +16,7 @@ from models.db.track import Track
 from models.db.broadcast import Broadcast
 from models.db.like import Like
 
-
-class ApiTracksDeleteHandler(BaseHandler):
+class TrackDeleteHandler(webapp2.RequestHandler):
 	def delete(self):
 		cursor = self.request.get("cursor")
 		track_id = self.request.get("track_id")
@@ -109,6 +106,7 @@ class ApiTracksDeleteHandler(BaseHandler):
 							}
 						)
 						task.add(queue_name="worker-queue")
+<<<<<<< HEAD
 
 application = webapp.WSGIApplication([
 	(r"/taskqueue/deletetrack", ApiTracksDeleteHandler),
@@ -119,3 +117,11 @@ def main():
 
 if __name__ == "__main__":
     main()
+=======
+						
+				response = True
+
+		else:
+			response = False
+		self.response.out.write(json.dumps({ "response": response }))
+>>>>>>> background

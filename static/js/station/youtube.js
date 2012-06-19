@@ -6,7 +6,6 @@ function YoutubeManager(buffer_manager){
 	this.buffer_manager = buffer_manager;
 	this.item = null;
 	
-	this.scrollListen();
 	this.postListen();
 	this.deleteListen();
 }
@@ -246,38 +245,7 @@ YoutubeManager.prototype = {
 			PHB.error("Favorite has not been deleted.")
 		}
 	},
-	
-	scrollListen: function(){
-		// Initialization
-		this.refreshPosition();
-		
-		var that = this;
-		// Scrolling events
-		$(window).scroll(function(){
-			that.refreshPosition();
-		})
-	},
-	
-	refreshPosition: function(){
-		var scrollTop = $(window).scrollTop();
-		var margin = scrollTop - 125;
-		
-		if(margin > 0){
-			$("#no-scrolling-box").css("position","fixed").css("top","20px")
-		}			
-		else{
-			var top = 145 - scrollTop;
-							
-			// Difference between Firefox and other browsers
-			if(SYSTEM.browser == "Firefox"){
-				$("#no-scrolling-box").css("top", top+"px")
-			}
-			else{
-				$("#no-scrolling-box").css("position","static")
-			}
-			
-		}
-	},
+
 }
 
 //Youtube PLAY & VOLUME & ERROR management

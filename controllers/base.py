@@ -8,10 +8,9 @@ import urllib
 from controllers import config
 from controllers import facebook
 
-from google.appengine.ext import webapp
-from google.appengine.ext.webapp import template
-import django_setup
-from django.utils import simplejson as json
+import webapp2
+import jinja2
+import json
 
 from models.api.user import UserApi
 
@@ -74,7 +73,8 @@ def admin_required(method):
 			return method(self, *args, **kwargs)
 	return wrapper
 
-class BaseHandler(webapp.RequestHandler):
+#class BaseHandler(webapp.RequestHandler):
+class BaseHandler(webapp2.RequestHandler):
 	@property
 	def user_proxy(self):
 		if not hasattr(self, "_user_proxy"):
@@ -140,9 +140,10 @@ class BaseHandler(webapp.RequestHandler):
 				if self.user_proxy.profile["key_name"] != p["key_name"]:
 					self._template_values["non_default_profiles"].append(p)
 		
-		relative_path = os.path.join("../templates/", template_path)
-		path = os.path.join(os.path.dirname(__file__), relative_path)
-		self.response.out.write(template.render(path, self._template_values))
+		templates = os.path.join(os.path.dirname(__file__),"../templates/")
+		jinja = jinja2.Environment(loader=jinja2.FileSystemLoader(templates))
+		template = jinja.get_template(template_path)
+		self.response.out.write(template.render(self._template_values))
 
 	# Handle exceptions, errors that are raised
 	def handle_exception(self, exception, debug_mode):
@@ -156,7 +157,11 @@ class BaseHandler(webapp.RequestHandler):
 				"version": config.VERSION,
 				"tag": config.TAG,
 			}
-			path = os.path.join(os.path.dirname(__file__), "../templates/error.html")
-			self.response.out.write(template.render(path, template_values))
+			
+			templates = os.path.join(os.path.dirname(__file__),"../templates/")
+			jinja = jinja2.Environment(loader=jinja2.FileSystemLoader(templates))
+			template = jinja.get_template("error.html")
+			self.response.out.write(template.render(self._template_values))
+			
 		else:
 			self.response.out.write(json.dumps({"error":"An error occurred."}))

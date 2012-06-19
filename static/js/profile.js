@@ -8,11 +8,62 @@ function ProfileManager(profiles){
 	this.shortname = null;
 	this.recommendations = false;
 	this.request_counter = 0;
+	this.background = null;
+	
+	this.backgrounds = [{
+		"id": 1,
+		"src_full": "/static/images/backgrounds/full/sea.jpg",
+		"src_thumb": "/static/images/backgrounds/thumb/sea.jpg",
+	},{
+		"id": 2,
+		"src_full": "/static/images/backgrounds/full/legs.jpg",
+		"src_thumb": "/static/images/backgrounds/thumb/legs.jpg",
+	},{
+		"id": 3,
+		"src_full": "/static/images/backgrounds/full/pool.jpg",
+		"src_thumb": "/static/images/backgrounds/thumb/pool.jpg",
+	},{
+		"id": 4,
+		"src_full": "/static/images/backgrounds/full/river.jpg",
+		"src_thumb": "/static/images/backgrounds/thumb/river.jpg",
+	},{
+		"id": 5,
+		"src_full": "/static/images/backgrounds/full/egg.jpg",
+		"src_thumb": "/static/images/backgrounds/thumb/egg.jpg",
+	},{
+		"id": 6,
+		"src_full": "/static/images/backgrounds/full/road.jpg",
+		"src_thumb": "/static/images/backgrounds/thumb/road.jpg",
+	},{
+		"id": 7,
+		"src_full": "/static/images/backgrounds/full/statue.jpg",
+		"src_thumb": "/static/images/backgrounds/thumb/statue.jpg",
+	},{
+		"id": 8,
+		"src_full": "/static/images/backgrounds/full/tower.jpg",
+		"src_thumb": "/static/images/backgrounds/thumb/tower.jpg",
+	},{
+		"id": 9,
+		"src_full": "/static/images/backgrounds/full/wheat.jpg",
+		"src_thumb": "/static/images/backgrounds/thumb/wheat.jpg",
+	},{
+		"id": 10,
+		"src_full": "/static/images/backgrounds/full/skate.jpg",
+		"src_thumb": "/static/images/backgrounds/thumb/skate.jpg",
+	},{
+		"id": 11,
+		"src_full": "/static/images/backgrounds/full/deers.jpg",
+		"src_thumb": "/static/images/backgrounds/thumb/deers.jpg",
+	}]
 	
 	this.init();
 	this.previousListen();
 	this.typeListen();
 	this.nextListen();
+	this.browseListen();
+	this.selectListen();
+	this.uploadListen();
+	this.removeListen();
 }
 
 ProfileManager.prototype = {
@@ -22,12 +73,18 @@ ProfileManager.prototype = {
 		// Case one profile
 		if(this.profiles.length == 1){
 			this.choosen = this.profiles[0]
+			
+			// Automatically fill box with a default username
 			this.fillUsername();
 		}
 		// Case 2+ profiles
 		else{
 			this.chooseListen();
 		}
+		
+		// Fill thumbnails in background screen
+		this.fillThumbnails();
+		
 	},
 	
 	previousListen: function(){
@@ -45,15 +102,34 @@ ProfileManager.prototype = {
 	nextListen: function(){
 		
 		var that = this;
-		
-		$("a.box-next").click(function(){
+
+		// Username next button
+		$("#username a.box-next").click(function(){
 			
 			var status = $(".status").html();
 			if(status == "Available"){
+				// Reset the carousel position
+				that.browseReset();
+				
+				// Move to the background screen
+				that.moveRight();
+			}
+			else{
+				$("#username .warning").show();
+			}
+			
+			$(this).blur();
+			return false;
+		})
+
+		// Background next button
+		$("#background a.box-next").click(function(){
+			
+			if(that.background){
 				that.finalize();
 			}
 			else{
-				$(".warning").show();
+				$("#background .warning").show();
 			}
 			
 			$(this).blur();
@@ -77,7 +153,7 @@ ProfileManager.prototype = {
 			}
 			
 			// Profile not created already, go to username screen
-			if(!that.choosen.shortname){
+			if(!that.choosen.shortname){	
 				// Automatically fill box with a default username
 				that.fillUsername();
 
@@ -120,19 +196,32 @@ ProfileManager.prototype = {
 	
 	fillUsername: function(){
 		var src = "https://graph.facebook.com/" + this.choosen.key_name + "/picture?type=square"
-		$("#username .picture")
-			.empty()
-			.append($("<img/>").attr("src", src));
+		$("#username .picture").empty().append($("<img/>").attr("src", src));
 		
-		var name = this.choosen.name.substr(0,29).toLowerCase().replace(/ /g,'');
-		var re = new RegExp("[^a-zA-Z0-9_]","g");
-		var shortname = name.replace(re,"");
+		var shortname = this.choosen.name.substr(0,29).toLowerCase().replace(/ /g,'');
 		$("#username input").val(shortname);
 		
 		var that = this;
 		that.checkShortname(function(response){
 			that.displayAvailability(response);
 		});
+	},
+	
+	fillThumbnails: function(){
+		
+		for(var i=0, c=this.backgrounds.length; i<c; i++){
+			var background = this.backgrounds[i];
+			
+			$("#carousel-list").append(
+				$("<a/>")
+					.attr("href","#")
+					.attr("name", background.id)
+					.addClass("carousel-img")
+					.append(
+						$("<img/>").attr("src", background.src_thumb)
+					)
+			)
+		}
 	},
 	
 	checkShortname: function(callback){
@@ -146,7 +235,7 @@ ProfileManager.prototype = {
 				.addClass("error")
 				.removeClass("available")
 				.removeClass("checking")
-				.html("Incorrect");
+				.html("No special character");
 		}
 		else{
 			if(this.shortname.length < 4){
@@ -158,35 +247,45 @@ ProfileManager.prototype = {
 					.html("Too short");
 			}
 			else{
-				if(this.shortname.length <= 30 && this.shortname != old_shortname){
+				if(this.shortname.length <= 30){	
+					if(this.shortname != old_shortname){
+						// Display checking message
+						$("#username .status")
+							.removeClass("error")
+							.removeClass("available")
+							.addClass("checking")
+							.html("Checking...");
+
+						this.request_counter++
+
+						var that = this;
+						$.ajax({
+							url: "/station/check",
+							type: "POST",
+							dataType: "json",
+							timeout: 60000,
+							data: {
+								shortname: that.shortname,
+							},
+							error: function(xhr, status, error) {
+								PHB.log('An error occurred: ' + error + '\nPlease retry.');
+								callback(false);
+							},
+							success: function(json){
+								that.request_counter--;
+
+								callback(json.availability);
+							},
+						});
+					}
+				}
+				else{
 					// Display checking message
 					$("#username .status")
-						.removeClass("error")
+						.removeClass("checking")
 						.removeClass("available")
-						.addClass("checking")
-						.html("Checking...");
-
-					this.request_counter++
-
-					var that = this;
-					$.ajax({
-						url: "/station/check",
-						type: "POST",
-						dataType: "json",
-						timeout: 60000,
-						data: {
-							shortname: that.shortname,
-						},
-						error: function(xhr, status, error) {
-							PHB.log('An error occurred: ' + error + '\nPlease retry.');
-							callback(false);
-						},
-						success: function(json){
-							that.request_counter--;
-
-							callback(json.availability)
-						},
-					});
+						.addClass("error")
+						.html("Too long");
 				}
 			}
 		}
@@ -209,6 +308,7 @@ ProfileManager.prototype = {
 				$("#username .status")
 					.removeClass("checking")
 					.removeClass("available")
+					.addClass("error")
 					.addClass("unavailable")
 					.html("Unavailable");
 			}
@@ -227,14 +327,280 @@ ProfileManager.prototype = {
 		
 	},
 	
+	browseListen: function(){
+		
+		var that = this;
+		$("a#right-carousel").click(function(){
+			// Display left carousel
+			$("a#left-carousel").css("visibility","visible");
+			
+			// Hide right icon if no photo anymore
+			var marginLeft = $("#carousel-list").css("marginLeft");
+			var re = new RegExp("px","g");
+			var value = parseInt(marginLeft.replace(re, ""),10);
+			if(value < -122*(that.backgrounds.length-5)){
+				$("a#right-carousel").css("visibility", "hidden");	
+			}
+			
+			// Browse in the right direction
+			that.browseRight();
+			
+			$(this).blur();
+			return false;
+		})
+		
+		$("a#left-carousel").click(function(){
+			// Display right carousel
+			$("a#right-carousel").css("visibility","visible");
+			
+			// Hide left icon if no photo anymore
+			var marginLeft = $("#carousel-list").css("marginLeft");
+			var re = new RegExp("px","g");
+			var value = parseInt(marginLeft.replace(re, ""),10);
+			if(value > -122){
+				$("a#left-carousel").css("visibility", "hidden");
+			}
+			
+			// Browse in the right direction
+			that.browseLeft();
+			
+			$(this).blur();
+			return false;
+		})
+		
+	},
+	
+	browseReset: function(){
+		$("a#left-carousel").css("visibility","hidden");
+		$("#carousel-list").css("marginLeft","122px");
+	},
+	
+	browse: function(offset){
+		
+		var marginLeft = $("#carousel-list").css("marginLeft");
+		var re = new RegExp("px","g");
+		var value = parseInt(marginLeft.replace(re, ""),10);
+		var new_value = value + offset;
+		var newMarginLeft = new_value + "px";
+		
+		$("#carousel-list").css("marginLeft", newMarginLeft);
+	},
+	
+	browseRight: function(){
+		this.browse(-122)
+	},
+	
+	browseLeft: function(){
+		this.browse(122)
+	},
+	
+	selectListen: function(){
+		
+		var that = this;
+		$("a.carousel-img").live("click", function(){
+			that.selectReset();
+			
+			var id = $(this).attr("name");
+			
+			// Find the corresponding background
+			for(var i=0, c=that.backgrounds.length; i<c; i++){
+				var background = that.backgrounds[i];
+				if(id == background.id){
+					that.background = background;
+					break;
+				}
+			}
+			
+			// Put borders in blue
+			$(this).css("borderColor","#00BBED");
+			
+			that.displayBackground();
+			
+			// Remove warning
+			$("#background .warning").hide();
+			
+			$(this).blur();
+			return false;
+		})
+		
+	},
+	
+	selectReset: function(){
+		// No background selected
+		this.background = null;
+		
+		// Empty background
+		$("#img").empty();
+		
+		// Remove blue borders
+		$("a.carousel-img").css("borderColor","transparent");
+	},
+	
+	displayBackground: function(){
+		// Put big image in the background
+		$("<img/>")
+			.attr("src", this.background.src_full)
+			.addClass("stretch")
+			.prependTo($("#img"))
+	},
+	
+	uploadListen: function(){
+		var that = this
+		
+		// We listen to any image upload
+		$("input[id='picture']").bind("change", function(event){
+			
+			// Hide text
+			$("#carousel-mine p").css("visibility","hidden")
+			
+			// Show loader
+			$("#carousel-mine img.loader").show();
+			
+			// Unselect other background
+			that.selectReset();
+			
+			// Submit
+			$("form#upload").submit();
+		})
+		
+		// We listen to any form submit event
+		$("form#upload").bind("submit",function(){
+			$(this).ajaxSubmit({
+				success: that.uploadCallback,
+				dataType: "json",
+				timeout: 60000,
+			});
+			
+			return false;	
+		});
+	},
+	
+	uploadCallback: function(responseText, statusText, xhr, form){
+		// Remove warning
+		$("#background .warning").hide();
+		
+		// Hide loader
+		$("#carousel-mine img.loader").hide();
+		
+		var json = responseText;
+		var response_class = "";
+		var response_message = "<span>Your picture</span><br/><span>(.jpg, .png, .gif)</span><br/><span>Max 1 Mo</span>";
+				
+		try{
+			if(json.response){
+				
+				var src_full = json.src_full;
+				var src_thumb = json.src_thumb;
+
+				var background = {
+					"id": 0,
+					"src_full": src_full,
+					"src_thumb": src_thumb,
+				}
+				
+				PROFILE_MANAGER.background = background;
+				PROFILE_MANAGER.backgrounds.push(background);
+				
+				// Add image in the background (full size)
+				PROFILE_MANAGER.displayBackground();
+				
+				// Add image in the carousel (thumbnail)
+				$("#carousel-mine").append(
+					$("<a/>")
+						.attr("href","#")
+						.addClass("carousel-img")
+						.attr("name", 0)
+						.css("borderColor", "#00BBED")
+						.append($("<img/>").addClass("thumb").attr("src", src_thumb))
+				)
+				.append(
+					$("<a/>")
+						.attr("href","#")
+						.addClass("remove-carousel-img")
+						.html("X")
+				)			
+			}
+			else{				
+				var response_class = "error";
+				// Picture too big
+				if(json.error == 1){
+					response_message = "Picture too big:<br/> > 1 Mo.<br/>Please retry.";
+				}
+				// File not a picture
+				else if(json.error == 2){
+					response_message = "Only .jpeg, .jpg, .png, .gif pictures.<br/>Please retry."
+				}
+				// No picture
+				else{
+					response_message = "No picture uploaded.<br/>Please retry."
+				}
+			}
+			// Reinitialize the form destination in case the user would like to change the picture
+			$("form#upload").attr("action", json.blobstore_url)
+		}
+		catch(e){
+			var response_class = "error";
+			var response_message = "An error occurred. Please reload the page."	
+		}
+				
+		// Display text
+		$("#carousel-mine p").removeClass("error").addClass(response_class).css("visibility","visible").html(response_message)
+		
+	},
+	
+	removeListen: function(){
+		
+		var that = this;
+		$("a.remove-carousel-img").live("click", function(){
+			
+			// Remove carousel img
+			$("#carousel-mine a.carousel-img").remove();
+			
+			if(that.background.id == 0){
+				// Unselect current background
+				that.selectReset();
+			}
+			
+			// Remove background from backgrounds list
+			var to_remove = that.backgrounds.pop();
+			
+			// Remove cross
+			$(this).remove();
+			
+			// Ajax call to remove both full size image and thumbnail
+			var re = new RegExp("/view")
+			var delete_full_url = to_remove.src_full.replace(re, "/delete")
+			var delete_thumb_url = to_remove.src_thumb.replace(re, "/delete")
+			
+			that.deleteAjax(delete_full_url);
+			that.deleteAjax(delete_thumb_url);
+			
+			$(this).blur()
+			return false;
+		})
+		
+	},
+	
+	deleteAjax: function(delete_url){
+		
+		$.ajax({
+			url: delete_url,
+			type: "DELETE",
+			dataType: "json",
+			timeout: 60000,
+			error: function(xhr, status, error) {
+				PHB.log("An error occured " + error)
+			},
+			success: function(json){
+				PHB.log("Blob removed from blobstore")
+			},
+		});
+		
+	},
+	
 	finalize: function(){
 		// Show loader
-		$("#username .loader").show();
-		
-		// Prevent any typing events
-		$("#username input").keydown(function(event){
-			event.preventDefault();
-		})
+		$("#background .box-footer .loader").show();
 		
 		// Prevent any back events
 		$("a.box-previous").unbind("click");
@@ -252,6 +618,7 @@ ProfileManager.prototype = {
 			data: {
 				key_name: that.choosen.key_name,
 				shortname: that.shortname,
+				background: JSON.stringify(that.background),
 			},
 			error: function(xhr, status, error) {
 				PHB.log('An error occurred: ' + error + '\nPlease retry.');

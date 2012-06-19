@@ -20,7 +20,7 @@
 			<div class="home-feed-item">
 				<div class="home-feed-station">
 					<a href="/{{ s.shortname }}">
-						<img src="https://graph.facebook.com/{{ s.key.name }}/picture"/>
+						<img src="https://graph.facebook.com/{{ s.key().name() }}/picture"/>
 					</a>
 					<p>
 						<a href="/{{ s.shortname }}">

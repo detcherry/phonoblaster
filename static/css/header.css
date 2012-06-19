@@ -156,25 +156,81 @@ ul#dropdown-stations li a span{
 	text-shadow:none;
 }
 
-#dropdown-menu .limiter{
+#dropdown-limiter{
 	margin-right:10px;
 	margin-left:10px;
 	width:180px;
 	border-bottom:1px solid #E1E1E1;
 }
 
-#dropdown-menu .logout{
-	padding-top:3px;
-	padding-bottom:5px;
+ul#dropdown-options{
+	width:180px;
 	padding-left:10px;
-	text-shadow:none;
-	width:100%;
+	padding-right:10px;
 }
 
-#dropdown-menu .logout:hover{
+ul#dropdown-options li{
+	display:block;
+	float:left;
+	width:100%;
+	padding:0px;
+}
+
+ul#dropdown-options li:first-child{
+	padding-top:5px;
+	overflow:hidden;
+}
+
+form#edit-background{
+	margin:0px;
+	width:180px;
+	height:28px;
+	position:relative;
+}
+
+form#edit-background p{
+	position:absolute;
+	z-index:1001;
+	line-height:28px;
+	width:180px;
+	color:#C4C4C4;
+}
+
+form#edit-background span{
+	display:block;
+	float:left;
+}
+
+form#edit-background img.loader{
+	display:block;
+	float:right;
+	height:18px;
+	margin-top:5px;
+}
+
+form#edit-background input{
+	position:absolute;
+	z-index:1002;
+	height:18px;
+	width:160px;
+	opacity:0;
+	cursor:pointer;
+}
+
+form#edit-background:hover p{
 	color:#636363;
 }
 
+ul#dropdown-options li:last-child{
+	padding-bottom:5px;
+}
 
+ul#dropdown-options li a{
+	text-shadow:none;
+}
+
+ul#dropdown-options li a:hover{
+	color:#636363;
+}
 
 

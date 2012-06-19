@@ -1,6 +1,5 @@
 import logging
-import django_setup
-from django.utils import simplejson
+import json
 
 from controllers.base import BaseHandler
 from controllers.base import login_required
@@ -16,4 +15,4 @@ class StationCheckHandler(BaseHandler):
 		if not existing_station:
 			availability = True
 			
-		self.response.out.write(simplejson.dumps({"availability": availability}))
+		self.response.out.write(json.dumps({"availability": availability}))

@@ -12,7 +12,7 @@
 	<meta property="og:url" content="{{ site_url }}/{{ station_proxy.station.shortname }}"/> 
 	<meta property="og:title" content="{{ station_proxy.station.name }}"/> 
 	<meta property="og:description" content="Listen now to {{ station_proxy.station.name }} on Phonoblaster."/>
-	<meta property="og:image"  content="https://graph.facebook.com/{{ station_proxy.station.key.name }}/picture?type=large"/> 
+	<meta property="og:image"  content="https://graph.facebook.com/{{ station_proxy.station.key().name() }}/picture?type=large"/> 
 	<meta property="og:site_name" content="Phonoblaster"/>
 	<meta property="og:video:type" content="text/html"/>
 	<meta property="og:video" content="{{ site_url }}/{{ station_proxy.station.shortname }}"/>
@@ -26,15 +26,14 @@
 {% block main %}
 	<!-- Background -->
 	<div id="background" class="stretch">
-		<!-- Example -->
-	 	<!-- <img src="/{{tag}}/static/images/smoking.jpg" class="stretch"/> -->
+	 	<img src="{{ station_proxy.station.full }}" class="stretch"/>
 	</div>
 	<!-- Station column (Left)-->
 	<div id="station-column" class="stretch">
 		<!-- Station Information -->
 		<div id="station-information">
 			<div id="station-picture">
-				<img src="https://graph.facebook.com/{{ station_proxy.station.key.name }}/picture?type=square">
+				<img src="https://graph.facebook.com/{{ station_proxy.station.key().name() }}/picture?type=square">
 			</div>
 			<div id="station-shortname">@{{ station_proxy.station.shortname }}</div>
 			<div id="station-name">
@@ -45,73 +44,71 @@
 				{% endif %}
 			</div>
 		</div>
-		<div id="no-scrolling-box">
-			<!-- Media -->
-			<div id="media">
-				<div id="youtube-player">
-					<img src="/{{tag}}/static/images/loader.gif" class="loader"/>
-				</div>
+		<!-- Media -->
+		<div id="media">
+			<div id="youtube-player">
+				<img src="/{{tag}}/static/images/loader.gif" class="loader"/>
 			</div>
-			<div id="media-bar">
-				<div id="media-bar-filler"></div>
+		</div>
+		<div id="media-bar">
+			<div id="media-bar-filler"></div>
+		</div>
+		<div id="media-details">
+			<div id="media-picture">
+				<!--  Example: -->
+				<!-- <img src="http://i1.ytimg.com/vi/yBP_Re9r9MI/default.jpg"/> -->
 			</div>
-			<div id="media-details">
-				<div id="media-picture">
-					<!--  Example: -->
-					<!-- <img src="http://i1.ytimg.com/vi/yBP_Re9r9MI/default.jpg"/> -->
-				</div>
-				<div id="media-info">
-					<div id="media-info-top">
-						<h3>Current track</h3>
-						<div id="media-submitter">
-							<!--  Example: -->
-							<!--
-								<a href="" data-original-title="Damien Detcherry">
-									<img src="http://graph.facebook.com/damien.detcherry/picture?type=square">
-								</a>
-								<span>Rebroadcast of</span> 
-							-->
-						</div>
+			<div id="media-info">
+				<div id="media-info-top">
+					<h3>Current track</h3>
+					<div id="media-submitter">
+						<!--  Example: -->
+						<!--
+							<a href="" data-original-title="Damien Detcherry">
+								<img src="http://graph.facebook.com/damien.detcherry/picture?type=square">
+							</a>
+							<span>Rebroadcast of</span> 
+						-->
 					</div>
-					<div class="stroke grey"></div>
-					<div id="media-title">Loading...</div>
-					<div id="media-actions">
-						<div id="media-fav">
-						  	<a class="fav tuto" data-original-title="Favorite this track!" href="#"></a>
-						</div>
-						<div id="media-volume">
-							<a href="#" class="unmuted tuto" data-original-title="Mute the player"></a>
-						</div>
+				</div>
+				<div class="stroke grey"></div>
+				<div id="media-title">Loading...</div>
+				<div id="media-actions">
+					<div id="media-fav">
+					  	<a class="fav tuto" data-original-title="Favorite this track!" href="#"></a>
+					</div>
+					<div id="media-volume">
+						<a href="#" class="unmuted tuto" data-original-title="Mute the player"></a>
 					</div>
 				</div>
 			</div>
-			<!-- Listeners counter -->
-			<div id="sessions">
-				<div class="stat">
-					<span class="figure">0</span>
-					<span class="title">Listeners</span>
-					<a id="tw-share" href="https://twitter.com/share?url={{ site_url }}/{{station_proxy.station.shortname}}&text=♫ Listening to {{ station_proxy.station.name }} radio on @phonoblaster ♫&hashtags=nowplaying" target="_blank" class="tuto" data-original-title="Share {% if is_admin %}your{% else%}this{% endif %} station on Twitter!"></a>
-					<a id="fb-share" href="#" class="tuto" data-original-title="Share {% if is_admin %}your{% else%}this{% endif %} station on Facebook!"></a>
-				</div>
-				<div id="listeners">
-					<!-- Example -->
-					<!--
-						<a href="" class="tuto listener" data-original-title="Damien Detcherry">
-							<img src="http://graph.facebook.com/damien.detcherry/picture?type=square">
-						</a>
-					-->
-				</div>
+		</div>
+		<!-- Listeners counter -->
+		<div id="sessions">
+			<div class="stat">
+				<span class="figure">0</span>
+				<span class="title">Listeners</span>
+				<a id="tw-share" href="https://twitter.com/share?url={{ site_url }}/{{station_proxy.station.shortname}}&text=♫ Listening to {{ station_proxy.station.name }} radio on @phonoblaster ♫&hashtags=nowplaying" target="_blank" class="tuto" data-original-title="Share {% if is_admin %}your{% else%}this{% endif %} station on Twitter!"></a>
+				<a id="fb-share" href="#" class="tuto" data-original-title="Share {% if is_admin %}your{% else%}this{% endif %} station on Facebook!"></a>
 			</div>
-			<!-- Views counter -->
-			<div id="views" class="stat">
-				<span class="figure">{{ station_proxy.number_of_visits }}</span>
-				<span class="title"> Visits</span>
+			<div id="listeners">
+				<!-- Example -->
+				<!--
+					<a href="" class="tuto listener" data-original-title="Damien Detcherry">
+						<img src="http://graph.facebook.com/damien.detcherry/picture?type=square">
+					</a>
+				-->
 			</div>
-			<!-- Suggestions counter -->
-			<div id="suggestions" class="stat">
-				<span class="figure">{{ station_proxy.number_of_suggestions }}</span>
-				<span class="title"> Suggestions</span>
-			</div>
+		</div>
+		<!-- Views counter -->
+		<div id="views" class="stat">
+			<span class="figure">{{ station_proxy.number_of_visits }}</span>
+			<span class="title"> Visits</span>
+		</div>
+		<!-- Suggestions counter -->
+		<div id="suggestions" class="stat">
+			<span class="figure">{{ station_proxy.number_of_suggestions }}</span>
+			<span class="title"> Suggestions</span>
 		</div>
 		<!-- Panel box (Upper right) -->
 		<div id="panel-box">
@@ -263,7 +260,7 @@
 					<!--
 					<div class="im">
 						<div class="im-picture">
-							<img src="https://graph.facebook.com/{{ station_proxy.station.key.name }}/picture?type=square">
+							<img src="https://graph.facebook.com/{{ station_proxy.station.key().name() }}/picture?type=square">
 						</div>
 						<div class="im-content">
 							<div class="im-text"><a href="">Randomblaster </a>It's absolutely amazing blablablabla</div>
@@ -329,10 +326,12 @@
 <script type="text/javascript" src="/{{tag}}/static/js/library/json2.js"></script>
 <script type="text/javascript" src="/{{tag}}/static/js/library/system.js"></script>
 <script type="text/javascript" src="/{{tag}}/static/js/library/swfobject.js"></script>
+<script type="text/javascript" src="/{{tag}}/static/js/library/jquery.form.js"></script>
 <script type="text/javascript" src="/{{tag}}/static/js/station/counter.js"></script>
 <script type="text/javascript" src="/{{tag}}/static/js/station/share.js"></script>
 <script type="text/javascript" src="/{{tag}}/static/js/station/sessions.js"></script>
 <script type="text/javascript" src="/{{tag}}/static/js/station/tab.js"></script>
+<script type="text/javascript" src="/{{tag}}/static/js/station/background.js"></script>
 <script type="text/javascript" src="/{{tag}}/static/js/station/messages.js"></script>
 <script type="text/javascript" src="/{{tag}}/static/js/station/search.js"></script>
 <script type="text/javascript" src="/{{tag}}/static/js/station/suggestions.js"></script>
@@ -361,7 +360,7 @@
 	{% endif %}
 	/*--- Station Initialization ---*/
 	HOST = {
-		"key_name": "{{ station_proxy.station.key.name }}",
+		"key_name": "{{ station_proxy.station.key().name() }}",
 		"shortname": "{{ station_proxy.station.shortname }}",
 		"name": "{{ station_proxy.station.name}}",
 	}

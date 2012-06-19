@@ -7,6 +7,7 @@ from datetime import timedelta
 from calendar import timegm
 
 from google.appengine.ext import db
+from google.appengine.ext.blobstore import BlobInfo
 from google.appengine.api import memcache
 from google.appengine.api.taskqueue import Task
 
@@ -70,13 +71,15 @@ class StationApi():
 				logging.info("Station already in memcache")	
 		return self._station
 	
-	def put_station(self, id, shortname, name, link, type):
+	def put_station(self, id, shortname, name, link, type, full, thumb):
 		station = Station(
 			key_name = id,
 			shortname = shortname,
 			name = name,
 			link = link,
 			type = type,
+			full = full,
+			thumb = thumb,
 		)
 		station.put()
 		logging.info("Station put in datastore")
@@ -124,7 +127,47 @@ class StationApi():
 			}
 		)
 		task.add(queue_name = "worker-queue")
+		
+	def update_background(self, full, thumb):
+		station = self.station
+		
+		old_full_blob_key = None
+		old_thumb_blob_key = None
+		m1 = re.match(r"/picture/([^/]+)?/view", station.full)
+		m2 = re.match(r"/picture/([^/]+)?/view", station.thumb)
+		if m1 and m2:
+			logging.info("Background is a blob")
+			old_full_blob_key = m1.group(1)
+			old_thumb_blob_key = m2.group(1)
+		else:
+			logging.info("Background is a static file")
+		
+		station.full = full
+		station.thumb = thumb
+		
+		station.put()
+		logging.info("Station updated in datastore")
+		
+		memcache.set(self._memcache_station_id, station)
+		logging.info("Station updated in memcache")
+		
+		# Update in runtime
+		self._station = station
+		
+		if old_full_blob_key and old_thumb_blob_key:
+			old_full = BlobInfo.get(old_full_blob_key)
+			old_full.delete()
+			logging.info("Old full size background removed from blobstore")
+		
+			old_thumb = BlobInfo.get(old_thumb_blob_key)
+			old_thumb.delete()
+			logging.info("Old thumbnail removed from blobstore")	
+		
 	
+	########################################################################################################################################
+	#													SESSIONS
+	########################################################################################################################################
+
 	@property
 	def number_of_sessions(self):
 		if not hasattr(self, "_number_of_sessions"):
@@ -507,15 +550,6 @@ class StationApi():
 	#													END BUFFER
 	########################################################################################################################################
 
-	def task_visit(self):
-		task = Task(
-			url = "/taskqueue/visit",
-			params = {
-				"shortname": self._shortname,
-			}
-		)
-		task.add(queue_name = "worker-queue")
-	
 	# Visits counter
 	@property
 	def number_of_visits(self):
@@ -524,11 +558,10 @@ class StationApi():
 			self._number_of_visits = Shard.get_count(shard_name)
 		return self._number_of_visits
 	
-	def increase_visits_counter(self, value):
+	def increment_visits_counter(self):
 		shard_name = self._counter_of_visits_id
-		Shard.increase(shard_name, value)
+		Shard.task(shard_name, "increment")
 	
-		
 	def get_tracks(self, offset):
 		timestamp = timegm(offset.utctimetuple())
 		memcache_tracks_id = self._memcache_station_tracks_id + "." + str(timestamp)
