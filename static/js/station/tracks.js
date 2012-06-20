@@ -145,7 +145,7 @@ TrackManager.prototype.deleteListen = function(){
 			for(var i = 0; i < items.length; i++){
 				if (item_to_delete.id == items[i].content.track_id){
 					item_to_delete_is_in_buffer = true;
-					alert("You have to remove "+items[i].content.youtube_title+" from your buffer first.");
+					alert("Please, remove "+items[i].content.youtube_title+" from your live selection first.");
 					break;
 				}
 			}
