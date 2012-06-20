@@ -61,7 +61,7 @@ def admin_required(method):
 
 		if self.user_proxy:
 			uid = self.user_proxy.user.key().name()
-			if uid in ["663812262","698198735","1478671803"]:
+			if uid in ["663812262","698198735"]:
 				admin = True
 
 		if not admin:
