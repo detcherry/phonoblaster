@@ -106,22 +106,8 @@ class TrackDeleteHandler(webapp2.RequestHandler):
 							}
 						)
 						task.add(queue_name="worker-queue")
-<<<<<<< HEAD
-
-application = webapp.WSGIApplication([
-	(r"/taskqueue/deletetrack", ApiTracksDeleteHandler),
-], debug=True)
-
-def main():
-	run_wsgi_app(application)
-
-if __name__ == "__main__":
-    main()
-=======
 						
 				response = True
-
 		else:
 			response = False
 		self.response.out.write(json.dumps({ "response": response }))
->>>>>>> background
