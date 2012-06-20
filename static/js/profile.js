@@ -450,17 +450,20 @@ ProfileManager.prototype = {
 		// We listen to any image upload
 		$("input[id='picture']").bind("change", function(event){
 			
-			// Hide text
-			$("#carousel-mine p").css("visibility","hidden")
-			
-			// Show loader
-			$("#carousel-mine img.loader").show();
-			
-			// Unselect other background
-			that.selectReset();
-			
-			// Submit
-			$("form#upload").submit();
+			// Something is submitted
+			if($(this).val()){
+				// Hide text
+				$("#carousel-mine p").css("visibility","hidden")
+
+				// Show loader
+				$("#carousel-mine img.loader").show();
+
+				// Unselect other background
+				that.selectReset();
+
+				// Submit
+				$("form#upload").submit();
+			}
 		})
 		
 		// We listen to any form submit event
