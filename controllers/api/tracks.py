@@ -28,6 +28,47 @@ class ApiTracksHandler(BaseHandler):
 
 class ApiTracksDeleteHandler(BaseHandler):
 	@login_required
+	def delete(self, id):
+		track = Track.get_by_id(int(id))
+		shortname = track.station.shortname
+		logging.info("Getting from datastore track with track_id = "+id+" for station : @"+shortname)
+		response = True
+
+		if(track):
+			# Station Proxy
+			station_proxy = StationApi(shortname)
+			# Deleting associated broadcasts and favorites
+			broadcasts_in_buffer = db.get(station_proxy.station.broadcasts)
+
+			# If track associated to broadcast in buffer, track will not be deleted.
+			# If not, a task queue will start to delete broadcast, favorites and the actual track
+			for b in broadcasts_in_buffer:
+				if b.track.key().id() == int(id):
+					logging.info("Track is being broadcast, will not proceed to deletion.")
+					response = False
+					break
+
+			if response:
+				logging.info("Starting taskqueue to delete broadcats and likes associated to track.")
+				task = Task(
+						method = 'DELETE',
+						url = "/taskqueue/deletetrack",
+						params = {
+							"track_id": id,
+							"station_key_name": station_proxy.station.key().name(),
+							"type": "broadcast",
+						},
+					)
+				task.add(queue_name="worker-queue")
+
+		else:
+			response = False
+
+		self.response.out.write(json.dumps({ "response": response }))
+
+"""
+class ApiTracksDeleteHandler(BaseHandler):
+	@login_required
 	def delete(self, shortname, id):
 		track = Track.get_by_id(int(id))
 		logging.info("Getting from datastore track with track_id = "+id+" for station : @"+shortname)
@@ -64,3 +105,4 @@ class ApiTracksDeleteHandler(BaseHandler):
 			response = False
 
 		self.response.out.write(json.dumps({ "response": response }))
+"""

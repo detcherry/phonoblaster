@@ -163,7 +163,7 @@ TrackManager.prototype.deleteListen = function(){
 
 TrackManager.prototype.deleteAjax = function(item, callback){
 	var that = this;
-	var delete_url = that.url +"/"+ this.client.host.shortname + "/" + item.id
+	var delete_url = that.url +"/"+ item.id
 	
 	$.ajax({
 		url: delete_url,
