@@ -73,7 +73,6 @@ def admin_required(method):
 			return method(self, *args, **kwargs)
 	return wrapper
 
-#class BaseHandler(webapp.RequestHandler):
 class BaseHandler(webapp2.RequestHandler):
 	@property
 	def user_proxy(self):
