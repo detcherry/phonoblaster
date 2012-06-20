@@ -25,7 +25,7 @@ class UpgradeHandler(webapp2.RequestHandler):
 		else:
 			logging.info("No cursor")
 		
-		stations = query.fetch(2)
+		stations = query.fetch(100)
 		
 		if(len(stations) > 0):
 			for station in stations:
