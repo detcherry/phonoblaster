@@ -826,7 +826,7 @@ BufferManager.prototype.UIAdd = function(new_item, previous_item){
 	}
 	else{
 		// If user not admin and incoming track suggestion, we display something on the station wall
-		if(!this.client.admin && new_item.track_submitter_key_name != this.client.host){
+		if(!this.client.admin && new_item.content.track_submitter_key_name != this.client.host.key_name){
 			// If user suggestion submitter, display notification
 			if(new_item.content.track_submitter_key_name == this.client.listener.key_name){
 				$("#notifications").removeClass("off").addClass("on");
