@@ -1,39 +1,7 @@
 {% extends "base.html" %}
 
-{% block style %}
-	<link type="text/css" rel="stylesheet" href="/{{tag}}/static/css/admin/dbupgrade.css" />
-{% endblock %}
-
 {% block main %}
-	<div id="dbupgrade">
-		<h1>Database Upgrade</h1>
-		<br/>
-
-		<table>
-			<tbody>
-				<tr>
-					<td>
-						<div class="item-processing">
-							<a id="track-up" class="btn">Start Track Cleaning</a>
-						</div>
-					</td>
-					<td>
-						<div class="item-processing">
-							<a id="air-up" class="btn">Start Air Cleaning</a>
-						</div>
-					</td>
-					<td>
-						<div class="item-processing">
-							<a id="suggestion-up" class="btn">Start Suggestion Cleaning</a>
-						</div>
-					</td>
-				</tr>
-			</tbody>
-		</table>
-
-	</div>
-{% endblock %}
-
-{% block script %}
-	<script type="text/javascript" src="/{{tag}}/static/js/admin/dbupgrade.js"></script>
+	<form action="/admin/upgrade" method="post" style="margin-top:10px; margin-bottom:300px;">
+		<input type="submit" value="Upgrade Background"/>
+	</form>
 {% endblock %}

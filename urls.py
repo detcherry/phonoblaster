@@ -3,7 +3,7 @@ import webapp2
 from controllers.home import HomeHandler
 from controllers.all import AllHandler
 from controllers.admin.dashboard import AdminDashboardHandler
-from controllers.admin.upgrade import UpgradeHandler
+from controllers.admin.upgrade import AdminUpgradeHandler
 from controllers.profile import ProfileInitHandler
 from controllers.profile import ProfileSwitchHandler
 from controllers.station.manage import StationManageHandler
@@ -66,7 +66,7 @@ app = webapp2.WSGIApplication(
 		('/api/recommendations', ApiRecommendationsHandler),
 		('/api/now', ApiNowHandler),
 		('/admin/dashboard', AdminDashboardHandler),
-		('/admin/upgrade', UpgradeHandler),
+		('/admin/upgrade', AdminUpgradeHandler),
 		('/', HomeHandler),
 		('/station/manage', StationManageHandler),
 		('/station/check', StationCheckHandler),
