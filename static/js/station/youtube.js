@@ -223,7 +223,7 @@ YoutubeManager.prototype = {
 	
 	deleteAjax: function(item, callback){
 		var that = this;
-		var delete_url = "/api/favorites/" + item.content.track_id
+		var delete_url = "/api/likes/" + item.content.track_id
 		
 		$.ajax({
 			url: delete_url,
