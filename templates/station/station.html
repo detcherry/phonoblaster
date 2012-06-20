@@ -26,7 +26,9 @@
 {% block main %}
 	<!-- Background -->
 	<div id="background" class="stretch">
+		{% if station_proxy.station.full %}
 	 	<img src="{{ station_proxy.station.full }}" class="stretch"/>
+		{% endif %}
 	</div>
 	<!-- Station column (Left)-->
 	<div id="station-column" class="stretch">

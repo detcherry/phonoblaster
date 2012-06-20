@@ -25,11 +25,14 @@ BackgroundManager.prototype.uploadListen = function(){
 	// We listen to any image upload
 	$("input[id='picture']").bind("change", function(event){
 		
-		// Show loader
-		$("form#edit-background img.loader").show();
-		
-		// Submit
-		$("form#edit-background").submit();
+		// Something is submitted
+		if($(this).val()){
+			// Show loader
+			$("form#edit-background img.loader").show();
+
+			// Submit
+			$("form#edit-background").submit();
+		}
 	})
 	
 	var that = this
@@ -91,5 +94,16 @@ BackgroundManager.prototype.pushNew = function(new_background){
 }
 
 BackgroundManager.prototype.display = function(url){
+	// Temporary script during migration
+	if($("#background img").length > 0){
+		$("#background img").attr("src", url)
+	}
+	else{
+		$("#background").append($("<img/>").addClass("stretch").attr("src", url))
+	}
+	
+	/*
+	Permanent script after migration
 	$("#background img").attr("src", url)
+	*/
 }
