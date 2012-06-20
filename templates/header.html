@@ -35,7 +35,7 @@
 						<div id="dropdown-limiter"></div>
 						{% endif %}
 						<ul id="dropdown-options">
-							{% if station_proxy %}
+							{% if station_proxy and is_admin %}
 							<li>
 							<form action="{{ blobstore_url }}" method="post" enctype="multipart/form-data" id="edit-background">
 								<p>
