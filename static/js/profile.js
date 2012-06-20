@@ -12,48 +12,44 @@ function ProfileManager(profiles){
 	
 	this.backgrounds = [{
 		"id": 1,
+		"src_full": "/static/images/backgrounds/full/boat.gif",
+		"src_thumb": "/static/images/backgrounds/thumb/boat.jpg",
+	},{
+		"id": 2,
+		"src_full": "/static/images/backgrounds/full/cafe.gif",
+		"src_thumb": "/static/images/backgrounds/thumb/cafe.jpg",
+	},{
+		"id": 3,
+		"src_full": "/static/images/backgrounds/full/room.gif",
+		"src_thumb": "/static/images/backgrounds/thumb/room.jpg",
+	},{
+		"id": 4,
+		"src_full": "/static/images/backgrounds/full/street.gif",
+		"src_thumb": "/static/images/backgrounds/thumb/street.jpg",
+	},{
+		"id": 5,
+		"src_full": "/static/images/backgrounds/full/subway.gif",
+		"src_thumb": "/static/images/backgrounds/thumb/subway.jpg",
+	},{
+		"id": 6,
 		"src_full": "/static/images/backgrounds/full/sea.jpg",
 		"src_thumb": "/static/images/backgrounds/thumb/sea.jpg",
 	},{
-		"id": 2,
+		"id": 7,
 		"src_full": "/static/images/backgrounds/full/legs.jpg",
 		"src_thumb": "/static/images/backgrounds/thumb/legs.jpg",
 	},{
-		"id": 3,
-		"src_full": "/static/images/backgrounds/full/pool.jpg",
-		"src_thumb": "/static/images/backgrounds/thumb/pool.jpg",
-	},{
-		"id": 4,
-		"src_full": "/static/images/backgrounds/full/river.jpg",
-		"src_thumb": "/static/images/backgrounds/thumb/river.jpg",
-	},{
-		"id": 5,
+		"id": 8,
 		"src_full": "/static/images/backgrounds/full/egg.jpg",
 		"src_thumb": "/static/images/backgrounds/thumb/egg.jpg",
 	},{
-		"id": 6,
+		"id": 9,
 		"src_full": "/static/images/backgrounds/full/road.jpg",
 		"src_thumb": "/static/images/backgrounds/thumb/road.jpg",
 	},{
-		"id": 7,
+		"id": 10,
 		"src_full": "/static/images/backgrounds/full/statue.jpg",
 		"src_thumb": "/static/images/backgrounds/thumb/statue.jpg",
-	},{
-		"id": 8,
-		"src_full": "/static/images/backgrounds/full/tower.jpg",
-		"src_thumb": "/static/images/backgrounds/thumb/tower.jpg",
-	},{
-		"id": 9,
-		"src_full": "/static/images/backgrounds/full/wheat.jpg",
-		"src_thumb": "/static/images/backgrounds/thumb/wheat.jpg",
-	},{
-		"id": 10,
-		"src_full": "/static/images/backgrounds/full/skate.jpg",
-		"src_thumb": "/static/images/backgrounds/thumb/skate.jpg",
-	},{
-		"id": 11,
-		"src_full": "/static/images/backgrounds/full/deers.jpg",
-		"src_thumb": "/static/images/backgrounds/thumb/deers.jpg",
 	}]
 	
 	this.init();
