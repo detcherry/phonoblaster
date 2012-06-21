@@ -86,8 +86,7 @@ body{
 }
 
 #background img{
-	display:none;
-	min-width:100%;
+	opacity:0;
 }
 
 /* --------- LEFT COLUMN --------- */

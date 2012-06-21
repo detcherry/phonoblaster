@@ -134,19 +134,6 @@ class StationApi():
 		old_full_blob_key = None
 		old_thumb_blob_key = None
 		
-		# Temporary script before migration
-		if station.full or station.thumb:		
-			m1 = re.match(r"/picture/([^/]+)?/view", station.full)
-			m2 = re.match(r"/picture/([^/]+)?/view", station.thumb)
-			if m1 and m2:
-				logging.info("Background is a blob")
-				old_full_blob_key = m1.group(1)
-				old_thumb_blob_key = m2.group(1)
-			else:
-				logging.info("Background is a static file")
-		
-		# Script after migration
-		"""
 		m1 = re.match(r"/picture/([^/]+)?/view", station.full)
 		m2 = re.match(r"/picture/([^/]+)?/view", station.thumb)
 		if m1 and m2:
@@ -155,7 +142,6 @@ class StationApi():
 			old_thumb_blob_key = m2.group(1)
 		else:
 			logging.info("Background is a static file")
-		"""
 		
 		station.full = full
 		station.thumb = thumb

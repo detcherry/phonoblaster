@@ -46,6 +46,8 @@
     	$(window).resize(function(){
 			resizeImg();
 		});
+		
+		return bgImg
 	};
 })(jQuery)
 
@@ -70,9 +72,50 @@ BackgroundManager.prototype.init = function(client){
 	// Init methods
 	this.uploadListen();
 	
-	// Init background size
-	$("#background img").fullBg();
-	$("#background img").show();
+	// Init background size and listen to resize events
+	this.resize();
+	this.resizeListen();
+}
+
+BackgroundManager.prototype.resize = function(){
+	var bgImg = $("#background img");
+	
+	var imgwidth = bgImg.width();
+	var imgheight = bgImg.height();
+	
+	var winwidth = $(window).width();
+	var winheight = $(window).height();
+	
+	var widthratio = winwidth / imgwidth;
+	var heightratio = winheight / imgheight;
+	
+	var widthdiff = heightratio * imgwidth;
+	var heightdiff = widthratio * imgheight;
+	
+	if(heightdiff>winheight){
+		bgImg.css({
+			width: winwidth+'px',
+			height: heightdiff+'px'
+		});
+    }
+	else{
+		bgImg.css({
+			width: widthdiff+'px',
+			height: winheight+'px'
+		});
+	}
+
+	
+	bgImg.css("opacity","1")
+}
+
+BackgroundManager.prototype.resizeListen = function(){
+	
+	var that = this
+	$(window).resize(function(){
+		that.resize();
+	});
+	
 }
 
 BackgroundManager.prototype.uploadListen = function(){
@@ -148,17 +191,9 @@ BackgroundManager.prototype.pushNew = function(new_background){
 	}
 }
 
-BackgroundManager.prototype.display = function(url){
-	// Temporary script during migration
-	if($("#background img").length > 0){
-		$("#background img").attr("src", url)
-	}
-	else{
-		$("#background").append($("<img/>").addClass("stretch").attr("src", url))
-	}
-	
-	/*
-	Permanent script after migration
-	$("#background img").attr("src", url)
-	*/
+BackgroundManager.prototype.display = function(url){		
+	var that = this;
+	$("#background img").attr("src", url).removeAttr("style").load(function(){
+		that.resize();
+	})
 }
