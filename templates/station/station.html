@@ -37,7 +37,18 @@
 			<div id="station-picture">
 				<img src="https://graph.facebook.com/{{ station_proxy.station.key().name() }}/picture?type=square">
 			</div>
-			<div id="station-shortname">@{{ station_proxy.station.shortname }}</div>
+			<div id="station-top">
+				<div id="station-shortname">@{{ station_proxy.station.shortname }}</div>
+				{% if is_admin %}
+				<div id="station-background">
+					<img src="/{{tag}}/static/images/loader.gif" class="loader"/>
+					<form action="{{ blobstore_url }}" method="post" enctype="multipart/form-data" id="edit-background" class="tuto" data-original-title="Upload a new background image">
+						<span></span>
+						<input type="file" name="picture" id="picture"/>
+					</form>
+				</div>
+				{% endif %}
+			</div>
 			<div id="station-name">
 				<p>{{ station_proxy.station.name }}</p>
 				{% if is_page %}

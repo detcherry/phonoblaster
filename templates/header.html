@@ -17,10 +17,14 @@
 						<span>@{{ user_proxy.profile.shortname }}</span>
 					</a>
 				</li>
+				{% if one_profile %}
+				<li>
+					<a href="#" class="logout">Log out</a>
+				</li>
+				{% else %}
 				<li class="show">
 					<a href="#" class="dropdown"></a>
 					<div id="dropdown-menu">
-						{% if not one_profile %}
 						<div id="dropdown-stations-title">Use Phonoblaster as</div>
 						<ul id="dropdown-stations">
 							{% for p in non_default_profiles %}
@@ -33,25 +37,14 @@
 							{% endfor %}
 						</ul>
 						<div id="dropdown-limiter"></div>
-						{% endif %}
 						<ul id="dropdown-options">
-							{% if station_proxy and is_admin %}
-							<li>
-							<form action="{{ blobstore_url }}" method="post" enctype="multipart/form-data" id="edit-background">
-								<p>
-									<span>Upload a new background</span>
-									<img src="/{{tag}}/static/images/loader.gif" style="display:none" class="loader"/>
-								</p>
-								<input type="file" name="picture" id="picture"/>
-							</form>
-							</li>
-							{% endif %}
 							<li>
 								<a href="#" class="logout">Logout</a>
 							</li>
 						</ul>
 					</div>
 				</li>
+				{% endif %}
 			{% else %}
 				<li>Broadcast your music now!</li>
 				<li><a href="#" class="login">Login with Facebook</a></li>

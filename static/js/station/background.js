@@ -83,7 +83,7 @@ BackgroundManager.prototype.uploadListen = function(){
 		// Something is submitted
 		if($(this).val()){
 			// Show loader
-			$("form#edit-background img.loader").show();
+			$("#station-background img.loader").css("visibility", "visible");
 
 			// Submit
 			$("form#edit-background").submit();
@@ -107,7 +107,7 @@ BackgroundManager.prototype.uploadListen = function(){
 BackgroundManager.prototype.uploadCallback = function(responseText, statusText, xhr, form){
 	
 	// Hide loader
-	$("form#edit-background img.loader").hide();
+	$("#station-background img.loader").css("visibility", "hidden");
 	
 	var json = responseText;
 	
