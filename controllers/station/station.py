@@ -9,7 +9,7 @@ from google.appengine.ext import blobstore
 class StationHandler(RootHandler):
 	@profile_required
 	def get(self, shortname):
-		self.station_proxy = StationApi(shortname)
+		self.station_proxy = StationApi(shortname.lower())
 	
 		if(self.station_proxy.station):
 			url = "/api/" + shortname + "/background"
