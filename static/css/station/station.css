@@ -86,6 +86,7 @@ body{
 }
 
 #background img{
+	display:none;
 	min-width:100%;
 }
 
