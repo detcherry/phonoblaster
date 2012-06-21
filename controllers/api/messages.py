@@ -39,17 +39,11 @@ class ApiMessagesHandler(BaseHandler):
 		host_proxy = StationApi(shortname)
 		self.host = host_proxy.station
 		
-		self.user = self.user_proxy.user
-
-		author_key_name = message["author_key_name"]
-		
-		# Check if the user is the author
-		if(self.user_proxy.is_admin_of(author_key_name)):
-			# Building author db key
-			author_key = db.Key.from_path("Station", author_key_name )
+		if(self.user_proxy.profile):
+			
+			author_key = db.Key.from_path("Station", self.user_proxy.profile["key_name"])
 			author = db.get(author_key)
-			logging.info("Author retrieved from datastore.")
-			# Put the new message to the datastore
+			
 			new_message = Message(
 				key_name = message["key_name"],
 				message = message["message"][:500].replace("\n"," "),
@@ -58,9 +52,9 @@ class ApiMessagesHandler(BaseHandler):
 			)
 			new_message.put()
 			logging.info("New message put to the datastore")
-			
+		
 			extended_message = Message.get_extended_message(new_message, author)
-			
+
 			# Add a taskqueue to warn everyone
 			new_message_data = {
 				"entity": "message",
