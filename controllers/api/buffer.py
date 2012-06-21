@@ -46,80 +46,85 @@ class ApiBufferHandler(BaseHandler):
 		data = None
 
 		if(station_proxy.station):
-			if position is '':
-				# Adding tracks to buffer
-				extended_broadcast = station_proxy.add_track_to_buffer(content)
+			key_name = station_proxy.station.key().name()
+			
+			if(self.user_proxy.is_admin_of(str(key_name))):
+				logging.info("User is admin of the station. Authorized to make changes to the buffer.")
+				
+				if position is '':
+					# Adding tracks to buffer
+					extended_broadcast = station_proxy.add_track_to_buffer(content)
 
-				if not extended_broadcast:
-					response = {
-						'response': False,
-						'error': 1, 
-						'message': 'Buffer full or track not found.'
-					}
-				else:
-					response = {
-						'response': True,
-						'message': 'Track successfully added to buffer.'
-					}
-
-					now = datetime.utcnow()
-					data = {
-						"entity": "buffer",
-						"event": "new",
-						"content": {
-							"item": extended_broadcast,
-							"created": timegm(now.utctimetuple())*1000 + math.floor(now.microsecond/1000),
+					if not extended_broadcast:
+						response = {
+							'response': False,
+							'error': 1, 
+							'message': 'Buffer full or track not found.'
 						}
-					}
-					
+					else:
+						response = {
+							'response': True,
+							'message': 'Track successfully added to buffer.'
+						}
+
+						now = datetime.utcnow()
+						data = {
+							"entity": "buffer",
+							"event": "new",
+							"content": {
+								"item": extended_broadcast,
+								"created": timegm(now.utctimetuple())*1000 + math.floor(now.microsecond/1000),
+							}
+						}
+
+				else:
+					# Changing broadcast position in buffer
+					extended_broadcast = station_proxy.move_track_in_buffer(content, int(position))
+
+					if extended_broadcast:
+						response = {
+							'response': True, 
+							'message': 'Track with key_name : '+ content + ' is now at : ' + position
+						}
+
+						now = datetime.utcnow()
+						data = {
+							"entity": "buffer",
+							"event": "new",
+							"content": {
+								'id': content,
+								'position': int(position),
+								"created": timegm(now.utctimetuple())*1000 + math.floor(now.microsecond/1000),
+							},
+						}
+					else:
+						response = {
+							'response':False,
+							'error': 0, 
+							'message': 'Error while changing position (at '+ position +') of incomming track with key_name = '+ content
+						}
+
+				# Add a taskqueue to warn everyone
+				if data:
+					task = Task(
+						url = "/taskqueue/multicast",
+						params = {
+							"station": config.VERSION + "-" + shortname,
+							"data": json.dumps(data)
+							}
+					)
+					task.add(queue_name="buffer-queue")
+				
 			else:
-				# Changing broadcast position in buffer
-				extended_broadcast = station_proxy.move_track_in_buffer(content, int(position))
-
-				if extended_broadcast:
-					response = {
-						'response': True, 
-						'message': 'Track with key_name : '+ content + ' is now at : ' + position
-					}
-					
-					now = datetime.utcnow()
-					data = {
-						"entity": "buffer",
-						"event": "new",
-						"content": {
-							'id': content,
-							'position': int(position),
-							"created": timegm(now.utctimetuple())*1000 + math.floor(now.microsecond/1000),
-						},
-					}
-				else:
-					response = {
-						'response':False,
-						'error': 0, 
-						'message': 'Error while changing position (at '+ position +') of incomming track with key_name = '+ content
-					}
-
-
-			# Add a taskqueue to warn everyone
-			if data:
-				task = Task(
-					url = "/taskqueue/multicast",
-					params = {
-						"station": config.VERSION + "-" + shortname,
-						"data": json.dumps(data)
-						}
-				)
-				task.add(queue_name="buffer-queue")
-
+				logging.info("User is not admin. Not authorized to make a change to the buffer")
+				self.error(403)
+				
 		else:
-			response = {
-				'response':False,
-				'error':-1, 
-				'message': 'Station with shortname : '+ shortname +' not found.'
-			}
+			logging.info("Station not found. Not possible to make a change to the buffer")
+			self.error(404)
 
 		self.response.out.write(json.dumps(response))
-
+		
 
 class ApiBufferDeleteHandler(BaseHandler):
 	@login_required
