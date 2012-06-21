@@ -222,9 +222,9 @@ function replaceURLWithHTMLLinks(text) {
 
 			// Does the URL start with http:// or https:// ?
 			if(is_http.test(new_word)){
-				new_word = "<a href="+new_word+">"+new_word+"</a>";
+				new_word = "<a href="+new_word+" target='_blank'>"+new_word+"</a>";
 			}else{
-				new_word = "<a href=http://"+new_word+">"+new_word+"</a>";
+				new_word = "<a href=http://"+new_word+" target='_blank'>"+new_word+"</a>";
 			};
 			result = result+ new_word+" ";
 
