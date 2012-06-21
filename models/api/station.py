@@ -511,7 +511,6 @@ class StationApi():
 				# Rejecting action
 				logging.info("Rejecting operation because of an edge case (moving)")
 				return None
-
 		# End of edge case
 
 		if position>=0 and position<len(broadcasts) :
