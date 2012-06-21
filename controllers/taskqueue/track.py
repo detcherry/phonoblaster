@@ -85,14 +85,18 @@ class TrackDeleteHandler(webapp2.RequestHandler):
 						logging.info("No likes for this track, deleting track.")
 						track.delete()
 					else:
-						listener_proxy = StationApi(like.listener.shortname)
-						logging.info("Listener Like counter decremented")
+						try:
+							listener_proxy = StationApi(like.listener.shortname)
+							listener_proxy.decrement_likes_counter()
+							logging.info("Listener Like counter decremented")
+						except:
+							logging.info("User has not created a station (likes used to be linked to user to stations)")
 						
 						Track.decrement_likes_counter(track.key().id())
 						logging.info("Track likes counter decremented")
 
 						like.delete()
-						logging.info("Favorite deleted from datastore")
+						logging.info("Like deleted from datastore")
 
 						cursor = query.cursor()
 
