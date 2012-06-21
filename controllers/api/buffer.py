@@ -136,47 +136,59 @@ class ApiBufferDeleteHandler(BaseHandler):
 		response = {}
 
 		if(station_proxy.station):
-			broadcasts = station_proxy.buffer['broadcasts'][::]
 			
-			if len(broadcasts) < 2:
-				response = {'response': False, 'error':0, 'message': 'A buffer cannot be empty.'}
-			else :
-				# Deleting track
-				deletion_result, result_key_name = station_proxy.remove_track_from_buffer(key_name)
-
-				if not deletion_result:
-					# The deletion was not successful
-					
-					if result_key_name:
-						# Track client id corresponds to the currently played track
-						response = {'response': False, 'error':1, 'message': 'You cannot delete the currently played track.'}
-					else:
-						# Track client id does not appear in the buffer
-						response = {'response': False, 'error':2, 'message': 'Track with id : '+key_name+' not found!'}
-				else:
-					# Deletion OK
-					response = {'response': True, 'message': 'Deletion of track successful'}
-
-					# Add a taskqueue to warn everyone
-					now = datetime.utcnow()
-					data = {
-						"entity": "buffer",
-						"event": "remove",
-						"content": {
-							"id": key_name,
-							"created": timegm(now.utctimetuple())*1000 + math.floor(now.microsecond/1000),
-						}
+			station_key_name = station_proxy.station.key().name()
+			
+			if(self.user_proxy.is_admin_of(str(station_key_name))):
+				logging.info("User is admin of the station. Authorized to delete in buffer.")
+			
+				broadcasts = station_proxy.buffer['broadcasts'][::]
+		
+				if len(broadcasts) < 2:
+					response = {
+						'response': False,
+						'error':0,
+						'message': 'A buffer cannot be empty.'
 					}
+				else :
+					# Deleting track
+					result = station_proxy.remove_track_from_buffer(key_name)
+				
+					if result:
+						# Track deletion successful
+						response = {
+							'response': True
+						}
+						
+						# Add a taskqueue to warn everyone
+						now = datetime.utcnow()
+						data = {
+							"entity": "buffer",
+							"event": "remove",
+							"content": {
+								"id": key_name,
+								"created": timegm(now.utctimetuple())*1000 + math.floor(now.microsecond/1000),
+							}
+						}
 
-					task = Task(
-						url = "/taskqueue/multicast",
-						params = {
-							"station": config.VERSION + "-" + shortname,
-							"data": json.dumps(data),
-						},
-					)
-					task.add(queue_name="buffer-queue")
+						task = Task(
+							url = "/taskqueue/multicast",
+							params = {
+								"station": config.VERSION + "-" + shortname,
+								"data": json.dumps(data),
+							},
+						)
+						task.add(queue_name="buffer-queue")
+					else:
+						# Track deletion failed
+						response = {
+							'response': False,
+						}
+			else:
+				logging.info("User is not admin. Not authorized to delete in buffer")
+				self.error(403)
 		else:
-			response = {'response':False, error:'-1', 'message': 'Station with shortname : '+shortname+' not found.'}
-
+			logging.info("Station not found. Not possible to delete in buffer")
+			self.error(404)
+			
 		self.response.out.write(json.dumps(response))

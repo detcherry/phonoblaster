@@ -433,6 +433,7 @@ class StationApi():
 			If key_name is OK but represents the track that is being played : (False, key_name)
 
 		"""
+		
 		buffer = self.reorder_buffer(self.buffer)
 		broadcasts = buffer['broadcasts'][::] # Copy array and resting broadcasts
 		timestamp = buffer['timestamp']
@@ -445,7 +446,7 @@ class StationApi():
 				index_broadcast_to_find = i
 				break
 
-		# Edge Case, if remove track at position 1 5 seconds before the live track ends, we reject the operation.
+		# Edge Case, if remove track at position 1 just 5 seconds before the live track ends, we reject the operation.
 		# This is due to the latency of Pubnub.
 		if index_broadcast_to_find == 1:
 			# We need to check if the live track ends in the next 5 seconds
@@ -456,9 +457,8 @@ class StationApi():
 
 			if time_before_end< 5:
 				# Rejecting action
-				logging.info("Rejecting operation because of an edge case (deletion)")
-				return False, False
-
+				logging.info("Rejecting operation because of edge case (deletion)")
+				return False
 		# End of edge case
 
 		if index_broadcast_to_find is not None:
@@ -467,21 +467,23 @@ class StationApi():
 
 			if live_broadcast_key_name != key_name:
 				# index retrieved and not corresponding to the current played track
-				logging.info("Broadcast with key_name="+key_name+" found and is not the currently played track. Will proceed to deletion.")
+				logging.info("Broadcast with key_name="+key_name+" found. Not the live track. Deletion authorized.")
 				broadcasts.pop(index_broadcast_to_find)
-				new_buffer = {'broadcasts':broadcasts, 'timestamp':timestamp}
+				new_buffer = {
+					'broadcasts':broadcasts,
+					'timestamp':timestamp
+				}
 				# Saving data
 				self.put_buffer(new_buffer)
-				return (True, key_name)
+				return True
 			else:
 				# index retrived and corresponding to the currently plyayed track
-				logging.info("Broadcast with key_name="+key_name+" found but is the currently played track. Will NOT proceed to deletion.")
-				return (False, key_name)
+				logging.info("Broadcast with key_name="+key_name+" found. Is the live track. Deletion not authorized.")
+				return False
 		else:
 			# index not retrieved, the id is not valid
-			logging.info("Broadcast with key_name="+key_name+" NOT found. Will NOT proceed to deletion.")
-			return (False, None)
-
+			logging.info("Broadcast with key_name="+key_name+" not found. Deletion not possible")
+			return False
 
 	def move_track_in_buffer(self,key_name, position):
 		"""
