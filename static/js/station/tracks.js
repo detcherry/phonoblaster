@@ -78,6 +78,7 @@ TrackManager.prototype.UIBuild = function(item){
 		$("<a/>")
 			.attr("href","#")
 			.addClass("item-cross")
+			.css("visibility","hidden")
 			.attr("name", id)
 			.html("X")
 	)
