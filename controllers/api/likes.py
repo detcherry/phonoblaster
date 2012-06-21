@@ -44,7 +44,6 @@ class ApiLikesHandler(BaseHandler):
 					
 
 class ApiLikesDeleteHandler(BaseHandler):
-	
 	@login_required
 	def delete(self, id):
 		track = Track.get_by_id(int(id))
