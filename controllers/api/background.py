@@ -13,8 +13,10 @@ class ApiBackgroundHandler(PictureHandler):
 		self.blobstore_url = blobstore.create_upload_url('/api/' + shortname + "/background")
 		
 		self.station_proxy = StationApi(shortname)
-		if(self.station_proxy.station):
+		if(self.station_proxy.station):			
 			self.process()
+		else:
+			self.error(404)
 	
 	def save(self, image):		
 		image_url = "/picture/" + str(image.key()) + "/view"
