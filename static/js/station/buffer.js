@@ -211,6 +211,9 @@ BufferManager.prototype.UIWallDisplay = function(item){
 			)
 	)
 	
+	// Clear init content in the tab (if any)
+	$("#suggestions-tab .init").remove();
+	
 	// Append this div to the tab made of suggestions
 	div.prependTo("#suggestions-tab .tab-content:nth-child(2)");
 }
