@@ -26,19 +26,6 @@ class StationPageHandler(RootHandler):
 			self.station_proxy = StationApi(station.shortname)
 			
 			# Temporarily, we don't display any Facebook app. Instead we make a redirection to the station on phonoblaster.com
-			self.render("station/page/redirect.html", None)
-			
-			"""
-			TO BE REMOVED
-			
-			on_air = self.station_proxy.on_air()
-			
-			if(not on_air):
-				self.render("station/page/off.html", None)
-			else:
-				self.render("station/page/on.html", None)
-			"""
-			
-					
+			self.render("station/page/redirect.html", None)					
 		else:
 			self.render("station/page/404.html", None)
