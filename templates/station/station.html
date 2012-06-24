@@ -118,24 +118,29 @@
 		</div>
 		<!-- Panel box (Upper right) -->
 		<div id="panel-box">
-			{% if user_proxy %}
-				<div id="panel-box-picture">
-					<!-- Example -->
-					<!-- <img src="http://i1.ytimg.com/vi/yBP_Re9r9MI/default.jpg"/> -->
-				</div>
-				<div id="panel-box-track">
-					<h3 class="logged">Next track</h3>
-					<div class="stroke black"></div>
-					<p class="logged">
-						Loading...
-					</p>
-				</div>
-				{% if is_admin %}<a href="#" class="btn show-panel">Add new tracks!</a>{% endif %}
-			{% else %}
-				<h3 class="unlogged">Broadcast your music!</h3>
-				<p class="unlogged">With Phonoblaster, live broadcast your favorite music to your friends or fans</p>
-				<a href="#" class="login">Login with Facebook</a>
-			{% endif %}
+			<div id="panel-outer-circle" class="show-panel" {% if not is_admin %}style="visibility:hidden;"{% endif %}>
+				<div id="panel-inner-circle" class="show-panel"></div>
+			</div>
+			<div id="panel-box-content">
+				{% if user_proxy %}
+					<div id="panel-box-picture">
+						<!-- Example -->
+						<!-- <img src="http://i1.ytimg.com/vi/yBP_Re9r9MI/default.jpg"/> -->
+					</div>
+					<div id="panel-box-track">
+						<h3 class="logged">Next track</h3>
+						<div class="stroke black"></div>
+						<p class="logged">
+							Loading...
+						</p>
+					</div>
+					{% if is_admin %}<a href="#" class="btn show-panel">Add new tracks!</a>{% endif %}
+				{% else %}
+					<h3 class="unlogged">Broadcast your music!</h3>
+					<p class="unlogged">With Phonoblaster, live broadcast your favorite music to your friends or fans</p>
+					<a href="#" class="login">Login with Facebook</a>
+				{% endif %}
+			</div>
 		</div>
 		<!-- Overlay (left) -->
 		<div id="overlay" class="stretch">

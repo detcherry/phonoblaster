@@ -458,6 +458,46 @@ a.listener img{
 	border:1px solid #E1E1E1;
 }
 
+#panel-outer-circle{
+	cursor:pointer;
+	position:relative;
+	top:-32px;
+	left:-32px;
+	height:18px;
+	width:18px;
+	padding:6px;
+	-webkit-border-radius:33px;
+	-moz-border-radius:33px;
+	border-radius:33px;
+	background:#7F7F7F;
+	border:1px solid #7F7F7F;
+}	
+	
+#panel-inner-circle{
+  cursor:pointer;
+  height:18px;
+  width:18px;
+  -webkit-border-radius:18px;
+  -moz-border-radius:18px;
+  border-radius:18px;
+  background:white;
+}
+	  	
+#panel-outer-circle:hover{ 	
+  background:white;
+  border:1px solid #E1E1E1;
+}
+	  	
+#panel-outer-circle:hover #panel-inner-circle{
+	background:#7F7F7F;  	
+}
+  	
+#panel-box-content{
+	margin-left:-32px;  	
+	width:100%;
+	height:60px;
+}
+
 #panel-box-picture{
 	position:relative;
 	height:60px;
