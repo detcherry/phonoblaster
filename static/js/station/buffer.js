@@ -946,25 +946,27 @@ BufferManager.prototype.postAction = function(item){
 
 BufferManager.prototype.displayNextTrack = function(){
 	
-	var items = this.items;
-	var next_item = null;
-	if(items.length == 0){
-		$("#panel-box p.logged").html("Nothing yet")
-	}
-	else{
-		if(items.length == 1){
-			next_item = items[0]
+	if(this.client.listener){
+		var items = this.items;
+		var next_item = null;
+		if(items.length == 0){
+			$("#panel-box p.logged").html("Nothing yet")
 		}
 		else{
-			next_item = items[1]
+			if(items.length == 1){
+				next_item = items[0]
+			}
+			else{
+				next_item = items[1]
+			}
+
+			var content = next_item.content;
+			var youtube_title = content.youtube_title;
+			var youtube_thumbnail = "https://i.ytimg.com/vi/" + content.youtube_id + "/default.jpg";
+
+			$("#panel-box-picture").empty().append($("<img/>").attr("src", youtube_thumbnail))
+			$("#panel-box p.logged").html(youtube_title)
 		}
-		
-		var content = next_item.content;
-		var youtube_title = content.youtube_title;
-		var youtube_thumbnail = "https://i.ytimg.com/vi/" + content.youtube_id + "/default.jpg";
-		
-		$("#panel-box-picture").empty().append($("<img/>").attr("src", youtube_thumbnail))
-		$("#panel-box p.logged").html(youtube_title)
-	} 
+	}
 	
 }
