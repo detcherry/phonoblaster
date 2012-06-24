@@ -151,7 +151,7 @@ form#edit-background input{
 	height:18px;
 	width:25px;
 	opacity:0;
-	text-indent:-1000px;
+	text-indent:-200px;
 }
 
 #station-name{
@@ -540,7 +540,7 @@ a.listener img{
 	padding-top:4px;
 	color:#7F7F7F;
 	height:16px;
-	line-height:20px;
+	line-height:17px;
 	overflow:hidden;
 	width:210px;
 }
