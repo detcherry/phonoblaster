@@ -924,11 +924,15 @@ input#search:focus{
 }
 
 #search-tab .item-title{
-	width:167px;
+	width:166px;
 }
 
 #search-tab .item-subtitle{
-	width:171px;
+	width:170px;
+}
+
+#search-tab .item a.btn{
+	margin-right:-18px;
 }
 
 /* ------- ITEMS (BUFFER) ------- */
@@ -1250,11 +1254,11 @@ span#messages-alert{
 #messages-feed .item-title{
 	padding-top:0px;
 	padding-bottom:4px;
-	width:118px;
+	width:115px;
 }
 
 #messages-feed .item-subtitle{
-	width:120px;
+	width:118px;
 }
 
 #messages-feed .item a.btn{
