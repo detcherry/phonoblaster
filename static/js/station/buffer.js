@@ -155,69 +155,6 @@ BufferManager.prototype.add = function(new_event){
 	}
 }
 
-BufferManager.prototype.UIWallDisplay = function(item){	
-	var id = item.id;
-	var content = item.content;
-	
-	var youtube_id = content.youtube_id;
-	var youtube_title = content.youtube_title;
-	var youtube_duration = PHB.convertDuration(content.youtube_duration)
-	var youtube_thumbnail = "https://i.ytimg.com/vi/" + youtube_id + "/default.jpg";
-	var preview = "https://www.youtube.com/embed/" + content.youtube_id + "?autoplay=1"
-
-	var track_submitter_name = content.track_submitter_name;
-	var track_submitter_url = content.track_submitter_url;
-	
-	var station = this.client.host;
-	var station_name = station.name;
-	var station_url = PHB.site_url + "/" + station.shortname;
-	var station_picture = "https://graph.facebook.com/" + station.key_name + "/picture?type=square";
-	
-	var div = $("<div/>").addClass("item-wrapper").attr("id", id)
-	
-	div.append(
-		$("<div/>")
-			.addClass("item-wrapper-submitter")
-			.append($("<img/>").attr("src", station_picture))
-	)
-	.append(
-		$("<div/>")
-			.addClass("item-wrapper-content")
-			.append(
-				$("<p/>")
-					.append($("<a/>").attr("href", station_url).html(station_name))
-					.append(" added ")
-					.append($("<a/>").attr("href", track_submitter_url).html(track_submitter_name))
-					.append(" suggestion to his live selection")
-			)
-			.append(
-				$("<div/>")
-					.addClass("item")
-					.append(
-						$("<div/>")
-							.addClass("item-picture")
-							.append($("<img/>").attr("src", youtube_thumbnail))
-					)
-					.append(
-						$("<div/>")
-							.addClass("item-title")
-							.append($("<span/>").addClass("middle").html(youtube_title))
-					)
-					.append(
-						$("<div/>")
-							.addClass("item-subtitle")
-							.append($("<div/>").addClass("item-duration").html(youtube_duration))
-					)
-			)
-	)
-	
-	// Clear init content in the tab (if any)
-	$("#suggestions-tab .init").remove();
-	
-	// Append this div to the tab made of suggestions
-	div.prependTo("#suggestions-tab .tab-content:nth-child(2)");
-}
-
 BufferManager.prototype.pushRemove = function(new_event){
 	
 	var that = this;
@@ -809,38 +746,20 @@ BufferManager.prototype.UIFail = function(btn){
 	}, 2000)
 },
 
-BufferManager.prototype.UIAdd = function(new_item, previous_item){
+BufferManager.prototype.UIAdd = function(new_item, previous_item){	
+	// If the item was initially displayed, we don't care (honey badger style) and remove it
+	this.UIRemove(new_item.id);
+	var new_item_div = this.UIBuild(new_item);		
 	
-	if(this.client.admin){
-		// If the item was initially displayed, we don't care (honey badger style) and remove it
-		this.UIRemove(new_item.id);
-		var new_item_div = this.UIBuild(new_item);		
-		
-		if(previous_item){
-			// If there was a previous item, we insert the new item just before
-			var re = RegExp("[.]","g");
-			var previous_item_selector = this.selector + " #" + previous_item.id.replace(re, "\\.");
-			this.UIInsert(new_item_div, previous_item_selector)
-		}
-		else{
-			// Else, we have to append the item at the top of the column
-			this.UIPrepend(new_item_div); // Specific to the BufferManager
-		}
+	if(previous_item){
+		// If there was a previous item, we insert the new item just before
+		var re = RegExp("[.]","g");
+		var previous_item_selector = this.selector + " #" + previous_item.id.replace(re, "\\.");
+		this.UIInsert(new_item_div, previous_item_selector)
 	}
 	else{
-		// If user not admin and incoming track suggestion, we display something on the station wall
-		if(!this.client.admin && new_item.content.track_submitter_key_name != this.client.host.key_name){
-			// If user suggestion submitter, display notification
-			if(new_item.content.track_submitter_key_name == this.client.listener.key_name){
-				$("#notifications").removeClass("off").addClass("on");
-			}
-
-			// In case rebroadcast was already displayed somewhere else
-			this.UIRemove(new_item.id);
-
-			// Display the rebroadcast on the station wall
-			this.UIWallDisplay(new_item);
-		}
+		// Else, we have to append the item at the top of the column
+		this.UIPrepend(new_item_div); // Specific to the BufferManager
 	}
 }
 
