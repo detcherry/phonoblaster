@@ -6,9 +6,12 @@ from google.appengine.ext import db
 from models.db.station import Station
 
 class Message(db.Model):
-	message = db.StringProperty(default ="", required = True)
-	author = db.ReferenceProperty(Station, required = True, collection_name = "commentAuthor")
-	host = db.ReferenceProperty(Station, required = True, collection_name = "commentHost")
+	message = db.StringProperty()
+	youtube_id = db.StringProperty()
+	youtube_title = db.StringProperty()
+	youtube_duration = db.IntegerProperty()
+	author = db.ReferenceProperty(Station, required = True, collection_name = "messageAuthor")
+	host = db.ReferenceProperty(Station, required = True, collection_name = "messageHost")
 	created = db.DateTimeProperty(auto_now_add = True)
 	
 	@staticmethod
@@ -43,13 +46,29 @@ class Message(db.Model):
 		extended_message = None
 		
 		if(author):
-			extended_comment = {
-				"key_name": message.key().name(),
-				"message": message.message,
-				"created": timegm(message.created.utctimetuple()),
-				"author_key_name": author.key().name(),
-				"author_name": author.name,
-				"author_url": "/" + author.shortname,
-			}
+			if(message.message):
+				extended_message = {
+					"key_name": message.key().name(),
+					"text": message.message,
+					"youtube_id": None,
+					"youtube_title": None,
+					"youtube_duration": None,
+					"created": timegm(message.created.utctimetuple()),
+					"author_key_name": author.key().name(),
+					"author_name": author.name,
+					"author_url": "/" + author.shortname,
+				}
+			else:
+				extended_message = {
+					"key_name": message.key().name(),
+					"text": None,
+					"youtube_id": message.youtube_id,
+					"youtube_title": message.youtube_title,
+					"youtube_duration": message.youtube_duration,
+					"created": timegm(message.created.utctimetuple()),
+					"track_submitter_key_name": author.key().name(),
+					"track_submitter_name": author.name,
+					"track_submitter_url": "/" + author.shortname,
+				}
 
-		return extended_comment
+		return extended_message
