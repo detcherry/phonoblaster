@@ -1203,6 +1203,7 @@ span#messages-alert{
 
 #messages-feed{
 	width:92%;
+	min-height:214px;
 	margin-right:4%;
 	margin-left:4%;
 	background:white;
