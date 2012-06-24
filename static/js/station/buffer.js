@@ -134,6 +134,9 @@ BufferManager.prototype.add = function(new_event){
 			
 			// Add it to the UI
 			that.UIAdd(item, previous_item);
+			
+			// Refresh next track
+			that.displayNextTrack();
 		});
 				
 	}
@@ -150,7 +153,10 @@ BufferManager.prototype.add = function(new_event){
 			}
 
 			// Add it to the UI anyway
-			that.UIAdd(item, previous_item);			
+			that.UIAdd(item, previous_item);
+			
+			// Refresh next track
+			that.displayNextTrack();			
 		})
 	}
 }
@@ -163,6 +169,8 @@ BufferManager.prototype.pushRemove = function(new_event){
 		// Remove from the UI
 		that.UIRemove(new_event.id);
 		
+		// Refresh next track
+		that.displayNextTrack();
 	});
 }
 
@@ -886,6 +894,9 @@ BufferManager.prototype.play = function(){
 		// Post action to FACEBOOK
 		that.postAction(new_live_item);
 		
+		// Display next track
+		that.displayNextTrack();
+		
 		var timeout = new_live_item.content.youtube_duration - start;
 		
 		// Program the next play
@@ -907,7 +918,7 @@ BufferManager.prototype.UIRefresh = function(){
 	this.UIRemove(this.live_item.id)
 	
 	// Replace old live item at the bottom
-	this.UIAppend(item_div)
+	this.UIAppend(item_div)	
 }
 
 BufferManager.prototype.postAction = function(item){	
@@ -929,4 +940,31 @@ BufferManager.prototype.postAction = function(item){
 		
 		FACEBOOK.putAction(action, obj, extra, expires_in);
 	}
+}
+
+/* --------------------------------- NEXT TRACK --------------------------------- */
+
+BufferManager.prototype.displayNextTrack = function(){
+	
+	var items = this.items;
+	var next_item = null;
+	if(items.length == 0){
+		$("#panel-box p.logged").html("Nothing yet")
+	}
+	else{
+		if(items.length == 1){
+			next_item = items[0]
+		}
+		else{
+			next_item = items[1]
+		}
+		
+		var content = next_item.content;
+		var youtube_title = content.youtube_title;
+		var youtube_thumbnail = "https://i.ytimg.com/vi/" + content.youtube_id + "/default.jpg";
+		
+		$("#panel-box-picture").empty().append($("<img/>").attr("src", youtube_thumbnail))
+		$("#panel-box p.logged").html(youtube_title)
+	} 
+	
 }
