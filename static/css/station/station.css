@@ -454,6 +454,7 @@ a.listener img{
 	padding:15px;
 	height:60px;
 	width:450px;
+	opacity:0.95;
 	background:white;
 	border:1px solid #E1E1E1;
 }
@@ -537,7 +538,7 @@ a.listener img{
 	clear:left;
 	padding-right:4px;
 	padding-top:4px;
-	color:#C4C4C4;
+	color:#7F7F7F;
 	height:16px;
 	line-height:20px;
 	overflow:hidden;
