@@ -36,12 +36,9 @@ SearchManager.prototype.inputListen = function(){
 		// Hide Twipsy
 		$(this).twipsy("hide");
 		
-		var default_content = "Suggest a track to the broadcaster"	
-		if(that.client.admin){
-			var default_content = "Add a track to your selection"
-		}
-			
+		var default_content = "Add a track to your selection"			
 		var content = $(this).val()
+		
 		if(content == default_content || content == ""){
 			//Clear the input text
 			$(this).val("")
@@ -165,18 +162,9 @@ SearchManager.prototype.serverToLocalItem = function(raw_item){
 		"youtube_duration": raw_item.duration, // Here it's specific to Youtube
 		"track_id": null,
 		"track_created": null,
-	}
-	
-	// The condition below is specific to Youtube search because the track has not been posted to Phonoblaster yet
-	if(this.client.admin){
-		new_track["track_submitter_key_name"] = this.client.host.key_name;
-		new_track["track_submitter_name"] = this.client.host.name;
-		new_track["track_submitter_url"] = "/" + this.client.host.shortname;
-	}
-	else{
-		new_track["track_submitter_key_name"] = this.client.listener.key_name;
-		new_track["track_submitter_name"] = this.client.listener.name;
-		new_track["track_submitter_url"] = "/" + this.client.listener.shortname;
+		"track_submitter_key_name": this.client.host.key_name,
+		"track_submitter_name": this.client.host.name,
+		"track_submitter_url": "/" + this.client.host.shortname,
 	}
 	
 	var item = {

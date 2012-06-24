@@ -113,22 +113,9 @@ TabManager.prototype = {
 				}
 			}
 
-			that.process(btn, to_submit);
+			that.client.buffer_manager.postSubmit(btn, to_submit);
 			return false;			
 		})
-	},
-	
-	// Dispatch if the user is admin (buffer) or not (suggest)
-	process: function(btn, to_submit){
-		// If station admin it's a broadcast
-		if(this.client.admin){
-			var process_manager = this.client.buffer_manager;
-		}
-		// Otherwise it's a suggestion
-		else{
-			var process_manager = this.client.suggestion_manager;
-		}
-		process_manager.postSubmit(btn, to_submit);
 	},
 	
 	// Collect the data necessary to GET items from the server
@@ -203,7 +190,6 @@ TabManager.prototype = {
 				callback(json.response);
 			},
 		});
-		
 	},
 	
 	postCallback: function(item, response){
@@ -441,14 +427,7 @@ ScrollTabManager.prototype.UIBuild = function(item){
 	var youtube_title = content.youtube_title;
 	var youtube_duration = PHB.convertDuration(content.youtube_duration)
 	var youtube_thumbnail = "https://i.ytimg.com/vi/" + youtube_id + "/default.jpg";
-	var preview = "https://www.youtube.com/embed/" + youtube_id + "?autoplay=1"
-	
-	var process_action = "Suggest"
-	var process_info = "Suggest this track to the broadcaster"
-	if(this.client.admin){
-		process_action = "Add"
-		process_info = "Add this track to your selection"
-	}
+	var preview = "https://www.youtube.com/embed/" + youtube_id + "?autoplay=1" 
 	
 	var div = $("<div/>").addClass("item").attr("id",id)
 	div.append(
@@ -472,9 +451,9 @@ ScrollTabManager.prototype.UIBuild = function(item){
 						$("<a/>")
 							.addClass("btn")
 							.attr("name", id)
-							.html(process_action)
+							.html("Add")
 							.addClass("tuto")
-							.attr("data-original-title", process_info)
+							.attr("data-original-title", "Add this track to your selection")
 					)
 					.append(
 						$("<a/>")

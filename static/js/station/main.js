@@ -16,7 +16,6 @@ Client.prototype = {
 
 		this.session_manager = null;
 		this.message_manager = null;
-		this.suggestion_manager = null;
 		this.buffer_manager = null;
 		this.search_manager = null;
 		this.track_manager = null;
@@ -99,7 +98,6 @@ Client.prototype = {
 			that.search_manager = new SearchManager(that); // No Fetching
 			
 			that.message_manager = new MessageManager(that); // Fetching
-			that.suggestion_manager = new SuggestionManager(that); // Fetching	
 			that.track_manager = new TrackManager(that); // Lazy fetching
 			that.like_manager = new LikeManager(that); // Lazy fetching
 			that.share_manager = new ShareManager(that);
@@ -125,9 +123,6 @@ Client.prototype = {
 		}
 		if(entity == "message"){
 			manager = this.message_manager;
-		}
-		if(entity == "suggestion"){
-			manager = this.suggestion_manager;
 		}
 		if(entity == "background"){
 			manager = this.background_manager;

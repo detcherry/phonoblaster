@@ -3,9 +3,6 @@
 		<div class="container">
 			<h1>Phonoblaster</h1>
 			<a id="logo" href="/"></a>
-			{% if station_proxy %}
-			<a href="#" id="notifications" class="off"></a>
-			{% endif %}
 			<ul id="menu">
 			{% if user_proxy %}
 				<li>
@@ -46,8 +43,10 @@
 				</li>
 				{% endif %}
 			{% else %}
-				<li>Broadcast your music now!</li>
-				<li><a href="#" class="login">Login with Facebook</a></li>
+				{% if not station_proxy %}
+					<li>Broadcast your music now!</li>
+					<li><a href="#" class="login">Login with Facebook</a></li>
+				{% endif %}
 			{% endif %}
 			</ul>
 		</div>

@@ -34,6 +34,7 @@ class ApiMessagesHandler(BaseHandler):
 	@login_required
 	def post(self):
 		message = json.loads(self.request.get("content"))
+		logging.info(message)
 		shortname = self.request.get("shortname")
 		
 		host_proxy = StationApi(shortname)
@@ -44,12 +45,21 @@ class ApiMessagesHandler(BaseHandler):
 			author_key = db.Key.from_path("Station", self.user_proxy.profile["key_name"])
 			author = db.get(author_key)
 			
+			if(message["text"]):
+				text = message["text"][:500].replace("\n"," ")
+			else:
+				text = None
+				
 			new_message = Message(
 				key_name = message["key_name"],
-				message = message["message"][:500].replace("\n"," "),
+				message = text,
+				youtube_id = message["youtube_id"],
+				youtube_title = message["youtube_title"],
+				youtube_duration = message["youtube_duration"],
 				host = self.host.key(),
 				author = author_key,
 			)
+				
 			new_message.put()
 			logging.info("New message put to the datastore")
 		

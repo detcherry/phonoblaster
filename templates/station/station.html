@@ -116,18 +116,8 @@
 			<span class="figure">{{ station_proxy.number_of_visits }}</span>
 			<span class="title"> Visits</span>
 		</div>
-		<!-- Suggestions counter -->
-		<div id="suggestions" class="stat">
-			<span class="figure">{{ station_proxy.number_of_suggestions }}</span>
-			<span class="title"> Suggestions</span>
-		</div>
 		<!-- Panel box (Upper right) -->
 		<div id="panel-box">
-			<div id="panel-outer-circle" class="show-panel">
-				<div id="panel-inner-circle" class="show-panel">
-				</div>
-			</div>
-			<div id="panel-box-content">
 			{% if user_proxy %}
 				<div id="panel-box-picture">
 					<!-- Example -->
@@ -140,37 +130,34 @@
 						Loading...
 					</p>
 				</div>
-				<a href="#" class="btn show-panel">{% if is_admin %}Add{% else %}Suggest{% endif %} new tracks!</a>
+				{% if is_admin %}<a href="#" class="btn show-panel">Add new tracks!</a>{% endif %}
 			{% else %}
 				<h3 class="unlogged">Broadcast your music!</h3>
 				<p class="unlogged">With Phonoblaster, live broadcast your favorite music to your friends or fans</p>
 				<a href="#" class="login">Login with Facebook</a>
 			{% endif %}
-			</div>
 		</div>
 		<!-- Overlay (left) -->
 		<div id="overlay" class="stretch">
+			{% if is_admin %}
 			<!-- Panel for back office (Right) -->
 			<div id="panel" class="stretch">
-				<div id="tabs-wrapper" class="{% if is_admin %}admin{% endif %}">
-					{% if is_admin %}
+				<div id="tabs-wrapper">
 					<!-- Broadcaster tabs header -->
 					<ul id="tabs">
 						<li><a href="#buffer-tab" class="current" id="buffer-header"></a></li>
-						<li><a href="#suggestions-tab" id="suggestions-header"></a></li>
 						<li><a href="#likes-tab" id="likes-header"></a></li>
 						<li><a href="#tracks-tab" id="tracks-header"></a></li>
 						<li><a href="#sets-tab" id="sets-header"></a></li>
 					</ul>
-					{% endif %}
-					<!-- {% if is_admin %}Buffer{% else %}Suggestion{% endif %} tab -->
-					<div class="tab" id="{% if is_admin %}buffer-tab{% else %}suggestions-tab{% endif%}">
+					<!-- Buffer tab -->
+					<div class="tab" id="buffer-tab">
 						<div class="tab-header">
 							<a href="#" class="hide-panel">X</a>
-							<h4>{% if is_admin %}On air{% else %}Wall{% endif %}</h4>
+							<h4>On air</h4>
 							<!-- Search box -->
 							<div id="search-box">
-								<input type="text" value="{% if is_admin %}Add a track to your selection{% else %}Suggest a track to the broadcaster{% endif %}" id="search" autocomplete="off" class="tuto" data-original-title="Search and {% if is_admin %}add{% else %}suggest{% endif %} tracks from Youtube (soon: Soundcloud)"/>
+								<input type="text" value="Add a track to your selection" id="search" autocomplete="off" class="tuto" data-original-title="Search and add tracks from Youtube (soon: Soundcloud)"/>
 								<div id="search-icon"></div>
 								<div id="search-overlay"></div>
 								<div id="search-tab">
@@ -178,11 +165,11 @@
 								</div>
 							</div>
 						</div>
-						<!-- {% if is_admin %}Buffer{% else %}Suggestion{% endif %} feed -->
+						<!-- Buffer feed -->
 						<div class="tab-content">
 							<!-- Example -->
 							<!--
-								<div class="item" id="live">
+								<div class="item">
 									<div class="item-picture">
 										<img src="http://i1.ytimg.com/vi/yBP_Re9r9MI/default.jpg">
 									</div>
@@ -201,19 +188,7 @@
 									</div>
 								</div>
 							-->
-							<div class="init">{% if is_admin %}Nothing on the air{% else %}Post a suggestion{% endif %}</div>
-						</div>
-					</div>
-					{% if is_admin %}
-					<!-- Suggestions tab -->
-					<div class="tab" id="suggestions-tab" style="display:none;">
-						<div class="tab-header">
-							<a href="#" class="hide-panel">X</a>
-							<h4>Your listeners suggestions</h4>
-						</div>
-						<!-- Suggestions feed -->
-						<div class="tab-content">
-							<div class="init">No suggestion</div>
+							<div class="init">Nothing on the air</div>
 						</div>
 					</div>
 					<!-- Likes tab -->
@@ -249,24 +224,25 @@
 							<div class="init">Soon available</div>
 						</div>
 					</div>
-					{% endif %}
 				</div>
 			</div>
+			{% endif %}
 		</div> 
 	</div>
-	<!-- Chat -->
-	<div id="chat">
-		<div id="chat-header">
+	<!-- Messages -->
+	<div id="messages">
+		<div id="messages-header">
 			<span class="round"></span>
-			<span id="chat-title">Chat</span>
-			<span id="chat-alert">
-				<span id="chat-alert-number">0</span>
-				<span id="chat-alert-arrow"></span>
+			<span id="messages-title">Chat</span>
+			<span id="messages-alert">
+				<span id="messages-alert-number">0</span>
+				<span id="messages-alert-arrow"></span>
 			</span>
 		</div>
-		<div id="chat-content">
-			<div id="chat-wrapper">
-				<div id="chat-feed">
+		<div id="messages-content">
+			<!-- Main screen-->
+			<div id="messages-wrapper">
+				<div id="messages-feed">
 					<!-- Example -->
 					<!--
 					<div class="im">
@@ -281,19 +257,24 @@
 					-->
 				</div>
 			</div>
-			<div id="chat-field">
-				<div id="chat-picture">
-					{% if user_proxy %}
-					<img src="https://graph.facebook.com/{{ user_proxy.profile.key_name }}/picture?type=square">
-					{% else %}
-					<img src="/{{tag}}/static/images/unknown.png">
-					{% endif %}
-				</div>
-				<form method="post" action="" id="chat-form">
-					<input type="text" name="chat" id="chat-input" value="Share the love..." autocomplete="off"/>
-					<input type="submit"id="chat-submit" value="Send"/>
+			<div id="messages-field">
+				{% if not is_admin %}
+				<ul id="messages-options">
+					<li><a href="#text-form" class="current" id="text-option"></a></li>
+					<li><a href="#track-form" id="track-option"></a></li>
+				</ul>
+				{% endif %}
+				<form method="post" action="" id="text-form" class="{% if is_admin %}admin{% endif %}">
+					<input type="text" value="Send a message..." autocomplete="off"/>
 				</form>
+				{% if not is_admin %}
+				<form method="post" action="" id="track-form">
+					<input type="text" value="Suggest a track..." autocomplete="off"/>
+				</form>
+				{% endif %}
 			</div>
+			<!-- Secondary screen -->
+			<div id="messages-suggestions"></div>
 		</div>
 	</div>
 	<!-- Recommandation popup -->
@@ -304,23 +285,6 @@
 		<div class="modal-footer">
 			<a class="btn primary">Go to station</a>
 		</div>
-	</div>
-	<!-- Suggestion popup -->
-	<div class="popup" id="popup-suggestion">
-		<h2>Suggest now!</h2>
-		<div class="item">
-			<div class="item-picture"><!-- No image yet --></div>
-			<div class="item-title">
-				<span class="middle"><!-- No title yet --></span>
-			</div>
-		</div>
-		<h3>If you wanna say something cool, do it below:</h3>
-		<form action="#" method="post">
-			<textarea></textarea>
-			<div class="modal-footer">
-				<input type="submit" class="btn primary" value="Suggest!"/>
-			</div>
-		</form>
 	</div>
 {% endblock %}
 
@@ -345,7 +309,6 @@
 <script type="text/javascript" src="/{{tag}}/static/js/station/background.js"></script>
 <script type="text/javascript" src="/{{tag}}/static/js/station/messages.js"></script>
 <script type="text/javascript" src="/{{tag}}/static/js/station/search.js"></script>
-<script type="text/javascript" src="/{{tag}}/static/js/station/suggestions.js"></script>
 <script type="text/javascript" src="/{{tag}}/static/js/station/likes.js"></script>
 <script type="text/javascript" src="/{{tag}}/static/js/station/tracks.js"></script>
 <script type="text/javascript" src="/{{tag}}/static/js/station/youtube.js"></script>

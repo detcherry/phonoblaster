@@ -9,6 +9,7 @@
 
 .topbar-inner{
 	padding-top:10px;
+	padding-bottom:10px;
 	width:100%;
 }
 
@@ -36,6 +37,7 @@ ul#menu{
 	float:right;
 	margin:0px;
 	margin-top:-10px;
+	margin-bottom:-10px;
 }
 
 ul#menu li{
