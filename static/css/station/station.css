@@ -588,7 +588,6 @@ a.listener img{
 /* -------- PANEL --------*/
 
 #panel{
-	display:none;
 	position:relative;
 	top:0px;
 	left:440px;
