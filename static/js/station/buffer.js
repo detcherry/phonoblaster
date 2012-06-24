@@ -76,6 +76,12 @@ BufferManager.prototype.noData = function(){
 	$("#youtube-player").append($("<p/>").html("No live track."));
 	$("#media-title").html("No current track.")
 	
+	// Buffer panel
+	$(this.selector + " .init").html("Nothing on the air")
+	
+	// Next track
+	$("#panel-box p.logged").html("Nothing yet")
+	
 	if(this.client.admin){
 		// Open the recommandation manager
 		this.recommandation_manager = new RecommendationManager(this.client)
