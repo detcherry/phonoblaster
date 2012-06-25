@@ -24,13 +24,10 @@ from models.api.user import UserApi
 from models.api.admin import AdminApi
 
 MEMCACHE_STATION_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".station."
-MEMCACHE_STATION_QUEUE_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".queue.station."
 MEMCACHE_STATION_SESSIONS_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".sessions.station."
-MEMCACHE_STATION_BROADCASTS_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".broadcasts.station."
 MEMCACHE_STATION_TRACKS_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".tracks.station."
 MEMCACHE_STATION_BUFFER_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".buffer.station."
 MEMCACHE_STATION_LIKES_PREFIX = os.environ["CURRENT_VERSION_ID"] + ".likes.station."
-COUNTER_OF_BROADCASTS_PREFIX = "station.broadcasts.counter."
 COUNTER_OF_VISITS_PREFIX = "station.visits.counter."
 COUNTER_OF_LIKES = "station.likes.counter."
 
@@ -39,13 +36,10 @@ class StationApi():
 	def __init__(self, shortname):
 		self._shortname = shortname
 		self._memcache_station_id = MEMCACHE_STATION_PREFIX + self._shortname
-		self._memcache_station_queue_id = MEMCACHE_STATION_QUEUE_PREFIX + self._shortname
 		self._memcache_station_sessions_id = MEMCACHE_STATION_SESSIONS_PREFIX + self._shortname
-		self._memcache_station_broadcasts_id = MEMCACHE_STATION_BROADCASTS_PREFIX + self._shortname
 		self._memcache_station_tracks_id = MEMCACHE_STATION_TRACKS_PREFIX + self._shortname
 		self._memcache_station_buffer_id = MEMCACHE_STATION_BUFFER_PREFIX + self._shortname
 		self._memcache_station_likes_id = MEMCACHE_STATION_LIKES_PREFIX + self._shortname
-		self._counter_of_broadcasts_id = COUNTER_OF_BROADCASTS_PREFIX + self._shortname
 		self._counter_of_visits_id = COUNTER_OF_VISITS_PREFIX + self._shortname
 		self._counter_of_likes_id = COUNTER_OF_LIKES + self._shortname
 	
@@ -545,7 +539,7 @@ class StationApi():
 		return(30 - len(self.buffer['broadcasts']))
 
 	########################################################################################################################################
-	#													END BUFFER
+	#													VISITS
 	########################################################################################################################################
 
 	# Visits counter
@@ -559,26 +553,17 @@ class StationApi():
 	def increment_visits_counter(self):
 		shard_name = self._counter_of_visits_id
 		Shard.task(shard_name, "increment")
-	
+		
+	########################################################################################################################################
+	#													TRACKS
+	########################################################################################################################################
+
 	def get_tracks(self, offset):
-		timestamp = timegm(offset.utctimetuple())
-		memcache_tracks_id = self._memcache_station_tracks_id + "." + str(timestamp)
+		tracks = self.tracks_query(offset)
+		extended_tracks = Track.get_extended_tracks(tracks)
 		
-		past_tracks = memcache.get(memcache_tracks_id)
-		if past_tracks is None:
-			logging.info("Past tracks not in memcache")
-			
-			tracks = self.tracks_query(offset)
-			logging.info("Past tracks retrieved from datastore")
-			
-			past_tracks = Track.get_extended_tracks(tracks)
-			
-			memcache.set(memcache_tracks_id, past_tracks)
-			logging.info("Extended tracks put in memcache")
-		else:
-			logging.info("Past tracks already in memcache")
-		
-		return past_tracks
+		return extended_tracks
+	
 	
 	def tracks_query(self, offset):		
 		q = Track.all()
@@ -594,26 +579,11 @@ class StationApi():
 	########################################################################################################################################
 	
 	def get_likes(self, offset):
-		timestamp = timegm(offset.utctimetuple())
-		memcache_likes_id = self._memcache_station_likes_id + "." + str(timestamp)
-		
-		past_likes = memcache.get(memcache_likes_id)
-		if past_likes is None:
-			logging.info("Past likes not in memcache")
+		likes = self.likes_query(offset)
+		extended_likes = Like.get_extended_likes(likes)
 			
-			likes = self.likes_query(offset)
-			logging.info("Past likes retrieved from datastore")
-			
-			extended_likes = Like.get_extended_likes(likes)
-			past_likes = extended_likes
-			
-			memcache.set(memcache_likes_id, past_likes)
-			logging.info("Extended likes put in memcache")
-		else:
-			logging.info("Likes already in memcache")
-		
-		return past_likes
-
+		return extended_likes
+	
 	def likes_query(self, offset):
 		q = Like.all()
 		q.filter("listener", self.station)
