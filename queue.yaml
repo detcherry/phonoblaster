@@ -1,7 +1,4 @@
 queue:
-- name: broadcasts-queue
-  rate: 500/s
-  bucket_size: 100
 - name: messages-queue
   rate: 500/s
   bucket_size: 100
@@ -9,9 +6,6 @@ queue:
   rate: 500/s
   bucket_size: 100
 - name: counters-queue
-  rate: 500/s
-  bucket_size: 100
-- name: suggestions-queue
   rate: 500/s
   bucket_size: 100
 - name: worker-queue

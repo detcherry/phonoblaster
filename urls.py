@@ -12,12 +12,10 @@ from controllers.station.station import StationHandler
 from controllers.station.picture import StationPictureHandler
 from controllers.station.broadcast import BroadcastHandler
 from controllers.station.track import TrackHandler
-from controllers.station.suggestion import SuggestionHandler
 from controllers.station.page import StationPageHandler
 from controllers.api.background import ApiBackgroundHandler
 from controllers.api.buffer import ApiBufferHandler
 from controllers.api.buffer import ApiBufferDeleteHandler
-from controllers.api.suggestions import ApiSuggestionsHandler
 from controllers.api.likes import ApiLikesHandler
 from controllers.api.likes import ApiLikesDeleteHandler
 from controllers.api.messages import ApiMessagesHandler
@@ -56,7 +54,6 @@ app = webapp2.WSGIApplication(
 		('/api/(\w+)/background', ApiBackgroundHandler),
 		('/api/buffer', ApiBufferHandler),
 		('/api/buffer/([\w.]+)', ApiBufferDeleteHandler),
-		('/api/suggestions', ApiSuggestionsHandler),
 		('/api/likes', ApiLikesHandler),
 		('/api/likes/(\w+)', ApiLikesDeleteHandler),
 		('/api/tracks', ApiTracksHandler),
@@ -76,7 +73,6 @@ app = webapp2.WSGIApplication(
 		('/profile/init', ProfileInitHandler),
 		('/profile/switch/([0-9]+)', ProfileSwitchHandler),
 		('/track/([0-9]+)', TrackHandler),
-		('/suggestion/([\w.]+)', SuggestionHandler),
 		('/station/page', StationPageHandler),
 		('/company/terms', TermsHandler),
 		('/company/faq', FaqHandler),

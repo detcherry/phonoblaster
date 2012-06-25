@@ -44,18 +44,6 @@ indexes:
   - name: host
   - name: created
 
-- kind: Suggestion
-  properties:
-  - name: host
-  - name: created
-    direction: desc
-
-- kind: Suggestion
-  properties:
-  - name: host
-  - name: submitter
-  - name: created
-
 - kind: Track
   properties:
   - name: station
