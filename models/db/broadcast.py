@@ -17,7 +17,6 @@ class Broadcast(db.Model):
 	station = db.ReferenceProperty(Station, required = True, collection_name = "broadcastStation")
 	submitter = db.ReferenceProperty(Station, required = False, collection_name = "broadcastSubmitter")
 	created = db.DateTimeProperty(auto_now_add = True)
-	expired = db.DateTimeProperty()
 
 	@staticmethod
 	def get_extended_broadcasts(broadcasts, host):

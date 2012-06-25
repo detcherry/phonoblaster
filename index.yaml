@@ -16,16 +16,6 @@ indexes:
   - name: created
     direction: desc
 
-- kind: Broadcast
-  properties:
-  - name: station
-  - name: expired
-
-- kind: Broadcast
-  properties:
-  - name: track
-  - name: expired
-
 - kind: Like
   properties:
   - name: listener
