@@ -44,6 +44,7 @@ class ApiBufferHandler(BaseHandler):
 
 		station_proxy = StationApi(shortname)
 		data = None
+		response = None
 
 		if(station_proxy.station):
 			key_name = station_proxy.station.key().name()
