@@ -1,17 +1,37 @@
-/*---------- HOME PAGE -------------- */
+/* --------- MODIFICATIONS ---------- */
 
-#welcome{
+#main{
+	padding-bottom:0px;
+}
+
+#main .container{
+	margin:0px;
+	padding:0px;
 	width:100%;
 }
 
-#welcome img{
+#main .slide .container{
+	margin:auto;
+	width:940px;
+	padding-left:10px;
+	padding-right:10px;
+}
+
+/*---------- HOME PAGE -------------- */
+
+#slide0{
+	width:100%;
+}
+
+#slide0 img{
 	display:block;
 	margin:auto;
 }
 
-#welcome .stroke{
+#slide0 .stroke{
 	float:none;
 	margin:auto;
+	margin-top:-25px;
 }
 
 #welcome-title{
@@ -53,4 +73,173 @@
 	margin:0px;
 	margin-right:5px;
 	margin-bottom:-3px;	
+}
+
+#welcome-scroll{
+	float:right;
+	margin-right:45px;
+	width:90px;
+	text-align:center;
+	margin-top:5px;
+}
+
+#welcome-scroll span:first-child{
+	display:inline-block;
+	margin-bottom:20px;
+}
+
+#welcome-scroll span:last-child{
+	border:10px solid transparent;
+	border-top:10px solid #636363;
+}
+
+
+/* ---------- SLIDES ------------ */
+
+.slide{
+	height:1300px;
+	width:100%;
+	-webkit-background-size: cover;
+	-moz-background-size: cover;
+	-o-background-size: cover;
+	background-size: cover; 
+}
+
+#slide0{
+	height:700px;
+}
+
+#slide1a{
+	background: url("/static/images/welcome/slide1a.png") center 0 no-repeat fixed;
+}
+
+#slide1b{
+	display:none;
+	margin-top:-1300px;
+	background:url("/static/images/welcome/slide1b.png") center 0 no-repeat fixed;
+}
+
+#slide2a{
+	background:url("/static/images/welcome/slide2a.png") center 0 no-repeat fixed;
+}
+
+#slide2b{
+	margin-top:-1300px;
+	background:url("/static/images/welcome/slide2b.png") center 0 no-repeat fixed;
+}
+
+#slide2c{
+	margin-top:-1300px;
+	background:url("/static/images/welcome/slide2c.png") center 0 no-repeat fixed;
+}
+
+#slide3a{
+	background: url("/static/images/welcome/slide3a.png") center 0 no-repeat fixed;
+}
+
+#slide3b{
+	margin-top:-1300px;
+	background: url("/static/images/welcome/slide3b.png") center 0 no-repeat fixed;
+}
+
+#slide3c{
+	margin-top:-1300px;
+	background: url("/static/images/welcome/slide3c.png") center 0 no-repeat fixed;
+}
+
+#slide3d{
+	margin-top:-1300px;
+	background: url("/static/images/welcome/slide3d.png") center 0 no-repeat fixed;
+}
+
+#slide3e{
+	margin-top:-1300px;
+	background: url("/static/images/welcome/slide3e.png") center 0 no-repeat fixed;
+}
+
+#slide4{
+	background: url("/static/images/welcome/slide4.png") center 0 no-repeat fixed;
+}
+
+#slide5a{
+	background: url("/static/images/welcome/slide5a.png") center 0 no-repeat fixed;
+}
+
+#slide5b{
+	margin-top:-1300px;
+	background: url("/static/images/welcome/slide5b.png") center 0 no-repeat fixed;
+}
+
+#slide5c{
+	display:none;
+	margin-top:-1300px;
+	background: url("/static/images/welcome/slide5c.png") center 0 no-repeat fixed;
+}
+
+#slide5d{
+	display:none;
+	margin-top:-1300px;
+	background: url("/static/images/welcome/slide5d.png") center 0 no-repeat fixed;
+}
+
+#slide6a{
+	background: url("/static/images/welcome/slide6a.png") center 0 no-repeat fixed;	
+}
+
+#slide6b{
+	display:none;
+	margin-top:-1300px;
+	background: url("/static/images/welcome/slide6b.png") center 0 no-repeat fixed;	
+}
+
+#slide7a{
+	background: url("/static/images/welcome/slide7a.png") center 0 no-repeat fixed;
+}
+
+#slide7b{
+	display:none;
+	margin-top:-1300px;
+	background: url("/static/images/welcome/slide7b.png") center 0 no-repeat fixed;
+}
+
+#slide8a{
+	background: url("/static/images/welcome/slide8a.png") center 0 no-repeat fixed;
+}
+
+#slide8b{
+	background: url("/static/images/welcome/slide8b.png") center 0 no-repeat fixed;
+}
+
+#slide8c{
+	background: url("/static/images/welcome/slide8c.png") center 0 no-repeat fixed;
+}
+
+#slide8d{
+	background: url("/static/images/welcome/slide8d.png") center 0 no-repeat fixed;
+}
+
+#slide8e{
+	background: url("/static/images/welcome/slide8e.png") center 0 no-repeat fixed;
+}
+
+#slide8f{
+	background: url("/static/images/welcome/slide8f.png") center 0 no-repeat fixed;
+}
+
+#slide8g{
+	background: url("/static/images/welcome/slide8g.png") center 0 no-repeat fixed;
+}
+
+#slide8h{
+	background: url("/static/images/welcome/slide8h.png") center 0 no-repeat fixed;
+}
+
+#slide8left{
+	margin-top:-1300px;
+	background: url("/static/images/welcome/slide8left.png") center 0 no-repeat fixed;
+}
+
+#slide8right{
+	margin-top:-1300px;
+	background: url("/static/images/welcome/slide8right.png") center 0 no-repeat fixed;
 }
