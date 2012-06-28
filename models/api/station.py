@@ -392,6 +392,9 @@ class StationApi():
 				new_broadcast = Broadcast(
 					key_name = incoming_track["key_name"],
 					track = track.key(),
+					youtube_id = track.youtube_id,
+					youtube_title = track.youtube_title,
+					youtube_duration = track.youtube_duration,
 					station = self.station.key(),
 					submitter = submitter_key,
 				)
