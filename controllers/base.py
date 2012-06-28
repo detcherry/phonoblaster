@@ -160,7 +160,7 @@ class BaseHandler(webapp2.RequestHandler):
 			templates = os.path.join(os.path.dirname(__file__),"../templates/")
 			jinja = jinja2.Environment(loader=jinja2.FileSystemLoader(templates))
 			template = jinja.get_template("error.html")
-			self.response.out.write(template.render(self._template_values))
+			self.response.out.write(template.render(template_values))
 			
 		else:
 			self.response.out.write(json.dumps({"error":"An error occurred."}))
