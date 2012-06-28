@@ -21,8 +21,8 @@ class Track(db.Model):
 	"""
 	
 	youtube_id = db.StringProperty(required = True)
-	youtube_title = db.StringProperty()
-	youtube_duration = db.IntegerProperty()
+	youtube_title = db.StringProperty(required = True)
+	youtube_duration = db.IntegerProperty(required = True)
 	station = db.ReferenceProperty(Station, required = True, collection_name = "trackStation")
 	created = db.DateTimeProperty(auto_now_add = True)
 
