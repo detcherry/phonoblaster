@@ -898,7 +898,7 @@ BufferManager.prototype.play = function(){
 		that.youtube_manager.init(new_live_item, start);
 		
 		// Post action to FACEBOOK
-		that.postAction(new_live_item);
+		that.postAction(new_live_item, start);
 		
 		// Display next track
 		that.displayNextTrack();
@@ -927,24 +927,33 @@ BufferManager.prototype.UIRefresh = function(){
 	this.UIAppend(item_div)	
 }
 
-BufferManager.prototype.postAction = function(item){	
+BufferManager.prototype.postAction = function(item, start){	
 	if(this.client.listener){
-		var broadcast_url = PHB.site_url + "/broadcast/" + item.id;
+		var offset = 10;	
 		
+		var broadcast_url = PHB.site_url + "/broadcast/" + item.id;
 		var obj = { "live": broadcast_url };
 		var extra = {};
-		var expires_in = item.content.youtube_duration;
+		var expires_in = item.content.youtube_duration - start - offset;
 		
-		if(this.client.admin){
-			// BROADCAST action
-			var action = "broadcast";
+		// If track still playing in 10 sec
+		if(expires_in > 0 && VOLUME){
+			if(this.client.admin){
+				// BROADCAST action
+				var action = "broadcast";
+			}
+			else{
+				// ATTEND action
+				var action = "attend";
+			}
+			
+			// Auto publish action after 10 sec interaction + VOLUME on
+			setTimeout(function(){
+				if(VOLUME){
+					FACEBOOK.putAction(action, obj, extra, expires_in);
+				}
+			}, offset * 1000)
 		}
-		else{
-			// ATTEND action
-			var action = "attend";
-		}
-		
-		FACEBOOK.putAction(action, obj, extra, expires_in);
 	}
 }
 
