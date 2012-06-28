@@ -60,12 +60,12 @@ class ApiBufferHandler(BaseHandler):
 						response = {
 							'response': False,
 							'error': 1, 
-							'message': 'Buffer full or track not found.'
+							'message': 'Buffer full or broadcast not found.'
 						}
 					else:
 						response = {
 							'response': True,
-							'message': 'Track successfully added to buffer.'
+							'message': 'Broadcast successfully added to buffer.'
 						}
 
 						now = datetime.utcnow()
@@ -85,7 +85,7 @@ class ApiBufferHandler(BaseHandler):
 					if extended_broadcast:
 						response = {
 							'response': True, 
-							'message': 'Track with key_name : '+ content + ' is now at : ' + position
+							'message': 'Broadcast with key_name: '+ content + ' is now at: ' + position
 						}
 
 						now = datetime.utcnow()

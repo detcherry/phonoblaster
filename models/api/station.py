@@ -243,15 +243,20 @@ class StationApi():
 			self._buffer = memcache.get(self._memcache_station_buffer_id)
 			if self._buffer is None:
 				station = self.station
+				
 				if station is not None and station.broadcasts is not None:
 					keys = station.broadcasts
 			 		broadcasts_entities = db.get(keys)
 			 		broadcasts = Broadcast.get_extended_broadcasts(broadcasts_entities, self.station)
 				else:
 					broadcasts = []
+				
 				timestamp = self.station.timestamp
 
-				self._buffer = {'broadcasts':broadcasts, 'timestamp':timestamp}
+				self._buffer = {
+					'broadcasts': broadcasts,
+					'timestamp': timestamp
+				}
 				
 				memcache.add(self._memcache_station_buffer_id, self._buffer)
 				logging.info("Buffer put in memcache")
