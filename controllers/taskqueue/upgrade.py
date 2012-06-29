@@ -26,7 +26,7 @@ class UpgradeHandler(webapp2.RequestHandler):
 		else:
 			logging.info("No cursor")
 			
-		broadcasts = q.fetch(2)
+		broadcasts = q.fetch(50)
 		
 		if(len(broadcasts) > 0):
 			track_keys = []
