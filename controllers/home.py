@@ -40,6 +40,7 @@ class HomeHandler(BaseHandler):
 				couple[name] = {
 					"station": s,
 					"broadcasts": [],
+					"live": None,
 				}
 				
 			for b in all_broadcasts:
@@ -76,14 +77,19 @@ class HomeHandler(BaseHandler):
 								'duration': broadcast.youtube_duration
 							}
 							
-							latest_active_stations.append(station)
-							live_broadcasts.append(live)
-							
+							couple[k]["live"] = live							
 							break
 
 						# We must keep browsing the list before finding the current track
 						else:
 							elapsed += duration
+			logging.info("Live broadcast determined for each station")
+			
+			for s in stations:
+				name = s.key().name()
+				if(couple[name]["live"]):
+					latest_active_stations.append(couple[name]["station"])
+					live_broadcasts.append(couple[name]["live"])
 			
 			# Display all the user stations
 			template_values = {
