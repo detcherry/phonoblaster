@@ -34,25 +34,25 @@ class HomeHandler(BaseHandler):
 			all_broadcasts = db.get(all_broadcasts_keys)
 			logging.info(str(len(all_broadcasts))+" broadcasts associated with stations retrieved from datastore")			
 			
-			broadcasts_group_by_station = []
-			for i in xrange(0, len(stations)):
-				host = stations[i]
-				host_key = host.key()
+			couple = {}
+			for s in stations:
+				name = str(s.key().name())
+				couple[name] = {
+					"station": s,
+					"broadcasts": [],
+				}
 				
-				broadcasts = []
-				for j in xrange(0, len(all_broadcasts)):
-					broadcast = all_broadcasts[j]
-					broadcast_host_key = Broadcast.station.get_value_for_datastore(broadcast)
-					
-					if(host_key == broadcast_host_key):
-						broadcasts.append(broadcast)
-				
-				broadcasts_group_by_station.append(broadcasts)
+			for b in all_broadcasts:
+				name = str(Broadcast.station.get_value_for_datastore(b).name())
+				couple[name]["broadcasts"].append(b)
 			logging.info("Broadcasts group by station")
-			
+						
 			# What is the live track for each station?
-			now = datetime.utcnow()			
-			for station, broadcasts in zip(stations, broadcasts_group_by_station):
+			now = datetime.utcnow()
+			for k, v in couple.iteritems():
+				station = v["station"]
+				broadcasts = v["broadcasts"]
+				
 				timestamp = station.timestamp
 				
 				elapsed = 0
