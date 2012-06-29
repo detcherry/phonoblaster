@@ -27,13 +27,12 @@ WelcomeManager.prototype = {
 			that.move("#slide2b", "backgroundPositionX", scrollStart2, scrollEnd2, -$(window).width(), $(window).width())
 
 			// Slide 3
-			var scrollStart3 = $("#slide3a").position().top - $("#slide2a").height();
+			var scrollStart3 = $("#slide3a").position().top - $("#slide3a").height();
 			var scrollEnd3 = $("#slide3a").position().top;
 			that.move("#slide3b", "backgroundPositionY", scrollStart3, scrollEnd3, $(window).height(), 0)
 			that.move("#slide3c", "backgroundPositionX", scrollStart3, scrollEnd3, -$(window).width(), 0)
 			that.move("#slide3d", "backgroundPositionX", scrollStart3, scrollEnd3, $(window).width(), 0)
 			that.move("#slide3e", "backgroundPositionY", scrollStart3, scrollEnd3, $(window).height(), 0)
-			
 
 			var state = y % 100
 
@@ -71,10 +70,29 @@ WelcomeManager.prototype = {
 				$("#slide7b").show();
 			}
 			
-			var scrollStart8 = $("#slide8h").position().top - $("#slide8h").height() + 500
-			var scrollEnd8 = $("#slide8h").position().top;
-			that.move("#slide8right", "backgroundPositionX", scrollStart8, scrollEnd8, $(window).width(), 0)
-			that.move("#slide8left", "backgroundPositionX", scrollStart8, scrollEnd8, -$(window).width(), 0)
+			// Slide 8: crowd getting closer
+			var scrollStart8 = $("#slide8a").position().top - $("#slide8a").height();
+			var scrollEnd8 = $("#slide8a").position().top;
+			that.move("#slide8b", "backgroundPositionX", scrollStart8, scrollEnd8, -$(window).width(), 0)
+			that.move("#slide8c", "backgroundPositionX", scrollStart8, scrollEnd8, $(window).width(), 0)
+			that.move("#slide8d", "backgroundPositionY", scrollStart8, scrollEnd8, $(window).width(), 0)
+			
+			// Slide 9: discover music 
+			var scrollStart9 = $("#slide9a").position().top - $("#slide9a").height();
+			var scrollEnd9 = $("#slide9a").position().top;
+			that.move("#slide9b", "backgroundPositionY", scrollStart9, scrollEnd9, -$(window).width(), 0)
+			
+			// Slide 11: bring their friends
+			var scrollStart11 = $("#slide11a").position().top - $("#slide11a").height();
+			var scrollEnd11 = $("#slide11a").position().top;
+			that.move("#slide11c", "backgroundPositionX", scrollStart11, scrollEnd11, $(window).width(), 0)
+			
+			if($(window).scrollTop() > scrollEnd11){
+				$("#slide11b").show()
+			}
+			else{
+				$("#slide11b").hide()
+			}
 			
 		})
 	},
@@ -111,7 +129,7 @@ WelcomeManager.prototype = {
 		}
 		else if(property == "backgroundPositionY"){
 			final_property = "backgroundPosition";
-			final_value = "0px " + value.toString() + "px"
+			final_value = "center " + value.toString() + "px"
 		}
 		
 		callback(final_property, final_value)
