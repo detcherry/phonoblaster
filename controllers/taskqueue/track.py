@@ -24,29 +24,26 @@ class TrackDeleteHandler(webapp2.RequestHandler):
 
 		if(track_id):
 			track = Track.get_by_id(int(track_id))
-			logging.info("Getting from datastore track with track_id = "+track_id)
+			logging.info("Getting from datastore track with track_id = " + track_id)
 
 			if(track):
 				logging.info("Track found")
 
 				if(typeModel == "broadcast"):
-					station_key = self.request.get("station_key")
-
-					# Deleting broadcats associated to track
+					# Deleting broadcasts associated to track
 					query = Broadcast.all()
 					query.filter("track", track)
-					query.filter("station", station_key)
 
 					if(cursor):
 						logging.info("Cursor found")
 						query.with_cursor(start_cursor = cursor)
 
 					broadcasts = query.fetch(100)
-					logging.info("Fetched : %d Broadcasts from datastore."%(len(broadcasts)))
+					logging.info("Fetched : %d Broadcast(s) from datastore."%(len(broadcasts)))
 					
 					if(len(broadcasts)>0):
 						db.delete(broadcasts)
-						logging.info("Deleted : %d Broadcasts from datastore."%(len(broadcasts)))
+						logging.info("Deleted : %d Broadcast(s) from datastore."%(len(broadcasts)))
 
 						task = Task(
 							method = 'DELETE',
@@ -55,7 +52,6 @@ class TrackDeleteHandler(webapp2.RequestHandler):
 								"cursor": cursor,
 								"track_id": track_id,
 								"type": typeModel,
-								"station_key": station_key,
 							}
 						)
 						task.add(queue_name="worker-queue")
@@ -82,7 +78,7 @@ class TrackDeleteHandler(webapp2.RequestHandler):
 					like = query.get()
 
 					if like is None:
-						logging.info("No likes for this track, deleting track.")
+						logging.info("No like for this track, deleting track.")
 						track.delete()
 					else:
 						try:
