@@ -8,7 +8,7 @@ from models.db.station import Station
 
 class StationCheckHandler(BaseHandler):
 	def post(self):
-		shortname = self.request.get("shortname")
+		shortname = self.request.get("shortname")[:30].lower()
 		
 		availability = False
 		existing_station = Station.all().filter("shortname", shortname).get()
