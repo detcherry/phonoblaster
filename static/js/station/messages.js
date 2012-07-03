@@ -184,7 +184,6 @@ MessageManager.prototype.searchListen = function(){
 	$("form#track-form").submit(function(){
 		return false;
 	})
-	
 }
 
 MessageManager.prototype.search = function(){	
