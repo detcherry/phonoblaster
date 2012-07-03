@@ -12,9 +12,34 @@
 		<p class="name"><a href="/{{ user_proxy.profile.shortname }}">{{ user_proxy.profile.name }}</a></p>
 		<p class="shortname">@{{ user_proxy.profile.shortname }}</p>
 	</div>
+	<div id="home-live">
+		<h2>On air in your radio</h2>
+		<div id="home-live-listeners">{{ number_of_sessions }} listeners</div>
+		<div id="home-live-content">
+			{% if live %}
+				<div id="home-live-picture">
+					<a href="/{{ user_proxy.profile.shortname }}">
+					<span class="image-wrap" style="background:url('http://i.ytimg.com/vi/{{ live.youtube_id }}/default.jpg') no-repeat center center;"></span>
+					</a>
+				</div>
+				<p id="home-live-title">
+					<a href="/{{ user_proxy.profile.shortname }}">
+						<span class="middle">{{ live.youtube_title }}</span>
+					</a>
+				</p>
+				<a href="/{{ user_proxy.profile.shortname }}" class="btn" style="margin-top:12px;">Tune in!</a>
+			{% else %}
+				<p class="no-data">No live track</p>
+				<a href="/{{ user_proxy.profile.shortname }}" class="btn">Start broadcasting your music!</a>
+			{% endif %}
+		</div>
+		<div id="home-fb">
+			<div class="fb-like" data-href="http://facebook.com/phonoblaster" data-send="true" data-width="380" data-show-faces="false"></div>
+		</div>
+	</div>
 </div>
 <div id="right-column">
-	<p id="feed-title">ACTIVE RECENTLY</p>
+	<h2>Active recently</h2>
 	<div class="content">
 		{% for s, t in feed %}
 			<div class="home-feed-item">

@@ -17,7 +17,11 @@ class HomeHandler(BaseHandler):
 	def get(self):
 		if(self.user_proxy):
 			user = self.user_proxy.user
-			user_profile = self.user_proxy.profile
+			user_profile = StationApi(self.user_proxy.profile["shortname"])
+			user_broadcasts = user_profile.reorder_buffer(user_profile.buffer)["broadcasts"]
+			user_live_broadcast = None
+			if(len(user_broadcasts)>0):
+				user_live_broadcast = user_broadcasts[0]
 
 			live_broadcasts = []
 			latest_active_stations = []
@@ -93,7 +97,8 @@ class HomeHandler(BaseHandler):
 			
 			# Display all the user stations
 			template_values = {
-				"user_profile": user_profile,
+				"number_of_sessions": user_profile.number_of_sessions,
+				"live": user_live_broadcast,
 				"feed": zip(latest_active_stations, live_broadcasts),
 			}
 			self.render("home.html", template_values)
