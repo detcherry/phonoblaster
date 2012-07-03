@@ -179,6 +179,12 @@ MessageManager.prototype.searchListen = function(){
 			that.search();
 		}
 	})
+	
+	// Prevent submit events
+	$("form#track-form").submit(function(){
+		return false;
+	})
+	
 }
 
 MessageManager.prototype.search = function(){	
