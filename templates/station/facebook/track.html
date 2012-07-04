@@ -12,10 +12,12 @@
 	<meta property="og:type" content="{{ version }}:track"/> 
 	<meta property="og:url" content="{{ site_url }}/track/{{ track.track_id }}"/> 
 	<meta property="og:title" content="{{ track.youtube_title }}"/> 
-	<meta property="og:description" content="Broadcast on {{ station_proxy.station.name}}"/>
+	<meta property="og:description" content="Broadcast on {{ station_proxy.station.name }}"/>
 	<meta property="og:image"  content="http://i.ytimg.com/vi/{{ track.youtube_id }}/hqdefault.jpg"/> 
 	<meta property="og:site_name" content="Phonoblaster"/>
-	<meta property="og:video:type" content="text/html"/>
-	<meta property="og:video" content="{{ site_url }}/track/{{ track.track_id }}"/>
+	<meta property="og:video:type" content="application/x-shockwave-flash"/>
+	<meta property="og:video:width" content="460"/>
+	<meta property="og:video:height" content="260"/>
+	<meta property="og:video" content="http://www.youtube.com/v/{{ track.youtube_id }}"/>
 	<meta property="{{ version }}:station" content="{{ site_url }}/{{ station_proxy.station.shortname }}"/>
 {% endblock %}
