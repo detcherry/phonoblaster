@@ -23,14 +23,10 @@ class ApiSessionsHandler(BaseHandler):
 		station_proxy = StationApi(shortname)
 		
 		if(station_proxy.station):		
-			number_of_sessions = station_proxy.number_of_sessions
 			extended_sessions = station_proxy.sessions
-	
 			sessions_data = {
-				"number": number_of_sessions,
 				"sessions": extended_sessions,
 			}
-
 			self.response.out.write(json.dumps(sessions_data))
 		else:
 			self.error(404)
