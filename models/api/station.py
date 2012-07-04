@@ -193,43 +193,49 @@ class StationApi():
 	def add_to_sessions(self, channel_id):
 		# Get session
 		session = Session.get_by_key_name(channel_id)
-		# After a reconnection the session may have ended. Correct it.
-		if session.ended is not None:
-			session.ended = None
-			session.put()
-			logging.info("Session had ended (probable reconnection). Corrected session put.")
+		extended_session = None
 		
-		# Init listener
-		listener = session.listener
+		if(session):	
+			# After a reconnection the session may have ended. Correct it.
+			if session.ended is not None:
+				session.ended = None
+				session.put()
+				logging.info("Session had ended (probable reconnection). Corrected session put.")
+	
+			# Init listener
+			listener = session.listener
 
-		extended_session = Session.get_extended_session(session, listener)
-		
-		new_sessions = self.sessions
-		new_sessions.append(extended_session)
-		memcache.set(self._memcache_station_sessions_id, new_sessions)
-		logging.info("Session added in memcache")
+			extended_session = Session.get_extended_session(session, listener)
+	
+			new_sessions = self.sessions
+			new_sessions.append(extended_session)
+			memcache.set(self._memcache_station_sessions_id, new_sessions)
+			logging.info("Session added in memcache")
 			
 		return extended_session
 	
 	def remove_from_sessions(self, channel_id):
 		# Get session
 		session = Session.get_by_key_name(channel_id)
-		session.ended = datetime.utcnow()
-		session.put()
-		logging.info("Session ended in datastore")
+		extended_session = None
 		
-		# Init listener
-		listener = session.listener
+		if(session):
+			session.ended = datetime.utcnow()
+			session.put()
+			logging.info("Session ended in datastore")
+		
+			# Init listener
+			listener = session.listener
 
-		extended_session = Session.get_extended_session(session, listener)
+			extended_session = Session.get_extended_session(session, listener)
 		
-		new_sessions = []
-		for s in self.sessions:
-			if s["key_name"] != channel_id:
-				new_sessions.append(s)
+			new_sessions = []
+			for s in self.sessions:
+				if s["key_name"] != channel_id:
+					new_sessions.append(s)
 		
-		memcache.set(self._memcache_station_sessions_id, new_sessions)
-		logging.info("Session removed from memcache")
+			memcache.set(self._memcache_station_sessions_id, new_sessions)
+			logging.info("Session removed from memcache")
 		
 		return extended_session
 

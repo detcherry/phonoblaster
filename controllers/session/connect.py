@@ -20,17 +20,18 @@ class ConnectHandler(webapp2.RequestHandler):
 		
 		extended_session = station_proxy.add_to_sessions(channel_id)
 		
-		# Add a taskqueue to warn everyone
-		new_session_data = {
-			"entity": "session",
-			"event": "new",
-			"content": extended_session,
-		}
-		task = Task(
-			url = "/taskqueue/multicast",
-			params = {
-				"station": config.VERSION + "-" + shortname,
-				"data": json.dumps(new_session_data)
+		if(extended_session):
+			# Add a taskqueue to warn everyone
+			new_session_data = {
+				"entity": "session",
+				"event": "new",
+				"content": extended_session,
 			}
-		)
-		task.add(queue_name="sessions-queue")
+			task = Task(
+				url = "/taskqueue/multicast",
+				params = {
+					"station": config.VERSION + "-" + shortname,
+					"data": json.dumps(new_session_data)
+				}
+			)
+			task.add(queue_name="sessions-queue")

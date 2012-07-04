@@ -21,18 +21,19 @@ class DisconnectHandler(webapp2.RequestHandler):
 		
 		extended_session = station_proxy.remove_from_sessions(channel_id)
 		
-		# Add a taskqueue to warn everyone
-		session_gone_data = {
-			"entity": "session",
-			"event": "remove",
-			"content": extended_session,
-		}
-		task = Task(
-			url = "/taskqueue/multicast",
-			params = {
-				"station": config.VERSION + "-" + shortname,
-				"data": json.dumps(session_gone_data)
+		if(extended_session):
+			# Add a taskqueue to warn everyone
+			session_gone_data = {
+				"entity": "session",
+				"event": "remove",
+				"content": extended_session,
 			}
-		)
-		task.add(queue_name="sessions-queue")
+			task = Task(
+				url = "/taskqueue/multicast",
+				params = {
+					"station": config.VERSION + "-" + shortname,
+					"data": json.dumps(session_gone_data)
+				}
+			)
+			task.add(queue_name="sessions-queue")
 		
