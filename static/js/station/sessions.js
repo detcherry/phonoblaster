@@ -68,7 +68,7 @@ SessionManager.prototype = {
 		// Check if session not already in the list. It can happen because of Pubnub latency
 		var already = false;
 		for(var i=0, c=that.sessions.length; i<c; i++){
-			var sessions = that.sessions[i]
+			var session = that.sessions[i]
 			if(session.key_name == new_session.key_name){
 				already = true;
 				break;
