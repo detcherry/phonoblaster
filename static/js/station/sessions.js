@@ -65,40 +65,52 @@ SessionManager.prototype = {
 	add: function(new_session){
 		var that = this;
 		
-		// Check if the new listener is not already listening
-		var duplicate = false;
-		if(new_session.listener_key_name){
-			for(var i=0, c=that.sessions.length; i<c; i++){
-				var session = that.sessions[i];
-				if(session.listener_key_name == new_session.listener_key_name){
-					duplicate = true;
-					break;
-				}
+		// Check if session not already in the list. It can happen because of Pubnub latency
+		var already = false;
+		for(var i=0, c=that.sessions.length; i<c; i++){
+			var sessions = that.sessions[i]
+			if(session.key_name == new_session.key_name){
+				already = true;
+				break;
 			}
 		}
 		
-		if(duplicate){
-			// Add session to the duplicate list
-			this.duplicate_sessions.push(new_session);
-
-		}
-		else{
-			// Add session to the list, first are the logged users then the unknown users.
+		// If session not already in the list
+		if(!already){
+			// Check if the new listener is not already listening
+			var duplicate = false;
 			if(new_session.listener_key_name){
-				this.sessions.unshift(new_session);
-			}else{
-				this.sessions.push(new_session);
+				for(var i=0, c=that.sessions.length; i<c; i++){
+					var session = that.sessions[i];
+					if(session.listener_key_name == new_session.listener_key_name){
+						duplicate = true;
+						break;
+					}
+				}
 			}
 
-			// Add session to the UI
-			this.UIAdd(new_session);
+			if(duplicate){
+				// Add session to the duplicate list
+				this.duplicate_sessions.push(new_session);
+			}
+			else{
+				// Add session to the list, first are the logged users then the unknown users.
+				if(new_session.listener_key_name){
+					this.sessions.unshift(new_session);
+				}
+				else{
+					this.sessions.push(new_session);
+				}
+
+				// Add session to the UI
+				this.UIAdd(new_session);
+			}
 		}
 	},
 	
 	UIAdd: function(session){
 		var channel_id = session.key_name;
-		
-		
+
 		if(session.listener_key_name){
 			var listener_picture_url = "https://graph.facebook.com/"+ session.listener_key_name + "/picture?type=square";
 			var listener_name = session.listener_name;
