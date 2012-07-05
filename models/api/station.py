@@ -205,13 +205,25 @@ class StationApi():
 	
 			# Init listener
 			listener = session.listener
-
+			
+			# Init extended session
 			extended_session = Session.get_extended_session(session, listener)
 	
 			new_sessions = self.sessions
 			new_sessions.append(extended_session)
 			memcache.set(self._memcache_station_sessions_id, new_sessions)
 			logging.info("Session added in memcache")
+			
+			# Online status becomes true if listener = host
+			if(listener.key().name() == Session.host.get_value_for_datastore(session).name()):
+				logging.info("Admin joins")	
+				
+				self.station.online = True
+				self.station.put()
+				logging.info("Station updated in datastore")
+				
+				memcache.set(self._memcache_station_id, self.station)
+				logging.info("Station updated in memcache")
 			
 		return extended_session
 	
@@ -228,6 +240,7 @@ class StationApi():
 			# Init listener
 			listener = session.listener
 
+			# Init extended session
 			extended_session = Session.get_extended_session(session, listener)
 		
 			new_sessions = []
@@ -237,7 +250,27 @@ class StationApi():
 		
 			memcache.set(self._memcache_station_sessions_id, new_sessions)
 			logging.info("Session removed from memcache")
-		
+			
+			# Online status becomes false if listener = host + no other host listening
+			if(listener.key().name() == Session.host.get_value_for_datastore(session).name()):
+				logging.info("Admin leaves")
+				
+				still_some_admins = False
+				for s in new_sessions:
+					if(s["listener_key_name"] == str(listener.key().name())):
+						still_some_admins = True
+						break
+				
+				if not still_some_admins:
+					self.station.online = False
+					self.station.put()
+					logging.info("Station updated in datastore")
+										
+					memcache.set(self._memcache_station_id, self.station)
+					logging.info("Station updated in memcache")
+				else:
+					logging.info("Still some admins online")
+				
 		return extended_session
 
 	########################################################################################################################################
