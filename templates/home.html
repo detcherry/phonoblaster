@@ -47,12 +47,11 @@
 					<a href="/{{ s.shortname }}">
 						<img src="https://graph.facebook.com/{{ s.key().name() }}/picture"/>
 					</a>
-					<p>
-						<a href="/{{ s.shortname }}">
-							<span class="middle">{{ s.name }}</span>
-						</a>
+					<p class="name">
+						<a href="/{{ s.shortname }}">{{ s.name }}</a>
+						<span class="{% if s.online %}on{% else %}off{% endif %}"></span>
 					</p>
-					<div class="home-feed-station-right">@{{ s.shortname }}</div>
+					<p class="shortname">@{{ s.shortname }}</p>
 				</div>
 				<div class="home-feed-track">
 					<div class="home-feed-track-picture">
