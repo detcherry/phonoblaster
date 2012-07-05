@@ -17,7 +17,7 @@ class UpgradeHandler(webapp2.RequestHandler):
 		cursor = self.request.get("cursor")
 		
 		q = Station.all()
-		q.order("created")
+		q.order("updated")
 		
 		# Is there a cursor?
 		if(cursor):
