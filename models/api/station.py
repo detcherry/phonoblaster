@@ -215,7 +215,7 @@ class StationApi():
 			logging.info("Session added in memcache")
 			
 			# Online status becomes true if listener = host
-			if(listener.key().name() == Session.host.get_value_for_datastore(session).name()):
+			if(listener and listener.key().name() == Session.host.get_value_for_datastore(session).name()):
 				logging.info("Admin joins")	
 				
 				self.station.online = True
@@ -252,7 +252,7 @@ class StationApi():
 			logging.info("Session removed from memcache")
 			
 			# Online status becomes false if listener = host + no other host listening
-			if(listener.key().name() == Session.host.get_value_for_datastore(session).name()):
+			if(listener and listener.key().name() == Session.host.get_value_for_datastore(session).name()):
 				logging.info("Admin leaves")
 				
 				still_some_admins = False
