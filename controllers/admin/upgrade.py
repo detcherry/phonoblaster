@@ -8,7 +8,7 @@ from google.appengine.api.taskqueue import Task
 class AdminUpgradeHandler(BaseHandler):
 	@admin_required
 	def get(self):
-		self.render("admin/dbupgrade.html", None)
+		self.render("admin/upgrade.html", None)
 	
 	@admin_required
 	def post(self):
