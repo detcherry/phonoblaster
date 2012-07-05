@@ -70,6 +70,7 @@ class StationApi():
 			type = type,
 			full = full,
 			thumb = thumb,
+			online = False,
 		)
 		station.put()
 		logging.info("Station put in datastore")

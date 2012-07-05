@@ -1,16 +1,10 @@
 import logging
-import traceback
-import sys
 import webapp2
-
-from datetime import datetime
 
 from google.appengine.ext import db
 from google.appengine.api.taskqueue import Task
 
-from models.api.station import StationApi
 from models.db.station import Station
-#from models.db.broadcast import Broadcast
 
 class UpgradeHandler(webapp2.RequestHandler):
 	def post(self):
@@ -28,20 +22,28 @@ class UpgradeHandler(webapp2.RequestHandler):
 		
 		stations = q.fetch(2)
 		
-		if(len(stations) > 0):
-			
-			to_put = []
-			for s in stations:
+		to_put = []
+		done = False
+		for s in stations:			
+			if s.online is None:
 				s.online = False
 				to_put.append(s)
+			else:
+				done = True
+				break
+		
+		db.put(to_put)
+		logging.info("Station entities updated")
 			
-			db.put(to_put)
-			logging.info("Station entities updated")
+		if not done:
+			logging.info("Starting another task")
 			
-			cursor = q.cursor()
+			new_cursor = q.cursor()
 			task = Task(
 				url = "/taskqueue/upgrade",
-				params = {'cursor': cursor},
+				params = {
+					'cursor': new_cursor,
+				},
 			)
 			task.add(queue_name = "upgrade-queue")
 		else:
