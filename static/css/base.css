@@ -157,17 +157,16 @@ div.container{
 	clear:left;
 	margin-top:10px;
 	margin-bottom:10px;
-	height:10px;
+	height:4px;
 	width:24px;
-	background:url("/static/images/phonoblaster-sprits.png");
 }
 
 .stroke.black{
-	background-position:-4px -42px;
+	background:#636363;
 }
 
 .stroke.grey{
-	background-position:-38px -42px;
+	background:#C4C4C4;
 }
 
 .stat .figure{

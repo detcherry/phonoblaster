@@ -583,7 +583,7 @@ a.listener img{
 	height:40px;
 	text-indent:-3000px;
 	background-image:url("/static/images/new-sprits.png");
-	background-position:-3px -308px;
+	background-position:-3px -38px;
 }
 
 /* -------- PANEL --------*/
@@ -897,8 +897,8 @@ input#search:focus{
 	margin-right:8px;
 	height:22px;
 	width:22px;
-	background:url("/static/images/phonoblaster-sprits.png");
-	background-position: -32px -117px;
+	background:url("/static/images/new-sprits.png");
+	background-position:-30px -84px;
 }
 
 .item:hover a.preview{
@@ -906,7 +906,7 @@ input#search:focus{
 }
 
 .item:hover a.preview:hover{
-	background-position: -5px -117px;
+	background-position:-6px -84px;
 }
 
 .item a.btn{

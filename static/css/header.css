@@ -29,8 +29,8 @@
 	float:left;
 	width:190px;
 	height:30px;
-	background:url("/static/images/phonoblaster-sprits.png");
-	background-position:0px 0px;
+	background:url("/static/images/new-sprits.png");
+	background-position:-7px -4px;
 }
 
 ul#menu{
@@ -60,8 +60,8 @@ ul#menu a.login{
 	width:178px;
 	height:30px;
 	text-indent:-3000px;
-	background-image:url("/static/images/phonoblaster-sprits.png");
-	background-position:-5px -230px;
+	background-image:url("/static/images/new-sprits.png");
+	background-position:-4px -38px;
 	border-radius: 6px;
 }
 
