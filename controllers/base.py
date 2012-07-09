@@ -120,6 +120,7 @@ class BaseHandler(webapp2.RequestHandler):
 		self._template_values["domain"] = config.DOMAIN
 		self._template_values["google_analytics_id"] = config.GOOGLE_ANALYTICS_ID
 		self._template_values["facebook_app_id"] = config.FACEBOOK_APP_ID
+		self._template_values["soundcloud_app_id"] = config.SOUNDCLOUD_APP_ID
 		self._template_values["site_url"] = config.SITE_URL
 		self._template_values["version"] = config.VERSION
 		self._template_values["tag"] = config.TAG

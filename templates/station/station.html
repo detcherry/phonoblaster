@@ -160,8 +160,9 @@
 							<h4>On air</h4>
 							<!-- Search box -->
 							<div id="search-box">
-								<input type="text" value="Add a track to your selection" id="search" autocomplete="off" class="tuto" data-original-title="Search and add tracks from Youtube (soon: Soundcloud)"/>
-								<div id="search-icon"></div>
+								<a href="#" id="youtube-search" class="search-icon on"></a>
+								<a href="#" id="soundcloud-search" class="search-icon"></a>
+								<input type="text" value="Add a track to your selection" id="search" autocomplete="off" class="tuto" data-original-title="Search and add tracks from Youtube"/>
 								<div id="search-overlay"></div>
 								<div id="search-tab">
 									<div class="tab-content"><!-- Search results --></div>
@@ -300,6 +301,13 @@
 <script src="https://pubnub.s3.amazonaws.com/pubnub-3.1.min.js"></script>
 <!-- App Engine -->
 <script type="text/javascript" src="/_ah/channel/jsapi"></script>
+<!-- Soundcloud -->
+<script src="http://connect.soundcloud.com/sdk.js"></script>
+<script type="text/javascript">
+	SC.initialize({
+		client_id: '{{ soundcloud_app_id }}'
+	});
+</script>
 <!-- Station -->
 <script type="text/javascript" src="/{{tag}}/static/js/library/json2.js"></script>
 <script type="text/javascript" src="/{{tag}}/static/js/library/system.js"></script>

@@ -729,16 +729,45 @@ ul#tabs a#sets-header.current{
 	float:right;
 	margin-top:-2px;
 	padding:9px;
-	width:267px;
+	height:21px;
+	width:294px;
 	background:#F5F5F5;
+}
+
+a.search-icon{
+	position:absolute;
+	z-index:3001;
+	display:block;
+	float:left;
+	height:20px;
+	width:20px;
+	margin-top:1px;
+}
+
+a#youtube-search{
+	background:url("/static/images/youtube-off.png");
+}
+
+a#youtube-search.on{
+	background:url("/static/images/youtube-on.png");
+}
+
+a#soundcloud-search{
+	margin-left:26px;
+	background:url("/static/images/soundcloud-off.png");
+}
+
+a#soundcloud-search.on{
+	background:url("/static/images/soundcloud-on.png");
 }
 
 input#search{
 	position:absolute;
 	z-index:3001;
+	margin-left:54px;
 	display:block;
 	float:left;
-	width:230px;
+	width:232px;
 	height:13px;
 	font-style:italic;
 	color:#C4C4C4;
@@ -748,14 +777,6 @@ input#search{
 input#search:focus{
 	font-style:normal;
 	color:#7F7F7F;
-}
-
-#search-icon{
-	float:right;
-	height:21px;
-	width:21px;
-	background:url("/static/images/new-sprits.png");
-	background-position:-53px -111px;
 }
 
 #search-overlay{
@@ -773,7 +794,7 @@ input#search:focus{
 	position:absolute;
 	z-index:3001;
 	margin-top:30px;
-	margin-left:-36px;
+	margin-left:-9px;
 	height:290px;
 	width:310px;
 	border:1px solid #E1E1E1;
