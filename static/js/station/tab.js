@@ -419,55 +419,7 @@ ScrollTabManager.prototype.addToItems = function(new_item, callback){
 	callback(null);
 }
 
-ScrollTabManager.prototype.UIBuild = function(item){
-	var id = item.id;
-	var content = item.content;
-
-	var youtube_id = content.youtube_id;
-	var youtube_title = content.youtube_title;
-	var youtube_duration = PHB.convertDuration(content.youtube_duration)
-	var youtube_thumbnail = "https://i.ytimg.com/vi/" + youtube_id + "/default.jpg";
-	var preview = "https://www.youtube.com/embed/" + youtube_id + "?autoplay=1" 
-	
-	var div = $("<div/>").addClass("item").attr("id",id)
-	div.append(
-		$("<div/>")
-			.addClass("item-picture")
-			.append($("<img/>").attr("src", youtube_thumbnail))
-	)
-	.append(
-		$("<div/>")
-			.addClass("item-title")
-			.append($("<span/>").addClass("middle").html(youtube_title))
-	)
-	.append(
-		$("<div/>")
-			.addClass("item-subtitle")
-			.append($("<div/>").addClass("item-duration").html(youtube_duration))
-			.append(
-				$("<div/>")
-					.addClass("item-process")
-					.append(
-						$("<a/>")
-							.addClass("btn")
-							.attr("name", id)
-							.html("Add")
-							.addClass("tuto")
-							.attr("data-original-title", "Add this track to your selection")
-					)
-					.append(
-						$("<a/>")
-							.addClass("preview")
-							.addClass("fancybox.iframe")
-							.attr("href", preview)
-							.addClass("tuto")
-							.attr("data-original-title", "Preview this track")
-					)
-			)
-	)
-					
-	return div;
-}
+ScrollTabManager.prototype.UIBuild = function(item){}
 
 ScrollTabManager.prototype.scrollListen = function(){
 	var that = this;
