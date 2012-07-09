@@ -241,53 +241,44 @@ SearchManager.prototype.searchCallback = function(items){
 
 // Specific to search
 SearchManager.prototype.serverToLocalItem = function(raw_item){
-	if(this.type == "youtube"){
-		var new_track = {
-			"youtube_id": raw_item.id, // Here it's specific to Youtube
-			"youtube_title": raw_item.title, // Here it's specific to Youtube
-			"youtube_duration": raw_item.duration, // Here it's specific to Youtube
-			"track_id": null,
-			"track_created": null,
-			"track_submitter_key_name": this.client.host.key_name,
-			"track_submitter_name": this.client.host.name,
-			"track_submitter_url": "/" + this.client.host.shortname,
-		}
-
-		var item = {
-			id: new_track.youtube_id,
-			created: null,
-			content: new_track,
-		}
-	}
-	else{
-		var new_track = {
-			"soundcloud_id": raw_item.id, // Here it's specific to Soundcloud
-			"soundcloud_title": raw_item.title, // Here it's specific to Soundcloud
-			"soundcloud_duration": Math.round(parseInt(raw_item.duration)/1000), // Here it's specific to Soundcloud
-			"soundcloud_thumbnail": raw_item.artwork_url, // Herer it's specific to Soundcloud
-			"track_id": null,
-			"track_created": null,
-			"track_submitter_key_name": this.client.host.key_name,
-			"track_submitter_name": this.client.host.name,
-			"track_submitter_url": "/" + this.client.host.shortname,
-		}
-
-		var item = {
-			id: new_track.soundcloud_id,
-			created: null,
-			content: new_track,
-		}
+	var content = {
+		"id": raw_item.id, 
+		"title": raw_item.title, 
+		"track_id": null,
+		"track_created": null,
+		"track_submitter_key_name": this.client.host.key_name,
+		"track_submitter_name": this.client.host.name,
+		"track_submitter_url": "/" + this.client.host.shortname,
 	}
 	
-	return item
+	// Specific to Youtube
+	if(this.type == "youtube"){
+		content["type"] = "youtube";
+		content["duration"] = raw_item.duration;
+		content["thumbnail"] = "https://i.ytimg.com/vi/" + raw_item.id + "/default.jpg";
+	}
+	// Specific to Soundcloud
+	else{
+		content["type"] = "soundcloud";
+		content["duration"] =  Math.round(parseInt(raw_item.duration)/1000);
+		content["thumbnail"] = raw_item.artwork_url;
+	}
+	
+	var item = {
+		id: content.id,
+		created: null,
+		content: content,
+	}
+	
+	return item;
 }
 
 SearchManager.prototype.UIBuild = function(item){
 	var id = item.id;
 	var content = item.content;
-	var title = this.getItemTitle(item);
-	var duration = PHB.convertDuration(this.getItemDuration(item));
-	var thumbnail = this.getItemThumbnail(item);		
+	var title = content.title;
+	var duration = PHB.convertDuration(content.duration);
+	var thumbnail = content.thumbnail;		
 	// var preview = "https://www.youtube.com/embed/" + id + "?autoplay=1";
 	
 	var div = $("<div/>").addClass("item").attr("id",id)

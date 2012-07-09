@@ -780,9 +780,9 @@ BufferManager.prototype.UIAdd = function(new_item, previous_item){
 BufferManager.prototype.UIBuild = function(item){
 	var id = item.id;
 	var content = item.content;
-	var title = this.getItemTitle(item);
-	var duration = PHB.convertDuration(this.getItemDuration(item));
-	var thumbnail = this.getItemThumbnail(item);
+	var title = content.title;
+	var duration = PHB.convertDuration(content.duration);
+	var thumbnail = content.thumbnail;
 	var track_submitter_name = content.track_submitter_name;
 	var track_submitter_url = content.track_submitter_url;
 	var track_submitter_picture = "https://graph.facebook.com/" + content.track_submitter_key_name + "/picture?type=square";	

@@ -79,39 +79,6 @@ function TabManager(client){
 
 TabManager.prototype = {
 	
-	getItemTitle: function(item){
-		if(item.content.youtube_title){
-			var title =  item.content.youtube_title
-		}
-		else{
-			var title = item.content.soundcloud_title
-		}
-		
-		return title
-	},
-	
-	getItemDuration: function(item){
-		if(item.content.youtube_duration){
-			var duration = item.content.youtube_duration;
-		}
-		else{
-			var duration = item.content.soundcloud_duration;
-		}
-		
-		return duration;
-	},
-	
-	getItemThumbnail: function(item){
-		if(item.content.youtube_id){
-			var thumbnail = "https://i.ytimg.com/vi/" + item.content.youtube_id + "/default.jpg";
-		}
-		else{
-			var thumbnail = item.content.soundcloud_thumbnail;
-		}
-		
-		return thumbnail;
-	},
-	
 	previewListen: function(){
 		var preview_selector = this.selector + " a.preview"
 		$(preview_selector).fancybox({
