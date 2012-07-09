@@ -285,18 +285,10 @@ SearchManager.prototype.serverToLocalItem = function(raw_item){
 SearchManager.prototype.UIBuild = function(item){
 	var id = item.id;
 	var content = item.content;
-	
-	if(item.content.youtube_id){
-		var title = content.youtube_title;
-		var duration = PHB.convertDuration(content.youtube_duration);
-		var thumbnail = "https://i.ytimg.com/vi/" + id + "/default.jpg";
-		var preview = "https://www.youtube.com/embed/" + id + "?autoplay=1";
-	}
-	else{
-		var title = content.soundcloud_title;
-		var duration = PHB.convertDuration(content.soundcloud_duration);
-		var thumbnail = content.soundcloud_thumbnail;
-	}
+	var title = this.getItemTitle(item);
+	var duration = PHB.convertDuration(this.getItemDuration(item));
+	var thumbnail = this.getItemThumbnail(item);		
+	// var preview = "https://www.youtube.com/embed/" + id + "?autoplay=1";
 	
 	var div = $("<div/>").addClass("item").attr("id",id)
 	div.append(

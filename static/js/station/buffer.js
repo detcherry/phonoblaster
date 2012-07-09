@@ -780,34 +780,24 @@ BufferManager.prototype.UIAdd = function(new_item, previous_item){
 BufferManager.prototype.UIBuild = function(item){
 	var id = item.id;
 	var content = item.content;
-	var type = content.type;
-	
-	var youtube_id = content.youtube_id;
-	var youtube_title = content.youtube_title;
-	var youtube_duration = PHB.convertDuration(content.youtube_duration)
-	var youtube_thumbnail = "https://i.ytimg.com/vi/" + youtube_id + "/default.jpg";
-	
+	var title = this.getItemTitle(item);
+	var duration = PHB.convertDuration(this.getItemDuration(item));
+	var thumbnail = this.getItemThumbnail(item);
 	var track_submitter_name = content.track_submitter_name;
 	var track_submitter_url = content.track_submitter_url;
 	var track_submitter_picture = "https://graph.facebook.com/" + content.track_submitter_key_name + "/picture?type=square";	
-	
-	var mention = null;
-	// If submitter different than host, display rebroadcast mention
-	if(this.client.host.key_name != content.track_submitter_key_name){
-		mention = "Rebroadcast of"
-	}
 	
 	var div = $("<div/>").addClass("item").attr("id", id)
 	
 	div.append(
 		$("<div/>")
 			.addClass("item-picture")
-			.append($("<img/>").attr("src", youtube_thumbnail))
+			.append($("<img/>").attr("src", thumbnail))
 	)
 	.append(
 		$("<div/>")
 			.addClass("item-title")
-			.append($("<span/>").addClass("middle").html(youtube_title))
+			.append($("<span/>").addClass("middle").html(title))
 	)
 	.append(
 		$("<a/>")
@@ -831,9 +821,14 @@ BufferManager.prototype.UIBuild = function(item){
 	.append(
 		$("<div/>")
 			.addClass("item-subtitle")
-			.append($("<div/>").addClass("item-duration").html(youtube_duration))
+			.append($("<div/>").addClass("item-duration").html(duration))
 	)
 	
+	var mention = null;
+	// If submitter different than host, display rebroadcast mention
+	if(this.client.host.key_name != content.track_submitter_key_name){
+		mention = "Rebroadcast of"
+	}
 	
 	if(mention){
 		var subtitle = div.find(".item-subtitle")
