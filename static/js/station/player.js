@@ -27,6 +27,8 @@ PlayerManager.prototype = {
 	},
 	
 	play: function(item, start){
+		// Remove above layer
+		this.removeAbove();
 		// Stop Youtube streaming
 		this.stopYoutube();
 		// Stop Soundcloud streaming
@@ -65,7 +67,6 @@ PlayerManager.prototype = {
 	},
 		
 	playYoutube: function(item, start){
-		this.removeAbove();
 		this.hideSoundcloud();
 		
 		var id = item.content.id;
