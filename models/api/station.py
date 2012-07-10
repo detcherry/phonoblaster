@@ -544,26 +544,26 @@ class StationApi():
 		timestamp = buffer['timestamp']
 		extended_broadcast = None
 
-		if len(buffer) == 0:
+		if(len(buffer) == 0):
 			logging.info("Buffer is empty.")
 			return None
 
 		# Edge Case, if moving track to position 1 5 seconds before the live track ends, we reject the operation.
 		# This is due to the latency of Pubnub.
-		if position == 1:
+		if(position == 1):
 			# We need to check if the live track ends in the next 5 seconds
 			live_broadcast = broadcasts[0]
-			live_broadcast_duration = live_broadcast['youtube_duration']
+			live_broadcast_duration = live_broadcast['duration']
 			start = timegm(datetime.utcnow().utctimetuple()) - timegm(timestamp.utctimetuple())
 			time_before_end = live_broadcast_duration-start
 
-			if time_before_end< 5:
+			if(time_before_end< 5):
 				# Rejecting action
 				logging.info("Rejecting operation because of an edge case (moving)")
 				return None
 		# End of edge case
 
-		if position>=0 and position<len(broadcasts) :
+		if(position>=0 and position<len(broadcasts)):
 			live_broadcast = broadcasts[0]
 			if not ( 0 == position or live_broadcast['key_name'] == key_name):
 				# Looking for index of track to change position:
@@ -578,16 +578,19 @@ class StationApi():
 				if index_track_to_move:
 					broadcasts.insert(position, broadcasts.pop(index_track_to_move))
 					extended_broadcast = broadcasts[position]
-					logging.info("Inserting track with ky_name = "+key_name+" at position :"+str(position))
+					logging.info("Inserting track with key_name = "+ key_name +" at position :"+str(position))
+					
 					# Saving data
-					new_buffer = {'broadcasts':broadcasts, 'timestamp':timestamp}
+					new_buffer = {
+						'broadcasts': broadcasts,
+						'timestamp': timestamp
+					}
 					self.put_buffer(new_buffer)
 				else:
-					logging.info("Track with ky_name = "+key_name+" was not found, impossible to proceed to insertion.")
+					logging.info("Track with key_name = "+key_name+" was not found, impossible to proceed to insertion.")
 
 			else:
-				logging.info("Track with ky_name = "+key_name+" is the currently broadcast track, or is inserting at position 0, inserting is cacelled")
-				
+				logging.info("Track with key_name = "+key_name+" is the currently broadcast track, or is inserting at position 0, inserting is cacelled")
 
 		else:
 			logging.info("In StationApi.move_track_in_buffer, position is not in the range [0,"+str(len(broadcasts))+"[")
