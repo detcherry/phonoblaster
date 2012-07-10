@@ -48,6 +48,7 @@ class Like(db.Model):
 			"title": extended_track["title"],
 			"duration": extended_track["duration"],
 			"thumbnail": extended_track["thumbnail"],
+			"type": extended_track["type"],
 			"track_id": extended_track["track_id"],
 			"track_created": extended_track["track_created"],
 			"track_submitter_key_name": station.key().name(),
