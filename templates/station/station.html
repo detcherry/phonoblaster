@@ -283,6 +283,7 @@
 			<div id="messages-suggestions"></div>
 		</div>
 	</div>
+	{% if is_admin %}
 	<!-- Recommandation popup -->
 	<div class="popup" id="popup-recommendations">
 		<h2>Broadcast now!</h2>
@@ -292,6 +293,7 @@
 			<a class="btn primary">Go to station</a>
 		</div>
 	</div>
+	{% endif %}
 {% endblock %}
 
 {% block footer %}
