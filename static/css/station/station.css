@@ -850,7 +850,7 @@ input#search:focus{
 	left:-26px;
 }
 
-.soundcloud .item-picture img{
+.item-picture img.soundcloud{
 	height:68px;
 	position:absolute;
 	top:-4px;

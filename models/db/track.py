@@ -88,7 +88,7 @@ class Track(db.Model):
 		extended_tracks = []
 		for track in tracks:
 			extended_track = Track.get_extended_track(track)
-			extended_tracks.append(extended_tracks)
+			extended_tracks.append(extended_track)
 		return extended_tracks
 	
 	@staticmethod

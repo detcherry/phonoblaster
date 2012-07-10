@@ -51,7 +51,7 @@ LikeManager.prototype.UIBuild = function(item){
 	
 	//var preview = "https://www.youtube.com/embed/" + content.youtube_id + "?autoplay=1"
 	
-	var div = $("<div/>").addClass("item-wrapper").addClass(type).attr("id", id)
+	var div = $("<div/>").addClass("item-wrapper").attr("id", id)
 	
 	div.append(
 		$("<div/>")
@@ -75,7 +75,7 @@ LikeManager.prototype.UIBuild = function(item){
 					.append(
 						$("<div/>")
 							.addClass("item-picture")
-							.append($("<img/>").attr("src", thumbnail))
+							.append($("<img/>").attr("src", thumbnail).addClass(type))
 					)
 					.append(
 						$("<div/>")

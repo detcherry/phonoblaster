@@ -56,23 +56,21 @@ TrackManager.prototype.serverToLocalItem = function(content){
 TrackManager.prototype.UIBuild = function(item){
 	var id = item.id;
 	var content = item.content;
-
-	var youtube_id = content.youtube_id;
-	var youtube_title = content.youtube_title;
-	var youtube_duration = PHB.convertDuration(content.youtube_duration)
-	var youtube_thumbnail = "https://i.ytimg.com/vi/" + youtube_id + "/default.jpg";
-	var preview = "https://www.youtube.com/embed/" + youtube_id + "?autoplay=1"
+	var type = content.type;
+	var title = content.title;
+	var duration = PHB.convertDuration(content.duration);
+	var thumbnail = content.thumbnail;
 	
 	var div = $("<div/>").addClass("item").attr("id",id)
 	div.append(
 		$("<div/>")
 			.addClass("item-picture")
-			.append($("<img/>").attr("src", youtube_thumbnail))
+			.append($("<img/>").attr("src", thumbnail).addClass(type))
 	)
 	.append(
 		$("<div/>")
 			.addClass("item-title")
-			.append($("<span/>").addClass("middle").html(youtube_title))
+			.append($("<span/>").addClass("middle").html(title))
 	)
 	.append(
 		$("<a/>")
@@ -84,7 +82,7 @@ TrackManager.prototype.UIBuild = function(item){
 	.append(
 		$("<div/>")
 			.addClass("item-subtitle")
-			.append($("<div/>").addClass("item-duration").html(youtube_duration))
+			.append($("<div/>").addClass("item-duration").html(duration))
 			.append(
 				$("<div/>")
 					.addClass("item-process")
@@ -96,6 +94,10 @@ TrackManager.prototype.UIBuild = function(item){
 							.addClass("tuto")
 							.attr("data-original-title", "Add this track to your selection")
 					)
+					/*
+					
+					// No preview at the moment
+					
 					.append(
 						$("<a/>")
 							.addClass("preview")
@@ -104,6 +106,7 @@ TrackManager.prototype.UIBuild = function(item){
 							.addClass("tuto")
 							.attr("data-original-title", "Preview this track")
 					)
+					*/
 			)
 	)
 					
@@ -145,13 +148,13 @@ TrackManager.prototype.deleteListen = function(){
 			for(var i = 0; i < items.length; i++){
 				if (item_to_delete.id == items[i].content.track_id){
 					item_to_delete_is_in_buffer = true;
-					alert("Please, remove "+items[i].content.youtube_title+" from your live selection first.");
+					alert("Please, remove "+items[i].content.title+" from your live selection first.");
 					break;
 				}
 			}
 
 			if (!item_to_delete_is_in_buffer){
-				if (confirm("Do you want to delete the track : "+item_to_delete.content.youtube_title+" ?")) {
+				if (confirm("Do you want to delete the track : "+item_to_delete.content.title+" ?")) {
 					that.deleteSubmit(item_to_delete);
 				}
 			}

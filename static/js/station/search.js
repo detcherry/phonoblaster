@@ -282,11 +282,11 @@ SearchManager.prototype.UIBuild = function(item){
 	var type = content.type;	
 	// var preview = "https://www.youtube.com/embed/" + id + "?autoplay=1";
 	
-	var div = $("<div/>").addClass("item").addClass(type).attr("id",id)
+	var div = $("<div/>").addClass("item").attr("id",id)
 	div.append(
 		$("<div/>")
 			.addClass("item-picture")
-			.append($("<img/>").attr("src", thumbnail))
+			.append($("<img/>").attr("src", thumbnail).addClass(type))
 	)
 	.append(
 		$("<div/>")

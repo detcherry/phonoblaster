@@ -789,12 +789,12 @@ BufferManager.prototype.UIBuild = function(item){
 	var track_submitter_url = content.track_submitter_url;
 	var track_submitter_picture = "https://graph.facebook.com/" + content.track_submitter_key_name + "/picture?type=square";	
 	
-	var div = $("<div/>").addClass("item").addClass(type).attr("id", id)
+	var div = $("<div/>").addClass("item").attr("id", id)
 	
 	div.append(
 		$("<div/>")
 			.addClass("item-picture")
-			.append($("<img/>").attr("src", thumbnail))
+			.append($("<img/>").attr("src", thumbnail).addClass(type))
 	)
 	.append(
 		$("<div/>")
