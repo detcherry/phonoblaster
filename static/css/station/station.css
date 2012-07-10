@@ -198,8 +198,21 @@ form#edit-background input{
 	height:225px;
 }
 
-#youtube-player{
-	width:100%;
+#soundcloud-player{
+	display:none;
+	width:400px;
+	height:225px;
+	background:black;
+}
+
+#soundcloud-player img{
+	display:block;
+	margin:auto;
+	height:225px;
+}
+
+#above-player{
+	width:400px;
 	height:225px;
 }
 

@@ -16,9 +16,13 @@ class Broadcast(db.Model):
 	track = db.ReferenceProperty(Track, required = True, collection_name = "broadcastTrack")
 	station = db.ReferenceProperty(Station, required = True, collection_name = "broadcastStation")
 	submitter = db.ReferenceProperty(Station, required = False, collection_name = "broadcastSubmitter")
-	youtube_id = db.StringProperty(required = True)
-	youtube_title = db.StringProperty(required = True)
-	youtube_duration = db.IntegerProperty(required = True)
+	youtube_id = db.StringProperty(required = False)
+	youtube_title = db.StringProperty(required = False)
+	youtube_duration = db.IntegerProperty(required = False)
+	soundcloud_id = db.StringProperty(required = False)
+	soundcloud_title = db.StringProperty(required = False)
+	soundcloud_duration = db.IntegerProperty(required = False)
+	soundcloud_thumbnail = db.StringProperty(required = False)
 	created = db.DateTimeProperty(auto_now_add = True)
 	
 	@staticmethod
@@ -67,14 +71,28 @@ class Broadcast(db.Model):
 	def get_extended_broadcast(broadcast, submitter):
 		extended_broadcast = {
 			"key_name": broadcast.key().name(),
-			"created": timegm(broadcast.created.utctimetuple()),	
-			"youtube_id": broadcast.youtube_id,
-			"youtube_title": broadcast.youtube_title,
-			"youtube_duration": broadcast.youtube_duration,
+			"created": timegm(broadcast.created.utctimetuple()),
 			"track_id": Broadcast.track.get_value_for_datastore(broadcast).id(),
 			"track_submitter_key_name": submitter.key().name(),
 			"track_submitter_name": submitter.name,
 			"track_submitter_url": submitter.shortname
 		}
+		
+		if(broadcast.youtube_id):
+			extended_broadcast.update({
+				"type": "youtube",
+				"id": broadcast.youtube_id,
+				"title": broadcast.youtube_title,
+				"duration": broadcast.youtube_duration,
+				"thumbnail": "https://i.ytimg.com/vi/" + broadcast.youtube_id + "/default.jpg",
+			})
+		else:
+			extended_broadcast.update({
+				"type" : "soundcloud",
+				"id": broadcast.soundcloud_id,
+				"title": broadcast.soundcloud_title,
+				"duration": broadcast.soundcloud_duration,
+				"thumbnail": broadcast.soundcloud_thumbnail,
+			})
 		
 		return extended_broadcast

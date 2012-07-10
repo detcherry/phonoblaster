@@ -26,7 +26,7 @@ BufferManager.prototype.init = function(client){
 	this.live_item = null;
 	this.timestamp = null;
 	this.history = [];
-	this.youtube_manager = new YoutubeManager(this);
+	this.player_manager = new PlayerManager(this);
 	this.recommandation_manager = null;
 		
 	// Init Methods
@@ -53,10 +53,11 @@ BufferManager.prototype.getAjax = function(){
 		error: function(xhr, status, error) {
 			PHB.log('An error occurred: ' + error + '\nPlease retry.');
 		},
-		success: function(json){
-			
+		success: function(json){			
 			if(json.broadcasts.length > 0){
 				that.timestamp = json.timestamp;
+				
+				$("#above-player").remove();
 				
 				that.empty(function(){
 					that.getCallback(json.broadcasts);
@@ -72,8 +73,8 @@ BufferManager.prototype.getAjax = function(){
 
 BufferManager.prototype.noData = function(){
 	// UI modifications
-	$("#youtube-player").empty();
-	$("#youtube-player").append($("<p/>").html("No live track."));
+	$("#above-player").empty();
+	$("#above-player").append($("<p/>").html("No live track."));
 	$("#media-title").html("No current track.")
 	
 	// Buffer panel
@@ -89,14 +90,14 @@ BufferManager.prototype.noData = function(){
 }
 
 // Save the intial state of the buffer and trigger the cycle
-BufferManager.prototype.getCallback = function(broadcasts){
+BufferManager.prototype.getCallback = function(broadcasts){	
 	
 	// Format the list from the server
 	for(var i=0, c=broadcasts.length; i<c; i++){
 		var new_item = this.serverToLocalItem(broadcasts[i]);
 		this.items.push(new_item);
 	}
-
+	
 	// Play the new live broadcast
 	this.play()
 	
@@ -225,7 +226,7 @@ BufferManager.prototype.filter = function(new_event, callback){
 BufferManager.prototype.getDuration = function(broadcasts){
 	var total_duration = 0;
 	for(var i=0, c=broadcasts.length; i<c; i++){
-		total_duration += broadcasts[i].content.youtube_duration;
+		total_duration += broadcasts[i].content.duration;
 	}
 	return total_duration;
 }
@@ -248,7 +249,7 @@ BufferManager.prototype.reOrderBuffer = function(buffer, callback){
 	
 	for(var i=0, c=broadcasts.length; i<c; i++){
 		var item = broadcasts[i];
-		var duration = item.content.youtube_duration;
+		var duration = item.content.duration;
 		
 		// This is the current broadcast
 		if(elapsed + duration > offset){
@@ -890,7 +891,7 @@ BufferManager.prototype.play = function(){
 		that.timestamp = updated_buffer.timestamp;
 		
 		// Play the live broadcast
-		that.youtube_manager.init(new_live_item, start);
+		that.player_manager.init(new_live_item, start);
 		
 		// Post action to FACEBOOK
 		that.postAction(new_live_item, start);
@@ -898,7 +899,7 @@ BufferManager.prototype.play = function(){
 		// Display next track
 		that.displayNextTrack();
 		
-		var timeout = new_live_item.content.youtube_duration - start;
+		var timeout = new_live_item.content.duration - start;
 		
 		// Program the next play
 		setTimeout(function(){
@@ -929,7 +930,7 @@ BufferManager.prototype.postAction = function(item, start){
 		var broadcast_url = PHB.site_url + "/broadcast/" + item.id;
 		var obj = { "live": broadcast_url };
 		var extra = {};
-		var expires_in = item.content.youtube_duration - start - offset;
+		var expires_in = item.content.duration - start - offset;
 		
 		// If track still playing in 10 sec
 		if(expires_in > 0 && VOLUME){
@@ -971,11 +972,11 @@ BufferManager.prototype.displayNextTrack = function(){
 			}
 
 			var content = next_item.content;
-			var youtube_title = content.youtube_title;
-			var youtube_thumbnail = "https://i.ytimg.com/vi/" + content.youtube_id + "/default.jpg";
+			var title = content.title;
+			var thumbnail = content.thumbnail;
 
-			$("#panel-box-picture").empty().append($("<img/>").attr("src", youtube_thumbnail))
-			$("#panel-box p.logged").html(youtube_title)
+			$("#panel-box-picture").empty().append($("<img/>").attr("src", thumbnail))
+			$("#panel-box p.logged").html(title)
 		}
 	}
 	

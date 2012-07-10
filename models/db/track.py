@@ -12,35 +12,32 @@ COUNTER_OF_VIEWS_PREFIX = "track.views."
 COUNTER_OF_LIKES_PREFIX = "track.likes."
 
 class Track(db.Model):
-	"""
-		youtube_id - ID of the track on Youtube
-		youtube_title - String video title
-		youtube_duration - Integer duration of the video in seconds
-		youtube_music - Boolen, indicates if the video category is music or not
-		station - 'owner' of the track
-	"""
-	
-	youtube_id = db.StringProperty(required = True)
-	youtube_title = db.StringProperty(required = True)
-	youtube_duration = db.IntegerProperty(required = True)
+	youtube_id = db.StringProperty(required = False)
+	youtube_title = db.StringProperty(required = False)
+	youtube_duration = db.IntegerProperty(required = False)
+	soundcloud_id = db.StringProperty(required = False)
+	soundcloud_title = db.StringProperty(required = False)
+	soundcloud_duration = db.IntegerProperty(required = False)
+	soundcloud_thumbnail = db.StringProperty(required = False)
 	station = db.ReferenceProperty(Station, required = True, collection_name = "trackStation")
 	created = db.DateTimeProperty(auto_now_add = True)
 
 	@staticmethod
-	def get_or_insert_by_youtube_id(incoming, station):
-		youtube_id = incoming["youtube_id"]
-		youtube_duration = incoming["youtube_duration"]
-		youtube_title = incoming["youtube_title"]
+	def get_or_insert(incoming, station):
+		id = incoming["id"]
+		title = incoming["title"]
+		duration = incoming["duration"]
 		
 		track = None
-
-		if(youtube_id):
+		
+		# This is a Youtube track
+		if(incoming["type"]=="youtube"):
 			# We check if the track is already owned by this station
 			q = Track.all()
-			q.filter("youtube_id", youtube_id)
+			q.filter("youtube_id", id)
 			q.filter("station", station.key())
 			track = q.get()
-
+			
 			if(track):
 				logging.info("Track on Phonoblaster")
 				
@@ -49,33 +46,76 @@ class Track(db.Model):
 				logging.info("Track not on Phonoblaster")
 
 				track = Track(
-					youtube_id = youtube_id,
-					youtube_title = youtube_title,
-					youtube_duration = youtube_duration,
+					youtube_id = id,
+					youtube_title = title,
+					youtube_duration = duration,
 					station = station,
 				)
 				track.put()
 				logging.info("New track put in the datastore.")
+			
+		# This is a Soundcloud track
+		else:
+			thumbnail = incoming["thumbnail"]
+	
+			# We check if the track is already owned by this station
+			q = Track.all()
+			q.filter("soundcloud_id", str(id))
+			q.filter("station", station.key())
+			track = q.get()
+			
+			if(track):
+				logging.info("Track on Phonoblaster")
+				
+			# First time this track is submitted in this station
+			else:
+				logging.info("Track not on Phonoblaster")
 
+				track = Track(
+					soundcloud_id = str(id),
+					soundcloud_title = title,
+					soundcloud_duration = duration,
+					soundcloud_thumbnail = thumbnail,
+					station = station,
+				)
+				track.put()
+				logging.info("New track put in the datastore.")
+		
 		return track
-
-	@staticmethod
-	def get_extended_track(track):
-		return Track.get_extended_tracks([track])[0]
-
+	
 	@staticmethod
 	def get_extended_tracks(tracks):
-		extended_tracks = [
-			{
-				"track_id": track.key().id(),
-				"track_created": timegm(track.created.utctimetuple()),
-				"youtube_id": track.youtube_id,
-				"youtube_title": track.youtube_title,
-				"youtube_duration": track.youtube_duration,
-			} for track in tracks]
-
+		extended_tracks = []
+		for track in tracks:
+			extended_track = Track.get_extended_track(track)
+			extended_tracks.append(extended_tracks)
 		return extended_tracks
-
+	
+	@staticmethod
+	def get_extended_track(track):
+		extended_track = {
+			"track_id": track.key().id(),
+			"track_created": timegm(track.created.utctimetuple()),
+		}
+		
+		if(track.youtube_id):
+			extended_track.update({
+				"type": "youtube",
+				"id": track.youtube_id,
+				"title": track.youtube_title,
+				"duration": track.youtube_duration,
+			})
+		else:
+			extended_track.update({
+				"type": "soundcloud",
+				"id": track.soundcloud_id,
+				"title": track.soundcloud_title,
+				"duration": track.soundcloud_duration,
+				"thumbnail": track.soundcloud_thumbnail,
+			})
+		
+		return extended_track
+	
 	@staticmethod
 	def number_of_views(track_id):
 		shard_name = COUNTER_OF_VIEWS_PREFIX + str(track_id)

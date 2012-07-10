@@ -328,7 +328,7 @@ class StationApi():
 
 			for i in xrange(0,len(broadcasts)):
 				item = broadcasts[i]
-				duration = item['youtube_duration']
+				duration = item['duration']
 				# This is the current broadcast
 				if elapsed + duration > offset :
 					start = offset - elapsed
@@ -368,19 +368,20 @@ class StationApi():
 			b_key = broadcasts[i]
 			b_keys.append(b_key.key())
 
-
-		#Putting data in datastore
 		station.timestamp = new_timestamp
 		station.broadcasts = b_keys
 		station.put()
-		logging.info("Putting station with new buffer in DATASTORE")
+		logging.info("Buffer put in datastore")
 
-		#Updating memcache
-		self._buffer = {'broadcasts':new_broadcasts, 'timestamp': new_timestamp}
+		self._buffer = {
+			'broadcasts':new_broadcasts,
+			'timestamp': new_timestamp
+		}
 		memcache.set(self._memcache_station_id, station)
-		memcache.set(self._memcache_station_buffer_id, {'broadcasts':new_broadcasts, 'timestamp': new_timestamp} )
-		logging.info("Updating station and buffer in MEMCACHE")
-
+		logging.info("Station updated in memcache")
+		
+		memcache.set(self._memcache_station_buffer_id, self._buffer)
+		logging.info("Buffer updated in memcache")
 
 	def get_buffer_duration(self):
 		"""
@@ -390,7 +391,7 @@ class StationApi():
 		buffer_duration = 0
 
 		if broadcasts:
-			buffer_duration = sum([t['youtube_duration'] for t in broadcasts])
+			buffer_duration = sum([t['duration'] for t in broadcasts])
 
 		return buffer_duration
 
@@ -402,24 +403,23 @@ class StationApi():
 
 		# Edge Case, if adding track to position 1 5 seconds before the live track ends, we reject the operation.
 		# This is due to the latency of Pubnub.
-		if len(new_broadcasts) == 1:
+		if(len(new_broadcasts) == 1):
 			# We need to check if the live track ends in the next 5 seconds
 			live_broadcast = new_broadcasts[0]
-			live_broadcast_duration = live_broadcast['youtube_duration']
+			live_broadcast_duration = live_broadcast['duration']
 			start = timegm(datetime.utcnow().utctimetuple()) - timegm(timestamp.utctimetuple())
 			time_before_end = live_broadcast_duration-start
 
-			if time_before_end< 5:
+			if(time_before_end< 5):
 				# Rejecting action
 				logging.info("Rejecting operation because of an edge case (adding)")
 				return None
-
 		# End of edge case
 		
 		extended_broadcast = None
-		if room > 0 :
+		if(room > 0):
 			logging.info("Room in buffer")
-			track = Track.get_or_insert_by_youtube_id(incoming_track, self.station)
+			track = Track.get_or_insert(incoming_track, self.station)
 
 			if track:
 				logging.info("Track found")
@@ -429,16 +429,28 @@ class StationApi():
 					submitter_key_name = incoming_track["track_submitter_key_name"]
 					submitter_key = db.Key.from_path("Station", submitter_key_name)
 
-				new_broadcast = Broadcast(
-					key_name = incoming_track["key_name"],
-					track = track.key(),
-					youtube_id = track.youtube_id,
-					youtube_title = track.youtube_title,
-					youtube_duration = track.youtube_duration,
-					station = self.station.key(),
-					submitter = submitter_key,
-				)
-
+				if(track.youtube_id):		
+					new_broadcast = Broadcast(
+						key_name = incoming_track["key_name"],
+						track = track.key(),
+						youtube_id = track.youtube_id,
+						youtube_title = track.youtube_title,
+						youtube_duration = track.youtube_duration,
+						station = self.station.key(),
+						submitter = submitter_key,
+					)
+				else:
+					new_broadcast = Broadcast(
+						key_name = incoming_track["key_name"],
+						track = track.key(),
+						soundcloud_id = track.soundcloud_id,
+						soundcloud_title = track.soundcloud_title,
+						soundcloud_duration = track.soundcloud_duration,
+						soundcloud_thumbnail = track.soundcloud_thumbnail,
+						station = self.station.key(),
+						submitter = submitter_key,
+					)
+				
 				new_broadcast.put()
 				logging.info("New broadcast put in datastore")
 
@@ -451,7 +463,7 @@ class StationApi():
 					'timestamp': timestamp
 				}
 
-				#Saving data
+				# Save data
 				self.put_buffer(new_buffer)
 			else:
 				logging.info("Track not found")

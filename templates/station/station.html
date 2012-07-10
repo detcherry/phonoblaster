@@ -57,9 +57,11 @@
 		</div>
 		<!-- Media -->
 		<div id="media">
-			<div id="youtube-player">
+			<div id="above-player">
 				<img src="/{{tag}}/static/images/loader.gif" class="loader"/>
 			</div>
+			<div id="youtube-player"></div>
+			<div id="soundcloud-player"></div>
 		</div>
 		<div id="media-bar">
 			<div id="media-bar-filler"></div>
@@ -301,6 +303,8 @@
 <script src="https://pubnub.s3.amazonaws.com/pubnub-3.1.min.js"></script>
 <!-- App Engine -->
 <script type="text/javascript" src="/_ah/channel/jsapi"></script>
+<!-- Youtube -->
+<script type="text/javascript" src="/{{tag}}/static/js/library/swfobject.js"></script>
 <!-- Soundcloud -->
 <script src="http://connect.soundcloud.com/sdk.js"></script>
 <script type="text/javascript">
@@ -311,7 +315,6 @@
 <!-- Station -->
 <script type="text/javascript" src="/{{tag}}/static/js/library/json2.js"></script>
 <script type="text/javascript" src="/{{tag}}/static/js/library/system.js"></script>
-<script type="text/javascript" src="/{{tag}}/static/js/library/swfobject.js"></script>
 <script type="text/javascript" src="/{{tag}}/static/js/library/jquery.form.js"></script>
 <script type="text/javascript" src="/{{tag}}/static/js/station/counter.js"></script>
 <script type="text/javascript" src="/{{tag}}/static/js/station/share.js"></script>
@@ -322,7 +325,7 @@
 <script type="text/javascript" src="/{{tag}}/static/js/station/search.js"></script>
 <script type="text/javascript" src="/{{tag}}/static/js/station/likes.js"></script>
 <script type="text/javascript" src="/{{tag}}/static/js/station/tracks.js"></script>
-<script type="text/javascript" src="/{{tag}}/static/js/station/youtube.js"></script>
+<script type="text/javascript" src="/{{tag}}/static/js/station/player.js"></script>
 <script type="text/javascript" src="/{{tag}}/static/js/station/recommendations.js"></script>
 <script type="text/javascript" src="/{{tag}}/static/js/station/buffer.js"></script>
 <script type="text/javascript" src="/{{tag}}/static/js/station/main.js"></script>

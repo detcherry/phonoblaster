@@ -1,8 +1,8 @@
 // ---------------------------------------------------------------------------
-// YOUTUBE MANAGER
+// PLAYER MANAGER
 // ---------------------------------------------------------------------------
 
-function YoutubeManager(buffer_manager){
+function PlayerManager(buffer_manager){
 	this.buffer_manager = buffer_manager;
 	this.item = null;
 	
@@ -10,34 +10,71 @@ function YoutubeManager(buffer_manager){
 	this.deleteListen();
 }
 
-YoutubeManager.prototype = {
+PlayerManager.prototype = {
 	
 	init: function(item, start){
 		this.item = item;
 		
-		YOUTUBE_ID = item.content.youtube_id;
-		START = start;
-		var duration = item.content.youtube_duration;
-		
 		// Triggers the player
-		this.play(YOUTUBE_ID, START);
+		this.play(item, start);
 		
-		// Display information
+		// Display info
 		this.display(item);
 		
 		// Show progress
-		this.progress(start, duration)
+		var duration = item.content.duration;
+		this.progress(start, duration);
 	},
 	
-	play: function(youtube_id, start){
+	play: function(item, start){
+		// Stop Youtube streaming
+		this.stopYoutube();
+		// Stop Soundcloud streaming
+		this.stopSoundcloud();
+		
+		// Youtube player
+		if(item.content.type == "youtube"){
+			this.playYoutube(item, start);
+		}
+		// Soundcloud player
+		else{
+			this.playSoundcloud(item, start);
+		}
+	},
+	
+	stopYoutube: function(){
+		try{ytplayer.pauseVideo();}
+		catch(e){}
+	},
+	
+	stopSoundcloud: function(){
+		try{SC.streamStopAll();}
+		catch(e){}
+	},
+	
+	hideSoundcloud: function(){
+		$("#soundcloud-player").hide();
+	},
+	
+	hideYoutube: function(){
+		$("#media object").hide();
+	},
+		
+	playYoutube: function(item, start){
+		this.hideSoundcloud();
+		
+		var id = item.content.id;
+		
 		// Player already loaded
 		try{
-			ytplayer.loadVideoById(youtube_id, start,"medium");
-			PHB.log("Player already loaded");
+			$("#media object").show();
+			ytplayer.loadVideoById(id, start,"medium");
 		}
 		// Player not loaded yet
-		catch(e){					
-			PHB.log("Player not loaded yet")
+		catch(e){
+			ID = id;
+			START = start;
+						
 			var params = { 
 				allowScriptAccess: "always",
 				wmode: "transparent"
@@ -48,24 +85,50 @@ YoutubeManager.prototype = {
 		}
 	},
 	
+	playSoundcloud: function(item, start){
+		this.hideYoutube();
+		
+		var id = item.content.id;
+		var thumbnail = item.content.thumbnail;
+		var re = new RegExp("large","g");
+		var artwork = thumbnail.replace(re, "t300x300")
+		
+		SC.stream(
+			"/tracks/" + id,
+			{
+				autoPlay: true,
+				position: start * 1000,
+			},
+			function(sound){
+				scplayer = sound;
+			}
+		)
+		
+		// Show soundcloud
+		$("#soundcloud-player")
+			.empty()
+			.append(
+				$("<img/>").attr("src", artwork)
+			)
+			.show()
+	},
+	
 	display: function(item){
 		var id = item.id;
 		var content = item.content;
 		var type = content.type;
-
-		var youtube_title = content.youtube_title;
-		var youtube_duration = PHB.convertDuration(content.youtube_duration);
-		var youtube_thumbnail = "https://i.ytimg.com/vi/" + content.youtube_id + "/default.jpg";
-
+		var title = content.title;
+		var duration = PHB.convertDuration(content.duration);
+		var thumbnail = content.thumbnail;
 		var track_submitter_name = content.track_submitter_name;
 		var track_submitter_url = content.track_submitter_url;
 		var track_submitter_picture = "https://graph.facebook.com/" + content.track_submitter_key_name + "/picture?type=square";
 
 		// Display the image
-		$("#media-picture").empty().append($("<img/>").attr("src", youtube_thumbnail));
+		$("#media-picture").empty().append($("<img/>").attr("src", thumbnail));
 
 		// Display the title
-		$("#media-title").html(youtube_title);
+		$("#media-title").html(title);
 
 		// Display the submitter
 		$("#media-submitter").empty();
@@ -114,7 +177,7 @@ YoutubeManager.prototype = {
 		}, (duration - start)*1000,'linear');
 
 	},
-	
+
 	postListen: function(){
 		var that = this;
 
@@ -186,7 +249,7 @@ YoutubeManager.prototype = {
 	postCallback: function(btn, response){
 		if(!response){
 			this.toggle(btn);
-			PHB.error("New favorite has not been stored")
+			PHB.error("New favorite has not been stored.")
 		}
 	},
 	
@@ -245,7 +308,7 @@ YoutubeManager.prototype = {
 			PHB.error("Favorite has not been deleted.")
 		}
 	},
-
+	
 }
 
 //Youtube PLAY & VOLUME & ERROR management
@@ -259,7 +322,7 @@ function onYouTubePlayerReady(playerId) {
 	ytplayer.addEventListener("onPlaybackQualityChange","onQualityChange");
 	
 	// Triggers the video
-	ytplayer.loadVideoById(YOUTUBE_ID, START, "medium");
+	ytplayer.loadVideoById(ID, START, "medium");
 
 	//If the volume had been turned off, mute the player
 	if(!VOLUME){
@@ -286,6 +349,8 @@ $(function(){
 			//turn it off
 			try{ytplayer.mute();}
 			catch(e){PHB.log(e);}
+			try{scplayer.setVolume(0);}
+			catch(e){PHB.log(e);}
 			VOLUME = false;
 			$(this)
 				.removeClass("unmuted")
@@ -295,6 +360,8 @@ $(function(){
 		else{
 			//turn it on
 			try{ytplayer.unMute();}
+			catch(e){PHB.log(e);}
+			try{scplayer.setVolume(100);}
 			catch(e){PHB.log(e);}
 			VOLUME = true;
 			$(this)
@@ -306,5 +373,3 @@ $(function(){
 	});
 		
 })
-
-

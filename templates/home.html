@@ -19,12 +19,12 @@
 			{% if live %}
 				<div id="home-live-picture">
 					<a href="/{{ user_proxy.profile.shortname }}">
-					<span class="image-wrap" style="background:url('http://i.ytimg.com/vi/{{ live.youtube_id }}/default.jpg') no-repeat center center;"></span>
+						<span class="image-wrap" style="background:url('{{ live.thumbnail }}') no-repeat center center;"></span>
 					</a>
 				</div>
 				<p id="home-live-title">
 					<a href="/{{ user_proxy.profile.shortname }}">
-						<span class="middle">{{ live.youtube_title }}</span>
+						<span class="middle">{{ live.title }}</span>
 					</a>
 				</p>
 				<a href="/{{ user_proxy.profile.shortname }}" class="btn" style="margin-top:12px;">Tune in!</a>
@@ -41,7 +41,7 @@
 <div id="right-column">
 	<h2>Active recently</h2>
 	<div class="content">
-		{% for s, t in feed %}
+		{% for s, b in feed %}
 			<div class="home-feed-item">
 				<div class="home-feed-station">
 					<a href="/{{ s.shortname }}">
@@ -56,13 +56,12 @@
 				<div class="home-feed-track">
 					<div class="home-feed-track-picture">
 						<a href="/{{ s.shortname }}">
-							<span class="image-wrap " style="background:url('http://i.ytimg.com/vi/{{ t.id }}/default.jpg') no-repeat center center;">
-							</span>
+						<span class="image-wrap " style="background:url('{{ b.thumbnail }}') no-repeat center center;"></span>
 						</a>
 					</div>
 					<p>
 						<a href="/{{ s.shortname }}">
-							<span class="middle">{{ t.title }}</span>
+							<span class="middle">{{ b.title }}</span>
 						</a>
 					</p>
 				</div>

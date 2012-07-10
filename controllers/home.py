@@ -64,21 +64,34 @@ class HomeHandler(BaseHandler):
 				live = None
 				
 				total_duration = 0
-				for i in xrange(0, len(broadcasts)):
-					total_duration += broadcasts[i].youtube_duration
+				for broadcast in broadcasts:
+					if(broadcast.youtube_duration):
+						total_duration += broadcast.youtube_duration
+					else:
+						total_duration += broadcast.soundcloud_duration
 				
 				# Check if buffer is not empty
 				if total_duration > 0:
 					offset = (timegm(now.utctimetuple()) - timegm(timestamp.utctimetuple())) % total_duration
 					for broadcast in broadcasts:
-						duration = broadcast.youtube_duration			
-						
+						if(broadcast.youtube_id):
+							id = broadcast.youtube_id
+							title = broadcast.youtube_title
+							duration = broadcast.youtube_duration
+							thumbnail = "https://i.ytimg.com/vi/" + broadcast.youtube_id + "/default.jpg"
+						else:
+							id = broadcast.soundcloud_id
+							title = broadcast.soundcloud_title
+							duration = broadcast.soundcloud_duration
+							thumbnail = broadcast.soundcloud_thumbnail
+													
 						# Current broadcast math pattern below
 						if elapsed + duration > offset:
 							live = {
-								'id': broadcast.youtube_id,
-								'title': broadcast.youtube_title,
-								'duration': broadcast.youtube_duration
+								'id': id,
+								'title': title,
+								'duration': duration,
+								'thumbnail': thumbnail,
 							}
 							
 							couple[k]["live"] = live							
