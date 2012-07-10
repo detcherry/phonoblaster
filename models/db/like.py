@@ -40,13 +40,16 @@ class Like(db.Model):
 	
 	@staticmethod
 	def get_extended_like(like, track, station):
+		extended_track = Track.get_extended_track(track)
+		
 		extended_like = {
 			"created":  timegm(like.created.utctimetuple()),
-			"youtube_id": track.youtube_id,
-			"youtube_title": track.youtube_title,
-			"youtube_duration": track.youtube_duration,
-			"track_id": str(track.key().id()),
-			"track_created": timegm(track.created.utctimetuple()),
+			"id": extended_track["id"],
+			"title": extended_track["title"],
+			"duration": extended_track["duration"],
+			"thumbnail": extended_track["thumbnail"],
+			"track_id": extended_track["track_id"],
+			"track_created": extended_track["track_created"],
 			"track_submitter_key_name": station.key().name(),
 			"track_submitter_name": station.name,
 			"track_submitter_url": "/" + station.shortname,

@@ -41,18 +41,17 @@ LikeManager.prototype.getData = function(){
 LikeManager.prototype.UIBuild = function(item){
 	var id = item.id;
 	var content = item.content;
-	var created = PHB.convert(item.created);
-		
-	var track_submitter_url = content.track_submitter_url;
+	var type = content.type;
+	var title = content.title;
+	var duration = PHB.convertDuration(content.duration);
+	var thumbnail = content.thumbnail;
 	var track_submitter_name = content.track_submitter_name;
-	var track_submitter_picture = "https://graph.facebook.com/" + content.track_submitter_key_name + "/picture?type=square";
+	var track_submitter_url = content.track_submitter_url;
+	var track_submitter_picture = "https://graph.facebook.com/" + content.track_submitter_key_name + "/picture?type=square";	
 	
-	var youtube_title = content.youtube_title;
-	var youtube_duration = PHB.convertDuration(content.youtube_duration);
-	var youtube_thumbnail = "https://i.ytimg.com/vi/" + content.youtube_id + "/default.jpg";
-	var preview = "https://www.youtube.com/embed/" + content.youtube_id + "?autoplay=1"
+	//var preview = "https://www.youtube.com/embed/" + content.youtube_id + "?autoplay=1"
 	
-	var div = $("<div/>").addClass("item-wrapper").attr("id", id)
+	var div = $("<div/>").addClass("item-wrapper").addClass(type).attr("id", id)
 	
 	div.append(
 		$("<div/>")
@@ -76,17 +75,17 @@ LikeManager.prototype.UIBuild = function(item){
 					.append(
 						$("<div/>")
 							.addClass("item-picture")
-							.append($("<img/>").attr("src", youtube_thumbnail))
+							.append($("<img/>").attr("src", thumbnail))
 					)
 					.append(
 						$("<div/>")
 							.addClass("item-title")
-							.append($("<span/>").addClass("middle").html(youtube_title))
+							.append($("<span/>").addClass("middle").html(title))
 					)
 					.append(
 						$("<div/>")
 							.addClass("item-subtitle")
-							.append($("<div/>").addClass("item-duration").html(youtube_duration))
+							.append($("<div/>").addClass("item-duration").html(duration))
 							.append(
 								$("<div/>")
 									.addClass("item-process")
@@ -98,6 +97,10 @@ LikeManager.prototype.UIBuild = function(item){
 											.addClass("tuto")
 											.attr("data-original-title", "Add this track to your selection")
 									)
+									/*
+									
+									// No preview yet 
+									
 									.append(
 										$("<a/>")
 											.addClass("preview")
@@ -106,6 +109,8 @@ LikeManager.prototype.UIBuild = function(item){
 											.addClass("tuto")
 											.attr("data-original-title", "Preview this track")
 									)
+									
+									*/
 							)
 					)
 			)

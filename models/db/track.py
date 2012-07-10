@@ -94,7 +94,7 @@ class Track(db.Model):
 	@staticmethod
 	def get_extended_track(track):
 		extended_track = {
-			"track_id": track.key().id(),
+			"track_id": str(track.key().id()),
 			"track_created": timegm(track.created.utctimetuple()),
 		}
 		
@@ -104,6 +104,7 @@ class Track(db.Model):
 				"id": track.youtube_id,
 				"title": track.youtube_title,
 				"duration": track.youtube_duration,
+				"thumbnail": "https://i.ytimg.com/vi/" + track.youtube_id + "/default.jpg",
 			})
 		else:
 			extended_track.update({
