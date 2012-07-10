@@ -501,7 +501,7 @@ class StationApi():
 		if index_broadcast_to_find == 1:
 			# We need to check if the live track ends in the next 5 seconds
 			live_broadcast = broadcasts[0]
-			live_broadcast_duration = live_broadcast['youtube_duration']
+			live_broadcast_duration = live_broadcast['duration']
 			start = timegm(datetime.utcnow().utctimetuple()) - timegm(timestamp.utctimetuple())
 			time_before_end = live_broadcast_duration-start
 
