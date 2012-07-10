@@ -838,7 +838,7 @@ input#search:focus{
 	float:left;
 	position:relative;
 	height:60px;
-	width:60px;
+	width:68px;
 	overflow:hidden;
 	margin-right:10px;
 }
@@ -847,20 +847,20 @@ input#search:focus{
 	height:90px;
 	position:absolute;
 	top:-15px;
-	left:-30px;
+	left:-26px;
 }
 
 .soundcloud .item-picture img{
-	height:60px;
+	height:68px;
 	position:absolute;
-	top:0px;
+	top:-4px;
 	left:0px;
 }
 
 .item-title{
 	padding-top:4px;
 	padding-right:4px;
-	width:317px;
+	width:309px;
 	height:32px;
 	overflow:hidden;
 }
@@ -895,7 +895,7 @@ input#search:focus{
 
 .item-subtitle{
 	height:22px;
-	width:335px;
+	width:327px;
 }
 
 .item-duration{
@@ -965,11 +965,11 @@ input#search:focus{
 }
 
 #search-tab .item-title{
-	width:174px;
+	width:166px;
 }
 
 #search-tab .item-subtitle{
-	width:178px;
+	width:170px;
 }
 
 #search-tab .item a.btn{
@@ -991,7 +991,7 @@ input#search:focus{
 }
 
 #buffer-tab .tab-content:nth-child(2) .item-title{
-	width:286px;
+	width:278px;
 }
 
 .item a.item-up{
@@ -1076,11 +1076,11 @@ input#search:focus{
 }
 
 .item-wrapper .item-title{
-	width:275px;
+	width:267px;
 }
 
 .item-wrapper .item-subtitle{
-	width:279px;
+	width:271px;
 }
 
 .item-wrapper-content a.item-cross{
@@ -1133,11 +1133,11 @@ input#search:focus{
 }
 
 #popup-recommendations .item-title{
-	width:150px;
+	width:142px;
 }
 
 #popup-recommendations .item-subtitle{
-	width:154px;
+	width:146px;
 }
 
 #popup-recommendations .item-process{
@@ -1295,11 +1295,11 @@ span#messages-alert{
 #messages-feed .item-title{
 	padding-top:0px;
 	padding-bottom:4px;
-	width:123px;
+	width:115px;
 }
 
 #messages-feed .item-subtitle{
-	width:126px;
+	width:118px;
 }
 
 #messages-feed .item a.btn{
