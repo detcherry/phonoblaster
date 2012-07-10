@@ -56,9 +56,7 @@ BufferManager.prototype.getAjax = function(){
 		success: function(json){			
 			if(json.broadcasts.length > 0){
 				that.timestamp = json.timestamp;
-				
-				$("#above-player").remove();
-				
+								
 				that.empty(function(){
 					that.getCallback(json.broadcasts);
 				})

@@ -59,8 +59,13 @@ PlayerManager.prototype = {
 	hideYoutube: function(){
 		$("#media object").hide();
 	},
+	
+	removeAbove: function(){
+		$("#above-player").remove();
+	},
 		
 	playYoutube: function(item, start){
+		this.removeAbove();
 		this.hideSoundcloud();
 		
 		var id = item.content.id;
