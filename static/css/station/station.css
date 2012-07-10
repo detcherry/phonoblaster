@@ -838,7 +838,7 @@ input#search:focus{
 	float:left;
 	position:relative;
 	height:60px;
-	width:68px;
+	width:60px;
 	overflow:hidden;
 	margin-right:10px;
 }
@@ -847,13 +847,20 @@ input#search:focus{
 	height:90px;
 	position:absolute;
 	top:-15px;
-	left:-26px;
+	left:-30px;
+}
+
+.soundcloud .item-picture img{
+	height:60px;
+	position:absolute;
+	top:0px;
+	left:0px;
 }
 
 .item-title{
 	padding-top:4px;
 	padding-right:4px;
-	width:309px;
+	width:317px;
 	height:32px;
 	overflow:hidden;
 }
@@ -888,7 +895,7 @@ input#search:focus{
 
 .item-subtitle{
 	height:22px;
-	width:327px;
+	width:335px;
 }
 
 .item-duration{
@@ -958,11 +965,11 @@ input#search:focus{
 }
 
 #search-tab .item-title{
-	width:166px;
+	width:174px;
 }
 
 #search-tab .item-subtitle{
-	width:170px;
+	width:178px;
 }
 
 #search-tab .item a.btn{
@@ -984,7 +991,7 @@ input#search:focus{
 }
 
 #buffer-tab .tab-content:nth-child(2) .item-title{
-	width:278px;
+	width:286px;
 }
 
 .item a.item-up{
@@ -1069,11 +1076,11 @@ input#search:focus{
 }
 
 .item-wrapper .item-title{
-	width:267px;
+	width:275px;
 }
 
 .item-wrapper .item-subtitle{
-	width:271px;
+	width:279px;
 }
 
 .item-wrapper-content a.item-cross{
@@ -1126,11 +1133,11 @@ input#search:focus{
 }
 
 #popup-recommendations .item-title{
-	width:142px;
+	width:150px;
 }
 
 #popup-recommendations .item-subtitle{
-	width:146px;
+	width:154px;
 }
 
 #popup-recommendations .item-process{
@@ -1288,11 +1295,11 @@ span#messages-alert{
 #messages-feed .item-title{
 	padding-top:0px;
 	padding-bottom:4px;
-	width:115px;
+	width:123px;
 }
 
 #messages-feed .item-subtitle{
-	width:118px;
+	width:126px;
 }
 
 #messages-feed .item a.btn{
@@ -1418,6 +1425,10 @@ form#track-form{
 	height:60px;
 	top:-11px;
 	left:-20px;
+}
+
+#messages-suggestions .soundcloud .item-picture img{
+	height:40px;
 }
 
 #messages-suggestions .item-title{

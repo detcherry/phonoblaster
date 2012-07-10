@@ -278,10 +278,11 @@ SearchManager.prototype.UIBuild = function(item){
 	var content = item.content;
 	var title = content.title;
 	var duration = PHB.convertDuration(content.duration);
-	var thumbnail = content.thumbnail;		
+	var thumbnail = content.thumbnail;	
+	var type = content.type;	
 	// var preview = "https://www.youtube.com/embed/" + id + "?autoplay=1";
 	
-	var div = $("<div/>").addClass("item").attr("id",id)
+	var div = $("<div/>").addClass("item").addClass(type).attr("id",id)
 	div.append(
 		$("<div/>")
 			.addClass("item-picture")

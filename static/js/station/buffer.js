@@ -781,6 +781,7 @@ BufferManager.prototype.UIAdd = function(new_item, previous_item){
 BufferManager.prototype.UIBuild = function(item){
 	var id = item.id;
 	var content = item.content;
+	var type = content.type;
 	var title = content.title;
 	var duration = PHB.convertDuration(content.duration);
 	var thumbnail = content.thumbnail;
@@ -788,7 +789,7 @@ BufferManager.prototype.UIBuild = function(item){
 	var track_submitter_url = content.track_submitter_url;
 	var track_submitter_picture = "https://graph.facebook.com/" + content.track_submitter_key_name + "/picture?type=square";	
 	
-	var div = $("<div/>").addClass("item").attr("id", id)
+	var div = $("<div/>").addClass("item").addClass(type).attr("id", id)
 	
 	div.append(
 		$("<div/>")
