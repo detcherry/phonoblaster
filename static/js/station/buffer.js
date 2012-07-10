@@ -975,8 +975,9 @@ BufferManager.prototype.displayNextTrack = function(){
 			var content = next_item.content;
 			var title = content.title;
 			var thumbnail = content.thumbnail;
+			var type = content.type;
 
-			$("#panel-box-picture").empty().append($("<img/>").attr("src", thumbnail))
+			$("#panel-box-picture").empty().append($("<img/>").attr("src", thumbnail).addClass(type))
 			$("#panel-box p.logged").html(title)
 		}
 	}

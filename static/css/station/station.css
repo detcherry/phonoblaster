@@ -259,9 +259,17 @@ form#edit-background input{
 }
 
 #media-picture img{
+	height:90px;
 	position:absolute;
 	top:-15px;
 	left:-26px;
+}
+
+#media-picture img.soundcloud{
+	height:68px;
+	position:absolute;
+	top:-4px;
+	left:0px;
 }
 
 #media-info{
@@ -520,9 +528,17 @@ a.listener img{
 }
 
 #panel-box-picture img{
+	height:90px;
 	position:absolute;
 	top:-15px;
 	left:-26px;
+}
+
+#panel-box-picture img{
+	height:68px;
+	position:absolute;
+	top:-4px;
+	left:-0px;
 }
 
 #panel-box-track{
@@ -1427,8 +1443,10 @@ form#track-form{
 	left:-20px;
 }
 
-#messages-suggestions .soundcloud .item-picture img{
+#messages-suggestions .item-picture img.soundcloud{
 	height:40px;
+	top:-1px;
+	left:0px;
 }
 
 #messages-suggestions .item-title{

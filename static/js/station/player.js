@@ -125,7 +125,7 @@ PlayerManager.prototype = {
 		var track_submitter_picture = "https://graph.facebook.com/" + content.track_submitter_key_name + "/picture?type=square";
 
 		// Display the image
-		$("#media-picture").empty().append($("<img/>").attr("src", thumbnail));
+		$("#media-picture").empty().append($("<img/>").attr("src", thumbnail).addClass(type));
 
 		// Display the title
 		$("#media-title").html(title);
