@@ -9,7 +9,7 @@
 	<!-- Track Open Graph Tags -->
 	<meta property="fb:app_id" content="{{ facebook_app_id }}"/>
 	<meta property="og:type" content="{{ version }}:track"/> 
-	<meta property="og:url" content="{{ site_url }}/track/{{ track.track_id }}"/> 
+	<meta property="og:url" content="{{ site_url }}/track/{{ track.key().id() }}"/> 
 	<meta property="og:title" content="{% if track.youtube_title %}{{ track.youtube_title }}{% else %}{{ track.soundcloud_title }}{% endif %}"/> 
 	<meta property="og:description" content="Broadcast on {{ station_proxy.station.name }}"/>
 	<meta property="og:image"  content="{% if track.youtube_id %}http://i.ytimg.com/vi/{{ track.youtube_id }}/hqdefault.jpg{% else %}{{ track.soundcloud_thumbnail }}{% endif %}"/> 
