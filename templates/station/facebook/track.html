@@ -1,9 +1,8 @@
 {% extends "station/facebook/secondary.html" %}
 
 {% block meta %}
-	<title>{{ track.youtube_title }}</title>
-	<meta name="description" content="Broadcast on {{ station_proxy.station.name }}">
-	 
+	<title>{% if track.youtube_title %}{{ track.youtube_title }}{% else %}{{ track.soundcloud_title }}{% endif %}</title>
+	<meta name="description" content="Broadcast on {{ station_proxy.station.name }}">	 
 {% endblock %}
 
 {% block facebook %}
@@ -18,6 +17,6 @@
 	<meta property="og:video:type" content="application/x-shockwave-flash"/>
 	<meta property="og:video:width" content="460"/>
 	<meta property="og:video:height" content="{% if track.youtube_id %}260{% else %}98{% endif %}"/>
-	<meta property="og:video" content="{% if track.youtube_id %}http://www.youtube.com/v/{{ track.youtube_id }}{% else %}http://player.soundcloud.com/player.swf?url=http%3A%2F%2Fapi.soundcloud.com%2Ftracks%F{{ track.soundcloud_id }}&color=3b5998&auto_play=true&show_artwork=false{% endif %}"/>
+	<meta property="og:video" content="{% if track.youtube_id %}http://www.youtube.com/v/{{ track.youtube_id }}{% else %}http://player.soundcloud.com/player.swf?url=http%3A%2F%2Fapi.soundcloud.com%2Ftracks%2F{{ track.soundcloud_id }}&color=3b5998&auto_play=true&show_artwork=false{% endif %}"/>
 	<meta property="{{ version }}:station" content="{{ site_url }}/{{ station_proxy.station.shortname }}"/>
 {% endblock %}

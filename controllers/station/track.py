@@ -23,7 +23,7 @@ class TrackHandler(RootHandler):
 				# Facebook linter 
 				self.station_proxy = StationApi(shortname)
 				template_values = { 
-					"track": Track.get_extended_track(track),
+					"track": track,
 				}
 				
 				self.render("station/facebook/track.html", template_values)

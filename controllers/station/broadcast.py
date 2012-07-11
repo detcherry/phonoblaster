@@ -23,11 +23,8 @@ class BroadcastHandler(RootHandler):
 			else:
 				# Facebook linter
 				station = self.station_proxy.station
-				broadcasts = [broadcast]
-				
-				extended_broadcasts = Broadcast.get_extended_broadcasts(broadcasts, station)
 				template_values = {
-					"broadcast": extended_broadcasts[0],
+					"broadcast" : broadcast,
 				}
 				self.render("station/facebook/broadcast.html", template_values)
 		else:
