@@ -1,6 +1,54 @@
 $(function(){
-	CLIENT = new Client(LISTENER, ADMIN, HOST)
+	
+	// jQuery -> Soundcloud -> Youtube -> Client
+	
+	SC.whenStreamingReady(function(){
+		PHB.log("Soundcloud ready");
+		
+		swfobject.embedSWF(
+			"https://www.youtube.com/apiplayer?version=3&enablejsapi=1&playerapiid=player1",
+			"youtube-player",
+			400,
+			225,
+			"8",
+			null,
+			null,
+			{ 
+				allowScriptAccess: "always",
+				wmode: "transparent"
+			},
+			{ 
+				id: "ytplayer"
+			}
+		);	
+	});
 })
+
+//Youtube ready
+function onYouTubePlayerReady(playerId) {
+	PHB.log("Youtube ready")
+	
+	ytplayer = document.getElementById("ytplayer");
+
+	// Puts handler in case the video does not work
+	ytplayer.addEventListener("onError", "onPlayerError");
+
+	// Add event listener to monitor quality
+	ytplayer.addEventListener("onPlaybackQualityChange","onQualityChange");
+	
+	// Initialize station
+	CLIENT = new Client(LISTENER, ADMIN, HOST)
+}
+
+function onQualityChange(qualityState){
+	if(qualityState != "medium" && ytplayer.getAvailableQualityLevels().indexOf("medium") != -1){
+		ytplayer.setPlaybackQuality("medium");
+	}
+}
+
+function onPlayerError(){	
+	PHB.log("Error: Youtube Track not working");
+}
 
 function Client(listener, admin, host){
 	this.init(listener, admin, host);
