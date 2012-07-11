@@ -202,7 +202,7 @@ form#edit-background input{
 	display:none;
 	width:400px;
 	height:225px;
-	background:black;
+	background:url("/static/images/background-soundcloud.png");
 }
 
 #soundcloud-player img{
