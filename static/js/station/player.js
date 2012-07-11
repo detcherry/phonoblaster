@@ -90,6 +90,14 @@ PlayerManager.prototype = {
 			},
 			function(sound){
 				scplayer = sound;
+				
+				// Unlike Youtube player, volume needs to be refreshed for every Soundcloud song
+				if(VOLUME){
+					scplayer.setVolume(100);
+				}
+				else{
+					scplayer.setVolume(0);
+				}
 			}
 		)
 		
