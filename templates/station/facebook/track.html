@@ -11,13 +11,13 @@
 	<meta property="fb:app_id" content="{{ facebook_app_id }}"/>
 	<meta property="og:type" content="{{ version }}:track"/> 
 	<meta property="og:url" content="{{ site_url }}/track/{{ track.track_id }}"/> 
-	<meta property="og:title" content="{{ track.youtube_title }}"/> 
+	<meta property="og:title" content="{% if track.youtube_title %}{{ track.youtube_title }}{% else %}{{ track.soundcloud_title }}{% endif %}"/> 
 	<meta property="og:description" content="Broadcast on {{ station_proxy.station.name }}"/>
-	<meta property="og:image"  content="http://i.ytimg.com/vi/{{ track.youtube_id }}/hqdefault.jpg"/> 
+	<meta property="og:image"  content="{% if track.youtube_id %}http://i.ytimg.com/vi/{{ track.youtube_id }}/hqdefault.jpg{% else %}{{ track.soundcloud_thumbnail }}{% endif %}"/> 
 	<meta property="og:site_name" content="Phonoblaster"/>
 	<meta property="og:video:type" content="application/x-shockwave-flash"/>
 	<meta property="og:video:width" content="460"/>
-	<meta property="og:video:height" content="260"/>
-	<meta property="og:video" content="http://www.youtube.com/v/{{ track.youtube_id }}"/>
+	<meta property="og:video:height" content="{% if track.youtube_id %}260{% else %}98{% endif %}"/>
+	<meta property="og:video" content="{% if track.youtube_id %}http://www.youtube.com/v/{{ track.youtube_id }}{% else %}http://player.soundcloud.com/player.swf?url=http%3A%2F%2Fapi.soundcloud.com%2Ftracks%F{{ track.soundcloud_id }}&color=3b5998&auto_play=true&show_artwork=false{% endif %}"/>
 	<meta property="{{ version }}:station" content="{{ site_url }}/{{ station_proxy.station.shortname }}"/>
 {% endblock %}
