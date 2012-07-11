@@ -21,6 +21,7 @@ function MessageManager(client){
 	this.unread_messages = 0;
 	this.search_items = [];
 	this.search_content = "";
+	this.search_type = "";
 }
 
 MessageManager.prototype.init = function(){
@@ -36,7 +37,13 @@ MessageManager.prototype.init = function(){
 	
 	// Events relative to suggestions
 	this.searchListen();
+	/*
+	
+	// No preview momentarily
 	this.searchPreviewListen();
+	
+	*/
+	
 	this.searchSubmitListen();
 	
 	// Get latest messages
@@ -108,45 +115,53 @@ MessageManager.prototype.toggleListen = function(){
 
 /* Switch from a text to a track message or the opposite */
 MessageManager.prototype.switchListen = function(){
+	var that = this;
+	
 	$("ul#messages-options a").click(function(){
-		// If not current form
-		if(!$(this).hasClass("current")){
-			// Show the current form
-			 $(this)
-				.addClass("current")
-				.parent("li")
-				.siblings("li")
-				.find("a.current")
-				.removeClass("current");
-				
-			// Show target, hide others.
-			 $($(this).attr('href'))
-				.show()
-				.siblings("form")
-				.hide();
-		}
 		
-		// Hide suggestions if text form selected
+		// Text message
 		if($(this).attr("id") == "text-option"){
-			$("#messages-suggestions").hide()
+			$("#messages-suggestions").hide();
+			$("#track-form").hide();
+			$("#text-form").show();
+		}
+		// Track message
+		else{
+			$("#text-form").hide();
+			$("#track-form").show();
+			
+			if($(this).attr("id") == "youtube-option"){
+				that.search_type = "youtube";
+			}
+			else{
+				that.search_type = "soundcloud";
+			}
+			
+			that.search()
 		}
 		
+		// Change current status
+		 $(this)
+			.addClass("current")
+			.parent("li")
+			.siblings("li")
+			.find("a.current")
+			.removeClass("current");
+			
 		$(this).blur();
 		return false;
-	})
+	})	
 }
 
 MessageManager.prototype.inputListen = function(){
 
 	var that = this;
 	
-	// Listen to focus events in the messages form
+	// Listen to focus events in the messages forms
 	$("#messages-field input").focus(function(){
-		var default_text_content = "Send a message..."
-		var default_track_content = "Suggest a track..."
 		var content = $(this).val()
 		
-		if(content == default_text_content || content == default_track_content){
+		if(content == "Send a message..." || content == "Suggest a track..."){
 			//Clear the input text
 			$(this).val("")
 		}
@@ -160,24 +175,19 @@ MessageManager.prototype.inputListen = function(){
 }
 
 MessageManager.prototype.searchListen = function(){
-	// Show suggestions search screen if search already in input
-	$("#track-form input").focus(function(){
-		var content = $(this).val();
-		if(content != "Suggest a track..." && content.length > 1){
-			$("#messages-suggestions").show();
+	var that = this;
+	
+	// Show suggestions if containing children
+	$("track-form input").focus(function(){
+		if($("messages-suggestions").children().length > 0){
+			$("messages-suggestions").show();
 		}
 	})
 	
-	var that = this;
 	// Trigger get each time something is typed
 	$("#track-form input").keyup(function(){
 		that.search_content = $(this).val()
-		
-		// Only trigger searches that have more than 1 character
-		if(that.search_content.length > 1){
-			$("#messages-suggestions").show();
-			that.search();
-		}
+		that.search();
 	})
 	
 	// Prevent submit events
@@ -189,77 +199,151 @@ MessageManager.prototype.searchListen = function(){
 MessageManager.prototype.search = function(){	
 	var that = this;
 	
-	$.ajax({
-		url: "https://gdata.youtube.com/feeds/api/videos",
-		dataType: "jsonp",
-		timeout: 60000,
-		data: {
-			"q": that.search_content,
-			"max-results": 6,
-			"format": 5,
-			"v": 2,
-			"alt": "jsonc",
-		},
-		error: function(xhr, status, error) {
-			PHB.log('An error occurred: ' + error + '\nPlease retry.');
-		},
-		success: function(json){
-			var items = json.data.items;
-			
-			if(items && items.length > 0){
-				that.search_items = items
-				
-				$("#messages-suggestions").empty();
-				$.each(that.search_items, function(index, item){
+	if(that.search_content.length > 1){
+		$("#messages-suggestions").show();
+		
+		// Youtube search
+		if(that.search_type == "youtube"){
+			$.ajax({
+				url: "https://gdata.youtube.com/feeds/api/videos",
+				dataType: "jsonp",
+				timeout: 60000,
+				data: {
+					"q": that.search_content,
+					"max-results": 6,
+					"format": 5,
+					"v": 2,
+					"alt": "jsonc",
+				},
+				error: function(xhr, status, error) {
+					PHB.log('An error occurred: ' + error + '\nPlease retry.');
+				},
+				success: function(json){
+					var items = []
+					if(json.data.items){
+						items = json.data.items;
+					}
 
-
-					var youtube_id = item.id;
-					var youtube_title = item.title;
-					var youtube_duration = PHB.convertDuration(item.duration)
-					var youtube_thumbnail = "https://i.ytimg.com/vi/" + youtube_id + "/default.jpg";
-					var preview = "https://www.youtube.com/embed/" + youtube_id + "?autoplay=1"
-
-					$("#messages-suggestions").append(
-						$("<div/>")
-							.addClass("item")
-							.attr("id", youtube_id)
-							.append(
-								$("<div/>")
-									.addClass("item-picture")
-									.append($("<img/>").attr("src", youtube_thumbnail))
-							)
-							.append(
-								$("<div/>")
-									.addClass("item-title")
-									.append($("<span/>").addClass("middle").html(youtube_title))
-							)
-							.append(
-								$("<div/>")
-									.addClass("item-subtitle")
-									.append($("<div/>").addClass("item-duration").html(youtube_duration))
-									.append(
-										$("<div/>")
-											.addClass("item-process")
-											.append(
-												$("<a/>")
-													.addClass("btn")
-													.attr("name", youtube_id)
-													.html("Suggest")
-											)
-											.append(
-												$("<a/>")
-													.addClass("preview")
-													.addClass("fancybox.iframe")
-													.attr("href", preview)
-											)
-									)
-							)
-					)
-				})
-			}
+					that.searchCallback(items)
+				}
+			})
 		}
-	})
+		// Soundcloud search
+		else{
+			SC.get("/tracks",{
+				"q" : that.search_content,
+				"limit": 50,
+				"filter": "streamable",
+				"order": "hotness",
+			},
+			function(items){
+				filtered_items = []
+
+				// Filter results with artwork
+				$.each(items, function(i, item){
+					if(item.artwork_url){
+						filtered_items.push(item);
+					}
+				})
+
+				that.searchCallback(filtered_items);
+			})
+		}
+	}
 }
+
+MessageManager.prototype.searchCallback = function(items){	
+	var that = this
+	$("#messages-suggestions").empty();
+	
+	$.each(items, function(index, raw_item){
+		var content = {
+			"id": raw_item.id, 
+			"title": raw_item.title, 
+			"track_id": null,
+			"track_created": null,
+			"track_submitter_key_name": that.client.host.key_name,
+			"track_submitter_name": that.client.host.name,
+			"track_submitter_url": "/" + that.client.host.shortname,
+		}
+
+		// Specific to Youtube
+		if(that.search_type == "youtube"){
+			content["type"] = "youtube";
+			content["duration"] = raw_item.duration;
+			content["thumbnail"] = "https://i.ytimg.com/vi/" + raw_item.id + "/default.jpg";
+		}
+		// Specific to Soundcloud
+		else{
+			content["type"] = "soundcloud";
+			content["duration"] =  Math.round(parseInt(raw_item.duration)/1000);
+			content["thumbnail"] = raw_item.artwork_url;
+		}
+
+		var item = {
+			id: content.id,
+			created: null,
+			content: content,
+		}
+		
+		that.search_items.push(item);
+			
+		var id = item.content.id;
+		var title = item.content.title;
+		var duration = PHB.convertDuration(item.content.duration);
+		var thumbnail = item.content.thumbnail;
+		var type = item.content.type;
+		
+		// var preview = "https://www.youtube.com/embed/" + id + "?autoplay=1"
+
+		$("#messages-suggestions").append(
+			$("<div/>")
+				.addClass("item")
+				.attr("id", id)
+				.append(
+					$("<div/>")
+						.addClass("item-picture")
+						.append($("<img/>").attr("src", thumbnail).addClass(type))
+				)
+				.append(
+					$("<div/>")
+						.addClass("item-title")
+						.append($("<span/>").addClass("middle").html(title))
+				)
+				.append(
+					$("<div/>")
+						.addClass("item-subtitle")
+						.append($("<div/>").addClass("item-duration").html(duration))
+						.append(
+							$("<div/>")
+								.addClass("item-process")
+								.append(
+									$("<a/>")
+										.addClass("btn")
+										.attr("name", id)
+										.html("Suggest")
+								)
+								/*
+								
+								// No preview momentarily
+								
+								.append(
+									$("<a/>")
+										.addClass("preview")
+										.addClass("fancybox.iframe")
+										.attr("href", preview)
+								)
+								*/
+						)
+				)
+		)
+	})
+	
+}
+
+/*
+
+// No preview momentarily
 
 MessageManager.prototype.searchPreviewListen = function(){
 	$("#messages-suggestions a.preview").fancybox({
@@ -276,6 +360,8 @@ MessageManager.prototype.searchPreviewListen = function(){
 	});
 }
 
+*/
+
 MessageManager.prototype.searchSubmitListen = function(){
 	
 	var that = this;
@@ -289,7 +375,7 @@ MessageManager.prototype.searchSubmitListen = function(){
 		for(var i=0, c= that.search_items.length; i<c; i++){
 			var item = that.search_items[i];
 			if(item.id == id){ 
-				to_submit = item;
+				to_submit = item.content;
 				break;
 			}
 		}
@@ -373,9 +459,11 @@ MessageManager.prototype.prePostBuild = function(input){
 		var content = {
 			key_name: comment_key_name,
 			text: input.text,
-			youtube_id: null,
-			youtube_title: null,
-			youtube_duration: null,
+			id: null,
+			title: null,
+			duration: null,
+			thumbnail: null,
+			type: null,
 			author_key_name: author_key_name,
 			author_name: author_name,
 			author_url: author_url,
@@ -387,9 +475,11 @@ MessageManager.prototype.prePostBuild = function(input){
 		var content = {
 			key_name: comment_key_name,
 			text: null,
-			youtube_id: input.id,
-			youtube_title: input.title,
-			youtube_duration: input.duration,
+			id: input.id,
+			title: input.title,
+			duration: input.duration,
+			thumbnail: input.thumbnail,
+			type: input.type,
 			track_submitter_key_name: author_key_name,
 			track_submitter_name: author_name,
 			track_submitter_url: author_url,
@@ -432,9 +522,9 @@ MessageManager.prototype.UIBuild = function(item){
 		)
 	}
 	else{
-		var youtube_title = content.youtube_title;
-		var youtube_duration = PHB.convertDuration(content.youtube_duration);
-		var youtube_thumbnail = "https://i.ytimg.com/vi/" + content.youtube_id + "/default.jpg";	
+		var title = content.title;
+		var duration = PHB.convertDuration(content.duration);
+		var thumbnail = content.thumbnail;	
 		var track_submitter_picture_url = "https://graph.facebook.com/"+ content.track_submitter_key_name + "/picture?type=square";
 		var track_submitter_name = content.track_submitter_name;
 		var track_submitter_url = content.track_submitter_url;
@@ -459,25 +549,26 @@ MessageManager.prototype.UIBuild = function(item){
 						.append(
 							$("<div/>")
 								.addClass("item-picture")
-								.append($("<img/>").attr("src", youtube_thumbnail))
+								.append($("<img/>").attr("src", thumbnail))
 						)
 						.append(
 							$("<div/>")
 								.addClass("item-title")
-								.append($("<span/>").addClass("middle").html(youtube_title))
+								.append($("<span/>").addClass("middle").html(title))
 						)
 						.append(
 							$("<div/>")
 								.addClass("item-subtitle")
-								.append($("<div/>").addClass("item-duration").html(youtube_duration))
+								.append($("<div/>").addClass("item-duration").html(duration))
 						)
 				)
 				.append($("<div/>").addClass("item-time").html(created))
 		)
 		
+		
 		// For admins only 
 		if(this.client.admin){
-			var preview = "https://www.youtube.com/embed/" + content.youtube_id + "?autoplay=1"
+			// var preview = "https://www.youtube.com/embed/" + content.youtube_id + "?autoplay=1"
 			
 			div.find(".item-subtitle").append(
 				$("<div/>")
@@ -488,15 +579,21 @@ MessageManager.prototype.UIBuild = function(item){
 							.attr("name", id)
 							.html("Add")
 					)
+					/*
+
+					// No preview momentarily
+					
 					.append(
 						$("<a/>")
 							.addClass("preview")
 							.addClass("fancybox.iframe")
 							.attr("href", preview)
 					)
+					
+					
+					*/
 			)
 		}
-		
 	}
 				
 	return div

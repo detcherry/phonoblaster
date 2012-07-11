@@ -10,6 +10,10 @@ class Message(db.Model):
 	youtube_id = db.StringProperty()
 	youtube_title = db.StringProperty()
 	youtube_duration = db.IntegerProperty()
+	soundcloud_id = db.StringProperty()
+	soundcloud_title = db.StringProperty()
+	soundcloud_duration = db.IntegerProperty()
+	soundcloud_thumbnail = db.StringProperty()
 	author = db.ReferenceProperty(Station, required = True, collection_name = "messageAuthor")
 	host = db.ReferenceProperty(Station, required = True, collection_name = "messageHost")
 	created = db.DateTimeProperty(auto_now_add = True)
@@ -50,9 +54,11 @@ class Message(db.Model):
 				extended_message = {
 					"key_name": message.key().name(),
 					"text": message.message,
-					"youtube_id": None,
-					"youtube_title": None,
-					"youtube_duration": None,
+					"type": None,
+					"id": None,
+					"title": None,
+					"duration": None,
+					"thumbnail": None,
 					"created": timegm(message.created.utctimetuple()),
 					"author_key_name": author.key().name(),
 					"author_name": author.name,
@@ -62,13 +68,27 @@ class Message(db.Model):
 				extended_message = {
 					"key_name": message.key().name(),
 					"text": None,
-					"youtube_id": message.youtube_id,
-					"youtube_title": message.youtube_title,
-					"youtube_duration": message.youtube_duration,
 					"created": timegm(message.created.utctimetuple()),
 					"track_submitter_key_name": author.key().name(),
 					"track_submitter_name": author.name,
 					"track_submitter_url": "/" + author.shortname,
 				}
+				
+				if(message.youtube_id):
+					extended_message.update({
+						"type": "youtube",
+						"id": message.youtube_id,
+						"title": message.youtube_title,
+						"duration": message.youtube_duration,
+						"thumbnail": "https://i.ytimg.com/vi/" + message.youtube_id + "/default.jpg"
+					})
+				else:
+					extended_message.update({
+						"type": "soundcloud",
+						"id": message.soundcloud_id,
+						"title": message.soundcloud_title,
+						"duration": message.soundcloud_duration,
+						"thumbnail": message.soundcloud_thumbnail,
+					})
 
 		return extended_message

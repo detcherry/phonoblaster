@@ -1164,7 +1164,7 @@ input#search:focus{
 	width:785px;
 }
 
-/* -------- CHAT --------- */
+/* -------- MESSAGES --------- */
 
 #messages{
 	position:fixed;
@@ -1242,7 +1242,7 @@ span#messages-alert{
 	border-bottom:1px solid #E1E1E1;
 }
 
-/* ---- CHAT CONTENT ---- */
+/* ---- MESSAGES CONTENT ---- */
 
 #messages-content{
 	display:none;
@@ -1264,7 +1264,8 @@ span#messages-alert{
 
 #messages-feed{
 	width:92%;
-	min-height:214px;
+	padding-bottom:20px;
+	min-height:194px;
 	margin-right:4%;
 	margin-left:4%;
 	background:white;
@@ -1273,7 +1274,6 @@ span#messages-alert{
 #messages-feed .item-wrapper{
 	padding:0px;
 	width:100%;
-	border:1px solid #F1F1F1;
 }
 
 #messages-feed .item-wrapper-submitter{
@@ -1341,19 +1341,19 @@ span#messages-alert{
 }
 
 ul#messages-options{
-	position:relative;
-	margin-top:11px;
-	margin-left:10px;
-	height:25px;
-	width:55px;
+	float:right;
+	margin-top:-10px;
+	margin-right:12px;
+	height:20px;
+	width:70px;
 }
 
 ul#messages-options li a{
 	display:inline-block;
 	margin-right:5px;
-	height:25px;
-	width:25px;
-	background-color:#F1F1F1;
+	height:20px;
+	width:20px;
+	background-color:#636363;
 }
 
 ul#messages-options li:last-child a{
@@ -1361,32 +1361,39 @@ ul#messages-options li:last-child a{
 }
 
 ul#messages-options li a.current{
-	background-color:#7F7F7F;
+	background-color:#F1F1F1;
 }
 
 a#text-option{
 	background:url("/static/images/new-sprits.png");
-	background-position:-77px -107px;
+	background-position:-101px -110px;
 }
 
 a#text-option.current{
 	background:url("/static/images/new-sprits.png");
-	background-position:-101px -107px;
+	background-position:-77px -110px;
 }
 
-a#track-option{
-	background:url("/static/images/new-sprits.png");
-	background-position:-78px -143px;
+a#youtube-option{
+	background:url("/static/images/youtube-off.png");
 }
 
-a#track-option.current{
-	background:url("/static/images/new-sprits.png");
-	background-position:-101px -143px;
+a#youtube-option.current{
+	background:url("/static/images/youtube-on.png");
+}
+
+a#soundcloud-option{
+	background:url("/static/images/soundcloud-off.png");
+}
+
+a#soundcloud-option.current{
+	background:url("/static/images/soundcloud-on.png");
 }
 
 #messages-field form{
-	height:46px;
-	width:222px;
+	margin-left:10px;
+	height:36px;
+	width:265px;
 }
 
 form#track-form{
@@ -1394,13 +1401,13 @@ form#track-form{
 }
 
 #messages-field form.admin{
+	padding-top:10px;
 	width:287px;
 }
 
 #messages-field input{
-	padding:10px;
-	padding-top:15px;
-	width:202px;
+	padding-top:6px;
+	width:265px;
 	color:#C4C4C4;
 	font-style:italic;
 	border:none;
@@ -1419,11 +1426,13 @@ form#track-form{
 
 #messages-suggestions{
 	display:none;
+	width:200px;
+	max-height:292px;
+	overflow:hidden;
 	margin-top:-299px;
 	margin-left:292px;
-	width:200px;
 	background:white;
-	border: 1px solid #E1E1E1;
+	border:1px solid #E1E1E1;
 }
 
 #messages-suggestions .item{

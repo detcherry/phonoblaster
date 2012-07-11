@@ -46,20 +46,33 @@ class ApiMessagesHandler(BaseHandler):
 			author = db.get(author_key)
 			
 			if(message["text"]):
-				text = message["text"][:500].replace("\n"," ")
+				new_message = Message(
+					key_name = message["key_name"],
+					message = message["text"][:500].replace("\n"," "),	
+					host = self.host.key(),
+					author = author_key,			
+				)
 			else:
-				text = None
-				
-			new_message = Message(
-				key_name = message["key_name"],
-				message = text,
-				youtube_id = message["youtube_id"],
-				youtube_title = message["youtube_title"],
-				youtube_duration = message["youtube_duration"],
-				host = self.host.key(),
-				author = author_key,
-			)
-				
+				if(message["type"] == "youtube"):
+					new_message = Message(
+						key_name = message["key_name"],
+						youtube_id = message["id"],
+						youtube_title = message["title"],
+						youtube_duration = message["duration"],
+						host = self.host.key(),
+						author = author_key,
+					)
+				else:
+					new_message = Message(
+						key_name = message["key_name"],
+						soundcloud_id = str(message["id"]),
+						soundcloud_title = message["title"],
+						soundcloud_duration = message["duration"],
+						soundcloud_thumbnail = message["thumbnail"],
+						host = self.host.key(),
+						author = author_key,
+					)
+		
 			new_message.put()
 			logging.info("New message put to the datastore")
 		
