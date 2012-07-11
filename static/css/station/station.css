@@ -1367,12 +1367,12 @@ ul#messages-options li a.current{
 
 a#text-option{
 	background:url("/static/images/new-sprits.png");
-	background-position:-101px -110px;
+	background-position:-102px -110px;
 }
 
 a#text-option.current{
 	background:url("/static/images/new-sprits.png");
-	background-position:-77px -110px;
+	background-position:-78px -110px;
 }
 
 a#youtube-option{
