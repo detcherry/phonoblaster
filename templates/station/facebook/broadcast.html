@@ -13,7 +13,7 @@
 	<meta property="og:url" content="{{ site_url }}/broadcast/{{ broadcast.key().name() }}"/> 
 	<meta property="og:title" content="{% if broadcast.youtube_title %}{{ broadcast.youtube_title }}{% else %}{{ broadcast.soundcloud_title }}{% endif %}"/> 
 	<meta property="og:description" content="Broadcast on {{ station_proxy.station.name}}"/>
-	<meta property="og:image"  content="{% if broadcast.youtube_id %} http://i.ytimg.com/vi/{{ broadcast.youtube_id }}/hqdefault.jpg{% else %}{{ broadcast.soundcloud_thumbnail }}{% endif %}"/> 
+	<meta property="og:image"  content="{% if broadcast.youtube_id %}http://i.ytimg.com/vi/{{ broadcast.youtube_id }}/hqdefault.jpg{% else %}{{ broadcast.soundcloud_thumbnail }}{% endif %}"/> 
 	<meta property="og:site_name" content="Phonoblaster"/>
 	<meta property="og:video:type" content="text/html"/>
 	<meta property="og:video" content="{{ site_url }}/broadcast/{{ broadcast.key().name() }}"/>
