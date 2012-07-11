@@ -59,7 +59,7 @@ PlayerManager.prototype = {
 	},
 	
 	hideYoutube: function(){
-		$("#media object").hide();
+		$("#media object").css("marginLeft","-1000px");
 	},
 	
 	removeAbove: function(){
@@ -73,11 +73,14 @@ PlayerManager.prototype = {
 		
 		// Player already loaded
 		try{
-			$("#media object").show();
+			$("#media object").css("marginLeft","0px");			
 			ytplayer.loadVideoById(id, start,"medium");
+			PHB.log("Player already loaded");
 		}
 		// Player not loaded yet
 		catch(e){
+			PHB.log("Player not loaded yet");
+			
 			ID = id;
 			START = start;
 						
