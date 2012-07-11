@@ -44,11 +44,12 @@ class Like(db.Model):
 		
 		extended_like = {
 			"created":  timegm(like.created.utctimetuple()),
+			"type": extended_track["type"],
 			"id": extended_track["id"],
 			"title": extended_track["title"],
 			"duration": extended_track["duration"],
 			"thumbnail": extended_track["thumbnail"],
-			"type": extended_track["type"],
+			"preview": extended_track["preview"],
 			"track_id": extended_track["track_id"],
 			"track_created": extended_track["track_created"],
 			"track_submitter_key_name": station.key().name(),

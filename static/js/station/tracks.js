@@ -60,6 +60,7 @@ TrackManager.prototype.UIBuild = function(item){
 	var title = content.title;
 	var duration = PHB.convertDuration(content.duration);
 	var thumbnail = content.thumbnail;
+	var preview = content.preview;
 	
 	var div = $("<div/>").addClass("item").attr("id",id)
 	div.append(
@@ -94,19 +95,15 @@ TrackManager.prototype.UIBuild = function(item){
 							.addClass("tuto")
 							.attr("data-original-title", "Add this track to your selection")
 					)
-					/*
-					
-					// No preview at the moment
-					
 					.append(
 						$("<a/>")
 							.addClass("preview")
+							.addClass(type)
 							.addClass("fancybox.iframe")
 							.attr("href", preview)
 							.addClass("tuto")
 							.attr("data-original-title", "Preview this track")
 					)
-					*/
 			)
 	)
 					

@@ -105,6 +105,7 @@ class Track(db.Model):
 				"title": track.youtube_title,
 				"duration": track.youtube_duration,
 				"thumbnail": "https://i.ytimg.com/vi/" + track.youtube_id + "/default.jpg",
+				"preview": "https://www.youtube.com/embed/" + track.youtube_id + "?autoplay=1",
 			})
 		else:
 			extended_track.update({
@@ -113,6 +114,7 @@ class Track(db.Model):
 				"title": track.soundcloud_title,
 				"duration": track.soundcloud_duration,
 				"thumbnail": track.soundcloud_thumbnail,
+				"preview": "http://player.soundcloud.com/player.swf?url=http%3A%2F%2Fapi.soundcloud.com%2Ftracks%2F" + track.soundcloud_id + "&color=3b5998&auto_play=true&show_artwork=false",
 			})
 		
 		return extended_track

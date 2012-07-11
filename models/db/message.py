@@ -80,7 +80,8 @@ class Message(db.Model):
 						"id": message.youtube_id,
 						"title": message.youtube_title,
 						"duration": message.youtube_duration,
-						"thumbnail": "https://i.ytimg.com/vi/" + message.youtube_id + "/default.jpg"
+						"thumbnail": "https://i.ytimg.com/vi/" + message.youtube_id + "/default.jpg",
+						"preview": "https://www.youtube.com/embed/" + message.youtube_id + "?autoplay=1",
 					})
 				else:
 					extended_message.update({
@@ -89,6 +90,7 @@ class Message(db.Model):
 						"title": message.soundcloud_title,
 						"duration": message.soundcloud_duration,
 						"thumbnail": message.soundcloud_thumbnail,
+						"preview": "http://player.soundcloud.com/player.swf?url=http%3A%2F%2Fapi.soundcloud.com%2Ftracks%2F" + message.soundcloud_id + "&color=3b5998&auto_play=true&show_artwork=false",
 					})
 
 		return extended_message

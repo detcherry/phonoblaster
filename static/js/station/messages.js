@@ -36,14 +36,8 @@ MessageManager.prototype.init = function(){
 	this.submitListen();	
 	
 	// Events relative to suggestions
-	this.searchListen();
-	/*
-	
-	// No preview momentarily
+	this.searchListen();	
 	this.searchPreviewListen();
-	
-	*/
-	
 	this.searchSubmitListen();
 	
 	// Get latest messages
@@ -272,12 +266,14 @@ MessageManager.prototype.searchCallback = function(items){
 			content["type"] = "youtube";
 			content["duration"] = raw_item.duration;
 			content["thumbnail"] = "https://i.ytimg.com/vi/" + raw_item.id + "/default.jpg";
+			content["preview"] = "https://www.youtube.com/embed/" + raw_item.id + "?autoplay=1";
 		}
 		// Specific to Soundcloud
 		else{
 			content["type"] = "soundcloud";
 			content["duration"] =  Math.round(parseInt(raw_item.duration)/1000);
 			content["thumbnail"] = raw_item.artwork_url;
+			content["preview"] = "http://player.soundcloud.com/player.swf?url=http%3A%2F%2Fapi.soundcloud.com%2Ftracks%2F" + raw_item.id + "&color=3b5998&auto_play=true&show_artwork=false";
 		}
 
 		var item = {
@@ -293,8 +289,7 @@ MessageManager.prototype.searchCallback = function(items){
 		var duration = PHB.convertDuration(item.content.duration);
 		var thumbnail = item.content.thumbnail;
 		var type = item.content.type;
-		
-		// var preview = "https://www.youtube.com/embed/" + id + "?autoplay=1"
+		var preview = item.content.preview;
 
 		$("#messages-suggestions").append(
 			$("<div/>")
@@ -323,17 +318,13 @@ MessageManager.prototype.searchCallback = function(items){
 										.attr("name", id)
 										.html("Suggest")
 								)
-								/*
-								
-								// No preview momentarily
-								
 								.append(
 									$("<a/>")
 										.addClass("preview")
+										.addClass(type)
 										.addClass("fancybox.iframe")
 										.attr("href", preview)
 								)
-								*/
 						)
 				)
 		)
@@ -341,26 +332,36 @@ MessageManager.prototype.searchCallback = function(items){
 	
 }
 
-/*
-
-// No preview momentarily
-
 MessageManager.prototype.searchPreviewListen = function(){
-	$("#messages-suggestions a.preview").fancybox({
+	var specific_selector = "#messages-suggestions";
+	var that = this;
+	
+	var youtube_preview_selector = specific_selector + " a.preview.youtube"
+	$(youtube_preview_selector).fancybox({
+		autoSize: false,
+		width: 460,
+		height: 260,
 		beforeShow: function(){
-			try{ytplayer.mute();}
-			catch(e){PHB.log(e);}
+			that.beforePreview();
 		},
 		afterClose: function(){
-			if(VOLUME){
-				try{ytplayer.unMute();}
-				catch(e){PHB.log(e);}
-			}
+			that.afterPreview();
 		},
-	});
+	})
+	
+	var soundcloud_preview_selector = specific_selector + " a.preview.soundcloud"
+	$(soundcloud_preview_selector).fancybox({
+		autoSize: false,
+		width: 460,
+		height: 96,
+		beforeShow: function(){
+			that.beforePreview();
+		},
+		afterClose: function(){
+			that.afterPreview();
+		},
+	})
 }
-
-*/
 
 MessageManager.prototype.searchSubmitListen = function(){
 	
@@ -475,11 +476,12 @@ MessageManager.prototype.prePostBuild = function(input){
 		var content = {
 			key_name: comment_key_name,
 			text: null,
+			type: input.type,
 			id: input.id,
 			title: input.title,
 			duration: input.duration,
 			thumbnail: input.thumbnail,
-			type: input.type,
+			preview: input.preview,
 			track_submitter_key_name: author_key_name,
 			track_submitter_name: author_name,
 			track_submitter_url: author_url,
@@ -525,6 +527,7 @@ MessageManager.prototype.UIBuild = function(item){
 		var title = content.title;
 		var duration = PHB.convertDuration(content.duration);
 		var thumbnail = content.thumbnail;	
+		var type = content.type;
 		var track_submitter_picture_url = "https://graph.facebook.com/"+ content.track_submitter_key_name + "/picture?type=square";
 		var track_submitter_name = content.track_submitter_name;
 		var track_submitter_url = content.track_submitter_url;
@@ -549,7 +552,7 @@ MessageManager.prototype.UIBuild = function(item){
 						.append(
 							$("<div/>")
 								.addClass("item-picture")
-								.append($("<img/>").attr("src", thumbnail))
+								.append($("<img/>").attr("src", thumbnail).addClass(type))
 						)
 						.append(
 							$("<div/>")
@@ -568,7 +571,7 @@ MessageManager.prototype.UIBuild = function(item){
 		
 		// For admins only 
 		if(this.client.admin){
-			// var preview = "https://www.youtube.com/embed/" + content.youtube_id + "?autoplay=1"
+			var preview = content.preview;
 			
 			div.find(".item-subtitle").append(
 				$("<div/>")
@@ -579,18 +582,13 @@ MessageManager.prototype.UIBuild = function(item){
 							.attr("name", id)
 							.html("Add")
 					)
-					/*
-
-					// No preview momentarily
-					
 					.append(
 						$("<a/>")
 							.addClass("preview")
+							.addClass(type)
 							.addClass("fancybox.iframe")
 							.attr("href", preview)
 					)
-					
-					*/
 			)
 		}
 	}

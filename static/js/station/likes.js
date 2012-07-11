@@ -48,8 +48,7 @@ LikeManager.prototype.UIBuild = function(item){
 	var track_submitter_name = content.track_submitter_name;
 	var track_submitter_url = content.track_submitter_url;
 	var track_submitter_picture = "https://graph.facebook.com/" + content.track_submitter_key_name + "/picture?type=square";	
-	
-	//var preview = "https://www.youtube.com/embed/" + content.youtube_id + "?autoplay=1"
+	var preview = content.preview;
 	
 	var div = $("<div/>").addClass("item-wrapper").attr("id", id)
 	
@@ -97,20 +96,15 @@ LikeManager.prototype.UIBuild = function(item){
 											.addClass("tuto")
 											.attr("data-original-title", "Add this track to your selection")
 									)
-									/*
-									
-									// No preview yet 
-									
 									.append(
 										$("<a/>")
 											.addClass("preview")
+											.addClass(type)
 											.addClass("fancybox.iframe")
 											.attr("href", preview)
 											.addClass("tuto")
 											.attr("data-original-title", "Preview this track")
 									)
-									
-									*/
 							)
 					)
 			)

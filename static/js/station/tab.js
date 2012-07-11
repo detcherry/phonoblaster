@@ -80,19 +80,45 @@ function TabManager(client){
 TabManager.prototype = {
 	
 	previewListen: function(){
-		var preview_selector = this.selector + " a.preview"
-		$(preview_selector).fancybox({
+		var that = this;
+		
+		var youtube_preview_selector = this.selector + " a.preview.youtube"
+		$(youtube_preview_selector).fancybox({
+			autoSize: false,
+			width: 460,
+			height: 260,
 			beforeShow: function(){
-				try{ytplayer.mute();}
-				catch(e){PHB.log(e);}
+				that.beforePreview();
 			},
 			afterClose: function(){
-				if(VOLUME){
-					try{ytplayer.unMute();}
-					catch(e){PHB.log(e);}
-				}
+				that.afterPreview();
 			},
-		});
+		})
+		
+		var soundcloud_preview_selector = this.selector + " a.preview.soundcloud"
+		$(soundcloud_preview_selector).fancybox({
+			autoSize: false,
+			width: 460,
+			height: 96,
+			beforeShow: function(){
+				that.beforePreview();
+			},
+			afterClose: function(){
+				that.afterPreview();
+			},
+		})
+	},
+	
+	beforePreview: function(){
+		if(VOLUME){
+			$("#media-volume a").trigger("click");
+		}
+	},
+	
+	afterPreview: function(){
+		if(!VOLUME){
+			$("#media-volume a").trigger("click");
+		}
 	},
 		
 	processListen: function(){

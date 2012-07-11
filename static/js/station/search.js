@@ -256,12 +256,14 @@ SearchManager.prototype.serverToLocalItem = function(raw_item){
 		content["type"] = "youtube";
 		content["duration"] = raw_item.duration;
 		content["thumbnail"] = "https://i.ytimg.com/vi/" + raw_item.id + "/default.jpg";
+		content["preview"] = "https://www.youtube.com/embed/" + raw_item.id + "?autoplay=1";
 	}
 	// Specific to Soundcloud
 	else{
 		content["type"] = "soundcloud";
 		content["duration"] =  Math.round(parseInt(raw_item.duration)/1000);
 		content["thumbnail"] = raw_item.artwork_url;
+		content["preview"] = "http://player.soundcloud.com/player.swf?url=http%3A%2F%2Fapi.soundcloud.com%2Ftracks%2F" + raw_item.id + "&color=3b5998&auto_play=true&show_artwork=false";
 	}
 	
 	var item = {
@@ -280,7 +282,7 @@ SearchManager.prototype.UIBuild = function(item){
 	var duration = PHB.convertDuration(content.duration);
 	var thumbnail = content.thumbnail;	
 	var type = content.type;	
-	// var preview = "https://www.youtube.com/embed/" + id + "?autoplay=1";
+	var preview = content.preview;
 	
 	var div = $("<div/>").addClass("item").attr("id",id)
 	div.append(
@@ -307,20 +309,16 @@ SearchManager.prototype.UIBuild = function(item){
 							.html("Add")
 							.addClass("tuto")
 							.attr("data-original-title", "Add this track to your selection")
-					)
-					/*
-					
-					// No preview momentarily
-					
+					)					
 					.append(
 						$("<a/>")
 							.addClass("preview")
+							.addClass(type)
 							.addClass("fancybox.iframe")
 							.attr("href", preview)
 							.addClass("tuto")
 							.attr("data-original-title", "Preview this track")
 					)
-					*/
 			)
 	)
 	
