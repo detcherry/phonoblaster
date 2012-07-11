@@ -775,20 +775,24 @@ a.search-icon{
 }
 
 a#youtube-search{
-	background:url("/static/images/youtube-off.png");
+	background:url("/static/images/new-sprits.png");
+	background-position:-184px -220px;
 }
 
 a#youtube-search.on{
-	background:url("/static/images/youtube-on.png");
+	background:url("/static/images/new-sprits.png");
+	background-position:-156px -220px;
 }
 
 a#soundcloud-search{
 	margin-left:26px;
-	background:url("/static/images/soundcloud-off.png");
+	background:url("/static/images/new-sprits.png");
+	background-position:-184px -248px;
 }
 
 a#soundcloud-search.on{
-	background:url("/static/images/soundcloud-on.png");
+	background:url("/static/images/new-sprits.png");
+	background-position:-156px -248px;
 }
 
 input#search{
@@ -1376,19 +1380,23 @@ a#text-option.current{
 }
 
 a#youtube-option{
-	background:url("/static/images/youtube-off.png");
+	background:url("/static/images/new-sprits.png");
+	background-position:-184px -220px;
 }
 
 a#youtube-option.current{
-	background:url("/static/images/youtube-on.png");
+	background:url("/static/images/new-sprits.png");
+	background-position:-156px -220px;
 }
 
 a#soundcloud-option{
-	background:url("/static/images/soundcloud-off.png");
+	background:url("/static/images/new-sprits.png");
+	background-position:-184px -248px;
 }
 
 a#soundcloud-option.current{
-	background:url("/static/images/soundcloud-on.png");
+	background:url("/static/images/new-sprits.png");
+	background-position:-156px -248px;
 }
 
 #messages-field form{
