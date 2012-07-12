@@ -50,6 +50,9 @@ SearchManager.prototype.switchListen = function(){
 			$("input#search").attr("data-original-title","Search and add tracks from Soundcloud");
 		}
 		
+		// Scroll to top
+		$("#search-tab").scrollTop(0);
+		
 		// Trigger search
 		if(that.search_content.length > 1){
 			that.get();
