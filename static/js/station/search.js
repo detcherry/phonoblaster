@@ -60,10 +60,7 @@ SearchManager.prototype.switchListen = function(){
 		
 		$(this).blur();
 		return false;
-		
 	})
-	
-	
 }
 
 // Typing events in the input box
@@ -113,7 +110,7 @@ SearchManager.prototype.inputListen = function(){
 		// Only trigger searches that have more than 1 character
 		if(that.search_content.length > 1){
 			$("#search-overlay").show();
-			$("#search-tab").show();
+			$("#search-tab").show().scrollTop(0);
 			that.get();
 		}
 	})
