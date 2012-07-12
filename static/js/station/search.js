@@ -82,7 +82,7 @@ SearchManager.prototype.inputListen = function(){
 		else{
 			// Display the search tab that certainly contains results
 			$("#search-overlay").show();
-			$("#search-tab").show();
+			$("#search-tab").show().scrollTop(0);
 		}
 		
 		// If user not authenticated, display popup
@@ -110,7 +110,7 @@ SearchManager.prototype.inputListen = function(){
 		// Only trigger searches that have more than 1 character
 		if(that.search_content.length > 1){
 			$("#search-overlay").show();
-			$("#search-tab").show().scrollTop(0);
+			$("#search-tab").show();
 			that.get();
 		}
 	})
@@ -118,7 +118,7 @@ SearchManager.prototype.inputListen = function(){
 	// Remove the search tab if click on overlay
 	$("#search-overlay").click(function(){
 		$("#search-overlay").hide()
-		$("#search-tab").hide()	
+		$("#search-tab").scrollTop(0).hide()	
 		$("input#search").blur();
 	})
 	
