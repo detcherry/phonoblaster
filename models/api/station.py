@@ -71,6 +71,7 @@ class StationApi():
 			full = full,
 			thumb = thumb,
 			online = False,
+			active = datetime.utcnow(),
 		)
 		station.put()
 		logging.info("Station put in datastore")
@@ -219,6 +220,7 @@ class StationApi():
 				logging.info("Admin joins")	
 				
 				self.station.online = True
+				self.station.active = datetime.utcnow()
 				self.station.put()
 				logging.info("Station updated in datastore")
 				
@@ -370,6 +372,7 @@ class StationApi():
 
 		station.timestamp = new_timestamp
 		station.broadcasts = b_keys
+		station.active = datetime.utcnow()
 		station.put()
 		logging.info("Buffer put in datastore")
 

@@ -15,5 +15,6 @@ class Station(db.Model):
 	full = db.StringProperty() # Link for the full size background
 	thumb = db.StringProperty() # Link for the background thumbnail 
 	online = db.BooleanProperty(default = False) # Online status
+	active = db.DateTimeProperty()
 	
 	

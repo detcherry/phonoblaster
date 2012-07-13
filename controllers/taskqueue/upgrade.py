@@ -20,13 +20,13 @@ class UpgradeHandler(webapp2.RequestHandler):
 		else:
 			logging.info("No cursor")
 		
-		stations = q.fetch(50)
+		stations = q.fetch(2)
 		
 		to_put = []
 		done = False
-		for s in stations:			
-			if s.online is None:
-				s.online = False
+		for s in stations:
+			if s.active is None:
+				s.active = s.updated
 				to_put.append(s)
 			else:
 				done = True
