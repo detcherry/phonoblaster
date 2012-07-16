@@ -27,7 +27,7 @@ class HomeHandler(BaseHandler):
 			latest_active_stations = []
 			
 			q = Station.all()
-			q.order("-updated")
+			q.order("-active")
 			stations = q.fetch(30)
 			logging.info(str(len(stations))+" latest stations retrieved from datastore")
 
@@ -68,7 +68,10 @@ class HomeHandler(BaseHandler):
 					if(broadcast.youtube_duration):
 						total_duration += broadcast.youtube_duration
 					else:
-						total_duration += broadcast.soundcloud_duration
+						if(broadcast.soundcloud_duration):
+							total_duration += broadcast.soundcloud_duration
+						else:
+							total_duration += 0
 				
 				# Check if buffer is not empty
 				if total_duration > 0:

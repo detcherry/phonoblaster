@@ -20,7 +20,7 @@ class UpgradeHandler(webapp2.RequestHandler):
 		else:
 			logging.info("No cursor")
 		
-		stations = q.fetch(2)
+		stations = q.fetch(50)
 		
 		to_put = []
 		done = False
