@@ -13,17 +13,16 @@ Facebook.prototype = {
 	
 	login: function(){
 		var that = this;
+
 		FB.login(function(response){
-			if(response.authResponse){
-				window.location.reload();
-			}
-		},{scope: that.scope});
+			PHB.log(response);
+		},{ 
+			scope: that.scope,
+		});
 	},
 	
 	logout: function(){
-		FB.logout(function(response){
-			window.location.reload();
-		})
+		FB.logout();
 	},
 	
 	putTab: function(page_id, callback){

@@ -12,7 +12,7 @@ TabCreationManager.prototype = {
 	
 	listen: function(){
 		var that = this;
-		$(".contribution a.btn").click(function(){
+		$(".station a.btn").click(function(){
 			var obj = $(this);
 			that.page_id = $(this).attr("id");
 			that.page_name = $(this).parent().prev().children().first().html();
@@ -46,7 +46,7 @@ TabCreationManager.prototype = {
 			obj.prev().css("visibility", "hidden");
 			
 			if(response){
-				obj.addClass("success").html("Reinstalled")
+				obj.addClass("success").html("Installed")
 			}
 			else{
 				obj.addClass("danger").html("Error...")

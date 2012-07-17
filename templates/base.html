@@ -69,9 +69,6 @@
 					xfbml: true,
 					oauth: true,
 				});
-
-				// Check if the current user is logged in and has authorized the app
-				FB.getLoginStatus(checkLoginStatus);
 				
 				// Login events
 				$("a.login").click(function(){
@@ -84,18 +81,15 @@
 					FACEBOOK.logout();
 					return false;
 				})
-
-				// Check the result of the user status
-				function checkLoginStatus(response) {
-					if(response && response.status == 'connected') {
-						// If login displayed, it means we should reload the page
-						if ($("a.login").length > 0) {
-							// Refreshing window in order to authenticate user
-							window.location.reload();
-						}
-					}
-				}
 				
+				FB.Event.subscribe('auth.login', function(response) {
+		          window.location.reload();
+		        });
+		
+		        FB.Event.subscribe('auth.logout', function(response) {
+		          window.location.reload();
+		        });
+
 	      	};
 	      	(function() {
 				var e = document.createElement('script');

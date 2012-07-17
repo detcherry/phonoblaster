@@ -74,17 +74,22 @@ def admin_required(method):
 	return wrapper
 
 class BaseHandler(webapp2.RequestHandler):
+	
 	@property
 	def user_proxy(self):
 		if not hasattr(self, "_user_proxy"):
 			self._user_proxy = None
 			cookie = self.request.cookies.get("fbsr_" + config.FACEBOOK_APP_ID, "")
+			
+			# Cookie obviously set by Facebook
 			if cookie:
 				response = facebook.parse_signed_request(cookie, config.FACEBOOK_APP_SECRET)
+				
+				# Cookie certainly set by Facebook
 				if response:
-					user_proxy = UserApi(response["user_id"], code=response["code"])
+					user_proxy = UserApi(response["user_id"], response["code"])
 					user = user_proxy.user
-					
+
 					# If not registered, save the new user
 					if not user:
 						graph = facebook.GraphAPI(user_proxy.access_token)
@@ -97,18 +102,11 @@ class BaseHandler(webapp2.RequestHandler):
 								profile["email"]
 							)
 							logging.info("New user: %s %s" %(user.first_name, user.last_name))
-						else:
-							logging.error("User does not share his email. Strange...")
-					
-					#self._user_proxy = user_proxy
-					
-					# patch below before login has gone full client
-					access_token = user_proxy.access_token
-					if user and access_token:
-						self._user_proxy = user_proxy
-		
-		return self._user_proxy
 
+				self._user_proxy = user_proxy
+
+		return self._user_proxy
+	
 	# Custom rendering function
 	def render(self, template_path, template_values):
 		self._template_values = {}

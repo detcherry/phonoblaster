@@ -36,25 +36,25 @@
 	letter-spacing:0px;
 }
 
-.contribution{
+.station{
 	margin-bottom:10px;
 	padding:10px;
 	width:450px;
 	background:white;
 }
 
-.contribution img{
+.station img{
 	display:block;
 	float:left;
 }
 
-p.page-name{
+p.name{
 	padding:8px;
 	width:275px;
 	height:34px;
 }
 
-p.page-name span{
+p.name span{
 	height:34px;
 }
 
@@ -65,7 +65,7 @@ img.loader{
 	width:20px;
 }
 
-.contribution .btn{
+.station .btn{
 	float:right;
 	margin-top:14px;
 	width:70px;
@@ -73,8 +73,8 @@ img.loader{
 }
 
 div.title {
-	padding-left: 15px;
-	padding-bottom: 5px;
+	padding-left:15px;
+	padding-bottom:10px;
 }
 
 #manage-skip {
