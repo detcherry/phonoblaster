@@ -3,7 +3,6 @@ import logging
 import traceback
 import re
 import sys
-import urllib
 
 from controllers import config
 from controllers import facebook
@@ -103,7 +102,7 @@ class BaseHandler(webapp2.RequestHandler):
 							)
 							logging.info("New user: %s %s" %(user.first_name, user.last_name))
 
-				self._user_proxy = user_proxy
+					self._user_proxy = user_proxy
 
 		return self._user_proxy
 	
