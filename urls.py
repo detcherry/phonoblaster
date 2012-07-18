@@ -38,6 +38,7 @@ from controllers.taskqueue.upgrade import UpgradeHandler
 from controllers.picture.upload import PictureUploadHandler
 from controllers.picture.view import PictureViewHandler
 from controllers.picture.delete import PictureDeleteHandler
+from controllers.crawler.soundcloud import SoundcloudCrawlerHandler
 
 app = webapp2.WSGIApplication(
 	[
@@ -78,6 +79,7 @@ app = webapp2.WSGIApplication(
 		('/company/faq', FaqHandler),
 		('/company/press', PressHandler),
 		('/company/press/fr', PressFrHandler),
+		('/soundcloud/crawler/([\w-]+)', SoundcloudCrawlerHandler),
 		('/.*', AllHandler),
 	],
     debug=True
