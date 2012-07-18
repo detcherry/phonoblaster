@@ -33,10 +33,6 @@ ShareManager.prototype = {
 		})
 		
 		$("a#tw-share").click(function(){
-			var twitter = "https://twitter.com/share?"
-			var href = "http://www.phonoblaster.com/" + that.client.host.shortname;
-			var text = "♫ Listening to " + that.client.host.name + " radio on @phonoblaster ♫"
-			
 			var width = 800;
 			var height = 450;
 			var top = (screen.height/2) - height/2;
@@ -83,14 +79,14 @@ ShareManager.prototype = {
 		}
 		else{
 			var title = this.client.buffer_manager.live_item.content.title;
-			var number_of_characters = 20 + 7 + handle.length + 17 + href.length;
+			var number_of_characters = 37 + handle.length + 17 + href.length;
 			var available_characters = 140 - number_of_characters;
 			
 			if(this.client.admin){
-				var text = "Live broadcasting ♫ " + title.substring(0, available_characters) + " ♫ by @" + handle + " on @phonoblaster"
+				var text = "Live broadcasting on @phonoblaster ♫ " + title.substring(0, available_characters) + " ♫ by @" + handle;
 			}
 			else{
-				var text = "Listening now to ♫ " + title.substring(0, available_characters) + " ♫ by @" + handle + " on @phonoblaster"
+				var text = "Listening now on @phonoblaster to ♫ " + title.substring(0, available_characters) + " ♫ by @" + handle;
 			}
 		}
 
