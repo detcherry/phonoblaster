@@ -382,22 +382,16 @@ BufferManager.prototype.moveListen = function(){
 		
 		// Once sorting has stopped
 		update:function(event, ui){
-			
-			var move = true;
-			
+						
 			// Prevent live item to be moved
-			var id = $(ui.item).attr("id");
+			var id = $(ui.item).attr("id");		
 			if(id == that.live_item.id){
-				
-				var move = false;
 				var re = RegExp("[.]","g");
 				var div_selector = "#" + id.toString().replace(re, "\\.");
 				$(div_selector).prependTo(that.selector);
-								
 			}
-			
-			if(move){
-				// If move authorized, get new position
+			else{
+				// If the item moved is not the live item, get new position
 				var new_position = 0;
 				var ids_list = $(this).sortable("toArray");
 				for(var i=0, c=ids_list.length; i<c; i++){
@@ -407,14 +401,25 @@ BufferManager.prototype.moveListen = function(){
 					}
 				}
 				
-				var plugin = $(this);
-				that.move(id, new_position, function(response){	
-					if(!response){
-						plugin.sortable("cancel");
-						PHB.error("Broadcast has not been moved in your selection.")
-					}
-				})
+				var plugin = $(this);				
+				var now = PHB.now();
+				var timestamp = that.timestamp;
+				var duration = that.live_item.content.duration;
+				var timeout = duration - (now - timestamp);
 				
+				// If new item becomes next track and less than 5 sec before the end of the song
+				if(new_position == 1 && timeout <=5){
+					plugin.sortable("cancel");
+				}
+				// Else everything is ok
+				else{
+					that.move(id, new_position, function(response){	
+						if(!response){
+							plugin.sortable("cancel");
+							PHB.error("Broadcast has not been moved in your selection.")
+						}
+					})
+				}
 			}
 			
 		},	
