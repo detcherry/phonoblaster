@@ -480,8 +480,13 @@ BufferManager.prototype.upListen = function(){
 				break;
 			}
 		}
+		
+		var now = PHB.now();
+		var timestamp = that.timestamp;
+		var duration = that.live_item.content.duration;
+		var timeout = duration - (now - timestamp);
 				
-		if(existing_position && existing_position != 1){
+		if(existing_position && existing_position != 1 && timeout > 5){
 			
 			// Make a fake animation
 			var first_anim_over = false;
