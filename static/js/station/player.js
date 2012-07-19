@@ -121,43 +121,61 @@ PlayerManager.prototype = {
 	transition: function(timeout){		
 		setTimeout(function(){
 			if(VOLUME){
-				ytplayer.setVolume(80);
-				scplayer.setVolume(80);
+				try{
+					ytplayer.setVolume(80);
+					scplayer.setVolume(80);
+				}
+				catch(e){}
 			}
 		}, (timeout-5)*1000)
 		
 		setTimeout(function(){
 			if(VOLUME){
-				ytplayer.setVolume(60);
-				scplayer.setVolume(60);
+				try{
+					ytplayer.setVolume(60);
+					scplayer.setVolume(60);
+				}
+				catch(e){}
 			}
 		}, (timeout-4)*1000)
 		
 		setTimeout(function(){
 			if(VOLUME){
-				ytplayer.setVolume(40);
-				scplayer.setVolume(40);
+				try{
+					ytplayer.setVolume(40);
+					scplayer.setVolume(40);
+				}
+				catch(e){}
 			}
 		}, (timeout-3)*1000)
 		
 		setTimeout(function(){
 			if(VOLUME){
-				ytplayer.setVolume(20);
-				scplayer.setVolume(20);
+				try{
+					ytplayer.setVolume(20);
+					scplayer.setVolume(20);
+				}
+				catch(e){}
 			}
 		}, (timeout-2)*1000)
 		
 		setTimeout(function(){
 			if(VOLUME){
-				ytplayer.setVolume(0);
-				scplayer.setVolume(0);
+				try{
+					ytplayer.setVolume(0);
+					scplayer.setVolume(0);
+				}
+				catch(e){}
 			}
 		}, (timeout-1)*1000)
 		
 		setTimeout(function(){
-			if(VOLUME){
-				ytplayer.setVolume(100);
-				scplayer.setVolume(100);
+			if(VOLUME){	
+				try{
+					ytplayer.setVolume(100);
+					scplayer.setVolume(100);
+				}
+				catch(e){}
 			}
 		}, (timeout)*1000)
 	},
