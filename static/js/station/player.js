@@ -27,12 +27,8 @@ PlayerManager.prototype = {
 	},
 	
 	play: function(item, start){
-		// Remove above layer
-		this.removeAbove();
-		// Stop Youtube streaming
-		this.stopYoutube();
-		// Stop Soundcloud streaming
-		this.stopSoundcloud();
+		// Stop current player
+		this.stop();
 		
 		// Youtube player
 		if(item.content.type == "youtube"){
@@ -42,6 +38,18 @@ PlayerManager.prototype = {
 		else{
 			this.playSoundcloud(item, start);
 		}
+		
+		var timeout = item.content.duration - start;
+		this.transition(timeout);
+	},
+	
+	stop: function(){
+		// Remove above layer
+		this.removeAbove();
+		// Stop Youtube streaming
+		this.stopYoutube();
+		// Stop Soundcloud streaming
+		this.stopSoundcloud();
 	},
 	
 	stopYoutube: function(){
@@ -71,7 +79,7 @@ PlayerManager.prototype = {
 		
 		var id = item.content.id;
 		$("#media object").css("marginLeft","0px");			
-		ytplayer.loadVideoById(id, start,"medium");
+		ytplayer.loadVideoById(id, start,"medium");	
 	},
 	
 	playSoundcloud: function(item, start){
@@ -90,7 +98,7 @@ PlayerManager.prototype = {
 			},
 			function(sound){
 				scplayer = sound;
-				
+								
 				// Unlike Youtube player, volume needs to be refreshed for every Soundcloud song
 				if(VOLUME){
 					scplayer.setVolume(100);
@@ -108,6 +116,50 @@ PlayerManager.prototype = {
 				$("<img/>").attr("src", artwork)
 			)
 			.show()
+	},
+	
+	transition: function(timeout){		
+		setTimeout(function(){
+			if(VOLUME){
+				ytplayer.setVolume(80);
+				scplayer.setVolume(80);
+			}
+		}, (timeout-5)*1000)
+		
+		setTimeout(function(){
+			if(VOLUME){
+				ytplayer.setVolume(60);
+				scplayer.setVolume(60);
+			}
+		}, (timeout-4)*1000)
+		
+		setTimeout(function(){
+			if(VOLUME){
+				ytplayer.setVolume(40);
+				scplayer.setVolume(40);
+			}
+		}, (timeout-3)*1000)
+		
+		setTimeout(function(){
+			if(VOLUME){
+				ytplayer.setVolume(20);
+				scplayer.setVolume(20);
+			}
+		}, (timeout-2)*1000)
+		
+		setTimeout(function(){
+			if(VOLUME){
+				ytplayer.setVolume(0);
+				scplayer.setVolume(0);
+			}
+		}, (timeout-1)*1000)
+		
+		setTimeout(function(){
+			if(VOLUME){
+				ytplayer.setVolume(100);
+				scplayer.setVolume(100);
+			}
+		}, (timeout)*1000)
 	},
 	
 	display: function(item){
